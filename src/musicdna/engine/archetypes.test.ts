@@ -60,11 +60,11 @@ describe("assignArchetype", () => {
     expect(result.flag_reason).toBe("ambiguous");
   });
 
-  it("computes confidence_tier from the winning score", () => {
+  it("computes fit_tier from the winning score", () => {
     const result = assignArchetype({ craft: 100 }, [
       { id: "x", name: "X", signature_axes: { craft: 1 } },
     ]);
-    expect(result.assignment?.confidence_tier).toBe(95);
+    expect(result.assignment?.fit_tier).toBe(95);
   });
 
   // ---------- Boundary cases ----------
@@ -79,7 +79,7 @@ describe("assignArchetype", () => {
     expect(result.assignment!.score).toBeCloseTo(0.5, 10);
     expect(result.flag_reason).not.toBe("low_score");
     // Tier boundary: >= 0.5 → tier 50
-    expect(result.assignment!.confidence_tier).toBe(50);
+    expect(result.assignment!.fit_tier).toBe(50);
   });
 
   it("boundary: margin just below 0.05 → ambiguous", () => {

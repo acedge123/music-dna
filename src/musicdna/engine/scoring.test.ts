@@ -5,7 +5,7 @@ import {
   cosine,
   l1Over,
   scoreArchetype,
-  confidenceTier,
+  fitTier,
 } from "./scoring";
 
 describe("dot / magnitude / cosine", () => {
@@ -61,18 +61,18 @@ describe("scoreArchetype", () => {
   });
 });
 
-describe("confidenceTier", () => {
+describe("fitTier", () => {
   it("maps score to Archetype Bible tiers", () => {
-    expect(confidenceTier(0.9)).toBe(95);
-    expect(confidenceTier(0.75)).toBe(80);
-    expect(confidenceTier(0.6)).toBe(50);
-    expect(confidenceTier(0.2)).toBe(20);
-    expect(confidenceTier(0)).toBe(20);
+    expect(fitTier(0.9)).toBe(95);
+    expect(fitTier(0.75)).toBe(80);
+    expect(fitTier(0.6)).toBe(50);
+    expect(fitTier(0.2)).toBe(20);
+    expect(fitTier(0)).toBe(20);
   });
 
   it("boundaries snap to the higher tier", () => {
-    expect(confidenceTier(0.85)).toBe(95);
-    expect(confidenceTier(0.7)).toBe(80);
-    expect(confidenceTier(0.5)).toBe(50);
+    expect(fitTier(0.85)).toBe(95);
+    expect(fitTier(0.7)).toBe(80);
+    expect(fitTier(0.5)).toBe(50);
   });
 });
