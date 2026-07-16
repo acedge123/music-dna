@@ -1561,6 +1561,9 @@ const EVENT_TYPES = [
   "session_quit",
   "lane_probed",
   "lane_flipped",
+  // Instrumentation (server-emitted, see emitChoiceDiagnostics):
+  "choice_scored",
+  "archetype_ranking_snapshot",
 ] as const;
 
 
