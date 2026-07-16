@@ -1,64 +1,83 @@
-# Fix: `callLovableAi` drops all system messages after the first
 
-## The bug
+## My take on the plan
 
-`src/musicdna/adapters/llm-gateway.ts` → `callLovableAi()` collapses the incoming `messages[]` into a single `{ system, prompt }` pair before handing off to the gateway:
+Solid direction, and the right sequencing: you need ground truth before you can defend or change the math. Two things I'd tighten before we build:
 
-```ts
-const system = messages.find((m) => m.role === "system")?.content;
-const userParts = messages
-  .filter((m) => m.role !== "system")
-  .map((m) => m.content)
-  .join("\n\n");
-```
+1. **Split "capture" from "derive."** Log a rich per-choice snapshot once; compute stability, order-sensitivity, contradiction load, etc. as read-only SQL views on top. That way you can iterate on definitions without re-running sessions.
+2. **Piggyback on the existing `event_log.props` jsonb**, not a new table. `recordEvent` and the `event_log` table already exist; adding a new `choice_scored` event type keeps the ingestion path unchanged and avoids a migration surface.
 
-This means:
-- Only the **first** system message survives.
-- Any additional `role: "system"` blocks are silently discarded.
-- The order of system vs. user turns is lost — everything non-system gets flattened into one user string.
+## Scope (instrumentation only — engine math untouched)
 
-The chat path in `src/lib/musicdna.functions.ts` (line ~2764) sends **three** system messages in order:
-1. `CHAT_VOICE` — the critic persona
-2. `voiceMod` — per-user critic-profile modulation (tone/edge tuned to that reader)
-3. `contextBlock` — session context (hypothesis, lane, recent choices, prior turns)
+### 1. Per-choice diagnostic snapshot
 
-Only #1 reaches the model. The critic loses both its per-user voice modulation **and** its knowledge of the current session. That matches the CGPT report — chat feels generic and forgetful because it literally is.
+Extend `recordChoiceImpl` in `src/lib/musicdna.functions.ts` to emit a single `choice_scored` event alongside the existing `choice_made`. All fields go into `event_log.props` — no schema change:
 
-Other call sites (`onboarding-openers.functions.ts`, classifier, react, refine, synth, extractor) only pass one system message, so they're unaffected in practice — but they're one refactor away from the same silent failure.
+- `round`, `pairing_id`, `chosen_song_id`, `rejected_song_id`
+- `pairing_selection_reason` (from `selectPairing`: axes_needed, fork score, weight)
+- `axes_tested` (dims where |delta| > 0)
+- `vector_before`, `raw_delta`, `weighted_delta`, `vector_after`
+- `diagnostic_weight`
+- `archetype_rankings_after`: full sorted list `[{id, name, score}]`
+- `winner_margin` (best − runner-up)
+- `fit_tier`
+- `supports` / `contradicts`: per-axis contribution of this choice to the current winner's cosine
+- `flag_reason` (if any)
 
-## Fix
+Requires exposing the pairing's `selection_reason` from `selectPairing` (already computed internally; just needs to be returned). No behavior change.
 
-Change `callLovableAi` to preserve every system message and to keep user/assistant turns as distinct messages instead of concatenating them.
+### 2. Round-level archetype trajectory
 
-Update the `LLMGateway.complete` port + the Lovable adapter to accept a full `messages` array (in addition to the current `{ system, prompt }` convenience shape), and have `callLovableAi` pass messages through untouched:
+Emit `archetype_ranking_snapshot` at end of each round with the top-3 and margin. Cheap, makes stability queries trivial without replaying every choice.
 
-```ts
-// llm-gateway.ts
-export async function callLovableAi(messages, opts = {}) {
-  const apiKey = opts.apiKey ?? process.env.LOVABLE_API_KEY;
-  if (!apiKey) throw new Error("LOVABLE_API_KEY missing");
-  const doFetch = opts.fetchImpl ?? fetch;
-  const res = await doFetch(AI_URL, {
-    method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
-    body: JSON.stringify({ model: opts.model ?? DEFAULT_MODEL, messages }),
-  });
-  if (!res.ok) throw new Error(`AI ${res.status}: ${(await res.text()).slice(0, 200)}`);
-  const json = await res.json();
-  return (json.choices?.[0]?.message?.content ?? "").trim();
-}
-```
+### 3. Richer reveal feedback
 
-The existing `createLovableLlmGateway({...}).complete({ system, prompt })` single-turn convenience stays for engine ports that already use it — no behavior change there.
+Extend `submitFeedback` to accept (all optional, additive):
 
-## Test updates
+- `accuracy: "accurate" | "partly" | "wrong"` (add `"partly"` to the existing enum via migration)
+- `most_accurate_sentence: string | null`
+- `least_accurate_sentence: string | null`
 
-`src/musicdna/adapters/llm-gateway.test.ts`:
-- Update the "splits messages into system + concatenated user prompt" test to assert the **opposite**: multiple system messages are preserved in order, and user turns are sent as separate messages (no concatenation).
-- Add a new case: two system + one user message round-trips as three messages in the request body.
+Reveal UI: add two tap-to-mark actions on the commentary sentences plus the three-way accuracy control. Feedback is the ground-truth channel — without it, everything else is unfalsifiable.
 
-## Out of scope
+### 4. Derived-measure SQL views (read-only)
 
-- No changes to `musicdna.functions.ts` call sites — they already pass correct `messages[]` arrays; the bug is purely in the adapter.
-- No changes to the engine's `LLMGateway` port shape or single-turn callers.
-- No prompt content changes (per prior scope: skip prompt edits).
+One migration, no engine changes. Each maps directly to a question you asked:
+
+| View | Question it answers |
+|---|---|
+| `v_session_stability` | Winner at rounds 8/10/12/14 per session; % of sessions where the round-8 winner survives to reveal |
+| `v_axis_independence` | Per winning archetype, count of *distinct* axes contributing >X to the cosine (repeated-axis "supports" collapse to 1) |
+| `v_contradiction_load` | Sum of negative contributions to the winner's cosine / sum of positive; a "how much did we ignore?" ratio |
+| `v_residual_rate` | % of sessions where final `score < ARCHETYPE_SCORE_FLOOR` or `margin < 0.05` |
+| `v_order_sensitivity` | Replay hook: sessions where swapping the last two pairings would flip the winner (computed offline from snapshots; view exposes the count) |
+| `v_human_agreement` | Join `feedback.accuracy` against `fit_tier`, `margin`, residual flags |
+
+### 5. Admin surface
+
+Extend `src/routes/_authenticated/admin.tsx` with a "Diagnostics" tab that reads the six views. Read-only; gated by the existing admin role check. No public exposure.
+
+## Explicitly out of scope
+
+- No changes to `applyChoice`, `assignArchetype`, `selectPairing` math.
+- No changes to fit-tier thresholds or the 0.35 seed multiplier.
+- No new archetype flags or user-visible copy changes beyond the feedback controls.
+- Order-sensitivity *simulation* (replaying alternate orders) is a follow-up; this plan only stores the data to make it possible.
+
+## Deliverables
+
+1. Migration: add `partly` to feedback accuracy enum; add `most_accurate_sentence` / `least_accurate_sentence` columns; add `choice_scored` and `archetype_ranking_snapshot` to `EVENT_TYPES`; create the six views with `GRANT SELECT ... TO authenticated` scoped via RLS to admins only.
+2. `selectPairing` returns its `selection_reason` (pure refactor, no math change) + test.
+3. `recordChoiceImpl` emits `choice_scored`; new round-end emits `archetype_ranking_snapshot`.
+4. `submitFeedback` accepts the two sentence fields; reveal UI wires them.
+5. Admin diagnostics tab reading the views.
+6. Docs: `docs/musicdna/instrumentation.md` defining every field and every derived measure, so future changes can't quietly drift the definitions.
+
+## What's next after this ships
+
+Two weeks of real sessions with feedback. Then, before any scoring change:
+
+- Read `v_human_agreement` — if fit_tier 80/95 doesn't correlate with "accurate," the tiers are miscalibrated (fix the labels, or the thresholds, or both).
+- Read `v_axis_independence` — if winners routinely have ≤2 independent supporting axes, pairing selection needs to spread across axes more aggressively.
+- Read `v_contradiction_load` — high load + high fit_tier means we're overclaiming; the Critic voice should hedge harder in that regime.
+
+That's the point where synthetic personas become useful: you'll have real distributions to check them against.
