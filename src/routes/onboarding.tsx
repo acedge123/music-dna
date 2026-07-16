@@ -18,7 +18,16 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
-  head: () => ({ meta: [{ title: "MusicDNA — Interview" }] }),
+  head: () => ({
+    meta: [
+      { title: "MusicDNA — Interview" },
+      { name: "description", content: "The critic interviews you. Name three songs, then answer a few pairings — what you pick is the read." },
+      { property: "og:title", content: "MusicDNA — Interview" },
+      { property: "og:description", content: "The critic interviews you. What you pick is the read." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: Onboarding,
 });
 
