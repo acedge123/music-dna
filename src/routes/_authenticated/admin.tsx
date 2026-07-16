@@ -11,6 +11,7 @@ import {
   adminSetDiagnosticWeight,
   adminResidualQueue,
   adminOntology,
+  adminDiagnostics,
 } from "@/lib/admin.functions";
 import {
   listDecadePrompts,
