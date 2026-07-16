@@ -988,8 +988,148 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
       .update({ vector: vec, lane: nextLane, probe_state: probeState as never })
       .eq("id", data.sessionId);
     if (uErr) throw new Error(uErr.message);
+
+    // -------- Instrumentation: emit choice_scored + (milestone) archetype_ranking_snapshot --------
+    // Fire-and-forget. Failures never break the choice flow — diagnostics are
+    // an observability channel, not a product invariant. See
+    // docs/musicdna/instrumentation.md for the field contract.
+    try {
+      await emitChoiceDiagnostics(supabase, userId, {
+        sessionId: data.sessionId,
+        pairingId: data.pairingId,
+        chosenSongId: data.chosenSongId,
+        rejectedSongId,
+        round,
+        tests,
+        priorVec,
+        deltaVec,
+        weightedVec: vec,
+        diagnosticWeight: pairing.diagnostic_weight ?? 50,
+      });
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.warn("[musicdna] emitChoiceDiagnostics failed:", e instanceof Error ? e.message : e);
+    }
+
     return { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
 }
+
+// ============ Instrumentation helper (per-choice diagnostic snapshot) ============
+// Loads the archetype catalog, recomputes rankings on the just-updated
+// vector, and writes two events into event_log.props for offline analysis:
+//   • choice_scored — always. Full snapshot of this pairing's contribution.
+//   • archetype_ranking_snapshot — at rounds 8/10/12/14 (stability checkpoints)
+//     AND when shouldStop says we're done (is_final=true). Cheap; makes the
+//     "did the winner change late?" query one WHERE clause.
+async function emitChoiceDiagnostics(
+  supabase: AuthedSupabase,
+  userId: string,
+  args: {
+    sessionId: string;
+    pairingId: string;
+    chosenSongId: string;
+    rejectedSongId: string;
+    round: number;
+    tests: string[];
+    priorVec: Record<string, number>;
+    deltaVec: Record<string, number>;
+    weightedVec: Record<string, number>;
+    diagnosticWeight: number;
+  },
+): Promise<void> {
+  const archRes = await supabase
+    .from("archetypes")
+    .select("id,name,signature_axes");
+  const catalog = ((archRes.data ?? []) as unknown as Array<{
+    id: string; name: string; signature_axes: Record<string, number> | null;
+  }>).map((r) => ({
+    id: r.id,
+    name: r.name,
+    signature_axes: r.signature_axes,
+  }));
+
+  const { assignment, flagged, flag_reason } = assignArchetype(args.weightedVec, catalog);
+  const winnerAxes = catalog.find((c) => c.id === assignment?.id)?.signature_axes ?? {};
+
+  // Per-axis contribution of THIS choice to the current winner's cosine numerator.
+  // contribution_i = (vec_after[i]/100) * winner_axes[i]  minus the same on vec_before —
+  // i.e. how much this pairing shifted the raw dot product with the winner.
+  const supports: Record<string, number> = {};
+  const contradicts: Record<string, number> = {};
+  let positive = 0;
+  let negative = 0;
+  for (const axis of args.tests) {
+    const w = winnerAxes[axis] ?? 0;
+    if (w === 0) continue;
+    const before = (args.priorVec[axis] ?? 0) / 100 * w;
+    const after = (args.weightedVec[axis] ?? 0) / 100 * w;
+    const delta = after - before;
+    if (delta >= 0) { supports[axis] = round3(delta); positive += delta; }
+    else            { contradicts[axis] = round3(delta); negative += Math.abs(delta); }
+  }
+
+  const rankings = assignment
+    ? [{ id: assignment.id, name: assignment.name, score: assignment.score },
+       ...assignment.runners_up.map((r) => ({ id: r.id, name: r.name, score: r.score }))]
+    : [];
+
+  await supabase.from("event_log").insert({
+    user_id: userId,
+    session_id: args.sessionId,
+    pairing_id: args.pairingId,
+    event_type: "choice_scored",
+    client: "server",
+    props: {
+      round: args.round,
+      chosen_song_id: args.chosenSongId,
+      rejected_song_id: args.rejectedSongId,
+      axes_tested: args.tests,
+      vector_before: args.priorVec,
+      raw_delta: args.deltaVec,
+      vector_after: args.weightedVec,
+      diagnostic_weight: args.diagnosticWeight,
+      winner_id: assignment?.id ?? null,
+      winner_name: assignment?.name ?? null,
+      winner_score: assignment?.score ?? null,
+      margin: assignment?.margin ?? null,
+      fit_tier: assignment?.fit_tier ?? null,
+      supports,
+      contradicts,
+      positive_contribution: round3(positive),
+      negative_contribution: round3(negative),
+      flagged,
+      flag_reason,
+      archetype_rankings: rankings,
+    } as never,
+  });
+
+  const STABILITY_CHECKPOINTS = new Set([8, 10, 12, 14]);
+  const isCheckpoint = STABILITY_CHECKPOINTS.has(args.round);
+  const stop = shouldStop({ round: args.round, vector: args.weightedVec, dims: DIMS as readonly string[] });
+  const isFinal = stop.done;
+  if (isCheckpoint || isFinal) {
+    await supabase.from("event_log").insert({
+      user_id: userId,
+      session_id: args.sessionId,
+      event_type: "archetype_ranking_snapshot",
+      client: "server",
+      props: {
+        round: args.round,
+        top3: rankings.slice(0, 3),
+        margin: assignment?.margin ?? null,
+        fit_tier: assignment?.fit_tier ?? null,
+        flagged,
+        flag_reason,
+        is_final: isFinal,
+      } as never,
+    });
+  }
+}
+
+function round3(n: number): number {
+  return Math.round(n * 1000) / 1000;
+}
+
 
 
 
