@@ -20,7 +20,7 @@ import {
   type SelectPairingInput,
   type SelectPairingResult,
 } from "./pairing";
-import { applyChoice, evaluateProbe, type ApplyChoiceInput, type EvaluateProbeInput } from "./choice";
+import { applyChoice, type ApplyChoiceInput } from "./choice";
 import { assignArchetype, type ArchetypeCatalogEntry } from "./archetypes";
 import { buildPublicReveal, type PublicRevealInput } from "./reveal";
 import { seedVectorFromPriors } from "./priors";
@@ -36,7 +36,6 @@ export type MusicDNAEngine = {
   shouldStop: typeof shouldStop;
   assertWithinLane: typeof assertWithinLane;
   applyChoice(input: ApplyChoiceInput): ReturnType<typeof applyChoice>;
-  evaluateProbe(input: EvaluateProbeInput): ReturnType<typeof evaluateProbe>;
   assignArchetype(
     vector: Parameters<typeof assignArchetype>[0],
     catalog: ArchetypeCatalogEntry[],
@@ -54,7 +53,6 @@ export function createEngine(deps: EngineDeps): MusicDNAEngine {
     shouldStop,
     assertWithinLane,
     applyChoice,
-    evaluateProbe,
     assignArchetype: (v, catalog) => assignArchetype(v, catalog),
     buildPublicReveal,
     seedVectorFromPriors,

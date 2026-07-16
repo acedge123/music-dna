@@ -283,7 +283,7 @@ export const startSession = createServerFn({ method: "POST" })
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
 import { selectPairing, shouldStop, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
-import { applyChoice, evaluateProbe, type ProbeState as EngineProbeState } from "@/musicdna/engine/choice";
+import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
 
 
@@ -967,54 +967,13 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
       throw new Error(cErr.message);
     }
 
-    // -------- Probe scoring & silent lane flip (pure engine) --------
-    const probeIn: EngineProbeState = {
-      probes_shown: session.probe_state?.probes_shown ?? [],
-      pending: session.probe_state?.pending ?? {},
-      lane_alignment: session.probe_state?.lane_alignment ?? {},
-      flips: session.probe_state?.flips ?? [],
-    };
-    const probeEval = evaluateProbe({
-      pairing_id: data.pairingId,
-      probe_state: probeIn,
-      session_lane: session.lane,
-      delta_vector: deltaVec,
-      prior_vector: priorVec,
-      tests,
-    });
-    const probeState = probeEval.probe_state;
-    const nextLane: Lane = probeEval.next_lane as Lane;
-    if (probeEval.probe_lane) {
-      if (probeEval.flipped && probeEval.flip_summary) {
-        supabase.from("event_log").insert({
-          user_id: userId,
-          session_id: data.sessionId,
-          event_type: "lane_flipped",
-          pairing_id: data.pairingId,
-          props: {
-            from: session.lane,
-            to: probeEval.probe_lane,
-            win_rate: probeEval.flip_summary.win_rate,
-            avg_cosine: probeEval.flip_summary.avg_cosine,
-          } as never,
-          client: "server",
-        }).then(() => undefined, () => undefined);
-      } else {
-        supabase.from("event_log").insert({
-          user_id: userId,
-          session_id: data.sessionId,
-          event_type: "lane_probed",
-          pairing_id: data.pairingId,
-          props: {
-            lane: probeEval.probe_lane,
-            cosine: probeEval.cosine,
-            magnitude: probeEval.magnitude,
-            win: probeEval.win,
-          } as never,
-          client: "server",
-        }).then(() => undefined, () => undefined);
-      }
-    }
+    // Cross-lane probe flipping is quarantined. See
+    // src/musicdna/engine/experiments/cross-lane-probes.ts and
+    // mem://product/within-lane-only.md. The nextPairing invariant guarantees
+    // probe_state.pending is empty, so there is nothing to score here — the
+    // session's lane and probe_state pass through unchanged.
+    const nextLane: Lane = session.lane;
+    const probeState = session.probe_state ?? { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] };
 
     const { error: uErr } = await supabase
       .from("sessions")
