@@ -242,12 +242,40 @@ function ProfilePage() {
               </div>
             </div>
             {feedbackOpen && (
-              <div className="mt-3 flex flex-col gap-2">
+              <div className="mt-3 flex flex-col gap-3">
+                <label className="flex flex-col gap-1">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">
+                    Most accurate line
+                  </span>
+                  <textarea
+                    value={mostAccurate}
+                    onChange={(e) => setMostAccurate(e.target.value)}
+                    onBlur={() => saveFeedback({ most_accurate_sentence: mostAccurate })}
+                    placeholder="Quote or paraphrase the sentence that landed hardest."
+                    rows={2}
+                    maxLength={1000}
+                    className="w-full bg-background border hairline rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">
+                    Least accurate line
+                  </span>
+                  <textarea
+                    value={leastAccurate}
+                    onChange={(e) => setLeastAccurate(e.target.value)}
+                    onBlur={() => saveFeedback({ least_accurate_sentence: leastAccurate })}
+                    placeholder="The sentence that missed most."
+                    rows={2}
+                    maxLength={1000}
+                    className="w-full bg-background border hairline rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                  />
+                </label>
                 <textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   onBlur={() => saveFeedback({ comment })}
-                  placeholder="What did we miss? What landed?"
+                  placeholder="Anything else we missed?"
                   rows={3}
                   maxLength={2000}
                   className="w-full bg-background border hairline rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"
