@@ -115,7 +115,7 @@ function AdminPage() {
             Edit songs, pairings, and archetypes. Changes go live immediately.
           </p>
         </div>
-        {tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && (
+        {tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && (
           <button
             onClick={() => setEditing({ row: null })}
             className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
@@ -147,6 +147,8 @@ function AdminPage() {
         <ResidualsPanel />
       ) : tab === "ontology" ? (
         <OntologyPanel />
+      ) : tab === "diagnostics" ? (
+        <DiagnosticsPanel />
       ) : (
         <EntityTable
           key={tab}
@@ -155,7 +157,7 @@ function AdminPage() {
         />
       )}
 
-      {editing && tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && (
+      {editing && tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && (
         <EditDrawer
           entity={tab as Exclude<Entity, "decade_prompts">}
           row={editing.row}
