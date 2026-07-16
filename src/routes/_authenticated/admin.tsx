@@ -1200,7 +1200,7 @@ function DiagnosticsPanel() {
   }
   const d = q.data!;
 
-  const Card = ({ label, value }: { label: string; value: React.ReactNode }) => (
+  const Card = ({ label, value }: { label: string; value: ReactNode }) => (
     <div className="border hairline rounded-sm px-4 py-3 bg-surface">
       <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">{label}</p>
       <p className="font-serif text-2xl mt-1">{value}</p>
