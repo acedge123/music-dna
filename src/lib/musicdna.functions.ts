@@ -407,7 +407,15 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       return { pairing: null, round, confidence: stop.confidence, done: true as const };
     }
     assertWithinLane((picked.pairing as { lane?: string | null }).lane ?? null, sessionLane);
-    return { pairing: picked.pairing, round: round + 1, confidence: stop.confidence, done: false as const };
+    return {
+      pairing: picked.pairing,
+      round: round + 1,
+      confidence: stop.confidence,
+      done: false as const,
+      // Instrumentation: client echoes this back in the `pairing_shown` event so
+      // downstream analysis can join "why we picked it" to "what the user did".
+      selection_reason: picked.selection_reason,
+    };
 }
 
 
