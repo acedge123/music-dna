@@ -27,8 +27,23 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
   rng: Rng;
 };
 
+// Instrumentation: capture WHY this pairing beat its neighbours so the
+// `pairing_shown` / `choice_scored` events can later answer "did we test
+// the axis we most needed to test?" without re-running the selector.
+export type SelectionReason = {
+  leaning_axes: string[];          // axes the running vector already leans hard on
+  fork_matched: boolean;           // did we pick from the fork-pool (leaning-axis filter)?
+  tests: string[];                 // dims this pairing actually tests
+  axes_needed: string[];           // subset of `tests` where the running vector is weak
+  axis_need_score: number;         // 0..1, mean of 1/(1+|v|) across tests
+  challenge_boost: boolean;        // was the 1.5x boost applied?
+  diagnostic_weight: number;       // 0..100 (defaulted to 50 when null)
+  pool_size: number;               // eligible pool size after filters
+  weight: number;                  // final scoring weight for the winner
+};
+
 export type SelectPairingResult<P extends PairingCandidate = PairingCandidate> =
-  | { kind: "picked"; pairing: P }
+  | { kind: "picked"; pairing: P; selection_reason: SelectionReason }
   | { kind: "empty" };
 
 export function shouldStop(input: {
@@ -93,12 +108,25 @@ export function selectPairing<P extends PairingCandidate>(
     const challengesHypothesis = leaningAxes.size > 0 && tests.some((t) => leaningAxes.has(t));
     const challengeBoost = challengesHypothesis ? 1.5 : 1;
     const w = ((p.diagnostic_weight ?? 50) / 100) * (0.4 + 0.6 * axisNeed) * challengeBoost;
-    return { p, w };
+    return { p, w, tests, axisNeed, challengesHypothesis };
   });
   const total = scored.reduce((s, x) => s + x.w, 0);
   let r = rng.next() * total;
   const pick = scored.find((x) => (r -= x.w) <= 0) ?? scored[0];
-  return { kind: "picked", pairing: pick.p };
+  const pickedTests = pick.tests;
+  const axesNeeded = pickedTests.filter((d) => Math.abs(vector[d] ?? 0) < 15);
+  const selection_reason: SelectionReason = {
+    leaning_axes: Array.from(leaningAxes),
+    fork_matched: leaningAxes.size > 0 && pickedTests.some((t) => leaningAxes.has(t)),
+    tests: pickedTests,
+    axes_needed: axesNeeded,
+    axis_need_score: Math.round(pick.axisNeed * 1000) / 1000,
+    challenge_boost: pick.challengesHypothesis,
+    diagnostic_weight: pick.p.diagnostic_weight ?? 50,
+    pool_size: pool.length,
+    weight: Math.round(pick.w * 1000) / 1000,
+  };
+  return { kind: "picked", pairing: pick.p, selection_reason };
 }
 
 // Guard used by the route/server-fn to fail loud if we ever pick a pairing

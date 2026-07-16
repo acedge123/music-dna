@@ -78,6 +78,8 @@ function ProfilePage() {
   const [accuracy, setAccuracy] = useState<"accurate" | "not_accurate" | "mixed" | null>(null);
   const [rating, setRating] = useState<-1 | 1 | null>(null);
   const [comment, setComment] = useState("");
+  const [mostAccurate, setMostAccurate] = useState("");
+  const [leastAccurate, setLeastAccurate] = useState("");
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackSaving, setFeedbackSaving] = useState(false);
   useEffect(() => {
@@ -85,14 +87,24 @@ function ProfilePage() {
     setAccuracy((existing.accuracy as "accurate" | "not_accurate" | "mixed" | null) ?? null);
     setRating(((existing.rating as -1 | 1 | null) ?? null));
     setComment(existing.comment ?? "");
+    setMostAccurate(((existing as { most_accurate_sentence?: string | null }).most_accurate_sentence) ?? "");
+    setLeastAccurate(((existing as { least_accurate_sentence?: string | null }).least_accurate_sentence) ?? "");
   }, [existing]);
 
-  async function saveFeedback(next: { accuracy?: typeof accuracy; rating?: typeof rating; comment?: string }) {
+  async function saveFeedback(next: {
+    accuracy?: typeof accuracy;
+    rating?: typeof rating;
+    comment?: string;
+    most_accurate_sentence?: string;
+    least_accurate_sentence?: string;
+  }) {
     if (!latest?.id) return;
     const payload = {
       accuracy: next.accuracy !== undefined ? next.accuracy : accuracy,
       rating: next.rating !== undefined ? next.rating : rating,
       comment: next.comment !== undefined ? next.comment : comment,
+      most_accurate_sentence: next.most_accurate_sentence !== undefined ? next.most_accurate_sentence : mostAccurate,
+      least_accurate_sentence: next.least_accurate_sentence !== undefined ? next.least_accurate_sentence : leastAccurate,
     };
     setFeedbackSaving(true);
     try {
@@ -230,12 +242,40 @@ function ProfilePage() {
               </div>
             </div>
             {feedbackOpen && (
-              <div className="mt-3 flex flex-col gap-2">
+              <div className="mt-3 flex flex-col gap-3">
+                <label className="flex flex-col gap-1">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">
+                    Most accurate line
+                  </span>
+                  <textarea
+                    value={mostAccurate}
+                    onChange={(e) => setMostAccurate(e.target.value)}
+                    onBlur={() => saveFeedback({ most_accurate_sentence: mostAccurate })}
+                    placeholder="Quote or paraphrase the sentence that landed hardest."
+                    rows={2}
+                    maxLength={1000}
+                    className="w-full bg-background border hairline rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                  />
+                </label>
+                <label className="flex flex-col gap-1">
+                  <span className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">
+                    Least accurate line
+                  </span>
+                  <textarea
+                    value={leastAccurate}
+                    onChange={(e) => setLeastAccurate(e.target.value)}
+                    onBlur={() => saveFeedback({ least_accurate_sentence: leastAccurate })}
+                    placeholder="The sentence that missed most."
+                    rows={2}
+                    maxLength={1000}
+                    className="w-full bg-background border hairline rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"
+                  />
+                </label>
                 <textarea
                   value={comment}
                   onChange={(e) => setComment(e.target.value)}
                   onBlur={() => saveFeedback({ comment })}
-                  placeholder="What did we miss? What landed?"
+                  placeholder="Anything else we missed?"
                   rows={3}
                   maxLength={2000}
                   className="w-full bg-background border hairline rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"

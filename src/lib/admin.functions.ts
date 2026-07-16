@@ -402,3 +402,58 @@ export const adminOntology = createServerFn({ method: "GET" })
       song_health: songHealth,
     };
   });
+
+
+// ============ Diagnostics ============
+// Reads the read-only views defined in the instrumentation migration.
+// Requires admin; uses the service-role client so the security_invoker views
+// return cross-session rows regardless of the caller's RLS.
+// See docs/musicdna/instrumentation.md for the field contract.
+export const adminDiagnostics = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const admin = await assertAdminAndGetClient(context.userId);
+    // The views aren't in the generated Database type until the migration runs,
+    // and even after they will only ever be read here — cast to any at the
+    // boundary rather than pollute the typed client surface.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = admin as any;
+
+    const [stability, independence, contradiction, residual, agreement] = await Promise.all([
+      db.from("v_session_stability").select("*").order("created_at", { ascending: false }).limit(500),
+      db.from("v_axis_independence").select("*").limit(500),
+      db.from("v_contradiction_load").select("*").limit(500),
+      db.from("v_residual_rate").select("*").order("created_at", { ascending: false }).limit(500),
+      db.from("v_human_agreement").select("*").limit(500),
+    ]);
+
+    // Any of these can 404 pre-migration; surface a shape the UI can render
+    // instead of throwing so the rest of the admin still works.
+    type Res = { data: unknown[] | null; error: { message?: string } | null };
+    const rows = (res: Res) =>
+      res.error ? { rows: [] as JsonRow[], error: res.error.message ?? "unknown" }
+                : { rows: (res.data ?? []) as JsonRow[], error: null };
+
+    // Derived headline numbers — pre-aggregated so the UI stays simple.
+    const residualRows = rows(residual).rows as Array<{ residual?: boolean | null }>;
+    const finalCount = residualRows.length;
+    const residualCount = residualRows.filter((r) => r.residual === true).length;
+
+    const agreementRows = rows(agreement).rows as Array<{ accuracy?: string | null }>;
+    const withFeedback = agreementRows.filter((r) => r.accuracy != null);
+    const accurate = withFeedback.filter((r) => r.accuracy === "accurate").length;
+
+    return {
+      headline: {
+        sessions_final: finalCount,
+        residual_rate: finalCount > 0 ? Math.round((residualCount / finalCount) * 1000) / 1000 : null,
+        feedback_captured: withFeedback.length,
+        accuracy_rate: withFeedback.length > 0 ? Math.round((accurate / withFeedback.length) * 1000) / 1000 : null,
+      },
+      session_stability: rows(stability),
+      axis_independence: rows(independence),
+      contradiction_load: rows(contradiction),
+      residual_rate: rows(residual),
+      human_agreement: rows(agreement),
+    };
+  });
