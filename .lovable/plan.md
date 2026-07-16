@@ -1,50 +1,64 @@
-## Goal
+# Fix: `callLovableAi` drops all system messages after the first
 
-Absorb the CGPT feedback into the durable IP (docs) and produce an external-facing one-pager. No engine or prompt changes.
+## The bug
 
-## 1. Update ontology + intelligence docs
+`src/musicdna/adapters/llm-gateway.ts` → `callLovableAi()` collapses the incoming `messages[]` into a single `{ system, prompt }` pair before handing off to the gateway:
 
-**`docs/musicdna/ontology.md`**
-- Add a new top section: **"What we're actually measuring"** — dimensions are *latent listening preferences*, not human traits. Include the guardrail:
-  - Don't say: "You value hope."
-  - Do say: "You consistently choose songs that build toward emotional release."
-- Reword the dimension table intro from "latent preference" phrasing to "listening-choice tendency" phrasing. Table itself stays intact (the low/high poles are already behavioral).
-- Add a short "Claim discipline" callout mirroring the same rule so it appears next to the dimensions themselves.
+```ts
+const system = messages.find((m) => m.role === "system")?.content;
+const userParts = messages
+  .filter((m) => m.role !== "system")
+  .map((m) => m.content)
+  .join("\n\n");
+```
 
-**`docs/musicdna/intelligence_layer.md`**
-- In the Layer 5 (Narrative Generator) section, extend the Avoid/Prefer lists:
-  - Add to Avoid: "you value X", "you are drawn to X", "deep down you…"
-  - Add to Prefer: "you consistently choose songs that…", "your picks reward…", "you keep passing on…"
-- Add one worked before/after example using "hope" so the rule is concrete.
+This means:
+- Only the **first** system message survives.
+- Any additional `role: "system"` blocks are silently discarded.
+- The order of system vs. user turns is lost — everything non-system gets flattened into one user string.
 
-**`docs/musicdna/project_learnings_v1.md`**
-- Append a new "Major Discovery 13: Listening preferences, not human traits" section capturing the CGPT insight verbatim in our voice, so the reasoning is preserved for future readers.
+The chat path in `src/lib/musicdna.functions.ts` (line ~2764) sends **three** system messages in order:
+1. `CHAT_VOICE` — the critic persona
+2. `voiceMod` — per-user critic-profile modulation (tone/edge tuned to that reader)
+3. `contextBlock` — session context (hypothesis, lane, recent choices, prior turns)
 
-## 2. Marketing one-pager
+Only #1 reaches the model. The critic loses both its per-user voice modulation **and** its knowledge of the current session. That matches the CGPT report — chat feels generic and forgetful because it literally is.
 
-New file: **`docs/musicdna/positioning_one_pager.md`** — plain-English explainer for non-technical readers (investors, press, collaborators). Structure:
+Other call sites (`onboarding-openers.functions.ts`, classifier, react, refine, synth, extractor) only pass one system message, so they're unaffected in practice — but they're one refactor away from the same silent failure.
 
-1. **The one sentence** — "We are not building a catalog of songs. We are building a catalog of revealing decisions."
-2. **The problem with music personality tests** — they sound like horoscopes.
-3. **What we do differently** — forced pairwise choices → observations → patterns → tentative reads with evidence.
-4. **The inverted stack** — identity ↑ taste ↑ matchups ↑ songs (ASCII diagram).
-5. **What the product feels like** — 2–3 short sample critic beats (from `critic.ts` voice, no code).
-6. **What we're *not*** — not Spotify, not Myers-Briggs, not astrology, not a recommender.
-7. **The moat** — the taste graph of millions of comparative decisions.
-8. **Where we are** — MVP status, one honest paragraph.
+## Fix
 
-Kept under ~1 page (~600 words). Voice: confident, edgy Rolling Stone, matching `mem://index.md` core.
+Change `callLovableAi` to preserve every system message and to keep user/assistant turns as distinct messages instead of concatenating them.
 
-Also produce a **downloadable `.docx` copy** at `/mnt/documents/musicdna-positioning.docx` (via docx skill) so it's easy to share outside the repo.
+Update the `LLMGateway.complete` port + the Lovable adapter to accept a full `messages` array (in addition to the current `{ system, prompt }` convenience shape), and have `callLovableAi` pass messages through untouched:
 
-## 3. Out of scope (explicit)
+```ts
+// llm-gateway.ts
+export async function callLovableAi(messages, opts = {}) {
+  const apiKey = opts.apiKey ?? process.env.LOVABLE_API_KEY;
+  if (!apiKey) throw new Error("LOVABLE_API_KEY missing");
+  const doFetch = opts.fetchImpl ?? fetch;
+  const res = await doFetch(AI_URL, {
+    method: "POST",
+    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    body: JSON.stringify({ model: opts.model ?? DEFAULT_MODEL, messages }),
+  });
+  if (!res.ok) throw new Error(`AI ${res.status}: ${(await res.text()).slice(0, 200)}`);
+  const json = await res.json();
+  return (json.choices?.[0]?.message?.content ?? "").trim();
+}
+```
 
-- No changes to `critic.ts`, Analyst schema, or any engine code.
-- No changes to the IP bundle zip (docs update can be re-bundled later on request).
-- No admin UI work.
+The existing `createLovableLlmGateway({...}).complete({ system, prompt })` single-turn convenience stays for engine ports that already use it — no behavior change there.
 
-## Deliverables
+## Test updates
 
-- Edited: `docs/musicdna/ontology.md`, `docs/musicdna/intelligence_layer.md`, `docs/musicdna/project_learnings_v1.md`
-- New: `docs/musicdna/positioning_one_pager.md`
-- New download: `/mnt/documents/musicdna-positioning.docx`
+`src/musicdna/adapters/llm-gateway.test.ts`:
+- Update the "splits messages into system + concatenated user prompt" test to assert the **opposite**: multiple system messages are preserved in order, and user turns are sent as separate messages (no concatenation).
+- Add a new case: two system + one user message round-trips as three messages in the request body.
+
+## Out of scope
+
+- No changes to `musicdna.functions.ts` call sites — they already pass correct `messages[]` arrays; the bug is purely in the adapter.
+- No changes to the engine's `LLMGateway` port shape or single-turn callers.
+- No prompt content changes (per prior scope: skip prompt edits).
