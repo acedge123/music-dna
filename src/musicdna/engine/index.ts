@@ -36,7 +36,6 @@ export type MusicDNAEngine = {
   shouldStop: typeof shouldStop;
   assertWithinLane: typeof assertWithinLane;
   applyChoice(input: ApplyChoiceInput): ReturnType<typeof applyChoice>;
-  evaluateProbe(input: EvaluateProbeInput): ReturnType<typeof evaluateProbe>;
   assignArchetype(
     vector: Parameters<typeof assignArchetype>[0],
     catalog: ArchetypeCatalogEntry[],
