@@ -53,7 +53,6 @@ export function createEngine(deps: EngineDeps): MusicDNAEngine {
     shouldStop,
     assertWithinLane,
     applyChoice,
-    evaluateProbe,
     assignArchetype: (v, catalog) => assignArchetype(v, catalog),
     buildPublicReveal,
     seedVectorFromPriors,
