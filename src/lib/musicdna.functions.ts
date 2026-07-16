@@ -283,7 +283,7 @@ export const startSession = createServerFn({ method: "POST" })
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
 import { selectPairing, shouldStop, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
-import { applyChoice, evaluateProbe, type ProbeState as EngineProbeState } from "@/musicdna/engine/choice";
+import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
 
 
