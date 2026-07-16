@@ -77,9 +77,12 @@ src/musicdna/
      `assertWithinLane` extracted alongside. `nextPairingImpl` reads the
      pool from Supabase and hands it to the engine.
    - `engine/choice.ts` — `applyChoice` owns the delta / weighted vector
-     update / top-dim logic. `evaluateProbe` owns cosine alignment, probe
-     tally updates, and the flip decision. `recordChoiceImpl` now delegates
-     to both; event logging stays at the transport layer. Test count now
+     update / top-dim logic. `recordChoiceImpl` delegates to it; event
+     logging stays at the transport layer. Cross-lane probe evaluation
+     (cosine alignment + flip decision) has since been quarantined to
+     `engine/experiments/cross-lane-probes.ts` — not wired into
+     `createEngine()` and unreachable from the shipping surface (see
+     `docs/musicdna/experiments/cross-lane-probes.md`). Test count now
      **64 passing** (added session/pairing/choice suites).
 9. ✅ Wrapped everything behind `createEngine(deps)` in `engine/index.ts`.
    `adapters/supabase.ts` implements the `SupabaseGateway` port over a real
