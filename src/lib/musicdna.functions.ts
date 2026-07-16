@@ -1605,21 +1605,36 @@ export const submitFeedback = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) =>
     z.object({
       session_id: z.string().uuid(),
-      accuracy: z.enum(["accurate", "not_accurate", "mixed"]).nullable().optional(),
+      // "partly" is the plan's three-way accuracy label; kept alongside
+      // the pre-existing "mixed" alias so older UI paths still submit.
+      accuracy: z.enum(["accurate", "not_accurate", "mixed", "partly", "wrong"]).nullable().optional(),
       rating: z.number().int().min(-1).max(1).nullable().optional(),
       comment: z.string().max(2000).nullable().optional(),
       target: z.string().max(120).nullable().optional(),
+      // Reveal-sentence-level feedback (see docs/musicdna/instrumentation.md).
+      most_accurate_sentence: z.string().max(1000).nullable().optional(),
+      least_accurate_sentence: z.string().max(1000).nullable().optional(),
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
+    // Normalize accuracy aliases so downstream analysis has a single vocabulary.
+    const accuracy = data.accuracy === "partly" ? "mixed"
+                   : data.accuracy === "wrong" ? "not_accurate"
+                   : data.accuracy ?? null;
+    // Only include the new sentence columns when the client actually sent
+    // them — keeps the write payload valid against pre-migration schemas.
+    const sentenceCols: Record<string, string | null> = {};
+    if (data.most_accurate_sentence !== undefined) sentenceCols.most_accurate_sentence = data.most_accurate_sentence;
+    if (data.least_accurate_sentence !== undefined) sentenceCols.least_accurate_sentence = data.least_accurate_sentence;
     const row = {
       user_id: userId,
       session_id: data.session_id,
-      accuracy: data.accuracy ?? null,
+      accuracy,
       rating: data.rating ?? null,
       comment: data.comment ?? null,
       target: data.target ?? null,
+      ...sentenceCols,
     };
     // One feedback row per (user, session, target)
     const q = supabase
@@ -1641,7 +1656,7 @@ export const submitFeedback = createServerFn({ method: "POST" })
     if (error) throw new Error(error.message);
     // Nudge the per-user critic profile from explicit feedback.
     // Defined later in this file; safe to call via hoisted function declarations.
-    try { await nudgeCriticFromFeedback(supabase as never, userId, data); } catch { /* best-effort */ }
+    try { await nudgeCriticFromFeedback(supabase as never, userId, { ...data, accuracy }); } catch { /* best-effort */ }
     return { id: inserted.id, updated: false as const };
   });
 
