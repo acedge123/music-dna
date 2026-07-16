@@ -329,7 +329,9 @@ function Onboarding() {
       setEntries((prev) => [...prev, entry]);
       setPairing(null);
 
-      const { pairing: nxt, round: nr, done: isDone } = await nextFn({ data: { sessionId } });
+      const { pairing: nxt, round: nr, done: isDone, selection_reason } = await nextFn({ data: { sessionId } }) as {
+        pairing: Pairing | null; round: number; done: boolean; selection_reason?: unknown;
+      };
       if (isDone || !nxt || nr > MAX_ROUNDS) {
         try {
           await finalizeFn({ data: { sessionId } });
@@ -360,7 +362,7 @@ function Onboarding() {
         event_type: "pairing_shown",
         session_id: sessionId,
         pairing_id: (nxt as unknown as Pairing).id,
-        props: { round: nr, tests: (nxt as unknown as Pairing).tests },
+        props: { round: nr, tests: (nxt as unknown as Pairing).tests, selection_reason },
       });
       setBusy(false);
     } catch (err) {
