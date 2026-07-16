@@ -73,16 +73,26 @@ export async function callLovableAi(
   messages: Array<{ role: string; content: string }>,
   opts: LovableGatewayOptions & { model?: string } = {},
 ): Promise<string> {
-  const gateway = createLovableLlmGateway(opts);
-  const system = messages.find((m) => m.role === "system")?.content;
-  const userParts = messages
-    .filter((m) => m.role !== "system")
-    .map((m) => m.content)
-    .join("\n\n");
-  const { text } = await gateway.complete({
-    model: opts.model ?? DEFAULT_MODEL,
-    system,
-    prompt: userParts,
+  const apiKey = opts.apiKey ?? process.env.LOVABLE_API_KEY;
+  if (!apiKey) throw new Error("LOVABLE_API_KEY missing");
+  const doFetch = opts.fetchImpl ?? fetch;
+  const res = await doFetch(AI_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: opts.model ?? opts.defaultModel ?? DEFAULT_MODEL,
+      messages,
+    }),
   });
-  return text;
+  if (!res.ok) {
+    const txt = await res.text();
+    throw new Error(`AI ${res.status}: ${txt.slice(0, 200)}`);
+  }
+  const json = (await res.json()) as {
+    choices?: Array<{ message?: { content?: string } }>;
+  };
+  return (json.choices?.[0]?.message?.content ?? "").trim();
 }

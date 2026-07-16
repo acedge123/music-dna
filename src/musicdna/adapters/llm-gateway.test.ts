@@ -64,13 +64,14 @@ describe("createLovableLlmGateway", () => {
 });
 
 describe("callLovableAi", () => {
-  it("splits messages into system + concatenated user prompt", async () => {
+  it("preserves all system messages and separate user turns", async () => {
     const { impl, calls } = mockFetch({
       choices: [{ message: { content: "ok" } }],
     });
     const text = await callLovableAi(
       [
-        { role: "system", content: "S" },
+        { role: "system", content: "S1" },
+        { role: "system", content: "S2" },
         { role: "user", content: "U1" },
         { role: "user", content: "U2" },
       ],
@@ -78,7 +79,11 @@ describe("callLovableAi", () => {
     );
     expect(text).toBe("ok");
     const body = JSON.parse(calls[0].init.body as string);
-    expect(body.messages[0]).toEqual({ role: "system", content: "S" });
-    expect(body.messages[1].content).toBe("U1\n\nU2");
+    expect(body.messages).toEqual([
+      { role: "system", content: "S1" },
+      { role: "system", content: "S2" },
+      { role: "user", content: "U1" },
+      { role: "user", content: "U2" },
+    ]);
   });
 });
