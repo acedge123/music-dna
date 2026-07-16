@@ -85,7 +85,7 @@ describe("assignArchetype", () => {
   it("boundary: margin just below 0.05 → ambiguous", () => {
     // Winner cos = 1, runner-up cos ≈ 0.96 → margin ≈ 0.04 < 0.05.
     const near = [
-      { id: "w", name: "W", signature_axes: { a: 1 } },
+      { id: "w", name: "W", signature_axes: { a: 1, b: 0 } },
       { id: "r", name: "R", signature_axes: { a: 1, b: 0.29 } }, // mag ≈ 1.041, cos ≈ 0.961
     ];
     const result = assignArchetype({ a: 100 }, near);
@@ -97,7 +97,7 @@ describe("assignArchetype", () => {
   it("boundary: margin just above 0.05 → not flagged", () => {
     // Winner cos = 1, runner-up cos ≈ 0.928 → margin ≈ 0.072 > 0.05.
     const near = [
-      { id: "w", name: "W", signature_axes: { a: 1 } },
+      { id: "w", name: "W", signature_axes: { a: 1, b: 0 } },
       { id: "r", name: "R", signature_axes: { a: 1, b: 0.4 } }, // mag ≈ 1.077, cos ≈ 0.928
     ];
     const result = assignArchetype({ a: 100 }, near);
