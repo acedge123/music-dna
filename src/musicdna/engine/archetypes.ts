@@ -1,14 +1,19 @@
 // MusicDNA Engine — archetype assignment.
 //
 // Pure function: given a user's session vector and the catalog of archetypes,
-// return the winning archetype + runners-up + margin + confidence tier + any
+// return the winning archetype + runners-up + margin + fit tier + any
 // residual flag ("nobody in the catalog really explains this listener").
+//
+// NOTE: `fit_tier` is a bucketed strength-of-fit label (from cosine
+// similarity), NOT a calibrated probability of correctness. See
+// `scoring.ts#fitTier` for the rationale.
 //
 // No I/O. The caller loads archetypes from wherever it wants (Supabase in
 // prod, fixtures in tests) and feeds them in.
 
 import type { ArchetypeAssignment, Vector } from "./types";
-import { scoreArchetype, confidenceTier } from "./scoring";
+import { scoreArchetype, fitTier } from "./scoring";
+
 
 export type ArchetypeCatalogEntry = {
   id: string;
