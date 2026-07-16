@@ -125,6 +125,37 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  // Single centralized auth listener. Filter to identity transitions so we
+  // don't thrash the router/cache on TOKEN_REFRESHED (~hourly) or every
+  // INITIAL_SESSION mount. Never invalidate queries on SIGNED_OUT —
+  // outstanding protected queries would refetch against a cleared session
+  // and 401 storm. Clear the cache instead.
+  useEffect(() => {
+    let cancelled = false;
+    // Dynamically import so this useEffect body never pulls the browser
+    // client into any SSR-executed path.
+    void import("@/integrations/supabase/client").then(({ supabase }) => {
+      if (cancelled) return;
+      const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+        if (event === "SIGNED_IN" || event === "USER_UPDATED") {
+          router.invalidate();
+          queryClient.invalidateQueries();
+        } else if (event === "SIGNED_OUT") {
+          router.invalidate();
+          queryClient.clear();
+        }
+      });
+      // Stash on the promise chain so cleanup below can reach it.
+      cleanupRef.current = () => sub.subscription.unsubscribe();
+    });
+    const cleanupRef: { current: (() => void) | null } = { current: null };
+    return () => {
+      cancelled = true;
+      cleanupRef.current?.();
+    };
+  }, [queryClient, router]);
 
   return (
     <QueryClientProvider client={queryClient}>
