@@ -13,7 +13,7 @@ Every archetype carries four database fields the commentary engine leans on:
 - `core_question` — the one-line question that defines the archetype.
 - `signature_tradeoffs` — the tradeoffs most predictive of this archetype (Journey > Snapshot, Atmosphere > Statement, etc.).
 - `commentary_keywords` — 20–40 adjectives/verbs the Critic can draw from without repeating.
-- `confidence_thresholds` — hedge ladder at 20% / 50% / 80% / 95% confidence so the engine's voice tracks its evidence.
+- `confidence_thresholds` — hedge ladder at four **fit tiers** (20 / 50 / 80 / 95) so the Critic's voice tracks the strength of fit. The tier numbers are bucket labels from cosine similarity, not probabilities that the archetype is correct — see `docs/musicdna/prior-weighting.md` and `src/musicdna/engine/scoring.ts#fitTier`. The field name is kept for backwards compatibility with existing archetype rows.
 
 ### 1. The Architect — "How well is it built?"
 Admires craftsmanship, structure, and intentional design. Seeks elegant construction, clever songwriting, layered arrangements. Rewards: respect, curiosity, admiration. Opposes: Hedonist, Anthemist. Adjacent: Seeker, Atmospherist. Artists: Tool, Radiohead, Steely Dan, Kendrick Lamar, Fiona Apple.
