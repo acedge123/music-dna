@@ -45,16 +45,21 @@ Wants music with conviction. Seeks moral clarity, principles, defiance, hope. Re
 ### 10. The Witness — "What does it notice?"
 Values observation over performance. Seeks quiet truths, everyday beauty, restraint. Rewards: peace, recognition, acceptance. Opposes: Anthemist. Adjacent: Storyteller, Romantic. Artists: Willie Nelson, Tracy Chapman, Bill Withers, Nick Drake, Phoebe Bridgers.
 
-## Confidence ladder (applies to every archetype)
+## Fit-tier ladder (applies to every archetype)
 
-| Confidence | Voice |
+The Critic hedges based on the archetype's `fit_tier` — a bucketed
+strength-of-fit label derived from cosine similarity. These are NOT
+probabilities of correctness.
+
+| Fit tier | Voice |
 |---|---|
-| ~20% | "I wonder if…" |
-| ~50% | "I'm starting to think…" |
-| ~80% | "I'm fairly confident…" |
-| ~95% | "One thing I'm convinced of…" |
+| 20 | "I wonder if…" |
+| 50 | "I'm starting to think…" |
+| 80 | "I'm fairly confident…" |
+| 95 | "One thing I'm convinced of…" |
 
 Per-archetype `confidence_thresholds` may tune the exact phrasing to match its voice (the Believer speaks with resolve earlier; the Seeker hedges longer).
+
 
 ## Growth discipline
 
