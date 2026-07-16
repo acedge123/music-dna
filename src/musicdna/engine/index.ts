@@ -20,7 +20,7 @@ import {
   type SelectPairingInput,
   type SelectPairingResult,
 } from "./pairing";
-import { applyChoice, evaluateProbe, type ApplyChoiceInput, type EvaluateProbeInput } from "./choice";
+import { applyChoice, type ApplyChoiceInput } from "./choice";
 import { assignArchetype, type ArchetypeCatalogEntry } from "./archetypes";
 import { buildPublicReveal, type PublicRevealInput } from "./reveal";
 import { seedVectorFromPriors } from "./priors";
