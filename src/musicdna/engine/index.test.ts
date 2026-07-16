@@ -116,32 +116,11 @@ describe("engine factory — golden loop", () => {
     expect(result.flagged).toBe(false);
   });
 
-  it("evaluateProbe flips the lane when the probe candidate wins repeatedly", () => {
-    let probe_state = {
-      probes_shown: [] as { round: number; pairing_id: string; lane: string }[],
-      pending: { p1: "electronic", p2: "electronic" } as Record<string, string>,
-      lane_alignment: {} as Record<string, { wins: number; total: number; magnitude: number; cosine_sum: number }>,
-      flips: [] as { round: number; from: string; to: string; reason: string }[],
-    };
+  // evaluateProbe (cross-lane probe flipping) is quarantined out of the live
+  // engine — its regression coverage lives in
+  // src/musicdna/engine/experiments/cross-lane-probes.experimental.test.ts
 
-    const priorVector = { atmosphere: 50, immersion: 40 };
-    // Delta strongly aligned with prior — cosine near 1, easy "win".
-    const deltaVector = { atmosphere: 30, immersion: 20 };
 
-    for (const pairing_id of ["p1", "p2"]) {
-      const r = engine.evaluateProbe({
-        pairing_id,
-        probe_state,
-        session_lane: "alternative",
-        delta_vector: deltaVector,
-        prior_vector: priorVector,
-        tests: ["atmosphere", "immersion"],
-      });
-      probe_state = r.probe_state;
-      expect(r.win).toBe(1);
-    }
-    expect(probe_state.flips[0]?.to).toBe("electronic");
-  });
 
   it("in-memory gateway serves the same shape the real adapter does", async () => {
     const store = emptyStore();
