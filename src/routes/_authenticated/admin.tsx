@@ -1178,3 +1178,101 @@ function SongHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: string
     </div>
   );
 }
+
+
+// ============ Diagnostics panel ============
+// Reads the read-only diagnostic views (see docs/musicdna/instrumentation.md).
+// Every table degrades gracefully when the view is missing (pre-migration),
+// showing the reported error rather than blowing up the whole tab.
+function DiagnosticsPanel() {
+  const fn = useServerFn(adminDiagnostics);
+  const q = useQuery({
+    queryKey: ["admin", "diagnostics"],
+    queryFn: () => fn(),
+    staleTime: 30_000,
+  });
+
+  if (q.isLoading) {
+    return <p className="text-sm text-muted-foreground">Loading diagnostics…</p>;
+  }
+  if (q.isError) {
+    return <p className="text-sm text-red-600">Failed to load diagnostics: {(q.error as Error).message}</p>;
+  }
+  const d = q.data!;
+
+  const Card = ({ label, value }: { label: string; value: React.ReactNode }) => (
+    <div className="border hairline rounded-sm px-4 py-3 bg-surface">
+      <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">{label}</p>
+      <p className="font-serif text-2xl mt-1">{value}</p>
+    </div>
+  );
+
+  const Table = ({ title, block }: { title: string; block: { rows: Record<string, unknown>[]; error: string | null } }) => (
+    <section className="mt-8">
+      <div className="flex items-baseline justify-between mb-2">
+        <h2 className="eyebrow">{title}</h2>
+        <span className="text-[10px] font-mono text-muted-foreground">{block.rows.length} rows</span>
+      </div>
+      {block.error ? (
+        <p className="text-xs font-mono text-amber-600 bg-amber-50 border hairline rounded-sm px-3 py-2">
+          view unavailable — {block.error}. Run the instrumentation migration.
+        </p>
+      ) : block.rows.length === 0 ? (
+        <p className="text-xs text-muted-foreground">No rows yet.</p>
+      ) : (
+        <div className="overflow-x-auto border hairline rounded-sm">
+          <table className="w-full text-xs font-mono">
+            <thead className="bg-surface">
+              <tr>
+                {Object.keys(block.rows[0]).map((k) => (
+                  <th key={k} className="text-left px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{k}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {block.rows.slice(0, 50).map((r, i) => (
+                <tr key={i} className="border-t hairline">
+                  {Object.keys(block.rows[0]).map((k) => {
+                    const v = r[k];
+                    const s = v == null ? "—" : typeof v === "object" ? JSON.stringify(v) : String(v);
+                    return <td key={k} className="px-2 py-1.5 max-w-[24ch] truncate" title={s}>{s}</td>;
+                  })}
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          {block.rows.length > 50 && (
+            <p className="px-3 py-2 text-[10px] font-mono text-muted-foreground border-t hairline">
+              Showing first 50 of {block.rows.length}.
+            </p>
+          )}
+        </div>
+      )}
+    </section>
+  );
+
+  const pct = (n: number | null) => n == null ? "—" : `${Math.round(n * 100)}%`;
+
+  return (
+    <div>
+      <p className="text-xs text-muted-foreground mb-4 max-w-2xl">
+        Read-only diagnostic views over the instrumentation event log. See{" "}
+        <code className="font-mono">docs/musicdna/instrumentation.md</code> for
+        each field's contract and the derived-measure definitions.
+      </p>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <Card label="Sessions final" value={d.headline.sessions_final} />
+        <Card label="Residual rate" value={pct(d.headline.residual_rate)} />
+        <Card label="Feedback captured" value={d.headline.feedback_captured} />
+        <Card label="Human agreement" value={pct(d.headline.accuracy_rate)} />
+      </div>
+
+      <Table title="Session stability (winner by round)" block={d.session_stability} />
+      <Table title="Axis independence (distinct supporting axes per session)" block={d.axis_independence} />
+      <Table title="Contradiction load (evidence pushing against the winner)" block={d.contradiction_load} />
+      <Table title="Residual rate (sessions where nobody fit cleanly)" block={d.residual_rate} />
+      <Table title="Human agreement (fit tier vs. listener feedback)" block={d.human_agreement} />
+    </div>
+  );
+}
