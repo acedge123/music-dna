@@ -35,6 +35,19 @@ describe("applyChoice", () => {
     });
     expect(r.vector.movement).toBeCloseTo(40); // (90-10)*0.5
   });
+
+  it("boundary: diagnostic_weight of 0 zeros out the delta (not defaulted to 50)", () => {
+    const r = applyChoice({
+      prior_vector: { movement: 10 },
+      winner: { movement: 90 },
+      loser: { movement: 10 },
+      tests: ["movement"],
+      diagnostic_weight: 0, // w = 0 → no learning from this pairing
+      fallback_dims: DIMS,
+    });
+    expect(r.vector.movement).toBe(10); // unchanged from prior
+    expect(r.delta_vector.movement ?? 0).toBe(0);
+  });
 });
 
 describe("evaluateProbe", () => {
