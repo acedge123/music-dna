@@ -134,6 +134,7 @@ function RootComponent() {
   // and 401 storm. Clear the cache instead.
   useEffect(() => {
     let cancelled = false;
+    let unsubscribe: (() => void) | null = null;
     // Dynamically import so this useEffect body never pulls the browser
     // client into any SSR-executed path.
     void import("@/integrations/supabase/client").then(({ supabase }) => {
@@ -147,13 +148,11 @@ function RootComponent() {
           queryClient.clear();
         }
       });
-      // Stash on the promise chain so cleanup below can reach it.
-      cleanupRef.current = () => sub.subscription.unsubscribe();
+      unsubscribe = () => sub.subscription.unsubscribe();
     });
-    const cleanupRef: { current: (() => void) | null } = { current: null };
     return () => {
       cancelled = true;
-      cleanupRef.current?.();
+      unsubscribe?.();
     };
   }, [queryClient, router]);
 
