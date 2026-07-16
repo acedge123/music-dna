@@ -572,6 +572,8 @@ export type Database = {
           comment: string | null
           created_at: string
           id: string
+          least_accurate_sentence: string | null
+          most_accurate_sentence: string | null
           rating: number | null
           session_id: string
           target: string | null
@@ -583,6 +585,8 @@ export type Database = {
           comment?: string | null
           created_at?: string
           id?: string
+          least_accurate_sentence?: string | null
+          most_accurate_sentence?: string | null
           rating?: number | null
           session_id: string
           target?: string | null
@@ -594,6 +598,8 @@ export type Database = {
           comment?: string | null
           created_at?: string
           id?: string
+          least_accurate_sentence?: string | null
+          most_accurate_sentence?: string | null
           rating?: number | null
           session_id?: string
           target?: string | null
@@ -1035,6 +1041,116 @@ export type Database = {
             columns: ["song_b_id"]
             isOneToOne: false
             referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_axis_independence: {
+        Row: {
+          distinct_supporting_axes: number | null
+          session_id: string | null
+          total_supports: number | null
+          winner_archetype_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_contradiction_load: {
+        Row: {
+          negative_contribution: number | null
+          positive_contribution: number | null
+          session_id: string | null
+          winner_archetype_id: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_human_agreement: {
+        Row: {
+          accuracy: string | null
+          is_residual: boolean | null
+          least_accurate_sentence: string | null
+          margin: number | null
+          most_accurate_sentence: string | null
+          session_id: string | null
+          winner_fit: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "result_feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_residual_rate: {
+        Row: {
+          created_at: string | null
+          is_residual: boolean | null
+          margin: number | null
+          session_id: string | null
+          winner_fit: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      v_session_stability: {
+        Row: {
+          created_at: string | null
+          is_final: boolean | null
+          margin: number | null
+          round_number: number | null
+          session_id: string | null
+          winner_archetype_id: string | null
+          winner_fit: number | null
+        }
+        Insert: {
+          created_at?: string | null
+          is_final?: never
+          margin?: never
+          round_number?: never
+          session_id?: string | null
+          winner_archetype_id?: never
+          winner_fit?: never
+        }
+        Update: {
+          created_at?: string | null
+          is_final?: never
+          margin?: never
+          round_number?: never
+          session_id?: string | null
+          winner_archetype_id?: never
+          winner_fit?: never
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
         ]
