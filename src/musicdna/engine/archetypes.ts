@@ -85,7 +85,7 @@ export function assignArchetype(
     name: best.row.name,
     score: round3(best.score),
     margin: round3(margin),
-    confidence_tier: confidenceTier(best.score),
+    fit_tier: fitTier(best.score),
     runners_up: scored.slice(1, 3).map((s) => ({
       id: s.row.id,
       name: s.row.name,
