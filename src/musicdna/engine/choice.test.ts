@@ -1,5 +1,9 @@
 import { describe, it, expect } from "vitest";
-import { applyChoice, evaluateProbe, type ProbeState } from "./choice";
+import { applyChoice } from "./choice";
+
+// evaluateProbe / ProbeState tests moved to
+// src/musicdna/engine/experiments/cross-lane-probes.experimental.test.ts
+// after cross-lane probes were quarantined out of the live engine.
 
 const DIMS = ["movement", "atmosphere", "immersion", "scale"] as const;
 
