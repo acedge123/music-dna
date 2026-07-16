@@ -78,6 +78,8 @@ function ProfilePage() {
   const [accuracy, setAccuracy] = useState<"accurate" | "not_accurate" | "mixed" | null>(null);
   const [rating, setRating] = useState<-1 | 1 | null>(null);
   const [comment, setComment] = useState("");
+  const [mostAccurate, setMostAccurate] = useState("");
+  const [leastAccurate, setLeastAccurate] = useState("");
   const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [feedbackSaving, setFeedbackSaving] = useState(false);
   useEffect(() => {
@@ -85,14 +87,24 @@ function ProfilePage() {
     setAccuracy((existing.accuracy as "accurate" | "not_accurate" | "mixed" | null) ?? null);
     setRating(((existing.rating as -1 | 1 | null) ?? null));
     setComment(existing.comment ?? "");
+    setMostAccurate(((existing as { most_accurate_sentence?: string | null }).most_accurate_sentence) ?? "");
+    setLeastAccurate(((existing as { least_accurate_sentence?: string | null }).least_accurate_sentence) ?? "");
   }, [existing]);
 
-  async function saveFeedback(next: { accuracy?: typeof accuracy; rating?: typeof rating; comment?: string }) {
+  async function saveFeedback(next: {
+    accuracy?: typeof accuracy;
+    rating?: typeof rating;
+    comment?: string;
+    most_accurate_sentence?: string;
+    least_accurate_sentence?: string;
+  }) {
     if (!latest?.id) return;
     const payload = {
       accuracy: next.accuracy !== undefined ? next.accuracy : accuracy,
       rating: next.rating !== undefined ? next.rating : rating,
       comment: next.comment !== undefined ? next.comment : comment,
+      most_accurate_sentence: next.most_accurate_sentence !== undefined ? next.most_accurate_sentence : mostAccurate,
+      least_accurate_sentence: next.least_accurate_sentence !== undefined ? next.least_accurate_sentence : leastAccurate,
     };
     setFeedbackSaving(true);
     try {
