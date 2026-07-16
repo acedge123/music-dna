@@ -413,27 +413,33 @@ export const adminDiagnostics = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
+    // The views aren't in the generated Database type until the migration runs,
+    // and even after they will only ever be read here — cast to any at the
+    // boundary rather than pollute the typed client surface.
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = admin as any;
 
     const [stability, independence, contradiction, residual, agreement] = await Promise.all([
-      admin.from("v_session_stability").select("*").order("created_at", { ascending: false }).limit(500),
-      admin.from("v_axis_independence").select("*").limit(500),
-      admin.from("v_contradiction_load").select("*").limit(500),
-      admin.from("v_residual_rate").select("*").order("created_at", { ascending: false }).limit(500),
-      admin.from("v_human_agreement").select("*").limit(500),
+      db.from("v_session_stability").select("*").order("created_at", { ascending: false }).limit(500),
+      db.from("v_axis_independence").select("*").limit(500),
+      db.from("v_contradiction_load").select("*").limit(500),
+      db.from("v_residual_rate").select("*").order("created_at", { ascending: false }).limit(500),
+      db.from("v_human_agreement").select("*").limit(500),
     ]);
 
     // Any of these can 404 pre-migration; surface a shape the UI can render
     // instead of throwing so the rest of the admin still works.
-    const rows = <T,>(res: { data: T[] | null; error: { message?: string } | null }) =>
-      res.error ? { rows: [] as T[], error: res.error.message ?? "unknown" }
-                : { rows: (res.data ?? []) as T[], error: null };
+    type Res = { data: unknown[] | null; error: { message?: string } | null };
+    const rows = (res: Res) =>
+      res.error ? { rows: [] as JsonRow[], error: res.error.message ?? "unknown" }
+                : { rows: (res.data ?? []) as JsonRow[], error: null };
 
     // Derived headline numbers — pre-aggregated so the UI stays simple.
-    const residualRows = rows(residual).rows as Array<{ residual: boolean | null }>;
+    const residualRows = rows(residual).rows as Array<{ residual?: boolean | null }>;
     const finalCount = residualRows.length;
     const residualCount = residualRows.filter((r) => r.residual === true).length;
 
-    const agreementRows = rows(agreement).rows as Array<{ accuracy: string | null }>;
+    const agreementRows = rows(agreement).rows as Array<{ accuracy?: string | null }>;
     const withFeedback = agreementRows.filter((r) => r.accuracy != null);
     const accurate = withFeedback.filter((r) => r.accuracy === "accurate").length;
 
