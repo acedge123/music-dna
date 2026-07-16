@@ -13,7 +13,7 @@ Every archetype carries four database fields the commentary engine leans on:
 - `core_question` — the one-line question that defines the archetype.
 - `signature_tradeoffs` — the tradeoffs most predictive of this archetype (Journey > Snapshot, Atmosphere > Statement, etc.).
 - `commentary_keywords` — 20–40 adjectives/verbs the Critic can draw from without repeating.
-- `confidence_thresholds` — hedge ladder at 20% / 50% / 80% / 95% confidence so the engine's voice tracks its evidence.
+- `confidence_thresholds` — hedge ladder at four **fit tiers** (20 / 50 / 80 / 95) so the Critic's voice tracks the strength of fit. The tier numbers are bucket labels from cosine similarity, not probabilities that the archetype is correct — see `docs/musicdna/prior-weighting.md` and `src/musicdna/engine/scoring.ts#fitTier`. The field name is kept for backwards compatibility with existing archetype rows.
 
 ### 1. The Architect — "How well is it built?"
 Admires craftsmanship, structure, and intentional design. Seeks elegant construction, clever songwriting, layered arrangements. Rewards: respect, curiosity, admiration. Opposes: Hedonist, Anthemist. Adjacent: Seeker, Atmospherist. Artists: Tool, Radiohead, Steely Dan, Kendrick Lamar, Fiona Apple.
@@ -45,16 +45,21 @@ Wants music with conviction. Seeks moral clarity, principles, defiance, hope. Re
 ### 10. The Witness — "What does it notice?"
 Values observation over performance. Seeks quiet truths, everyday beauty, restraint. Rewards: peace, recognition, acceptance. Opposes: Anthemist. Adjacent: Storyteller, Romantic. Artists: Willie Nelson, Tracy Chapman, Bill Withers, Nick Drake, Phoebe Bridgers.
 
-## Confidence ladder (applies to every archetype)
+## Fit-tier ladder (applies to every archetype)
 
-| Confidence | Voice |
+The Critic hedges based on the archetype's `fit_tier` — a bucketed
+strength-of-fit label derived from cosine similarity. These are NOT
+probabilities of correctness.
+
+| Fit tier | Voice |
 |---|---|
-| ~20% | "I wonder if…" |
-| ~50% | "I'm starting to think…" |
-| ~80% | "I'm fairly confident…" |
-| ~95% | "One thing I'm convinced of…" |
+| 20 | "I wonder if…" |
+| 50 | "I'm starting to think…" |
+| 80 | "I'm fairly confident…" |
+| 95 | "One thing I'm convinced of…" |
 
 Per-archetype `confidence_thresholds` may tune the exact phrasing to match its voice (the Believer speaks with resolve earlier; the Seeker hedges longer).
+
 
 ## Growth discipline
 

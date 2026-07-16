@@ -62,15 +62,30 @@ export function scoreArchetype(
   return cosine(normalized, archetypeVector);
 }
 
-export type ConfidenceTier = 20 | 50 | 80 | 95;
+export type FitTier = 20 | 50 | 80 | 95;
+/** @deprecated Use `FitTier`. Kept as an alias so external callers don't break. */
+export type ConfidenceTier = FitTier;
 
 /**
- * Map a cosine score to the archetype confidence tier used by the Critic
- * voice. Thresholds mirror the Archetype Bible v1.0.
+ * Map a cosine similarity to a discrete archetype-fit tier used by the
+ * Critic voice to modulate hedging.
+ *
+ * IMPORTANT — truth-in-labeling:
+ *   These tiers describe *strength of fit* between the listener vector and
+ *   an archetype's signature axes. They are NOT calibrated probabilities.
+ *   A tier of 95 does not mean "95% chance the archetype is correct"; it
+ *   means the cosine cleared the top bucket (>= 0.85) in the Archetype
+ *   Bible's hedge ladder. A real confidence score would also incorporate
+ *   margin over runner-up, number of independent choices, axis coverage,
+ *   contradictory evidence, and stability across rounds.
  */
-export function confidenceTier(score: number): ConfidenceTier {
+export function fitTier(score: number): FitTier {
   if (score >= 0.85) return 95;
   if (score >= 0.7) return 80;
   if (score >= 0.5) return 50;
   return 20;
 }
+
+/** @deprecated Use `fitTier`. */
+export const confidenceTier = fitTier;
+

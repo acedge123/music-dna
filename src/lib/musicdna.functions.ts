@@ -1281,7 +1281,7 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
         allowed_claims: allowed_claims.length,
         counterarguments: counterarguments.length,
         archetype: best.name,
-        confidence_tier: tier,
+        fit_tier: tier,
         cosine_score: Math.round(bestScore * 1000) / 1000,
       },
       output: { length: narrative.length } as never,

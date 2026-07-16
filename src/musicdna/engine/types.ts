@@ -40,11 +40,14 @@ export type Progress = {
 export type ArchetypeAssignment = {
   id: string | null;
   name: string;
-  score: number; // cosine, 0..1
+  score: number; // cosine, 0..1 — strength of fit, NOT a probability
   margin: number; // best - runnerUp, 0..1
-  confidence_tier: 20 | 50 | 80 | 95;
+  // Bucketed strength-of-fit label used by the Critic voice for hedging.
+  // NOT a calibrated probability. See engine/scoring.ts#fitTier.
+  fit_tier: 20 | 50 | 80 | 95;
   runners_up: { id: string | null; name: string; score: number }[];
 };
+
 
 export type Reveal = {
   archetype: ArchetypeAssignment;
