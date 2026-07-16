@@ -182,7 +182,9 @@ function Onboarding() {
       try {
         const { sessionId } = await startFn({});
         setSessionId(sessionId);
-        const { pairing, round } = await nextFn({ data: { sessionId } });
+        const { pairing, round, selection_reason } = await nextFn({ data: { sessionId } }) as {
+          pairing: Pairing | null; round: number; selection_reason?: unknown;
+        };
         setPairing(pairing as unknown as Pairing | null);
         setRound(round);
         startedAt.current = Date.now();
@@ -191,7 +193,7 @@ function Onboarding() {
             event_type: "pairing_shown",
             session_id: sessionId,
             pairing_id: (pairing as unknown as Pairing).id,
-            props: { round, tests: (pairing as unknown as Pairing).tests },
+            props: { round, tests: (pairing as unknown as Pairing).tests, selection_reason },
           });
         }
       } catch (err) {
