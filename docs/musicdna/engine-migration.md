@@ -22,7 +22,7 @@ src/musicdna/
     critic.ts     ✅ migrated (voice constants) — CRITIC_PERSONA + CRITIC_VOICE_EDITORIAL
     pairing.ts    ✅ migrated — selectPairing (fork filter + weighted pick), shouldStop, assertWithinLane
     session.ts    ✅ migrated — buildStartSessionSeed (lane + confidence + probes + seed vector)
-    choice.ts     ✅ migrated — applyChoice (vector math), evaluateProbe (cosine + flip)
+    choice.ts     ✅ migrated — applyChoice (vector math). Cross-lane probe flipping is quarantined in experiments/cross-lane-probes.ts (see docs/musicdna/experiments/cross-lane-probes.md) and is NOT exposed by createEngine().
     index.ts        ✅ createEngine(deps) factory + seededRng / fixedClock helpers
     errors.ts       ✅ EngineErrorException + code→status map for route envelopes
     testing.ts      ✅ InMemorySupabaseGateway + ScriptedLLMGateway for golden fixtures
