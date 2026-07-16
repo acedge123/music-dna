@@ -27,8 +27,23 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
   rng: Rng;
 };
 
+// Instrumentation: capture WHY this pairing beat its neighbours so the
+// `pairing_shown` / `choice_scored` events can later answer "did we test
+// the axis we most needed to test?" without re-running the selector.
+export type SelectionReason = {
+  leaning_axes: string[];          // axes the running vector already leans hard on
+  fork_matched: boolean;           // did we pick from the fork-pool (leaning-axis filter)?
+  tests: string[];                 // dims this pairing actually tests
+  axes_needed: string[];           // subset of `tests` where the running vector is weak
+  axis_need_score: number;         // 0..1, mean of 1/(1+|v|) across tests
+  challenge_boost: boolean;        // was the 1.5x boost applied?
+  diagnostic_weight: number;       // 0..100 (defaulted to 50 when null)
+  pool_size: number;               // eligible pool size after filters
+  weight: number;                  // final scoring weight for the winner
+};
+
 export type SelectPairingResult<P extends PairingCandidate = PairingCandidate> =
-  | { kind: "picked"; pairing: P }
+  | { kind: "picked"; pairing: P; selection_reason: SelectionReason }
   | { kind: "empty" };
 
 export function shouldStop(input: {
