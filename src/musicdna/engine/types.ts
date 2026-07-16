@@ -40,8 +40,8 @@ export type Progress = {
 export type ArchetypeAssignment = {
   id: string | null;
   name: string;
-  score: number; // cosine, 0..1 — strength of fit, NOT a probability
-  margin: number; // best - runnerUp, 0..1
+  score: number; // cosine similarity, -1..1 — strength of fit, NOT a probability
+  margin: number; // best - runnerUp, difference of two cosines (-2..2 in principle; in practice small positive)
   // Bucketed strength-of-fit label used by the Critic voice for hedging.
   // NOT a calibrated probability. See engine/scoring.ts#fitTier.
   fit_tier: 20 | 50 | 80 | 95;
