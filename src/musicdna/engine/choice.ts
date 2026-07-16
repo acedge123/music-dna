@@ -29,7 +29,7 @@ export type ApplyChoiceResult = {
 };
 
 export function applyChoice(input: ApplyChoiceInput): ApplyChoiceResult {
-  const w = (input.diagnostic_weight || 50) / 100;
+  const w = (input.diagnostic_weight ?? 50) / 100;
   const priorVec: Vector = { ...input.prior_vector };
   const vec: Vector = { ...priorVec };
   const tests = input.tests?.length ? input.tests : (input.fallback_dims.slice() as string[]);
