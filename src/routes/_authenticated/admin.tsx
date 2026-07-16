@@ -30,7 +30,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Entity = "songs" | "pairings" | "archetypes";
-type Tab = Entity | "decade_prompts" | "residuals" | "ontology";
+type Tab = Entity | "decade_prompts" | "residuals" | "ontology" | "diagnostics";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
   { key: "pairings", label: "Pairings" },
@@ -38,6 +38,7 @@ const ENTITIES: { key: Tab; label: string }[] = [
   { key: "decade_prompts", label: "Decade Prompts" },
   { key: "ontology", label: "Ontology" },
   { key: "residuals", label: "Residuals" },
+  { key: "diagnostics", label: "Diagnostics" },
 ];
 
 type Row = Record<string, unknown> & { id: string };
