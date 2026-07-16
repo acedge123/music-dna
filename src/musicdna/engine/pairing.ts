@@ -92,7 +92,7 @@ export function selectPairing<P extends PairingCandidate>(
     const axisNeed = tests.reduce((s, d) => s + need(d), 0) / Math.max(1, tests.length);
     const challengesHypothesis = leaningAxes.size > 0 && tests.some((t) => leaningAxes.has(t));
     const challengeBoost = challengesHypothesis ? 1.5 : 1;
-    const w = ((p.diagnostic_weight || 50) / 100) * (0.4 + 0.6 * axisNeed) * challengeBoost;
+    const w = ((p.diagnostic_weight ?? 50) / 100) * (0.4 + 0.6 * axisNeed) * challengeBoost;
     return { p, w };
   });
   const total = scored.reduce((s, x) => s + x.w, 0);
