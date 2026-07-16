@@ -45,8 +45,9 @@ describe("applyChoice", () => {
       diagnostic_weight: 0, // w = 0 → no learning from this pairing
       fallback_dims: DIMS,
     });
-    expect(r.vector.movement).toBe(10); // unchanged from prior
-    expect(r.delta_vector.movement ?? 0).toBe(0);
+    expect(r.vector.movement).toBe(10); // unchanged from prior — no learning
+    // delta_vector is the raw (winner-loser) diagnostic, independent of weight.
+    expect(r.delta_vector.movement).toBe(80);
   });
 });
 
