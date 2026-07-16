@@ -8,7 +8,16 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/me")({
   ssr: false,
-  head: () => ({ meta: [{ title: "MusicDNA — Your read" }] }),
+  head: () => ({
+    meta: [
+      { title: "MusicDNA — Your read" },
+      { name: "description", content: "Your MusicDNA read: the critic's interpretation of the choices you made." },
+      { property: "og:title", content: "MusicDNA — Your read" },
+      { property: "og:description", content: "The critic's interpretation of your choices." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: Me,
 });
 
