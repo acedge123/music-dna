@@ -394,7 +394,47 @@ function Onboarding() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Choice failed.");
       setBusy(false);
+  }
+
+  async function skip() {
+    if (!pairing || !sessionId || busy) return;
+    setBusy(true);
+    const ms = Math.min(600000, Date.now() - startedAt.current);
+    const currentPairing = pairing;
+    try {
+      await skipFn({ data: { sessionId, pairingId: currentPairing.id, msToDecide: ms } });
+      track({
+        event_type: "pairing_shown", // reuse; server also logs pairing_skipped
+        session_id: sessionId,
+        pairing_id: currentPairing.id,
+        response_time_ms: ms,
+        props: { skipped: true },
+      });
+      setPairing(null);
+      const { pairing: nxt, round: nr, done: isDone, selection_reason } = await nextFn({ data: { sessionId } }) as {
+        pairing: Pairing | null; round: number; done: boolean; selection_reason?: unknown;
+      };
+      if (isDone || !nxt || nr > MAX_ROUNDS) {
+        try { await finalizeFn({ data: { sessionId } }); } catch (e) { console.error("finalizeSession failed", e); }
+        setPhase("done");
+        setBusy(false);
+        return;
+      }
+      setPairing(nxt as unknown as Pairing);
+      setRound(nr);
+      startedAt.current = Date.now();
+      track({
+        event_type: "pairing_shown",
+        session_id: sessionId,
+        pairing_id: (nxt as unknown as Pairing).id,
+        props: { round: nr, tests: (nxt as unknown as Pairing).tests, selection_reason, after_skip: true },
+      });
+      setBusy(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Skip failed.");
+      setBusy(false);
     }
+  }
   }
 
   if (bootError) {
