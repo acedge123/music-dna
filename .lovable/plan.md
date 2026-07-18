@@ -1,83 +1,63 @@
+# Lane Confidence: Weighted Openers + 2-Pairing Bootstrap
 
-## My take on the plan
+Two independent changes to reduce how often sessions get stuck on `general`.
 
-Solid direction, and the right sequencing: you need ground truth before you can defend or change the math. Two things I'd tighten before we build:
+## 1. Weighted opener scoring
 
-1. **Split "capture" from "derive."** Log a rich per-choice snapshot once; compute stability, order-sensitivity, contradiction load, etc. as read-only SQL views on top. That way you can iterate on definitions without re-running sessions.
-2. **Piggyback on the existing `event_log.props` jsonb**, not a new table. `recordEvent` and the `event_log` table already exist; adding a new `choice_scored` event type keeps the ingestion path unchanged and avoids a migration surface.
+Slot position matters. Users list their most-defining song first.
 
-## Scope (instrumentation only — engine math untouched)
+Weights: **slot 1 = 3, slot 2 = 2, slot 3 = 2, slot 4 = 1, slot 5 = 1** (total 9).
 
-### 1. Per-choice diagnostic snapshot
+Changes in `src/lib/musicdna.functions.ts`:
 
-Extend `recordChoiceImpl` in `src/lib/musicdna.functions.ts` to emit a single `choice_scored` event alongside the existing `choice_made`. All fields go into `event_log.props` — no schema change:
+- Tell the LLM classifier in `CLASSIFIER_VOICE` that "song 1 is 3× more diagnostic than song 5; weight your lane call accordingly."
+- Rewrite `dominantPerSongLane` (the low-confidence fallback) as a weighted vote — sum the slot weights per lane instead of counting entries.
+- After both LLM and canon enrichment, compute a **weighted lane share** across `per_song` (using catalog-source rows when present, LLM rows otherwise). If the top lane's share ≥ 0.5 (i.e. weighted votes ≥ 4.5 of 9), floor `confidence` to `max(confidence, 0.6)` so we route to that lane instead of falling to `general`.
+- Persist `opening_analysis_json.weighting = { scheme: "3-2-2-1-1", top_lane_share }` for admin auditing.
 
-- `round`, `pairing_id`, `chosen_song_id`, `rejected_song_id`
-- `pairing_selection_reason` (from `selectPairing`: axes_needed, fork score, weight)
-- `axes_tested` (dims where |delta| > 0)
-- `vector_before`, `raw_delta`, `weighted_delta`, `vector_after`
-- `diagnostic_weight`
-- `archetype_rankings_after`: full sorted list `[{id, name, score}]`
-- `winner_margin` (best − runner-up)
-- `fit_tier`
-- `supports` / `contradicts`: per-axis contribution of this choice to the current winner's cosine
-- `flag_reason` (if any)
+## 2. 2-pairing bootstrap (N=2)
 
-Requires exposing the pairing's `selection_reason` from `selectPairing` (already computed internally; just needs to be returned). No behavior change.
+When `sessions.lane_confidence < 0.6` (i.e. lane is `general`), serve **exactly 2** high-recognition pairings first. Try to promote to a real lane from those 2 winners. If we can't, stay `general` for the remaining 4 pairings.
 
-### 2. Round-level archetype trajectory
+### Data changes
 
-Emit `archetype_ranking_snapshot` at end of each round with the top-3 and margin. Cheap, makes stability queries trivial without replaying every choice.
+Migration:
+- `pairings.is_bootstrap boolean not null default false` + partial index.
+- `sessions.bootstrap_choices_json jsonb not null default '[]'::jsonb`.
 
-### 3. Richer reveal feedback
+Curation: separate follow-up (not this ticket). Migration ships the column; I'll surface a "Bootstrap" filter/toggle in the admin Pairings tab so you can mark ~15-25 pairings by hand. Until any are marked, low-confidence sessions behave exactly as today (bootstrap branch finds nothing → normal general-pool selection).
 
-Extend `submitFeedback` to accept (all optional, additive):
+### Selection logic (`src/musicdna/engine/pairing.ts` + `nextPairingImpl`)
 
-- `accuracy: "accurate" | "partly" | "wrong"` (add `"partly"` to the existing enum via migration)
-- `most_accurate_sentence: string | null`
-- `least_accurate_sentence: string | null`
+New `selectBootstrapPairing()` alongside `selectPairing()`:
+- Called when `session.lane === "general"` AND `session.round < 2` AND `bootstrap_choices_json.length < 2`.
+- Pool: `pairings.is_bootstrap = true AND active = true`, excluding used ids.
+- Prefer pairings whose two songs' `primary_lane` values differ (so the choice actually reveals a lane).
+- Empty pool → fall through to normal `selectPairing` (no regression).
 
-Reveal UI: add two tap-to-mark actions on the commentary sentences plus the three-way accuracy control. Feedback is the ground-truth channel — without it, everything else is unfalsifiable.
+### Promotion check (`recordChoiceImpl`)
 
-### 4. Derived-measure SQL views (read-only)
+After a bootstrap choice is recorded:
+- Append `{ pairing_id, winner_primary_lane, loser_primary_lane }` to `sessions.bootstrap_choices_json`.
+- After 2 bootstrap choices: if both winners share the same `primary_lane`, **promote** the session:
+  - Update `sessions.lane = <that lane>`, `sessions.lane_confidence = 0.65`.
+  - Emit `event_log` row with `event_type = 'lane_promoted'`, props containing before/after lane and the 2 winners.
+- If they disagree, no promotion — session stays `general` for the remaining 4 pairings. Log `event_type = 'lane_promotion_failed'` with the two winners so admin can see why.
 
-One migration, no engine changes. Each maps directly to a question you asked:
+### What this does NOT touch
 
-| View | Question it answers |
-|---|---|
-| `v_session_stability` | Winner at rounds 8/10/12/14 per session; % of sessions where the round-8 winner survives to reveal |
-| `v_axis_independence` | Per winning archetype, count of *distinct* axes contributing >X to the cosine (repeated-axis "supports" collapse to 1) |
-| `v_contradiction_load` | Sum of negative contributions to the winner's cosine / sum of positive; a "how much did we ignore?" ratio |
-| `v_residual_rate` | % of sessions where final `score < ARCHETYPE_SCORE_FLOOR` or `margin < 0.05` |
-| `v_order_sensitivity` | Replay hook: sessions where swapping the last two pairings would flip the winner (computed offline from snapshots; view exposes the count) |
-| `v_human_agreement` | Join `feedback.accuracy` against `fit_tier`, `margin`, residual flags |
+- Archetype scoring, cosine math, `fit_tier`.
+- Reveal/critic voice.
+- Cross-lane probes (still quarantined).
+- The 15 active dimensions.
+- Any web/mobile UI (both consume the same session and see the promoted lane automatically on the next `next` call).
 
-### 5. Admin surface
+## Sequencing
 
-Extend `src/routes/_authenticated/admin.tsx` with a "Diagnostics" tab that reads the six views. Read-only; gated by the existing admin role check. No public exposure.
+1. Migration: `pairings.is_bootstrap`, `sessions.bootstrap_choices_json`.
+2. Weighted opener classification + confidence floor.
+3. Engine: `selectBootstrapPairing`, update `selectPairing` entrypoint to branch on session state, promotion logic in `applyChoice`/`recordChoiceImpl`.
+4. Admin: `is_bootstrap` filter + toggle on Pairings tab; show promotion events on session diagnostics rows.
+5. Tests: unit tests for weighted tally, confidence floor, bootstrap selection, promote-on-agree, no-promote-on-disagree, exhausted-pool fallthrough.
 
-## Explicitly out of scope
-
-- No changes to `applyChoice`, `assignArchetype`, `selectPairing` math.
-- No changes to fit-tier thresholds or the 0.35 seed multiplier.
-- No new archetype flags or user-visible copy changes beyond the feedback controls.
-- Order-sensitivity *simulation* (replaying alternate orders) is a follow-up; this plan only stores the data to make it possible.
-
-## Deliverables
-
-1. Migration: add `partly` to feedback accuracy enum; add `most_accurate_sentence` / `least_accurate_sentence` columns; add `choice_scored` and `archetype_ranking_snapshot` to `EVENT_TYPES`; create the six views with `GRANT SELECT ... TO authenticated` scoped via RLS to admins only.
-2. `selectPairing` returns its `selection_reason` (pure refactor, no math change) + test.
-3. `recordChoiceImpl` emits `choice_scored`; new round-end emits `archetype_ranking_snapshot`.
-4. `submitFeedback` accepts the two sentence fields; reveal UI wires them.
-5. Admin diagnostics tab reading the views.
-6. Docs: `docs/musicdna/instrumentation.md` defining every field and every derived measure, so future changes can't quietly drift the definitions.
-
-## What's next after this ships
-
-Two weeks of real sessions with feedback. Then, before any scoring change:
-
-- Read `v_human_agreement` — if fit_tier 80/95 doesn't correlate with "accurate," the tiers are miscalibrated (fix the labels, or the thresholds, or both).
-- Read `v_axis_independence` — if winners routinely have ≤2 independent supporting axes, pairing selection needs to spread across axes more aggressively.
-- Read `v_contradiction_load` — high load + high fit_tier means we're overclaiming; the Critic voice should hedge harder in that regime.
-
-That's the point where synthetic personas become useful: you'll have real distributions to check them against.
+Anything you want to cut before I build?
