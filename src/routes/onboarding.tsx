@@ -158,6 +158,7 @@ function Onboarding() {
   // play state
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [pairing, setPairing] = useState<Pairing | null>(null);
+  const [pendingSongId, setPendingSongId] = useState<string | null>(null);
   const [round, setRound] = useState(0);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [synthesis, setSynthesis] = useState<string | null>(null);
@@ -237,6 +238,7 @@ function Onboarding() {
     if (pairing && pairingAnchorRef.current) {
       pairingAnchorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+    setPendingSongId(null);
   }, [pairing?.id]);
   useEffect(() => {
     if (phase === "done" && doneAnchorRef.current) {
@@ -310,6 +312,7 @@ function Onboarding() {
 
   async function pick(songId: string) {
     if (!pairing || !sessionId || busy) return;
+    setPendingSongId(songId);
     setBusy(true);
     const ms = Math.min(600000, Date.now() - startedAt.current);
     const currentPairing = pairing;
@@ -615,18 +618,30 @@ function Onboarding() {
             {entries.length === 0 ? "Pick one. Don't overthink it." : "Next one — go with your gut."}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border rounded-sm overflow-hidden">
-            {[pairing.song_a, pairing.song_b].map((song) => (
-              <button
-                key={song.id} disabled={busy} onClick={() => pick(song.id)}
-                className="group bg-surface p-8 md:p-12 text-left hover:bg-background transition-colors disabled:opacity-40"
-              >
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-3">
-                  {song.lane}{song.year ? ` · ${song.year}` : ""}
-                </p>
-                <p className="font-serif text-2xl md:text-3xl text-foreground leading-tight mb-2">{song.title}</p>
-                <p className="text-sm text-muted-foreground">{song.artist}</p>
-              </button>
-            ))}
+            {[pairing.song_a, pairing.song_b].map((song) => {
+              const isPending = pendingSongId === song.id;
+              const isDimmed = busy && pendingSongId !== null && !isPending;
+              return (
+                <button
+                  key={song.id}
+                  disabled={busy}
+                  onClick={() => pick(song.id)}
+                  className={`group p-8 md:p-12 text-left transition-colors ${
+                    isPending
+                      ? "bg-background ring-1 ring-primary/60"
+                      : isDimmed
+                        ? "bg-surface opacity-40"
+                        : "bg-surface hover:bg-background"
+                  }`}
+                >
+                  <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-3">
+                    {song.lane}{song.year ? ` · ${song.year}` : ""}
+                  </p>
+                  <p className="font-serif text-2xl md:text-3xl text-foreground leading-tight mb-2">{song.title}</p>
+                  <p className="text-sm text-muted-foreground">{song.artist}</p>
+                </button>
+              );
+            })}
           </div>
           <div className="flex justify-center pt-1">
             <button
