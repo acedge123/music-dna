@@ -18,6 +18,26 @@ export type PairingCandidate = {
   song_b?: { artist?: string | null } | null;
 };
 
+// Recognition data joined from the pairing_recognition view. Optional —
+// the selector still works without it (falls back to diagnostic-weight
+// scoring). Passed as a lookup keyed by pairing id so callers can hydrate
+// the pool from a separate query.
+export type RecognitionRow = {
+  min_canon: number;
+  avg_canon: number;
+  recognition_score: number;
+};
+
+// Selection mode. Controls how recognition interacts with diagnostic weight:
+// - "diagnostic_first": current behaviour, ignore recognition (lane-confident).
+// - "recognition_boost": blend recognition and diagnostic weight (uncertain lane).
+// - "recognition_first": hard-filter to recognizable pairings, then blend
+//   (general lane after bootstrap).
+export type SelectionMode =
+  | "diagnostic_first"
+  | "recognition_boost"
+  | "recognition_first";
+
 export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = {
   pool: P[];
   vector: Vector;
@@ -25,21 +45,32 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
   session_lane: Lane;
   dims: readonly string[];
   rng: Rng;
+  mode?: SelectionMode;
+  recognition?: Map<string, RecognitionRow>;
+  // Optional override; falls back to RECOGNITION_FLOORS[mode].
+  min_canon_floor?: number;
 };
 
-// Instrumentation: capture WHY this pairing beat its neighbours so the
-// `pairing_shown` / `choice_scored` events can later answer "did we test
-// the axis we most needed to test?" without re-running the selector.
+// Instrumentation.
 export type SelectionReason = {
-  leaning_axes: string[];          // axes the running vector already leans hard on
-  fork_matched: boolean;           // did we pick from the fork-pool (leaning-axis filter)?
-  tests: string[];                 // dims this pairing actually tests
-  axes_needed: string[];           // subset of `tests` where the running vector is weak
-  axis_need_score: number;         // 0..1, mean of 1/(1+|v|) across tests
-  challenge_boost: boolean;        // was the 1.5x boost applied?
-  diagnostic_weight: number;       // 0..100 (defaulted to 50 when null)
-  pool_size: number;               // eligible pool size after filters
-  weight: number;                  // final scoring weight for the winner
+  leaning_axes: string[];
+  fork_matched: boolean;
+  tests: string[];
+  axes_needed: string[];
+  axis_need_score: number;
+  challenge_boost: boolean;
+  diagnostic_weight: number;
+  pool_size: number;
+  weight: number;
+  mode: SelectionMode;
+  recognition_score?: number;
+};
+
+// Default recognition floors per mode. Tunable in one place.
+export const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
+  diagnostic_first: 0,
+  recognition_boost: 45,
+  recognition_first: 55,
 };
 
 export type SelectPairingResult<P extends PairingCandidate = PairingCandidate> =
@@ -78,12 +109,26 @@ export function selectPairing<P extends PairingCandidate>(
   input: SelectPairingInput<P>,
 ): SelectPairingResult<P> {
   const { vector, used_ids, dims, rng } = input;
+  const mode: SelectionMode = input.mode ?? "diagnostic_first";
+  const recognition = input.recognition;
+  const canonFloor = input.min_canon_floor ?? RECOGNITION_FLOORS[mode];
+
   let pool = input.pool.filter((p) => !used_ids.has(p.id)).filter(differentArtist);
   if (!pool.length) return { kind: "empty" };
 
+  // Recognition floor: filter out pairings the user probably won't know when
+  // we're not lane-confident. If the floor empties the pool, drop it so we
+  // still return something rather than nothing.
+  if (mode !== "diagnostic_first" && recognition && canonFloor > 0) {
+    const recognisable = pool.filter((p) => {
+      const r = recognition.get(p.id);
+      return r ? r.min_canon >= canonFloor : true; // no data = don't exclude
+    });
+    if (recognisable.length > 0) pool = recognisable;
+  }
+
   // Hypothesis-challenging filter: prefer pairings that test the axes the
-  // running vector already leans hardest on. If filtering would empty the
-  // pool, fall back to a scoring boost.
+  // running vector already leans hardest on.
   const leaningAxes = new Set(
     dims
       .map((d) => ({ d, v: Math.abs(vector[d] ?? 0) }))
@@ -102,13 +147,23 @@ export function selectPairing<P extends PairingCandidate>(
   }
 
   const need = (dim: string) => 1 / (1 + Math.abs(vector[dim] ?? 0));
+  // Blend factor for recognition vs diagnostic weight.
+  // recognition_first: recognition dominates (0.6 / 0.4).
+  // recognition_boost: balanced-ish (0.4 / 0.6).
+  const recogBlend = mode === "recognition_first" ? 0.6 : mode === "recognition_boost" ? 0.4 : 0;
   const scored = pool.map((p) => {
     const tests = (p.tests?.length ? p.tests : dims.slice()) as string[];
     const axisNeed = tests.reduce((s, d) => s + need(d), 0) / Math.max(1, tests.length);
     const challengesHypothesis = leaningAxes.size > 0 && tests.some((t) => leaningAxes.has(t));
     const challengeBoost = challengesHypothesis ? 1.5 : 1;
-    const w = ((p.diagnostic_weight ?? 50) / 100) * (0.4 + 0.6 * axisNeed) * challengeBoost;
-    return { p, w, tests, axisNeed, challengesHypothesis };
+    const dw = (p.diagnostic_weight ?? 50) / 100;
+    const rec = recognition?.get(p.id);
+    const recNorm = rec ? Math.max(0, Math.min(100, rec.recognition_score)) / 100 : 0.5;
+    const base = recogBlend > 0
+      ? (recogBlend * recNorm + (1 - recogBlend) * dw)
+      : dw;
+    const w = base * (0.4 + 0.6 * axisNeed) * challengeBoost;
+    return { p, w, tests, axisNeed, challengesHypothesis, rec };
   });
   const total = scored.reduce((s, x) => s + x.w, 0);
   let r = rng.next() * total;
@@ -125,6 +180,8 @@ export function selectPairing<P extends PairingCandidate>(
     diagnostic_weight: pick.p.diagnostic_weight ?? 50,
     pool_size: pool.length,
     weight: Math.round(pick.w * 1000) / 1000,
+    mode,
+    recognition_score: pick.rec?.recognition_score,
   };
   return { kind: "picked", pairing: pick.p, selection_reason };
 }

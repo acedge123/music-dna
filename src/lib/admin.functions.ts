@@ -77,7 +77,29 @@ export const adminList = createServerFn({ method: "POST" })
 
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
-    return { rows: (rows ?? []) as JsonRow[] };
+    let out = (rows ?? []) as JsonRow[];
+
+    // For pairings, join in recognition metrics from the pairing_recognition
+    // view so curators can see min_canon / avg_canon / era_bucket /
+    // recognition_score alongside the diagnostic fields.
+    if (table === "pairings" && out.length > 0) {
+      const ids = out.map((r) => String((r as { id?: unknown }).id)).filter(Boolean);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const recRes = await (admin as any)
+        .from("pairing_recognition")
+        .select("pairing_id, min_canon, avg_canon, recognition_score, era_bucket, era_span_years, cross_subculture, shared_subcultures")
+        .in("pairing_id", ids);
+      const byId = new Map<string, Record<string, unknown>>();
+      for (const r of (recRes.data ?? []) as Array<Record<string, unknown>>) {
+        byId.set(String(r.pairing_id), r);
+      }
+      out = out.map((row) => {
+        const extra = byId.get(String((row as { id?: unknown }).id)) ?? {};
+        return { ...row, ...extra } as JsonRow;
+      });
+    }
+
+    return { rows: out };
   });
 
 // Per-table input shape — accept arbitrary JSON, validate critical fields server-side.
