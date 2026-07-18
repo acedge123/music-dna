@@ -163,8 +163,29 @@ export type Database = {
             foreignKeyName: "choices_chosen_song_id_fkey"
             columns: ["chosen_song_id"]
             isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "choices_chosen_song_id_fkey"
+            columns: ["chosen_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "choices_chosen_song_id_fkey"
+            columns: ["chosen_song_id"]
+            isOneToOne: false
             referencedRelation: "songs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "choices_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["pairing_id"]
           },
           {
             foreignKeyName: "choices_pairing_id_fkey"
@@ -179,6 +200,20 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "pairings_with_songs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "choices_rejected_song_id_fkey"
+            columns: ["rejected_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "choices_rejected_song_id_fkey"
+            columns: ["rejected_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
           },
           {
             foreignKeyName: "choices_rejected_song_id_fkey"
@@ -315,6 +350,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "choices"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_log_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["pairing_id"]
           },
           {
             foreignKeyName: "event_log_pairing_id_fkey"
@@ -521,8 +563,36 @@ export type Database = {
             foreignKeyName: "pairings_song_a_id_fkey"
             columns: ["song_a_id"]
             isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "pairings_song_a_id_fkey"
+            columns: ["song_a_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "pairings_song_a_id_fkey"
+            columns: ["song_a_id"]
+            isOneToOne: false
             referencedRelation: "songs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pairings_song_b_id_fkey"
+            columns: ["song_b_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "pairings_song_b_id_fkey"
+            columns: ["song_b_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
           },
           {
             foreignKeyName: "pairings_song_b_id_fkey"
@@ -792,6 +862,20 @@ export type Database = {
             foreignKeyName: "song_axes_song_id_fkey"
             columns: ["song_id"]
             isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "song_axes_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "song_axes_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
             referencedRelation: "songs"
             referencedColumns: ["id"]
           },
@@ -1009,6 +1093,31 @@ export type Database = {
       }
     }
     Views: {
+      pairing_recognition: {
+        Row: {
+          active: boolean | null
+          avg_canon: number | null
+          avg_year: number | null
+          cross_subculture: boolean | null
+          diagnostic_weight: number | null
+          era_bucket: string | null
+          era_span_years: number | null
+          is_bootstrap: boolean | null
+          lane: string | null
+          min_canon: number | null
+          pairing_id: string | null
+          recognition_score: number | null
+          shared_subculture_slugs: string[] | null
+          shared_subcultures: number | null
+          song_a_canon: number | null
+          song_a_id: string | null
+          song_a_year: number | null
+          song_b_canon: number | null
+          song_b_id: string | null
+          song_b_year: number | null
+        }
+        Relationships: []
+      }
       pairings_with_songs: {
         Row: {
           active: boolean | null
@@ -1040,8 +1149,36 @@ export type Database = {
             foreignKeyName: "pairings_song_a_id_fkey"
             columns: ["song_a_id"]
             isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "pairings_song_a_id_fkey"
+            columns: ["song_a_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "pairings_song_a_id_fkey"
+            columns: ["song_a_id"]
+            isOneToOne: false
             referencedRelation: "songs"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pairings_song_b_id_fkey"
+            columns: ["song_b_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "pairings_song_b_id_fkey"
+            columns: ["song_b_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
           },
           {
             foreignKeyName: "pairings_song_b_id_fkey"
