@@ -282,7 +282,7 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
-import { selectPairing, shouldStop, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
+import { selectPairing, selectCalibrationPairing, shouldStop, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
 
@@ -310,7 +310,13 @@ export async function startSessionImpl(supabase: AuthedSupabase, userId: string)
         lane: seed.lane,
         lane_confidence: seed.lane_confidence,
         probe_candidate_lanes: seed.probe_candidate_lanes,
-        probe_state: { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] },
+        probe_state: {
+          probes_shown: [],
+          pending: {},
+          lane_alignment: {},
+          flips: [],
+          calibration: seed.calibration,
+        } as never,
       })
       .select("id")
       .single();
@@ -354,8 +360,8 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
 
     const pairingSelect = `
       id, tests, hypothesis, why_good, diagnostic_weight, lane,
-      song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane),
-      song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane)
+      song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane,canon_score),
+      song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane,canon_score)
     `;
 
     const usedIds = new Set((usedRes.data ?? []).map((c) => c.pairing_id));
@@ -375,14 +381,85 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       );
     }
 
-    // -------- Fetch lane-scoped pool, fall back to general when empty --------
-    let pairingsRes = sessionLane === "general"
-      ? await supabase.from("pairings").select(pairingSelect).eq("active", true)
-      : await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", sessionLane);
+    // -------- Calibration mode (rounds 1–2 when lane is uncertain) --------
+    const calibration = (probeState as unknown as { calibration?: {
+      active: boolean; candidate_lanes: string[]; decade_clusters: string[];
+      round_budget: number; lane_wins: Record<string, number>;
+    } }).calibration;
+    const inCalibration = !!calibration?.active && round < (calibration?.round_budget ?? 2);
+    if (inCalibration && (calibration?.candidate_lanes?.length ?? 0) > 0) {
+      const calPool = await supabase
+        .from("pairings")
+        .select(pairingSelect)
+        .eq("active", true)
+        .in("lane", calibration!.candidate_lanes);
+      if (calPool.error) throw new Error(calPool.error.message);
+      const picked = selectCalibrationPairing({
+        pool: (calPool.data ?? []) as unknown as PairingCandidate[],
+        used_ids: usedIds,
+        candidate_lanes: calibration!.candidate_lanes,
+        decade_clusters: calibration!.decade_clusters ?? [],
+        rng: { next: () => Math.random() },
+      });
+      if (picked.kind === "empty") {
+        return { pairing: null, round, confidence: stop.confidence, done: true as const };
+      }
+      return {
+        pairing: picked.pairing,
+        round: round + 1,
+        confidence: stop.confidence,
+        done: false as const,
+        selection_reason: {
+          leaning_axes: [],
+          fork_matched: false,
+          tests: (picked.pairing as { tests?: string[] | null }).tests ?? [],
+          axes_needed: [],
+          axis_need_score: 0,
+          challenge_boost: false,
+          diagnostic_weight: (picked.pairing as { diagnostic_weight?: number | null }).diagnostic_weight ?? 50,
+          pool_size: (calPool.data ?? []).length,
+          weight: 0,
+          calibration: picked.reason,
+        } as never,
+      };
+    }
+
+    // -------- Post-calibration or lane-locked pool --------
+    // If lane is still "general" after calibration and we have no curated
+    // general pairings, STOP SAFELY. Never spray across all active pairings —
+    // that was the old bug that walked users through metal/R&B/country.
+    if (sessionLane === "general") {
+      const generalRes = await supabase
+        .from("pairings")
+        .select(pairingSelect)
+        .eq("active", true)
+        .eq("lane", "general");
+      if (generalRes.error) throw new Error(generalRes.error.message);
+      const picked = selectPairing({
+        pool: (generalRes.data ?? []) as unknown as PairingCandidate[],
+        vector,
+        used_ids: usedIds,
+        session_lane: sessionLane,
+        dims: DIMS as readonly string[],
+        rng: { next: () => Math.random() },
+      });
+      if (picked.kind === "empty") {
+        return { pairing: null, round, confidence: stop.confidence, done: true as const };
+      }
+      return {
+        pairing: picked.pairing,
+        round: round + 1,
+        confidence: stop.confidence,
+        done: false as const,
+        selection_reason: picked.selection_reason,
+      };
+    }
+
+    const pairingsRes = await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", sessionLane);
     if (pairingsRes.error) throw new Error(pairingsRes.error.message);
 
     const rng = { next: () => Math.random() };
-    let picked = selectPairing({
+    const picked = selectPairing({
       pool: (pairingsRes.data ?? []) as unknown as PairingCandidate[],
       vector,
       used_ids: usedIds,
@@ -390,19 +467,6 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       dims: DIMS as readonly string[],
       rng,
     });
-
-    if (picked.kind === "empty" && sessionLane !== "general") {
-      pairingsRes = await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", "general");
-      if (pairingsRes.error) throw new Error(pairingsRes.error.message);
-      picked = selectPairing({
-        pool: (pairingsRes.data ?? []) as unknown as PairingCandidate[],
-        vector,
-        used_ids: usedIds,
-        session_lane: sessionLane,
-        dims: DIMS as readonly string[],
-        rng,
-      });
-    }
     if (picked.kind === "empty") {
       return { pairing: null, round, confidence: stop.confidence, done: true as const };
     }
@@ -412,8 +476,6 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       round: round + 1,
       confidence: stop.confidence,
       done: false as const,
-      // Instrumentation: client echoes this back in the `pairing_shown` event so
-      // downstream analysis can join "why we picked it" to "what the user did".
       selection_reason: picked.selection_reason,
     };
 }
@@ -978,14 +1040,47 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
     // Cross-lane probe flipping is quarantined. See
     // src/musicdna/engine/experiments/cross-lane-probes.ts and
     // mem://product/within-lane-only.md. The nextPairing invariant guarantees
-    // probe_state.pending is empty, so there is nothing to score here — the
-    // session's lane and probe_state pass through unchanged.
-    const nextLane: Lane = session.lane;
-    const probeState = session.probe_state ?? { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] };
+    // probe_state.pending is empty.
+    //
+    // Calibration handling: during rounds 1–2 the picked pairing came from
+    // selectCalibrationPairing (candidate-lane pool, no vector-need scoring).
+    // We do NOT let the aesthetic vector move on these rounds; we only tally
+    // which candidate lane the user actually chose from. When the calibration
+    // budget is spent, lock in the strongest lane (or leave "general" if the
+    // wins are tied — no lane won, so no lane-scoped read is honest).
+    let nextLane: Lane = session.lane;
+    const probeState = (session.probe_state ?? { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] }) as ProbeState & {
+      calibration?: { active: boolean; candidate_lanes: string[]; decade_clusters: string[]; round_budget: number; lane_wins: Record<string, number> };
+    };
+    const calibration = probeState.calibration;
+    const currentRound = (await supabase.from("choices").select("id", { count: "exact", head: true }).eq("session_id", data.sessionId)).count ?? 0;
+    // currentRound reflects rows including the one we just inserted above.
+    const isCalibrationRound = !!calibration?.active && currentRound <= (calibration?.round_budget ?? 2);
+
+    let vectorToPersist = vec;
+    if (isCalibrationRound && calibration) {
+      // Freeze the vector on calibration rounds — these choices are about
+      // routing, not aesthetic dimensions.
+      vectorToPersist = priorVec;
+      const winnerLane = String((winner as { primary_lane?: string | null; lane?: string | null }).primary_lane ?? (winner as { lane?: string | null }).lane ?? "");
+      if (winnerLane) {
+        calibration.lane_wins[winnerLane] = (calibration.lane_wins[winnerLane] ?? 0) + 1;
+      }
+      // On the final calibration round, decide.
+      if (currentRound >= calibration.round_budget) {
+        const entries = Object.entries(calibration.lane_wins).sort((a, b) => b[1] - a[1]);
+        const clearWinner = entries.length === 1 || (entries.length >= 2 && entries[0][1] > entries[1][1]);
+        if (clearWinner && (LANES as readonly string[]).includes(entries[0][0])) {
+          nextLane = entries[0][0] as Lane;
+        }
+        calibration.active = false;
+      }
+      probeState.calibration = calibration;
+    }
 
     const { error: uErr } = await supabase
       .from("sessions")
-      .update({ vector: vec, lane: nextLane, probe_state: probeState as never })
+      .update({ vector: vectorToPersist, lane: nextLane, probe_state: probeState as never })
       .eq("id", data.sessionId);
     if (uErr) throw new Error(uErr.message);
 
@@ -1161,7 +1256,7 @@ export const finalizeSession = createServerFn({ method: "POST" })
 
 export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string }) {
     const { data: session, error: sErr } = await supabase
-      .from("sessions").select("vector,user_id").eq("id", data.sessionId).single();
+      .from("sessions").select("vector,user_id,lane,lane_confidence,probe_state").eq("id", data.sessionId).single();
     if (sErr || !session) throw new Error(sErr?.message ?? "session not found");
     if (session.user_id !== userId) throw new Error("forbidden");
 
@@ -1292,15 +1387,59 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
       notes: `${fastPicks} of ${choices.length} choices resolved in under 2 seconds.`,
     });
 
-    // -------- Layer 4: Evidence threshold --------
-    // Tuned for 6-round adaptive test: 2 supporting choices on an axis is
-    // enough to call a tendency, as long as direction is consistent and the
-    // magnitude is real. 0.55 keeps out pure noise without demanding 12 rounds.
+    // -------- Layer 4: Evidence threshold + truthfulness gates --------
+    // Tuned for a 6-round adaptive test: a claim needs ≥2 independent
+    // supporting choices, consistent direction, and real magnitude.
+    //
+    // Truthfulness rules layered on top of the raw threshold:
+    //   • CONTRADICTIONS: for each surviving claim, attach the choices that
+    //     went the OTHER direction on that axis (so the critic can name them
+    //     instead of pretending they don't exist).
+    //   • NON-REUSE: reject a second claim whose example set overlaps ≥ 2
+    //     with an earlier accepted claim — that's the same two choices doing
+    //     double duty, not independent support.
     const MIN_SUPPORT = 2;
     const MIN_CONFIDENCE = 0.55;
-    const allowed_claims = patterns
-      .filter((p) => p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE)
-      .slice(0, 5);
+    type ClaimExample = { chosen: string; rejected: string; delta: number };
+    type ClaimContra = ClaimExample;
+    const rawAllowed = patterns.filter((p) => p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE);
+
+    // Contradictions per claim.
+    const contradictionsByDim: Record<string, ClaimContra[]> = {};
+    for (const p of rawAllowed) {
+      const dim = p.dimension;
+      const preferredHi = p.tradeoff.startsWith(DIM_LABEL[dim]?.hi ?? "\x00");
+      const contras: ClaimContra[] = [];
+      for (const c of choices) {
+        const tests = c.pairing?.tests?.length ? c.pairing.tests : (DIMS as readonly string[]).slice();
+        if (!tests.includes(dim)) continue;
+        const a = Number(c.chosen![dim] ?? 50);
+        const b = Number(c.rejected![dim] ?? 50);
+        const delta = a - b;
+        // "Contradictory" = the user chose the opposite pole with real magnitude.
+        if ((preferredHi && delta < -10) || (!preferredHi && delta > 10)) {
+          contras.push({ chosen: c.chosen!.title, rejected: c.rejected!.title, delta });
+          if (contras.length >= 2) break;
+        }
+      }
+      contradictionsByDim[dim] = contras;
+    }
+
+    // Non-reuse dedup.
+    const usedPairs = new Set<string>();
+    const dedupAllowed: typeof rawAllowed = [];
+    for (const p of rawAllowed) {
+      const pairs = p.examples.map((e) => `${e.chosen}|${e.rejected}`);
+      const overlap = pairs.filter((k) => usedPairs.has(k)).length;
+      if (dedupAllowed.length > 0 && overlap >= 2) continue; // reused evidence — drop
+      dedupAllowed.push(p);
+      for (const k of pairs) usedPairs.add(k);
+      if (dedupAllowed.length >= 5) break;
+    }
+    const allowed_claims = dedupAllowed.map((p) => ({
+      ...p,
+      contradictions: contradictionsByDim[p.dimension] ?? [],
+    }));
     const blocked_claims = patterns
       .filter((p) => !(p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE))
       .slice(0, 5);
@@ -1359,39 +1498,63 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
     });
 
     // -------- Layer 5: Critic (AI narrative, constrained) --------
+    // Pull the opening hypothesis so the critic can explicitly confirm,
+    // revise, or reject it — nothing floats disconnected from what we told
+    // the user in the first three songs.
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("opening_hypothesis")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const openingHypothesis = (profile?.opening_hypothesis as string | null | undefined)?.trim() || null;
+
     const evidenceBlock = allowed_claims.length
-      ? allowed_claims.map((c) =>
-          `- ${c.tradeoff} (${c.supporting_choices}/${c.tested_total} relevant matchups, confidence ${c.confidence}). Examples: ${c.examples.map((e) => `${e.chosen} > ${e.rejected}`).join("; ") || "—"}`
-        ).join("\n")
+      ? allowed_claims.map((c) => {
+          const contras = c.contradictions.length
+            ? ` Contradicting picks: ${c.contradictions.map((e) => `${e.chosen} > ${e.rejected}`).join("; ")}.`
+            : "";
+          return `- ${c.tradeoff} (${c.supporting_choices}/${c.tested_total} relevant matchups, confidence ${c.confidence}). Examples: ${c.examples.map((e) => `${e.chosen} > ${e.rejected}`).join("; ") || "—"}.${contras}`;
+        }).join("\n")
       : "- (no claims cleared the evidence threshold)";
     const counterBlock = counterarguments.length
       ? counterarguments.map((c) => `- ${c.claim} (${c.impact} impact — ${c.notes})`).join("\n")
       : "- (none)";
 
-    // Pick the confidence tier from the winning cosine score. Each archetype
-    // ships its own phrasings for 20/50/80/95, so the critic's opening hedge
-    // tracks the actual evidence instead of always sounding equally sure.
+    // Confidence tier from cosine, then CAPPED for mixed/general sessions and
+    // for sessions where too few axes cleared. We refuse to promise more
+    // certainty than the evidence supports.
     const bestScore = assignment?.score ?? 0;
-    const tier = bestScore >= 0.95 ? "95"
+    const laneConfidence = Number(session.lane_confidence ?? 0);
+    const isMixedSession = (session.lane as string | null) === "general" || laneConfidence < 0.6;
+    const strongAxes = allowed_claims.filter((c) => c.supporting_choices >= 3 && c.confidence >= 0.7).length;
+    let tier = bestScore >= 0.95 ? "95"
                : bestScore >= 0.80 ? "80"
                : bestScore >= 0.50 ? "50"
                : "20";
+    if (isMixedSession && (tier === "95" || tier === "80")) tier = "50";
+    if (allowed_claims.length < 2 && (tier === "95" || tier === "80")) tier = "50";
+    if (strongAxes === 0 && tier === "95") tier = "80";
     const thresholds = (bestRow?.confidence_thresholds ?? {}) as Record<string, string>;
     const openingHedge = thresholds[tier] ?? null;
     const keywords = (bestRow?.commentary_keywords ?? []) as string[];
     const coreQuestion = bestRow?.core_question ?? null;
 
     const archetypeVoiceBlock = bestRow
-      ? `\nARCHETYPE (aesthetic, not personality): ${bestRow.name}${coreQuestion ? ` — core question: "${coreQuestion}"` : ""}. Cosine confidence: ${Math.round(bestScore * 100)}%.
-Opening hedge for this confidence tier (use as your first move; do not quote verbatim if it doesn't fit the flow): "${openingHedge ?? ""}"
+      ? `\nARCHETYPE (aesthetic, not personality): ${bestRow.name}${coreQuestion ? ` — core question: "${coreQuestion}"` : ""}. Cosine score: ${Math.round(bestScore * 100)}% (fit tier ${tier}${isMixedSession ? ", capped for mixed-lane session" : ""}).
+Opening hedge for this fit tier (use as your first move; do not quote verbatim if it doesn't fit the flow): "${openingHedge ?? ""}"
 Draw from this archetype's vocabulary where natural (do not list, do not overuse, no more than 3-4 of these across the write-up): ${keywords.slice(0, 24).join(", ") || "(none)"}.`
       : "";
 
+    const openingBlock = openingHypothesis
+      ? `\nOPENING HYPOTHESIS (told to the user after their first three songs — you MUST explicitly confirm, revise, or reject it in your write-up):\n"${openingHypothesis}"`
+      : "";
+
     const criticPrompt = `Write 3-4 sentences about this listener. Use ONLY the allowed claims below. \
-Cite the evidence inline (e.g. "across 7 of 12 matchups"). If a strong counter-hypothesis exists, name it. \
-If no claims cleared the threshold, say so plainly — do not invent. \
+Cite the evidence inline (e.g. "across 5 of 6 matchups"). If a claim has contradicting picks listed, NAME one of them — do not pretend they don't exist. \
+If a strong counter-hypothesis exists, name it. If no claims cleared the threshold, say so plainly — do not invent. \
+Pick ONE tone and hold it: either you have a working read, or you don't. Do NOT mix "I'm convinced" with "shape isn't loud yet". \
 Frame the archetype as what this listener SEEKS from music, not who they are as a person.
-${archetypeVoiceBlock}
+${archetypeVoiceBlock}${openingBlock}
 
 ALLOWED CLAIMS:
 ${evidenceBlock}
@@ -1437,12 +1600,19 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
     });
 
     // If the critic AI failed, don't strand the user — fall back to a
-    // deterministic narrative built from the allowed claims. The error is
-    // already logged to llm_calls above.
+    // deterministic narrative built from the allowed claims. Single-toned:
+    // either we have a read, or we don't. No "convinced-but-tentative"
+    // dissonance.
     if (criticStatus === "error" || !narrative.trim()) {
-      narrative = allowed_claims.length
-        ? `Across these matchups you kept choosing ${allowed_claims[0].tradeoff} (${allowed_claims[0].supporting_choices} of ${allowed_claims[0].tested_total} relevant picks). The shape's there — consistent, if not loud.`
-        : `Nothing cleared the evidence threshold this round. Either you're harder to read than most, or the matchups didn't catch you. Worth another pass.`;
+      if (allowed_claims.length >= 2) {
+        const a = allowed_claims[0], b = allowed_claims[1];
+        narrative = `Across these matchups you kept choosing ${a.tradeoff} (${a.supporting_choices} of ${a.tested_total}) and ${b.tradeoff} (${b.supporting_choices} of ${b.tested_total}). That's the shape — two axes, consistently.`;
+      } else if (allowed_claims.length === 1) {
+        const a = allowed_claims[0];
+        narrative = `One thing came through cleanly: ${a.tradeoff}, on ${a.supporting_choices} of ${a.tested_total} relevant picks. Everything else is still a sketch. Another pass would sharpen it.`;
+      } else {
+        narrative = `Nothing cleared the evidence threshold this round. Either you're harder to read than most, or the matchups didn't catch you. Worth another pass.`;
+      }
     }
 
     // -------- Persist --------
