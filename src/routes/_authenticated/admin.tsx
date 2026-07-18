@@ -260,7 +260,23 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
                           }
                         }}
                       />
+                    ) : entity === "pairings" && c === "is_bootstrap" ? (
+                      <input
+                        type="checkbox"
+                        defaultChecked={!!r[c]}
+                        title="Serve in the first 2 rounds of a general-lane session to promote the session to a real lane."
+                        onChange={async (e) => {
+                          try {
+                            await setWeight({ data: { id: r.id, diagnostic_weight: Number(r.diagnostic_weight ?? 0), is_bootstrap: e.target.checked } });
+                            toast.success(e.target.checked ? "Marked bootstrap" : "Unmarked");
+                            qc.invalidateQueries({ queryKey: ["admin", entity] });
+                          } catch (err) {
+                            toast.error((err as Error).message);
+                          }
+                        }}
+                      />
                     ) : (
+
                       formatCell(r[c])
                     )}
                   </td>
