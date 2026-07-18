@@ -1018,6 +1018,7 @@ export type Database = {
           expected_split: string | null
           hypothesis: string | null
           id: string | null
+          is_bootstrap: boolean | null
           lane: string | null
           song_a_artist: string | null
           song_a_id: string | null
