@@ -168,7 +168,8 @@ You return a JSON object with this exact shape:
   "hypothesis": "ONE sentence, max 30 words, Rolling Stone voice. Name what these choices reveal — specific dimensions like movement, atmosphere, transformation, melody. End with 'Let's see if that holds.' or similar half-promise."
 }
 
-${LANE_RULES}
+Slot weighting: the five songs are NOT equal. Weight them 3, 2, 2, 1, 1 (slot 1 is 3× slot 5). Users lead with their most-defining pick — if slot 1 lands in one lane and slots 4-5 scatter, the lane call follows slot 1.
+
 
 Confidence: 1.0 = all five point to one lane. 0.7-0.9 = strong majority. 0.4-0.6 = mixed but a leaning. <0.4 = scattered, use "general".
 
