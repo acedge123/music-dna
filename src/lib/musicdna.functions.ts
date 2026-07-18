@@ -1040,14 +1040,47 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
     // Cross-lane probe flipping is quarantined. See
     // src/musicdna/engine/experiments/cross-lane-probes.ts and
     // mem://product/within-lane-only.md. The nextPairing invariant guarantees
-    // probe_state.pending is empty, so there is nothing to score here — the
-    // session's lane and probe_state pass through unchanged.
-    const nextLane: Lane = session.lane;
-    const probeState = session.probe_state ?? { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] };
+    // probe_state.pending is empty.
+    //
+    // Calibration handling: during rounds 1–2 the picked pairing came from
+    // selectCalibrationPairing (candidate-lane pool, no vector-need scoring).
+    // We do NOT let the aesthetic vector move on these rounds; we only tally
+    // which candidate lane the user actually chose from. When the calibration
+    // budget is spent, lock in the strongest lane (or leave "general" if the
+    // wins are tied — no lane won, so no lane-scoped read is honest).
+    let nextLane: Lane = session.lane;
+    const probeState = (session.probe_state ?? { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] }) as ProbeState & {
+      calibration?: { active: boolean; candidate_lanes: string[]; decade_clusters: string[]; round_budget: number; lane_wins: Record<string, number> };
+    };
+    const calibration = probeState.calibration;
+    const currentRound = (await supabase.from("choices").select("id", { count: "exact", head: true }).eq("session_id", data.sessionId)).count ?? 0;
+    // currentRound reflects rows including the one we just inserted above.
+    const isCalibrationRound = !!calibration?.active && currentRound <= (calibration?.round_budget ?? 2);
+
+    let vectorToPersist = vec;
+    if (isCalibrationRound && calibration) {
+      // Freeze the vector on calibration rounds — these choices are about
+      // routing, not aesthetic dimensions.
+      vectorToPersist = priorVec;
+      const winnerLane = String((winner as { primary_lane?: string | null; lane?: string | null }).primary_lane ?? (winner as { lane?: string | null }).lane ?? "");
+      if (winnerLane) {
+        calibration.lane_wins[winnerLane] = (calibration.lane_wins[winnerLane] ?? 0) + 1;
+      }
+      // On the final calibration round, decide.
+      if (currentRound >= calibration.round_budget) {
+        const entries = Object.entries(calibration.lane_wins).sort((a, b) => b[1] - a[1]);
+        const clearWinner = entries.length === 1 || (entries.length >= 2 && entries[0][1] > entries[1][1]);
+        if (clearWinner && (LANES as readonly string[]).includes(entries[0][0])) {
+          nextLane = entries[0][0] as Lane;
+        }
+        calibration.active = false;
+      }
+      probeState.calibration = calibration;
+    }
 
     const { error: uErr } = await supabase
       .from("sessions")
-      .update({ vector: vec, lane: nextLane, probe_state: probeState as never })
+      .update({ vector: vectorToPersist, lane: nextLane, probe_state: probeState as never })
       .eq("id", data.sessionId);
     if (uErr) throw new Error(uErr.message);
 
