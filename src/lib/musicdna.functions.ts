@@ -1288,6 +1288,73 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
     return { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
 }
 
+// ============ Skip pairing ============
+// User signal: "I don't know either of these — show me something else."
+// Never affects the vector, never counts as a bootstrap choice. We record
+// the pairing_id in probe_state.skipped_pairing_ids so it can't be re-served
+// this session, flip probe_state.wants_wider_probe so nextPairingImpl can
+// reach outside the opener lanes on the next bootstrap draw, and log a
+// pairing_skipped event for diagnostics.
+export const skipPairing = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      sessionId: z.string().uuid(),
+      pairingId: z.string().uuid(),
+      msToDecide: z.number().int().nonnegative().max(600000).optional(),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => skipPairingImpl(context.supabase, context.userId, data));
+
+export async function skipPairingImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string; pairingId: string; msToDecide?: number },
+) {
+  const sessionRes = await supabase
+    .from("sessions")
+    .select("user_id, probe_state")
+    .eq("id", data.sessionId)
+    .single();
+  if (sessionRes.error || !sessionRes.data) {
+    throw new Error(sessionRes.error?.message ?? "session not found");
+  }
+  if (sessionRes.data.user_id !== userId) throw new Error("forbidden");
+  const probeState = (sessionRes.data.probe_state ?? {}) as ProbeState;
+  probeState.probes_shown = probeState.probes_shown ?? [];
+  probeState.pending = probeState.pending ?? {};
+  probeState.lane_alignment = probeState.lane_alignment ?? {};
+  probeState.flips = probeState.flips ?? [];
+  const skipped = new Set(probeState.skipped_pairing_ids ?? []);
+  skipped.add(data.pairingId);
+  probeState.skipped_pairing_ids = Array.from(skipped);
+  probeState.wants_wider_probe = true;
+
+  const { error: uErr } = await supabase
+    .from("sessions")
+    .update({ probe_state: probeState } as never)
+    .eq("id", data.sessionId);
+  if (uErr) throw new Error(uErr.message);
+
+  try {
+    await supabase.from("event_log").insert({
+      user_id: userId,
+      session_id: data.sessionId,
+      pairing_id: data.pairingId,
+      event_type: "pairing_skipped",
+      client: "server",
+      props: { ms_to_decide: data.msToDecide ?? null },
+    } as never);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn("[musicdna] pairing_skipped event log failed:", e instanceof Error ? e.message : e);
+  }
+
+  return { ok: true as const };
+}
+
+
+
 // ============ Instrumentation helper (per-choice diagnostic snapshot) ============
 // Loads the archetype catalog, recomputes rankings on the just-updated
 // vector, and writes two events into event_log.props for offline analysis:
