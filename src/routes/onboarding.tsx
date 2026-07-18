@@ -311,6 +311,7 @@ function Onboarding() {
 
   async function pick(songId: string) {
     if (!pairing || !sessionId || busy) return;
+    setPendingSongId(songId);
     setBusy(true);
     const ms = Math.min(600000, Date.now() - startedAt.current);
     const currentPairing = pairing;
