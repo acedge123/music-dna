@@ -9,6 +9,8 @@ abstract class AuthRemoteDataSource {
 
   Stream<domain.AuthUser?> observeAuthState();
 
+  Future<domain.AuthUser> ensureAnonymousSession();
+
   Future<domain.AuthUser> signIn({
     required String email,
     required String password,
@@ -35,6 +37,24 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
     return _supabase.auth.onAuthStateChange.map(
       (AuthState authState) => _mapUser(authState.session?.user),
     );
+  }
+
+  @override
+  Future<domain.AuthUser> ensureAnonymousSession() async {
+    final existingUser = _supabase.auth.currentUser;
+    if (existingUser != null) {
+      return _requireUser(existingUser);
+    }
+
+    final response = await _supabase.auth.signInAnonymously();
+    final user = response.user;
+    if (user == null) {
+      throw const AuthRemoteDataSourceException(
+        'Supabase did not return a user for anonymous sign in.',
+      );
+    }
+
+    return _requireUser(user);
   }
 
   @override
@@ -85,11 +105,19 @@ class SupabaseAuthRemoteDataSource implements AuthRemoteDataSource {
       return null;
     }
 
-    return domain.AuthUser(id: user.id, email: user.email);
+    return domain.AuthUser(
+      id: user.id,
+      email: user.email,
+      isAnonymous: user.isAnonymous,
+    );
   }
 
   domain.AuthUser _requireUser(User user) {
-    return domain.AuthUser(id: user.id, email: user.email);
+    return domain.AuthUser(
+      id: user.id,
+      email: user.email,
+      isAnonymous: user.isAnonymous,
+    );
   }
 }
 

@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../../../onboarding/domain/entities/started_music_session.dart';
 import '../../domain/entities/session_pairing.dart';
 import '../../domain/entities/session_reveal.dart';
@@ -45,7 +46,6 @@ class _SessionStubPageState extends State<SessionStubPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Your session')),
       body: SafeArea(
         child: BlocConsumer<SessionCubit, SessionState>(
           listenWhen: (previous, current) =>
@@ -62,22 +62,19 @@ class _SessionStubPageState extends State<SessionStubPage> {
                 state.status == SessionStatus.submitting;
 
             return ListView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(28, 28, 28, 52),
               children: <Widget>[
-                if (widget.startedSession != null)
-                  _SessionSummaryCard(session: widget.startedSession!),
-                if (widget.startedSession != null) const SizedBox(height: 16),
+                Text('THE INTERVIEW', style: theme.textTheme.labelSmall),
+                if (widget.startedSession != null) ...<Widget>[
+                  const SizedBox(height: 34),
+                  _OpeningTranscript(session: widget.startedSession!),
+                  const SizedBox(height: 34),
+                  _CriticBridge(hypothesis: widget.startedSession!.hypothesis),
+                  const SizedBox(height: 26),
+                ],
                 if (state.lastFeedback != null)
                   _FeedbackCard(feedback: state.lastFeedback!),
                 if (state.lastFeedback != null) const SizedBox(height: 16),
-                if (round != null &&
-                    state.status != SessionStatus.missingSession &&
-                    state.status != SessionStatus.revealed)
-                  _ProgressCard(round: round),
-                if (round != null &&
-                    state.status != SessionStatus.missingSession &&
-                    state.status != SessionStatus.revealed)
-                  const SizedBox(height: 16),
                 if (state.errorMessage != null)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 16),
@@ -100,6 +97,9 @@ class _SessionStubPageState extends State<SessionStubPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       if (pairing != null)
+                        _PairingIntro(pairing: pairing),
+                      if (pairing != null) const SizedBox(height: 18),
+                      if (pairing != null)
                         _PairingCard(
                           pairing: pairing,
                           isBusy: true,
@@ -112,23 +112,32 @@ class _SessionStubPageState extends State<SessionStubPage> {
                   SessionStatus.ready =>
                     pairing == null
                         ? _FallbackCard(
-                            title: 'No pairing returned',
+                            title: 'No pairing yet',
                             body:
-                                'The session is active, but we did not get a pairing back yet. Try refreshing the round.',
-                            primaryLabel: 'Refresh round',
+                                'We are in the interview, but the next comparison did not come through yet.',
+                            primaryLabel: 'Try again',
                             onPrimary: () =>
                                 context.read<SessionCubit>().initialize(),
                           )
-                        : _PairingCard(
-                            pairing: pairing,
-                            isBusy: isBusy,
-                            onChoose: (songId) =>
-                                _chooseSong(context, chosenSongId: songId),
+                        : Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              _PairingIntro(pairing: pairing),
+                              const SizedBox(height: 18),
+                              _PairingCard(
+                                pairing: pairing,
+                                isBusy: isBusy,
+                                onChoose: (songId) => _chooseSong(
+                                  context,
+                                  chosenSongId: songId,
+                                ),
+                              ),
+                            ],
                           ),
                   SessionStatus.completed => _FallbackCard(
-                    title: 'Session loop complete',
+                    title: 'Good. We have enough.',
                     body:
-                        'You made it through the current set of pairings. Now let’s turn those choices into a reading.',
+                        'Now let me turn those choices into a sharper read of your taste.',
                     primaryLabel: 'Generate my reading',
                     onPrimary: () =>
                         context.read<SessionCubit>().revealSession(),
@@ -136,7 +145,7 @@ class _SessionStubPageState extends State<SessionStubPage> {
                   SessionStatus.revealing => _FallbackCard(
                     title: 'Building your reading',
                     body:
-                        'We are finalizing the archetype, supporting claims, and share card from your completed session.',
+                        'Tightening the theory, checking the pattern, and turning it into a read worth keeping.',
                     primaryLabel: 'Generating...',
                     onPrimary: () {},
                     primaryEnabled: false,
@@ -160,7 +169,7 @@ class _SessionStubPageState extends State<SessionStubPage> {
                                 _copyShare(context, state.reveal!),
                           ),
                   SessionStatus.failure => _FallbackCard(
-                    title: 'Session hit a snag',
+                    title: 'The read got interrupted',
                     body:
                         state.errorMessage ??
                         'We could not continue the pairing loop right now.',
@@ -178,10 +187,10 @@ class _SessionStubPageState extends State<SessionStubPage> {
                         : null,
                   ),
                   SessionStatus.missingSession => _FallbackCard(
-                    title: 'Start from onboarding first',
+                    title: 'Start with the interview first',
                     body:
-                        'We need a fresh MusicDNA session before we can serve pairings on mobile.',
-                    primaryLabel: 'Go to onboarding',
+                        'Give me your opening songs first, then we can start drilling into the pairings.',
+                    primaryLabel: 'Go to the interview',
                     onPrimary: () => context.go('/onboarding'),
                   ),
                 },
@@ -237,72 +246,121 @@ class _SessionStubPageState extends State<SessionStubPage> {
   }
 }
 
-class _SessionSummaryCard extends StatelessWidget {
-  const _SessionSummaryCard({required this.session});
+class _OpeningTranscript extends StatelessWidget {
+  const _OpeningTranscript({required this.session});
 
   final StartedMusicSession session;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              'Opening read',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(session.hypothesis),
-            const SizedBox(height: 12),
-            Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: <Widget>[
-                Chip(label: Text('Analysis: ${session.analysisLane}')),
-                Chip(label: Text('Session: ${session.sessionLane}')),
-                Chip(
-                  label: Text(
-                    'Confidence ${(session.sessionLaneConfidence * 100).round()}%',
-                  ),
-                ),
-              ],
-            ),
-          ],
+    return Column(
+      children: <Widget>[
+        for (var index = 0; index < session.songs.length; index++) ...<Widget>[
+          _TranscriptSongRow(index: index, song: session.songs[index]),
+          const SizedBox(height: 30),
+        ],
+        Text(
+          'NEXT ONE COMING UP…',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: AppTheme.mutedForeground,
+          ),
         ),
-      ),
+      ],
     );
   }
 }
 
-class _ProgressCard extends StatelessWidget {
-  const _ProgressCard({required this.round});
+class _CriticBridge extends StatelessWidget {
+  const _CriticBridge({required this.hypothesis});
 
-  final SessionRoundState round;
+  final String hypothesis;
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Wrap(
-          spacing: 12,
-          runSpacing: 12,
-          children: <Widget>[
-            Chip(label: Text('Round ${round.round}')),
-            Chip(
-              label: Text('Confidence ${(round.confidence * 100).round()}%'),
-            ),
-            if (round.pairing?.lane != null)
-              Chip(label: Text('Lane ${round.pairing!.lane!}')),
-          ],
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(hypothesis, style: theme.textTheme.displaySmall),
+        const SizedBox(height: 16),
+        Text(
+          'Let\'s drill down.',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: AppTheme.mutedForeground,
+          ),
         ),
-      ),
+      ],
+    );
+  }
+}
+
+class _PairingIntro extends StatelessWidget {
+  const _PairingIntro({required this.pairing});
+
+  final SessionPairing pairing;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Text(
+          'Pick one. Don\'t overthink it.',
+          style: theme.textTheme.displaySmall,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          pairing.whyGood ?? 'Trust the one that feels more instinctively yours.',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: AppTheme.mutedForeground,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          'You can choose only one.',
+          style: theme.textTheme.labelSmall?.copyWith(
+            color: AppTheme.mutedForeground,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _TranscriptSongRow extends StatelessWidget {
+  const _TranscriptSongRow({required this.index, required this.song});
+
+  final int index;
+  final String song;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Row(
+      children: <Widget>[
+        Text(
+          '#${index + 1}',
+          style: theme.textTheme.bodyMedium?.copyWith(
+            fontFamily: 'monospace',
+            color: AppTheme.mutedForeground,
+            letterSpacing: 1.4,
+          ),
+        ),
+        const SizedBox(width: 18),
+        const Icon(Icons.check, size: 18, color: AppTheme.foreground),
+        const SizedBox(width: 18),
+        Expanded(
+          child: Text(
+            song.toLowerCase(),
+            style: theme.textTheme.headlineMedium?.copyWith(
+              fontFamily: 'monospace',
+              letterSpacing: 0.3,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -315,8 +373,12 @@ class _FeedbackCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Card(
-      color: theme.colorScheme.secondaryContainer.withValues(alpha: 0.7),
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: AppTheme.surface,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppTheme.border),
+      ),
       child: Padding(
         padding: const EdgeInsets.all(20),
         child: Column(
@@ -324,25 +386,17 @@ class _FeedbackCard extends StatelessWidget {
           children: <Widget>[
             Text(
               feedback.verdict,
-              style: theme.textTheme.titleMedium?.copyWith(
+              style: theme.textTheme.titleLarge?.copyWith(
                 fontWeight: FontWeight.w700,
               ),
             ),
             const SizedBox(height: 8),
-            Text(feedback.why),
-            if (feedback.hesitation != null && feedback.hesitation!.isNotEmpty)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text('Hesitation: ${feedback.hesitation!}'),
+            Text(
+              feedback.why,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: AppTheme.mutedForeground,
               ),
-            if (feedback.dimension != null || feedback.delta != null)
-              Padding(
-                padding: const EdgeInsets.only(top: 8),
-                child: Text(
-                  'Signal: ${feedback.dimension ?? 'unknown'}'
-                  '${feedback.delta == null ? '' : ' (${feedback.delta!.toStringAsFixed(2)})'}',
-                ),
-              ),
+            ),
           ],
         ),
       ),
@@ -363,53 +417,25 @@ class _PairingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              pairing.hypothesis ?? 'Which one feels more like you?',
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              pairing.whyGood ??
-                  'Choose the song that feels more instinctively yours.',
-            ),
-            if (pairing.tests.isNotEmpty) ...<Widget>[
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: pairing.tests
-                    .map((test) => Chip(label: Text(test)))
-                    .toList(growable: false),
-              ),
-            ],
-            const SizedBox(height: 20),
-            _SongChoiceCard(
-              song: pairing.songA,
-              isBusy: isBusy,
-              onChoose: () => onChoose(pairing.songA.id),
-            ),
-            const Padding(
-              padding: EdgeInsets.symmetric(vertical: 12),
-              child: Center(child: Text('or')),
-            ),
-            _SongChoiceCard(
-              song: pairing.songB,
-              isBusy: isBusy,
-              onChoose: () => onChoose(pairing.songB.id),
-            ),
-          ],
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: <Widget>[
+        Expanded(
+          child: _SongChoiceCard(
+            song: pairing.songA,
+            isBusy: isBusy,
+            onChoose: () => onChoose(pairing.songA.id),
+          ),
         ),
-      ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: _SongChoiceCard(
+            song: pairing.songB,
+            isBusy: isBusy,
+            onChoose: () => onChoose(pairing.songB.id),
+          ),
+        ),
+      ],
     );
   }
 }
@@ -428,46 +454,67 @@ class _SongChoiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return DecoratedBox(
-      decoration: BoxDecoration(
-        border: Border.all(color: theme.colorScheme.outlineVariant),
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: isBusy ? null : onChoose,
         borderRadius: BorderRadius.circular(20),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(18),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              song.title,
-              style: theme.textTheme.titleLarge?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+        child: Ink(
+          decoration: BoxDecoration(
+            color: AppTheme.surface,
+            border: Border.all(
+              color: isBusy ? theme.colorScheme.outlineVariant : AppTheme.border,
             ),
-            const SizedBox(height: 4),
-            Text(song.artist, style: theme.textTheme.titleMedium),
-            if (song.year != null || song.primaryLane != null) ...<Widget>[
-              const SizedBox(height: 12),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(18),
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(minHeight: 220),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  if (song.year != null)
-                    Chip(label: Text(song.year.toString())),
-                  if (song.primaryLane != null)
-                    Chip(label: Text(song.primaryLane!)),
+                  if (song.primaryLane != null || song.year != null)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 18),
+                      child: Text(
+                        [
+                          if (song.primaryLane != null)
+                            song.primaryLane!.toUpperCase().replaceAll('-', '_'),
+                          if (song.year != null) song.year.toString(),
+                        ].join('  ·  '),
+                        style: theme.textTheme.labelSmall?.copyWith(
+                          color: AppTheme.mutedForeground,
+                        ),
+                      ),
+                    ),
+                  Text(
+                    song.title,
+                    style: theme.textTheme.headlineMedium?.copyWith(
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    song.artist,
+                    style: theme.textTheme.titleMedium?.copyWith(
+                      color: AppTheme.mutedForeground,
+                    ),
+                  ),
+                  const Spacer(),
+                  if (isBusy)
+                    const Align(
+                      alignment: Alignment.bottomLeft,
+                      child: SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    ),
                 ],
               ),
-            ],
-            const SizedBox(height: 16),
-            SizedBox(
-              width: double.infinity,
-              child: FilledButton(
-                onPressed: isBusy ? null : onChoose,
-                child: const Text('This is more me'),
-              ),
             ),
-          ],
+          ),
         ),
       ),
     );

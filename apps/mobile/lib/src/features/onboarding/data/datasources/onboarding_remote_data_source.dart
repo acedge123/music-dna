@@ -10,6 +10,22 @@ class OnboardingRemoteDataSource {
 
   final MusicDnaApiClient _apiClient;
 
+  Future<Map<String, dynamic>> reactToSong({
+    required String song,
+    required int index,
+    required List<String> priorSongs,
+  }) async {
+    final response = await _apiClient.post(
+      '/api/v1/onboarding/react',
+      body: <String, dynamic>{
+        'song': song,
+        'index': index,
+        'priorSongs': priorSongs,
+      },
+    );
+    return _decodeJson(response);
+  }
+
   Future<Map<String, dynamic>> commitOpeningThree({
     required List<String> songs,
   }) async {

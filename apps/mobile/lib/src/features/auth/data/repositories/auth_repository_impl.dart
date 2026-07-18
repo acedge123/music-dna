@@ -16,6 +16,11 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<AuthUser> ensureAnonymousSession() {
+    return _remoteDataSource.ensureAnonymousSession();
+  }
+
+  @override
   Future<AuthUser> signIn({required String email, required String password}) {
     return _remoteDataSource.signIn(email: email, password: password);
   }

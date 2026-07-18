@@ -60,6 +60,14 @@ class FakeAuthRepository implements AuthRepository {
   Stream<AuthUser?> observeAuthState() => _controller.stream;
 
   @override
+  Future<AuthUser> ensureAnonymousSession() async {
+    final user = const AuthUser(id: 'anon-user', isAnonymous: true);
+    _currentUser = user;
+    _controller.add(user);
+    return user;
+  }
+
+  @override
   Future<AuthUser> signIn({
     required String email,
     required String password,

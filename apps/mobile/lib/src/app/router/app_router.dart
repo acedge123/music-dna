@@ -14,18 +14,11 @@ GoRouter buildAppRouter(AppDependencies dependencies) {
   return GoRouter(
     refreshListenable: dependencies.authRouterNotifier,
     redirect: (context, state) {
-      final isAuthenticated = dependencies.authRouterNotifier.isAuthenticated;
-      final isAuthRoute = state.matchedLocation == '/auth';
-      final isProtectedRoute =
-          state.matchedLocation == '/onboarding' ||
-          state.matchedLocation == '/session';
+      final hasSession = dependencies.authRouterNotifier.isAuthenticated;
+      final isProtectedRoute = state.matchedLocation == '/session';
 
-      if (!isAuthenticated && isProtectedRoute) {
+      if (!hasSession && isProtectedRoute) {
         return '/auth';
-      }
-
-      if (isAuthenticated && isAuthRoute) {
-        return '/';
       }
 
       return null;

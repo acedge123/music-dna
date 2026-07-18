@@ -138,6 +138,38 @@ class AuthCubit extends Cubit<AuthState> {
     }
   }
 
+  Future<void> ensureAnonymousSession() async {
+    _logger.event('auth.ensure_anonymous_requested');
+    emit(
+      state.copyWith(
+        submissionStatus: AuthSubmissionStatus.submitting,
+        clearErrorMessage: true,
+      ),
+    );
+    try {
+      final user = await _authRepository.ensureAnonymousSession();
+      _logger.event('auth.ensure_anonymous_succeeded', <String, Object?>{
+        'userId': user.id,
+      });
+      emit(
+        state.copyWith(
+          status: AuthStatus.authenticated,
+          user: user,
+          submissionStatus: AuthSubmissionStatus.success,
+          clearErrorMessage: true,
+        ),
+      );
+    } catch (error) {
+      _logger.error('auth.ensure_anonymous_failed', error);
+      emit(
+        state.copyWith(
+          submissionStatus: AuthSubmissionStatus.failure,
+          errorMessage: _readableError(error),
+        ),
+      );
+    }
+  }
+
   Future<void> signUp({required String email, required String password}) async {
     _logger.event('auth.sign_up_requested', <String, Object?>{'email': email});
     emit(

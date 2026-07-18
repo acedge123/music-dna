@@ -37,8 +37,9 @@ class _MusicDnaMobileAppState extends State<MusicDnaMobileApp> {
     return BlocProvider<AuthCubit>.value(
       value: _authCubit,
       child: MaterialApp.router(
+        debugShowCheckedModeBanner: false,
         title: widget.dependencies.config.appName,
-        theme: AppTheme.light(),
+        theme: AppTheme.dark(),
         routerConfig: router,
       ),
     );

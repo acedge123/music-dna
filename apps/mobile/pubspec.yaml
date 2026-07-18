@@ -12,9 +12,11 @@ dependencies:
   cupertino_icons: ^1.0.8
   equatable: ^2.0.7
   flutter_bloc: ^9.1.1
+  google_fonts: ^6.3.1
   go_router: ^16.0.0
   http: ^1.5.0
   supabase_flutter: ^2.10.1
+  url_launcher: ^6.3.2
 
 dev_dependencies:
   flutter_test:
@@ -23,3 +25,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/branding/music-dna-logo.png

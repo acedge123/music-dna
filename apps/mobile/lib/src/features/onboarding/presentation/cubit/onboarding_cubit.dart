@@ -3,26 +3,43 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/logging/app_logger.dart';
 import '../../../../core/network/app_api_exception.dart';
+import '../../domain/entities/onboarding_reaction.dart';
 import '../../domain/entities/started_music_session.dart';
 import '../../domain/repositories/onboarding_repository.dart';
 
-enum OnboardingSubmissionStatus { idle, submitting, success, failure }
+enum OnboardingStage { collecting, reacting, submitting, success, failure }
 
 class OnboardingState extends Equatable {
   const OnboardingState({
-    this.submissionStatus = OnboardingSubmissionStatus.idle,
+    this.stage = OnboardingStage.collecting,
+    this.currentSongIndex = 0,
+    this.songs = const <String>[],
+    this.reactions = const <OnboardingReaction>[],
     this.startedSession,
     this.errorMessage,
     this.requiresReauthentication = false,
   });
 
-  final OnboardingSubmissionStatus submissionStatus;
+  final OnboardingStage stage;
+  final int currentSongIndex;
+  final List<String> songs;
+  final List<OnboardingReaction> reactions;
   final StartedMusicSession? startedSession;
   final String? errorMessage;
   final bool requiresReauthentication;
 
+  bool get isComplete => currentSongIndex >= 3;
+  bool get isSubmitting =>
+      stage == OnboardingStage.submitting || stage == OnboardingStage.reacting;
+  String? get nextLabel => reactions.isEmpty ? null : reactions.last.nextLabel;
+  String? get latestReaction =>
+      reactions.isEmpty ? null : reactions.last.reaction;
+
   OnboardingState copyWith({
-    OnboardingSubmissionStatus? submissionStatus,
+    OnboardingStage? stage,
+    int? currentSongIndex,
+    List<String>? songs,
+    List<OnboardingReaction>? reactions,
     StartedMusicSession? startedSession,
     bool clearStartedSession = false,
     String? errorMessage,
@@ -30,7 +47,10 @@ class OnboardingState extends Equatable {
     bool? requiresReauthentication,
   }) {
     return OnboardingState(
-      submissionStatus: submissionStatus ?? this.submissionStatus,
+      stage: stage ?? this.stage,
+      currentSongIndex: currentSongIndex ?? this.currentSongIndex,
+      songs: songs ?? this.songs,
+      reactions: reactions ?? this.reactions,
       startedSession: clearStartedSession
           ? null
           : startedSession ?? this.startedSession,
@@ -44,7 +64,10 @@ class OnboardingState extends Equatable {
 
   @override
   List<Object?> get props => <Object?>[
-    submissionStatus,
+    stage,
+    currentSongIndex,
+    songs,
+    reactions,
     startedSession,
     errorMessage,
     requiresReauthentication,
@@ -59,27 +82,67 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   final OnboardingRepository _repository;
   final AppLogger _logger;
 
-  Future<void> submitOpeningThree({required List<String> songs}) async {
-    _logger.event('onboarding.submit_requested', <String, Object?>{
-      'songCount': songs.length,
+  Future<void> submitSong({required String song}) async {
+    final trimmedSong = song.trim();
+    if (trimmedSong.isEmpty || state.isSubmitting || state.isComplete) {
+      return;
+    }
+
+    final priorSongs = state.songs;
+    final nextSongs = <String>[...priorSongs, trimmedSong];
+    final currentIndex = state.currentSongIndex;
+
+    _logger.event('onboarding.song_submit_requested', <String, Object?>{
+      'index': currentIndex,
+      'songCount': nextSongs.length,
     });
+
     emit(
       state.copyWith(
-        submissionStatus: OnboardingSubmissionStatus.submitting,
+        stage: currentIndex < 2
+            ? OnboardingStage.reacting
+            : OnboardingStage.submitting,
         clearErrorMessage: true,
         requiresReauthentication: false,
       ),
     );
 
     try {
-      final startedSession = await _repository.submitOpeningThree(songs: songs);
+      if (currentIndex < 2) {
+        final reaction = await _repository.reactToSong(
+          song: trimmedSong,
+          index: currentIndex,
+          priorSongs: priorSongs,
+        );
+        _logger.event('onboarding.song_reacted', <String, Object?>{
+          'index': currentIndex,
+          'hasNextLabel': reaction.nextLabel?.isNotEmpty == true,
+        });
+        emit(
+          state.copyWith(
+            stage: OnboardingStage.collecting,
+            currentSongIndex: currentIndex + 1,
+            songs: nextSongs,
+            reactions: <OnboardingReaction>[...state.reactions, reaction],
+            clearErrorMessage: true,
+            requiresReauthentication: false,
+          ),
+        );
+        return;
+      }
+
+      final startedSession = await _repository.submitOpeningThree(
+        songs: nextSongs,
+      );
       _logger.event('onboarding.submit_succeeded', <String, Object?>{
         'sessionId': startedSession.sessionId,
         'analysisLane': startedSession.analysisLane,
       });
       emit(
         state.copyWith(
-          submissionStatus: OnboardingSubmissionStatus.success,
+          stage: OnboardingStage.success,
+          currentSongIndex: 3,
+          songs: nextSongs,
           startedSession: startedSession,
           clearErrorMessage: true,
           requiresReauthentication: false,
@@ -87,12 +150,13 @@ class OnboardingCubit extends Cubit<OnboardingState> {
       );
     } catch (error) {
       _logger.error('onboarding.submit_failed', error, <String, Object?>{
-        'songCount': songs.length,
+        'songCount': nextSongs.length,
+        'index': currentIndex,
       });
       final apiError = error is AppApiException ? error : null;
       emit(
         state.copyWith(
-          submissionStatus: OnboardingSubmissionStatus.failure,
+          stage: OnboardingStage.failure,
           clearStartedSession: true,
           errorMessage: _readableError(apiError ?? error),
           requiresReauthentication: apiError?.isAuthRelated == true,
@@ -104,7 +168,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
   void clearFeedback() {
     emit(
       state.copyWith(
-        submissionStatus: OnboardingSubmissionStatus.idle,
+        stage: OnboardingStage.collecting,
         clearErrorMessage: true,
         requiresReauthentication: false,
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../../core/theme/app_theme.dart';
 import '../cubit/auth_cubit.dart';
 
 enum _AuthFormMode { signIn, signUp }
@@ -31,7 +32,6 @@ class _AuthStubPageState extends State<AuthStubPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign in to MusicDNA')),
       body: SafeArea(
         child: BlocConsumer<AuthCubit, AuthState>(
           listenWhen: (previous, current) =>
@@ -54,53 +54,57 @@ class _AuthStubPageState extends State<AuthStubPage> {
                 state.submissionStatus == AuthSubmissionStatus.submitting;
 
             return ListView(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.fromLTRB(24, 20, 24, 40),
               children: <Widget>[
-                Text(
-                  _mode == _AuthFormMode.signIn
-                      ? 'Welcome back'
-                      : 'Create your account',
-                  style: theme.textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                    color: theme.colorScheme.primary,
+                TextButton(
+                  onPressed: () => context.go('/'),
+                  style: TextButton.styleFrom(
+                    padding: EdgeInsets.zero,
+                    alignment: Alignment.centerLeft,
                   ),
+                  child: const Text('← Back'),
                 ),
                 const SizedBox(height: 12),
+                Image.asset(
+                  'assets/branding/music-dna-logo.png',
+                  width: 170,
+                  alignment: Alignment.centerLeft,
+                ),
+                const SizedBox(height: 28),
                 Text(
                   _mode == _AuthFormMode.signIn
-                      ? 'Sign in with your email and password to continue your MusicDNA session.'
-                      : 'We will use Supabase auth for account creation, then your opener and session flow will continue in the app.',
-                  style: theme.textTheme.bodyLarge,
+                      ? 'Continue your MusicDNA.'
+                      : 'Begin your MusicDNA.',
+                  style: theme.textTheme.displayMedium,
                 ),
-                const SizedBox(height: 24),
-                SegmentedButton<_AuthFormMode>(
-                  segments: const <ButtonSegment<_AuthFormMode>>[
-                    ButtonSegment<_AuthFormMode>(
-                      value: _AuthFormMode.signIn,
-                      label: Text('Sign in'),
-                    ),
-                    ButtonSegment<_AuthFormMode>(
-                      value: _AuthFormMode.signUp,
-                      label: Text('Sign up'),
-                    ),
-                  ],
-                  selected: <_AuthFormMode>{_mode},
-                  onSelectionChanged: (selection) {
+                const SizedBox(height: 18),
+                Text(
+                  _mode == _AuthFormMode.signIn
+                      ? 'Your readings persist across sessions. Sign in and pick up where your taste left off.'
+                      : 'Email and a password. No social, no ceremony. We will move straight into the opening interview.',
+                  style: theme.textTheme.bodyLarge?.copyWith(
+                    color: AppTheme.mutedForeground,
+                  ),
+                ),
+                const SizedBox(height: 28),
+                _ModeToggle(
+                  mode: _mode,
+                  onChanged: (mode) {
                     context.read<AuthCubit>().clearFeedback();
-                    setState(() {
-                      _mode = selection.first;
-                    });
+                    setState(() => _mode = mode);
                   },
                 ),
-                const SizedBox(height: 24),
+                const SizedBox(height: 20),
                 Card(
                   child: Padding(
-                    padding: const EdgeInsets.all(20),
+                    padding: const EdgeInsets.all(24),
                     child: Form(
                       key: _formKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
+                          Text('Account', style: theme.textTheme.labelSmall),
+                          const SizedBox(height: 16),
                           TextFormField(
                             controller: _emailController,
                             keyboardType: TextInputType.emailAddress,
@@ -156,10 +160,10 @@ class _AuthStubPageState extends State<AuthStubPage> {
                             ),
                           ),
                           if (state.errorMessage != null) ...<Widget>[
-                            const SizedBox(height: 12),
+                            const SizedBox(height: 14),
                             Text(
                               state.errorMessage!,
-                              style: theme.textTheme.bodyMedium?.copyWith(
+                              style: theme.textTheme.bodySmall?.copyWith(
                                 color: theme.colorScheme.error,
                               ),
                             ),
@@ -169,28 +173,29 @@ class _AuthStubPageState extends State<AuthStubPage> {
                     ),
                   ),
                 ),
-                const SizedBox(height: 16),
-                if (state.user != null)
+                if (state.user != null) ...<Widget>[
+                  const SizedBox(height: 20),
                   Card(
                     child: Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.all(24),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
                           Text(
                             'Current session',
-                            style: theme.textTheme.titleMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                            ),
+                            style: theme.textTheme.labelSmall,
                           ),
-                          const SizedBox(height: 8),
-                          Text(state.user?.email ?? state.user!.id),
                           const SizedBox(height: 12),
+                          Text(
+                            state.user?.email ?? state.user!.id,
+                            style: theme.textTheme.titleMedium,
+                          ),
+                          const SizedBox(height: 18),
                           Wrap(
                             spacing: 12,
                             runSpacing: 12,
                             children: <Widget>[
-                              OutlinedButton(
+                              FilledButton.tonal(
                                 onPressed: () => context.go('/onboarding'),
                                 child: const Text('Go to onboarding'),
                               ),
@@ -205,6 +210,7 @@ class _AuthStubPageState extends State<AuthStubPage> {
                       ),
                     ),
                   ),
+                ],
               ],
             );
           },
@@ -228,5 +234,78 @@ class _AuthStubPageState extends State<AuthStubPage> {
     }
 
     authCubit.signUp(email: email, password: password);
+  }
+}
+
+class _ModeToggle extends StatelessWidget {
+  const _ModeToggle({required this.mode, required this.onChanged});
+
+  final _AuthFormMode mode;
+  final ValueChanged<_AuthFormMode> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(6),
+      decoration: BoxDecoration(
+        color: AppTheme.surfaceRaised,
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: AppTheme.border),
+      ),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: _ModeButton(
+              label: 'Sign in',
+              selected: mode == _AuthFormMode.signIn,
+              onTap: () => onChanged(_AuthFormMode.signIn),
+            ),
+          ),
+          const SizedBox(width: 8),
+          Expanded(
+            child: _ModeButton(
+              label: 'Sign up',
+              selected: mode == _AuthFormMode.signUp,
+              onTap: () => onChanged(_AuthFormMode.signUp),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ModeButton extends StatelessWidget {
+  const _ModeButton({
+    required this.label,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final String label;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        decoration: BoxDecoration(
+          color: selected ? AppTheme.ember : Colors.transparent,
+          borderRadius: BorderRadius.circular(12),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          label,
+          style: theme.textTheme.titleSmall?.copyWith(
+            color: AppTheme.foreground,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+    );
   }
 }
