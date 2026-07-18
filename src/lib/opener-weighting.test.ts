@@ -30,10 +30,10 @@ describe("opener slot weighting", () => {
   });
 
   it("dominantPerSongLane returns the weighted top when unambiguous", () => {
-    // pop weight = 2+1 = 3; alternative weight = 3; hip_hop = 2. Tied on top → null.
-    expect(dominantPerSongLane(p(["alternative", "hip_hop", "pop", "pop", "unknown"]))).toBeNull();
-    // Now alternative wins: 3 + 1 = 4 vs pop 2+1 = 3.
-    expect(dominantPerSongLane(p(["alternative", "pop", "pop", "alternative", "unknown"]))).toBe("alternative");
+    // alt=3+2=5, pop=2, hip_hop=1 → alternative wins.
+    expect(dominantPerSongLane(p(["alternative", "alternative", "pop", "hip_hop", "unknown"]))).toBe("alternative");
+    // alt=3+1=4, pop=2+2=4 → tied → null.
+    expect(dominantPerSongLane(p(["alternative", "pop", "pop", "alternative", "unknown"]))).toBeNull();
   });
 
   it("returns null when all slots are unknown", () => {
