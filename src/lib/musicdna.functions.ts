@@ -379,6 +379,16 @@ type ProbeState = {
   flips: Array<{ round: number; from: Lane; to: Lane; reason: string }>;
 };
 
+// One row per bootstrap pairing the user has answered while in `general`.
+// Written by recordChoiceImpl; read by both nextPairingImpl (to decide when
+// the bootstrap phase is over) and the promotion check (to decide whether
+// the 2 winners agree on a lane).
+type BootstrapChoiceEntry = {
+  pairing_id: string;
+  winner_primary_lane: string | null;
+  loser_primary_lane: string | null;
+};
+
 export const nextPairing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
