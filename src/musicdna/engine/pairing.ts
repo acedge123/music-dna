@@ -18,6 +18,26 @@ export type PairingCandidate = {
   song_b?: { artist?: string | null } | null;
 };
 
+// Recognition data joined from the pairing_recognition view. Optional —
+// the selector still works without it (falls back to diagnostic-weight
+// scoring). Passed as a lookup keyed by pairing id so callers can hydrate
+// the pool from a separate query.
+export type RecognitionRow = {
+  min_canon: number;
+  avg_canon: number;
+  recognition_score: number;
+};
+
+// Selection mode. Controls how recognition interacts with diagnostic weight:
+// - "diagnostic_first": current behaviour, ignore recognition (lane-confident).
+// - "recognition_boost": blend recognition and diagnostic weight (uncertain lane).
+// - "recognition_first": hard-filter to recognizable pairings, then blend
+//   (general lane after bootstrap).
+export type SelectionMode =
+  | "diagnostic_first"
+  | "recognition_boost"
+  | "recognition_first";
+
 export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = {
   pool: P[];
   vector: Vector;
@@ -25,21 +45,32 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
   session_lane: Lane;
   dims: readonly string[];
   rng: Rng;
+  mode?: SelectionMode;
+  recognition?: Map<string, RecognitionRow>;
+  // Optional override; falls back to RECOGNITION_FLOORS[mode].
+  min_canon_floor?: number;
 };
 
-// Instrumentation: capture WHY this pairing beat its neighbours so the
-// `pairing_shown` / `choice_scored` events can later answer "did we test
-// the axis we most needed to test?" without re-running the selector.
+// Instrumentation.
 export type SelectionReason = {
-  leaning_axes: string[];          // axes the running vector already leans hard on
-  fork_matched: boolean;           // did we pick from the fork-pool (leaning-axis filter)?
-  tests: string[];                 // dims this pairing actually tests
-  axes_needed: string[];           // subset of `tests` where the running vector is weak
-  axis_need_score: number;         // 0..1, mean of 1/(1+|v|) across tests
-  challenge_boost: boolean;        // was the 1.5x boost applied?
-  diagnostic_weight: number;       // 0..100 (defaulted to 50 when null)
-  pool_size: number;               // eligible pool size after filters
-  weight: number;                  // final scoring weight for the winner
+  leaning_axes: string[];
+  fork_matched: boolean;
+  tests: string[];
+  axes_needed: string[];
+  axis_need_score: number;
+  challenge_boost: boolean;
+  diagnostic_weight: number;
+  pool_size: number;
+  weight: number;
+  mode: SelectionMode;
+  recognition_score?: number;
+};
+
+// Default recognition floors per mode. Tunable in one place.
+export const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
+  diagnostic_first: 0,
+  recognition_boost: 45,
+  recognition_first: 55,
 };
 
 export type SelectPairingResult<P extends PairingCandidate = PairingCandidate> =
