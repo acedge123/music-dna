@@ -397,16 +397,21 @@ function Onboarding() {
 
   if (bootError) {
     return (
+      <>
+      <HomeLogo />
       <main className="mx-auto max-w-2xl px-6 pt-24 text-center space-y-4">
         <p className="eyebrow">can't start a session</p>
         <p className="font-serif text-xl text-muted-foreground">{bootError}</p>
       </main>
+      </>
     );
   }
 
   // INITIAL: cold open — single slot only
   if (phase === "slot1") {
     return (
+    <>
+    <HomeLogo />
     <main className="mx-auto max-w-2xl px-6 pt-24 pb-24 min-h-screen flex flex-col">
       <section className="space-y-16 animate-in fade-in duration-500">
         <header className="space-y-4 text-center sm:text-left">
