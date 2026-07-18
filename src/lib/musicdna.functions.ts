@@ -277,14 +277,15 @@ async function classifyLane(
   }
 
   // Weighted-slot confidence floor: after canon enrichment, tally per_song by
-  // slot weight. If one lane owns ≥ 50% of the weight (≥ 4.5 of 9) AND isn't
-  // tied for first, floor confidence to 0.6 so we route to that lane instead
-  // of falling back to `general`. Slot 1's 3× weight is what usually saves
-  // "one clear favorite + four scattered picks" from ending up as general.
+  // slot weight (3-2-1 across the three openers, total 6). If one lane owns
+  // ≥ 50% of the weight (≥ 3 of 6) AND isn't tied for first, floor confidence
+  // to 0.6 so we route to that lane instead of falling back to `general`.
+  // Slot 1's 3× weight is what usually saves "one clear favorite + two
+  // scattered picks" from ending up as general.
   const share = weightedLaneShare(llm.per_song);
   const weighting = share
-    ? { scheme: "3-2-2-1-1" as const, top_lane: share.lane, top_lane_share: Math.round(share.share * 100) / 100, tied: share.tied }
-    : { scheme: "3-2-2-1-1" as const, top_lane: null, top_lane_share: 0, tied: false };
+    ? { scheme: "3-2-1" as const, top_lane: share.lane, top_lane_share: Math.round(share.share * 100) / 100, tied: share.tied }
+    : { scheme: "3-2-1" as const, top_lane: null, top_lane_share: 0, tied: false };
   if (share && !share.tied && share.share >= 0.5 && llm.confidence < 0.6) {
     llm.lane = share.lane;
     llm.confidence = Math.max(llm.confidence, 0.6);
@@ -294,6 +295,7 @@ async function classifyLane(
     ].slice(0, 4);
   }
   (llm as OpeningAnalysis & { weighting?: unknown }).weighting = weighting;
+
 
   return llm;
 }
