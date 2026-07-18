@@ -1,7 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { useMemo, useState, type ReactNode } from "react";
+import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import {
   adminCheck,
@@ -1027,6 +1027,12 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
     .slice(0, 100);
 
   const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const toggle = (id: string) => setExpanded((s) => {
+    const n = new Set(s);
+    if (n.has(id)) n.delete(id); else n.add(id);
+    return n;
+  });
 
   const exportRows = d.pairing_health
     .filter((p) => !laneFilter || p.lane === laneFilter);
@@ -1098,7 +1104,9 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
         <table className="w-full text-xs">
           <thead className="bg-muted/30 text-muted-foreground">
             <tr>
+              <th className="text-left px-2 py-1.5 w-6"></th>
               <th className="text-left px-2 py-1.5">Pairing</th>
+              <th className="text-left px-2 py-1.5">Tradeoff / what we're testing</th>
               <th className="text-left px-2 py-1.5">Lane</th>
               <th className="text-right px-2 py-1.5">Split</th>
               <th className="text-right px-2 py-1.5">Tests</th>
@@ -1108,23 +1116,62 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
             </tr>
           </thead>
           <tbody>
-            {rows.map((p) => (
-              <tr key={p.id} className="border-t hairline">
-                <td className="px-2 py-1.5">
-                  <div className="truncate max-w-md">{p.a_title} <span className="text-muted-foreground">vs</span> {p.b_title}</div>
-                </td>
-                <td className="px-2 py-1.5 font-mono text-muted-foreground">{p.lane}</td>
-                <td className="px-2 py-1.5 text-right font-mono">{p.split_a_pct != null ? `${p.split_a_pct}/${100 - p.split_a_pct}` : "—"}</td>
-                <td className="px-2 py-1.5 text-right font-mono">{p.total}</td>
-                <td className="px-2 py-1.5 text-right font-mono">{p.avg_ms ?? "—"}</td>
-                <td className={`px-2 py-1.5 text-right font-mono ${p.info_gain != null && p.info_gain < 30 ? "text-amber-500" : ""}`}>
-                  {p.info_gain ?? "—"}
-                </td>
-                <td className="px-2 py-1.5 text-right font-mono text-muted-foreground">{p.diagnostic_weight ?? "—"}</td>
-              </tr>
-            ))}
+            {rows.map((p) => {
+              const isOpen = expanded.has(p.id);
+              return (
+                <Fragment key={p.id}>
+                  <tr
+                    className="border-t hairline cursor-pointer hover:bg-muted/20"
+                    onClick={() => toggle(p.id)}
+                  >
+                    <td className="px-2 py-1.5 text-muted-foreground font-mono">{isOpen ? "▾" : "▸"}</td>
+                    <td className="px-2 py-1.5">
+                      <div className="truncate max-w-md">{p.a_title} <span className="text-muted-foreground">vs</span> {p.b_title}</div>
+                    </td>
+                    <td className="px-2 py-1.5 max-w-sm">
+                      <div className="truncate italic text-foreground/90" title={p.user_facing_tradeoff ?? ""}>
+                        {p.user_facing_tradeoff || <span className="text-muted-foreground not-italic">— no tradeoff written</span>}
+                      </div>
+                    </td>
+                    <td className="px-2 py-1.5 font-mono text-muted-foreground">{p.lane}</td>
+                    <td className="px-2 py-1.5 text-right font-mono">{p.split_a_pct != null ? `${p.split_a_pct}/${100 - p.split_a_pct}` : "—"}</td>
+                    <td className="px-2 py-1.5 text-right font-mono">{p.total}</td>
+                    <td className="px-2 py-1.5 text-right font-mono">{p.avg_ms ?? "—"}</td>
+                    <td className={`px-2 py-1.5 text-right font-mono ${p.info_gain != null && p.info_gain < 30 ? "text-amber-500" : ""}`}>
+                      {p.info_gain ?? "—"}
+                    </td>
+                    <td className="px-2 py-1.5 text-right font-mono text-muted-foreground">{p.diagnostic_weight ?? "—"}</td>
+                  </tr>
+                  {isOpen && (
+                    <tr className="border-t hairline bg-muted/10">
+                      <td></td>
+                      <td colSpan={8} className="px-3 py-3 space-y-2">
+                        <div>
+                          <p className="eyebrow mb-1">User-facing tradeoff</p>
+                          <p className="font-serif italic text-sm">
+                            {p.user_facing_tradeoff || <span className="text-muted-foreground">Not written yet.</span>}
+                          </p>
+                        </div>
+                        <div>
+                          <p className="eyebrow mb-1">Internal hypothesis — what we're testing</p>
+                          <p className="text-sm text-foreground/90">
+                            {p.hypothesis || <span className="text-muted-foreground">Not written yet.</span>}
+                          </p>
+                        </div>
+                        {p.difficulty != null && (
+                          <div>
+                            <p className="eyebrow mb-1">Difficulty</p>
+                            <p className="font-mono text-xs">{String(p.difficulty)}</p>
+                          </div>
+                        )}
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
+              );
+            })}
             {rows.length === 0 && (
-              <tr><td colSpan={7} className="px-3 py-6 text-center text-muted-foreground">No pairings match.</td></tr>
+              <tr><td colSpan={9} className="px-3 py-6 text-center text-muted-foreground">No pairings match.</td></tr>
             )}
           </tbody>
         </table>
