@@ -1256,7 +1256,7 @@ export const finalizeSession = createServerFn({ method: "POST" })
 
 export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string }) {
     const { data: session, error: sErr } = await supabase
-      .from("sessions").select("vector,user_id").eq("id", data.sessionId).single();
+      .from("sessions").select("vector,user_id,lane,lane_confidence,probe_state").eq("id", data.sessionId).single();
     if (sErr || !session) throw new Error(sErr?.message ?? "session not found");
     if (session.user_id !== userId) throw new Error("forbidden");
 
