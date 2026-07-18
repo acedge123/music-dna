@@ -107,19 +107,46 @@ function catalogLaneToTopLane(sub: string | null | undefined): Lane | null {
   return null;
 }
 
+// Slot weighting for the opener: users list their most-defining song first.
+// Weights sum to 9; a lane clearing ≥ 4.5 of them is considered a clear
+// majority. Kept as a named constant so admin diagnostics and the classifier
+// prompt can reference the same scheme.
+export const OPENER_SLOT_WEIGHTS = [3, 2, 2, 1, 1] as const;
+export const OPENER_WEIGHT_TOTAL = OPENER_SLOT_WEIGHTS.reduce((s, n) => s + n, 0); // 9
+
 // Best-guess lane when the model is unsure (confidence < 0.4).
-// Use per_song majority instead of dumping to "general" - at least we pick
-// pairings from the dominant genre instead of fishing across the whole catalog.
-function dominantPerSongLane(perSong: Array<{ lane: Lane | "unknown" }>): Lane | null {
+// Weighted vote — slot 1 is worth 3× slot 5. Ties still return null so a
+// genuinely-scattered picks stays "general".
+export function dominantPerSongLane(perSong: Array<{ lane: Lane | "unknown" }>): Lane | null {
+  const share = weightedLaneShare(perSong);
+  if (!share) return null;
+  if (share.tied) return null;
+  return share.lane;
+}
+
+// Weighted lane share across the opener slots. Returns the top lane, its
+// share of OPENER_WEIGHT_TOTAL, and a `tied` flag when the second-place lane
+// has identical weight. Used by both the low-confidence fallback and the
+// post-LLM confidence floor.
+export function weightedLaneShare(
+  perSong: Array<{ lane: Lane | "unknown" }>,
+): { lane: Lane; weight: number; share: number; tied: boolean } | null {
   const tally: Record<string, number> = {};
-  for (const p of perSong) {
-    if (p.lane && p.lane !== "unknown") tally[p.lane] = (tally[p.lane] ?? 0) + 1;
+  for (let i = 0; i < perSong.length; i++) {
+    const w = OPENER_SLOT_WEIGHTS[i] ?? 1;
+    const lane = perSong[i]?.lane;
+    if (lane && lane !== "unknown") tally[lane] = (tally[lane] ?? 0) + w;
   }
   const entries = Object.entries(tally).sort((a, b) => b[1] - a[1]);
   if (!entries.length) return null;
-  // Need a clear winner - a 1-1-1 split stays "general".
-  if (entries.length > 1 && entries[0][1] === entries[1][1]) return null;
-  return entries[0][0] as Lane;
+  const [topLane, topWeight] = entries[0];
+  const tied = entries.length > 1 && entries[1][1] === topWeight;
+  return {
+    lane: topLane as Lane,
+    weight: topWeight,
+    share: topWeight / OPENER_WEIGHT_TOTAL,
+    tied,
+  };
 }
 
 const CLASSIFIER_VOICE = `${PERSONA}
