@@ -133,7 +133,9 @@ export const adminDelete = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-// Tiny helper for the diagnostic_weight inline editor on pairings.
+// Inline editor for pairings: diagnostic_weight, active, and is_bootstrap.
+// is_bootstrap marks a pairing as usable in the first 2 rounds of a
+// general-lane session so we can promote the session to a real lane.
 export const adminSetDiagnosticWeight = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
@@ -141,18 +143,21 @@ export const adminSetDiagnosticWeight = createServerFn({ method: "POST" })
       id: z.string().uuid(),
       diagnostic_weight: z.number().int().min(0).max(100),
       active: z.boolean().optional(),
+      is_bootstrap: z.boolean().optional(),
     }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
-    const patch: { diagnostic_weight: number; active?: boolean } = {
+    const patch: { diagnostic_weight: number; active?: boolean; is_bootstrap?: boolean } = {
       diagnostic_weight: data.diagnostic_weight,
     };
     if (data.active !== undefined) patch.active = data.active;
+    if (data.is_bootstrap !== undefined) patch.is_bootstrap = data.is_bootstrap;
     const { error } = await admin.from("pairings").update(patch).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
+
 
 // --------- Residual review queue ---------
 // Sessions where the archetype match didn't clear the confidence bar.
