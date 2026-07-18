@@ -468,20 +468,39 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     // If the session opened as `general` (opener didn't produce a confident
     // lane call) and we haven't yet shown 2 bootstrap pairings, prefer a
     // marked bootstrap pairing so we can promote the session to a real lane
-    // from the first 2 winners. Silent fallthrough when no bootstrap pool
-    // exists (the flag defaults false, so an unseeded install behaves
-    // exactly as before).
+    // from the first 2 winners.
+    //
+    // Constraint: the bootstrap pairing must sit inside the lanes the user's
+    // opener songs actually landed in (openerLanes). We won't cold-serve an
+    // R&B / country / hip-hop probe to someone who named three rock/pop
+    // songs — that reads as "the app isn't listening". Fall through to the
+    // normal general-pool selection (recognition-first) when no bootstrap
+    // pairing matches the opener territory; a future "skip" affordance can
+    // opt the user into wider probes.
     if (sessionLane === "general" && bootstrapChoices.length < 2) {
       const bootRes = await supabase
         .from("pairings")
         .select(pairingSelect)
         .eq("active", true)
         .eq("is_bootstrap", true);
-      const bootPool = ((bootRes.data ?? []) as unknown as Array<PairingCandidate & { is_bootstrap?: boolean; song_a?: { primary_lane?: string | null } | null; song_b?: { primary_lane?: string | null } | null }>)
+      const rawBootPool = ((bootRes.data ?? []) as unknown as Array<PairingCandidate & { is_bootstrap?: boolean; song_a?: { primary_lane?: string | null } | null; song_b?: { primary_lane?: string | null } | null }>)
         .filter((p) => !usedIds.has(p.id));
+      // Keep only pairings that intersect the user's opener lanes. If the
+      // opener produced no usable lanes (should be rare — total scatter),
+      // fall back to the full bootstrap pool so we still probe.
+      const bootPool = openerLanes.size > 0
+        ? rawBootPool.filter((p) => {
+            const pairingLane = (p.lane ?? null) as string | null;
+            const aLane = p.song_a?.primary_lane ?? null;
+            const bLane = p.song_b?.primary_lane ?? null;
+            return (pairingLane && openerLanes.has(pairingLane))
+              || (aLane && openerLanes.has(aLane))
+              || (bLane && openerLanes.has(bLane));
+          })
+        : rawBootPool;
       if (bootPool.length > 0) {
         // Prefer pairings whose two songs have different primary_lane so the
-        // winner is diagnostic. Fall back to any bootstrap pairing.
+        // winner is diagnostic. Fall back to any lane-scoped bootstrap.
         const differing = bootPool.filter((p) => {
           const a = p.song_a?.primary_lane ?? null;
           const b = p.song_b?.primary_lane ?? null;
@@ -506,10 +525,13 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
             pool_size: finalPool.length,
             weight: 0,
             bootstrap: true,
+            opener_lanes: Array.from(openerLanes),
           } as never,
         };
       }
-      // No bootstrap pool → normal general-pool selection below.
+      // No opener-lane bootstrap available → fall through to normal general
+      // selection below (recognition-first, high canon).
+
     }
 
     // -------- Fetch lane-scoped pool, fall back to general when empty --------
