@@ -310,7 +310,13 @@ export async function startSessionImpl(supabase: AuthedSupabase, userId: string)
         lane: seed.lane,
         lane_confidence: seed.lane_confidence,
         probe_candidate_lanes: seed.probe_candidate_lanes,
-        probe_state: { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] },
+        probe_state: {
+          probes_shown: [],
+          pending: {},
+          lane_alignment: {},
+          flips: [],
+          calibration: seed.calibration,
+        } as never,
       })
       .select("id")
       .single();
