@@ -3067,12 +3067,28 @@ No prose, no markdown fences.`;
     }
 
     let reply = "";
+    let chatError: string | null = null;
     try {
       reply = await ai(messages);
-    } catch {
-      reply = "I lost the thread for a second. Say that again?";
+    } catch (e) {
+      chatError = e instanceof Error ? e.message : String(e);
+      // Surface in server logs so we can see WHY the critic dropped a turn.
+      console.error("[chatTurn] ai() failed:", chatError);
+      // Log to event_log for admin visibility. Fire-and-forget.
+      supabase.from("event_log").insert({
+        user_id: userId,
+        session_id: sessionId,
+        event_type: "chat_ai_error",
+        props: { error: chatError.slice(0, 500) } as never,
+        client: "server",
+      }).then(() => undefined, () => undefined);
     }
-    reply = (reply || "").trim() || "Mm. Keep going.";
+    reply = (reply || "").trim();
+    if (!reply) {
+      // Honest fallback — don't pretend it's a critic beat. Tell the user
+      // the model call failed, so they don't think the critic is stonewalling.
+      reply = "Model call didn't come back this turn. Try again — same message is fine.";
+    }
     if (reply.length > 1200) reply = reply.slice(0, 1197) + "…";
 
     await supabase.from("chat_messages").insert({
