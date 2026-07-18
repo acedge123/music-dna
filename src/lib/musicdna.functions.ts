@@ -399,13 +399,18 @@ export const nextPairing = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => nextPairingImpl(context.supabase, data));
 
 export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionId: string }) {
-    const [usedRes, sessionRes] = await Promise.all([
+    const [usedRes, sessionRes, profileRes] = await Promise.all([
       supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
       supabase
         .from("sessions")
-        .select("vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json")
+        .select("vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json, user_id")
         .eq("id", data.sessionId)
         .single(),
+      supabase
+        .from("sessions")
+        .select("user_id, profiles!inner(opening_analysis_json)")
+        .eq("id", data.sessionId)
+        .maybeSingle(),
     ]);
     const sessionLane = (sessionRes.data?.lane as Lane | null) ?? "general";
     const laneConfidence = Number(sessionRes.data?.lane_confidence ?? 0);
@@ -417,6 +422,24 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     probeState.flips = probeState.flips ?? [];
     const bootstrapChoices = ((sessionRes.data as { bootstrap_choices_json?: unknown } | null)
       ?.bootstrap_choices_json as BootstrapChoiceEntry[] | null) ?? [];
+
+    // Extract the set of lanes the opener songs actually landed in. Used by
+    // the bootstrap phase to keep probe pairings inside the user's stated
+    // taste territory (rock/pop/alt if that's what they named) instead of
+    // reaching for R&B or country cold. Empty = fall back to any bootstrap.
+    const openingAnalysis = (profileRes.data as { profiles?: { opening_analysis_json?: unknown } } | null)
+      ?.profiles?.opening_analysis_json as
+        | { per_song?: Array<{ lane?: string | null }>; secondary_lanes?: string[] | null }
+        | null
+        | undefined;
+    const openerLanes = new Set<string>();
+    for (const p of openingAnalysis?.per_song ?? []) {
+      if (p?.lane && p.lane !== "unknown" && p.lane !== "general") openerLanes.add(p.lane);
+    }
+    for (const l of openingAnalysis?.secondary_lanes ?? []) {
+      if (l && l !== "general") openerLanes.add(l);
+    }
+
 
     const pairingSelect = `
       id, tests, hypothesis, why_good, diagnostic_weight, lane, is_bootstrap,
