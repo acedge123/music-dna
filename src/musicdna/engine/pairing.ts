@@ -14,8 +14,8 @@ export type PairingCandidate = {
   lane?: string | null;
   tests: string[] | null;
   diagnostic_weight: number | null;
-  song_a?: { artist?: string | null; canon_score?: number | null; year?: number | null } | null;
-  song_b?: { artist?: string | null; canon_score?: number | null; year?: number | null } | null;
+  song_a?: { artist?: string | null } | null;
+  song_b?: { artist?: string | null } | null;
 };
 
 export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = {
@@ -143,66 +143,4 @@ export function assertWithinLane(pickedLane: string | null | undefined, sessionL
         `See mem://product/within-lane-only.md.`,
     );
   }
-}
-
-// ---------------------------------------------------------------------------
-// Calibration pairing selection.
-//
-// Rounds 1–2 aren't scoring aesthetic dimensions — they're deciding which lane
-// to lock into. We pick pairings that are:
-//   1. within the candidate lanes derived from the user's opening 3 songs
-//   2. as recognizable as possible (sum of both songs' canon_score)
-//   3. near the user's opening decade clusters (soft bonus)
-// This uses ONLY existing columns (canon_score, year) — no schema/data adds.
-export type CalibrationSelectInput<P extends PairingCandidate = PairingCandidate> = {
-  pool: P[];
-  used_ids: Set<string>;
-  candidate_lanes: string[];
-  decade_clusters: string[]; // ["1980s", ...]
-  rng: Rng;
-};
-export type CalibrationSelectResult<P extends PairingCandidate = PairingCandidate> =
-  | { kind: "picked"; pairing: P; reason: { candidate_lanes: string[]; recognizability: number; decade_bonus: number } }
-  | { kind: "empty" };
-
-function decadeOf(year: number | null | undefined): string | null {
-  if (!year || !Number.isFinite(year) || year < 1900) return null;
-  return `${Math.floor(year / 10) * 10}s`;
-}
-
-export function selectCalibrationPairing<P extends PairingCandidate>(
-  input: CalibrationSelectInput<P>,
-): CalibrationSelectResult<P> {
-  const laneSet = new Set(input.candidate_lanes);
-  const decadeSet = new Set(input.decade_clusters);
-  const pool = input.pool
-    .filter((p) => !input.used_ids.has(p.id))
-    .filter((p) => (p.lane ? laneSet.has(p.lane) : false))
-    .filter(differentArtist);
-  if (!pool.length) return { kind: "empty" };
-
-  const scored = pool.map((p) => {
-    const canonA = Number(p.song_a?.canon_score ?? 50);
-    const canonB = Number(p.song_b?.canon_score ?? 50);
-    const recognizability = (canonA + canonB) / 200; // 0..1
-    const decA = decadeOf(p.song_a?.year ?? null);
-    const decB = decadeOf(p.song_b?.year ?? null);
-    const decade_bonus =
-      (decA && decadeSet.has(decA) ? 0.15 : 0) + (decB && decadeSet.has(decB) ? 0.15 : 0);
-    // Weight: recognizability drives it; decade nudges. Small jitter so ties
-    // don't always resolve the same way.
-    const w = recognizability + decade_bonus + input.rng.next() * 0.05;
-    return { p, w, recognizability, decade_bonus };
-  });
-  scored.sort((a, b) => b.w - a.w);
-  const pick = scored[0];
-  return {
-    kind: "picked",
-    pairing: pick.p,
-    reason: {
-      candidate_lanes: input.candidate_lanes,
-      recognizability: Math.round(pick.recognizability * 1000) / 1000,
-      decade_bonus: Math.round(pick.decade_bonus * 1000) / 1000,
-    },
-  };
 }
