@@ -107,19 +107,46 @@ function catalogLaneToTopLane(sub: string | null | undefined): Lane | null {
   return null;
 }
 
+// Slot weighting for the opener: users list their most-defining song first.
+// Weights sum to 9; a lane clearing ≥ 4.5 of them is considered a clear
+// majority. Kept as a named constant so admin diagnostics and the classifier
+// prompt can reference the same scheme.
+export const OPENER_SLOT_WEIGHTS = [3, 2, 2, 1, 1] as const;
+export const OPENER_WEIGHT_TOTAL = OPENER_SLOT_WEIGHTS.reduce((s, n) => s + n, 0); // 9
+
 // Best-guess lane when the model is unsure (confidence < 0.4).
-// Use per_song majority instead of dumping to "general" - at least we pick
-// pairings from the dominant genre instead of fishing across the whole catalog.
-function dominantPerSongLane(perSong: Array<{ lane: Lane | "unknown" }>): Lane | null {
+// Weighted vote — slot 1 is worth 3× slot 5. Ties still return null so a
+// genuinely-scattered picks stays "general".
+export function dominantPerSongLane(perSong: Array<{ lane: Lane | "unknown" }>): Lane | null {
+  const share = weightedLaneShare(perSong);
+  if (!share) return null;
+  if (share.tied) return null;
+  return share.lane;
+}
+
+// Weighted lane share across the opener slots. Returns the top lane, its
+// share of OPENER_WEIGHT_TOTAL, and a `tied` flag when the second-place lane
+// has identical weight. Used by both the low-confidence fallback and the
+// post-LLM confidence floor.
+export function weightedLaneShare(
+  perSong: Array<{ lane: Lane | "unknown" }>,
+): { lane: Lane; weight: number; share: number; tied: boolean } | null {
   const tally: Record<string, number> = {};
-  for (const p of perSong) {
-    if (p.lane && p.lane !== "unknown") tally[p.lane] = (tally[p.lane] ?? 0) + 1;
+  for (let i = 0; i < perSong.length; i++) {
+    const w = OPENER_SLOT_WEIGHTS[i] ?? 1;
+    const lane = perSong[i]?.lane;
+    if (lane && lane !== "unknown") tally[lane] = (tally[lane] ?? 0) + w;
   }
   const entries = Object.entries(tally).sort((a, b) => b[1] - a[1]);
   if (!entries.length) return null;
-  // Need a clear winner - a 1-1-1 split stays "general".
-  if (entries.length > 1 && entries[0][1] === entries[1][1]) return null;
-  return entries[0][0] as Lane;
+  const [topLane, topWeight] = entries[0];
+  const tied = entries.length > 1 && entries[1][1] === topWeight;
+  return {
+    lane: topLane as Lane,
+    weight: topWeight,
+    share: topWeight / OPENER_WEIGHT_TOTAL,
+    tied,
+  };
 }
 
 const CLASSIFIER_VOICE = `${PERSONA}
@@ -142,6 +169,9 @@ You return a JSON object with this exact shape:
 }
 
 ${LANE_RULES}
+
+Slot weighting: the five songs are NOT equal. Weight them 3, 2, 2, 1, 1 (slot 1 is 3× slot 5). Users lead with their most-defining pick — if slot 1 lands in one lane and slots 4-5 scatter, the lane call follows slot 1.
+
 
 Confidence: 1.0 = all five point to one lane. 0.7-0.9 = strong majority. 0.4-0.6 = mixed but a leaning. <0.4 = scattered, use "general".
 
@@ -244,6 +274,25 @@ async function classifyLane(
     } catch { /* swallow */ }
   }
 
+  // Weighted-slot confidence floor: after canon enrichment, tally per_song by
+  // slot weight. If one lane owns ≥ 50% of the weight (≥ 4.5 of 9) AND isn't
+  // tied for first, floor confidence to 0.6 so we route to that lane instead
+  // of falling back to `general`. Slot 1's 3× weight is what usually saves
+  // "one clear favorite + four scattered picks" from ending up as general.
+  const share = weightedLaneShare(llm.per_song);
+  const weighting = share
+    ? { scheme: "3-2-2-1-1" as const, top_lane: share.lane, top_lane_share: Math.round(share.share * 100) / 100, tied: share.tied }
+    : { scheme: "3-2-2-1-1" as const, top_lane: null, top_lane_share: 0, tied: false };
+  if (share && !share.tied && share.share >= 0.5 && llm.confidence < 0.6) {
+    llm.lane = share.lane;
+    llm.confidence = Math.max(llm.confidence, 0.6);
+    llm.reasoning = [
+      ...llm.reasoning,
+      `Slot-1 anchored the read (${share.lane}, ${Math.round(share.share * 100)}% of weighted picks).`,
+    ].slice(0, 4);
+  }
+  (llm as OpeningAnalysis & { weighting?: unknown }).weighting = weighting;
+
   return llm;
 }
 
@@ -330,6 +379,16 @@ type ProbeState = {
   flips: Array<{ round: number; from: Lane; to: Lane; reason: string }>;
 };
 
+// One row per bootstrap pairing the user has answered while in `general`.
+// Written by recordChoiceImpl; read by both nextPairingImpl (to decide when
+// the bootstrap phase is over) and the promotion check (to decide whether
+// the 2 winners agree on a lane).
+type BootstrapChoiceEntry = {
+  pairing_id: string;
+  winner_primary_lane: string | null;
+  loser_primary_lane: string | null;
+};
+
 export const nextPairing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
@@ -340,7 +399,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
       supabase
         .from("sessions")
-        .select("vector, lane, probe_candidate_lanes, probe_state")
+        .select("vector, lane, probe_candidate_lanes, probe_state, bootstrap_choices_json")
         .eq("id", data.sessionId)
         .single(),
     ]);
@@ -351,9 +410,11 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     probeState.pending = probeState.pending ?? {};
     probeState.lane_alignment = probeState.lane_alignment ?? {};
     probeState.flips = probeState.flips ?? [];
+    const bootstrapChoices = ((sessionRes.data as { bootstrap_choices_json?: unknown } | null)
+      ?.bootstrap_choices_json as BootstrapChoiceEntry[] | null) ?? [];
 
     const pairingSelect = `
-      id, tests, hypothesis, why_good, diagnostic_weight, lane,
+      id, tests, hypothesis, why_good, diagnostic_weight, lane, is_bootstrap,
       song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane),
       song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane)
     `;
@@ -375,11 +436,60 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       );
     }
 
+    // -------- Bootstrap phase --------
+    // If the session opened as `general` (opener didn't produce a confident
+    // lane call) and we haven't yet shown 2 bootstrap pairings, prefer a
+    // marked bootstrap pairing so we can promote the session to a real lane
+    // from the first 2 winners. Silent fallthrough when no bootstrap pool
+    // exists (the flag defaults false, so an unseeded install behaves
+    // exactly as before).
+    if (sessionLane === "general" && bootstrapChoices.length < 2) {
+      const bootRes = await supabase
+        .from("pairings")
+        .select(pairingSelect)
+        .eq("active", true)
+        .eq("is_bootstrap", true);
+      const bootPool = ((bootRes.data ?? []) as unknown as Array<PairingCandidate & { is_bootstrap?: boolean; song_a?: { primary_lane?: string | null } | null; song_b?: { primary_lane?: string | null } | null }>)
+        .filter((p) => !usedIds.has(p.id));
+      if (bootPool.length > 0) {
+        // Prefer pairings whose two songs have different primary_lane so the
+        // winner is diagnostic. Fall back to any bootstrap pairing.
+        const differing = bootPool.filter((p) => {
+          const a = p.song_a?.primary_lane ?? null;
+          const b = p.song_b?.primary_lane ?? null;
+          return a && b && a !== b;
+        });
+        const finalPool = differing.length > 0 ? differing : bootPool;
+        const pickIdx = Math.floor(Math.random() * finalPool.length);
+        const bootPicked = finalPool[pickIdx];
+        return {
+          pairing: bootPicked,
+          round: round + 1,
+          confidence: stop.confidence,
+          done: false as const,
+          selection_reason: {
+            leaning_axes: [],
+            fork_matched: false,
+            tests: (bootPicked.tests ?? []) as string[],
+            axes_needed: [],
+            axis_need_score: 0,
+            challenge_boost: false,
+            diagnostic_weight: bootPicked.diagnostic_weight ?? 50,
+            pool_size: finalPool.length,
+            weight: 0,
+            bootstrap: true,
+          } as never,
+        };
+      }
+      // No bootstrap pool → normal general-pool selection below.
+    }
+
     // -------- Fetch lane-scoped pool, fall back to general when empty --------
     let pairingsRes = sessionLane === "general"
       ? await supabase.from("pairings").select(pairingSelect).eq("active", true)
       : await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", sessionLane);
     if (pairingsRes.error) throw new Error(pairingsRes.error.message);
+
 
     const rng = { next: () => Math.random() };
     let picked = selectPairing({
@@ -857,23 +967,28 @@ export const recordChoice = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => recordChoiceImpl(context.supabase, context.userId, data));
 
 export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string; pairingId: string; chosenSongId: string; msToDecide?: number }) {
-    const songCols = "id,title,artist,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+    const songCols = "id,title,artist,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
     const [pairingRes, sessionRes] = await Promise.all([
       supabase
         .from("pairings")
-        .select(`tests, diagnostic_weight, song_a_id, song_b_id, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`)
+        .select(`tests, diagnostic_weight, song_a_id, song_b_id, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`)
         .eq("id", data.pairingId).single(),
-      supabase.from("sessions").select("vector,user_id,lane,probe_state").eq("id", data.sessionId).single(),
+      supabase.from("sessions").select("vector,user_id,lane,probe_state,bootstrap_choices_json").eq("id", data.sessionId).single(),
     ]);
     const pairing = pairingRes.data as unknown as {
       tests: string[] | null; diagnostic_weight: number; song_a_id: string; song_b_id: string;
-      song_a: Record<string, number> & { id: string; title: string; artist: string };
-      song_b: Record<string, number> & { id: string; title: string; artist: string };
+      is_bootstrap: boolean | null;
+      song_a: Record<string, number> & { id: string; title: string; artist: string; primary_lane: string | null };
+      song_b: Record<string, number> & { id: string; title: string; artist: string; primary_lane: string | null };
     } | null;
-    const session = sessionRes.data as { vector: Record<string, number>; user_id: string; lane: Lane; probe_state: ProbeState | null } | null;
+    const session = sessionRes.data as {
+      vector: Record<string, number>; user_id: string; lane: Lane; probe_state: ProbeState | null;
+      bootstrap_choices_json: BootstrapChoiceEntry[] | null;
+    } | null;
     if (pairingRes.error || !pairing) throw new Error(pairingRes.error?.message ?? "pairing not found");
     if (sessionRes.error || !session) throw new Error(sessionRes.error?.message ?? "session not found");
     if (session.user_id !== userId) throw new Error("forbidden");
+
 
     // Reject choices that don't actually correspond to one of this pairing's songs.
     if (data.chosenSongId !== pairing.song_a_id && data.chosenSongId !== pairing.song_b_id) {
@@ -980,14 +1095,77 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
     // mem://product/within-lane-only.md. The nextPairing invariant guarantees
     // probe_state.pending is empty, so there is nothing to score here — the
     // session's lane and probe_state pass through unchanged.
-    const nextLane: Lane = session.lane;
+    let nextLane: Lane = session.lane;
+    let nextLaneConfidence: number | null = null;
     const probeState = session.probe_state ?? { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] };
 
+    // -------- Bootstrap-phase bookkeeping + lane promotion --------
+    // If this pairing was flagged is_bootstrap AND the session is still
+    // general, append the winner's primary_lane to bootstrap_choices_json.
+    // After the 2nd bootstrap choice, if both winners agree on a lane,
+    // promote sessions.lane and confidence so the remaining pairings come
+    // from that lane. Disagreement leaves the session in general.
+    let bootstrapChoices = session.bootstrap_choices_json ?? [];
+    let bootstrapEvent: null | { type: "lane_promoted" | "lane_promotion_failed"; props: Record<string, unknown> } = null;
+    if (pairing.is_bootstrap && session.lane === "general" && bootstrapChoices.length < 2) {
+      bootstrapChoices = [
+        ...bootstrapChoices,
+        {
+          pairing_id: data.pairingId,
+          winner_primary_lane: winner.primary_lane ?? null,
+          loser_primary_lane: loser.primary_lane ?? null,
+        },
+      ];
+      if (bootstrapChoices.length === 2) {
+        const [a, b] = bootstrapChoices;
+        const aLane = a.winner_primary_lane;
+        const bLane = b.winner_primary_lane;
+        if (aLane && bLane && aLane === bLane && (LANES as readonly string[]).includes(aLane) && aLane !== "general") {
+          nextLane = aLane as Lane;
+          nextLaneConfidence = 0.65;
+          bootstrapEvent = {
+            type: "lane_promoted",
+            props: { from: "general", to: aLane, winners: bootstrapChoices, confidence: 0.65 },
+          };
+        } else {
+          bootstrapEvent = {
+            type: "lane_promotion_failed",
+            props: { winners: bootstrapChoices, reason: aLane === bLane ? "invalid_lane" : "winners_disagree" },
+          };
+        }
+      }
+    }
+
+    const updatePayload: Record<string, unknown> = {
+      vector: vec,
+      lane: nextLane,
+      probe_state: probeState,
+      bootstrap_choices_json: bootstrapChoices,
+    };
+    if (nextLaneConfidence !== null) updatePayload.lane_confidence = nextLaneConfidence;
     const { error: uErr } = await supabase
       .from("sessions")
-      .update({ vector: vec, lane: nextLane, probe_state: probeState as never })
+      .update(updatePayload as never)
       .eq("id", data.sessionId);
     if (uErr) throw new Error(uErr.message);
+
+    // Fire-and-forget promotion event. Diagnostics only.
+    if (bootstrapEvent) {
+      try {
+        await supabase.from("event_log").insert({
+          user_id: userId,
+          session_id: data.sessionId,
+          pairing_id: data.pairingId,
+          event_type: bootstrapEvent.type,
+          client: "server",
+          props: bootstrapEvent.props,
+        } as never);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn("[musicdna] bootstrap event log failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
 
     // -------- Instrumentation: emit choice_scored + (milestone) archetype_ranking_snapshot --------
     // Fire-and-forget. Failures never break the choice flow — diagnostics are
