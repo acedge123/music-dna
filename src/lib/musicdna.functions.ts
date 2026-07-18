@@ -3032,25 +3032,29 @@ No prose, no markdown fences.`;
 
     const ctxLines: string[] = [];
     if (profile?.opening_songs?.length) {
-      ctxLines.push(`Opener songs (ranked):\n${(profile.opening_songs as string[]).map((s, i) => `${i + 1}. ${s}`).join("\n")}`);
+      ctxLines.push(`THE LISTENER'S OPENER (their 3 ranked picks — reference by name, not by number):\n${(profile.opening_songs as string[]).map((s, i) => `#${i + 1}. ${s}`).join("\n")}`);
+    } else {
+      ctxLines.push(`THE LISTENER'S OPENER: not on file. Ask them to name three before making claims about their taste.`);
     }
     if (profile?.opening_hypothesis) {
-      ctxLines.push(`Working hypothesis: "${profile.opening_hypothesis}"`);
+      ctxLines.push(`YOUR CURRENT WORKING HYPOTHESIS (yours — you wrote it):\n"${profile.opening_hypothesis}"`);
     }
     if (profile?.opening_lane) {
-      ctxLines.push(`Lane: ${profile.opening_lane}`);
+      ctxLines.push(`Routing lane: ${profile.opening_lane}`);
     }
     if (topAxes.length) {
       ctxLines.push(
-        `Strongest leans so far:\n${topAxes
+        `Strongest axis leans so far (from pairing picks + chat):\n${topAxes
           .map(({ d, v }) => {
             const lbl = DIM_LABEL[d];
             return `- ${d}: ${v >= 0 ? "+" : ""}${Math.round(v)} (${v >= 0 ? lbl?.hi : lbl?.lo})`;
           })
           .join("\n")}`,
       );
+    } else {
+      ctxLines.push(`No strong axis leans yet — evidence is thin. Say so if pushed.`);
     }
-    const contextBlock = ctxLines.length ? `Listener context:\n${ctxLines.join("\n\n")}` : "No prior context yet.";
+    const contextBlock = `LISTENER CONTEXT (always true, reference freely):\n\n${ctxLines.join("\n\n")}`;
 
     const criticProfile = await loadCriticProfile(supabase as never, userId);
     const voiceMod = buildVoiceModulation(criticProfile);
