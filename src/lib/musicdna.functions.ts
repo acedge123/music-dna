@@ -455,6 +455,8 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     `;
 
     const usedIds = new Set((usedRes.data ?? []).map((c) => c.pairing_id));
+    // Skipped pairings are excluded from every future selection in this session.
+    for (const pid of probeState.skipped_pairing_ids ?? []) usedIds.add(pid);
     const round = usedIds.size;
     const vector = (sessionRes.data?.vector ?? {}) as Record<string, number>;
     const stop = shouldStop({ round, vector, dims: DIMS as readonly string[] });
