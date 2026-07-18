@@ -1387,15 +1387,59 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
       notes: `${fastPicks} of ${choices.length} choices resolved in under 2 seconds.`,
     });
 
-    // -------- Layer 4: Evidence threshold --------
-    // Tuned for 6-round adaptive test: 2 supporting choices on an axis is
-    // enough to call a tendency, as long as direction is consistent and the
-    // magnitude is real. 0.55 keeps out pure noise without demanding 12 rounds.
+    // -------- Layer 4: Evidence threshold + truthfulness gates --------
+    // Tuned for a 6-round adaptive test: a claim needs ≥2 independent
+    // supporting choices, consistent direction, and real magnitude.
+    //
+    // Truthfulness rules layered on top of the raw threshold:
+    //   • CONTRADICTIONS: for each surviving claim, attach the choices that
+    //     went the OTHER direction on that axis (so the critic can name them
+    //     instead of pretending they don't exist).
+    //   • NON-REUSE: reject a second claim whose example set overlaps ≥ 2
+    //     with an earlier accepted claim — that's the same two choices doing
+    //     double duty, not independent support.
     const MIN_SUPPORT = 2;
     const MIN_CONFIDENCE = 0.55;
-    const allowed_claims = patterns
-      .filter((p) => p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE)
-      .slice(0, 5);
+    type ClaimExample = { chosen: string; rejected: string; delta: number };
+    type ClaimContra = ClaimExample;
+    const rawAllowed = patterns.filter((p) => p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE);
+
+    // Contradictions per claim.
+    const contradictionsByDim: Record<string, ClaimContra[]> = {};
+    for (const p of rawAllowed) {
+      const dim = p.dimension;
+      const preferredHi = p.tradeoff.startsWith(DIM_LABEL[dim]?.hi ?? "\x00");
+      const contras: ClaimContra[] = [];
+      for (const c of choices) {
+        const tests = c.pairing?.tests?.length ? c.pairing.tests : (DIMS as readonly string[]).slice();
+        if (!tests.includes(dim)) continue;
+        const a = Number(c.chosen![dim] ?? 50);
+        const b = Number(c.rejected![dim] ?? 50);
+        const delta = a - b;
+        // "Contradictory" = the user chose the opposite pole with real magnitude.
+        if ((preferredHi && delta < -10) || (!preferredHi && delta > 10)) {
+          contras.push({ chosen: c.chosen!.title, rejected: c.rejected!.title, delta });
+          if (contras.length >= 2) break;
+        }
+      }
+      contradictionsByDim[dim] = contras;
+    }
+
+    // Non-reuse dedup.
+    const usedPairs = new Set<string>();
+    const dedupAllowed: typeof rawAllowed = [];
+    for (const p of rawAllowed) {
+      const pairs = p.examples.map((e) => `${e.chosen}|${e.rejected}`);
+      const overlap = pairs.filter((k) => usedPairs.has(k)).length;
+      if (dedupAllowed.length > 0 && overlap >= 2) continue; // reused evidence — drop
+      dedupAllowed.push(p);
+      for (const k of pairs) usedPairs.add(k);
+      if (dedupAllowed.length >= 5) break;
+    }
+    const allowed_claims = dedupAllowed.map((p) => ({
+      ...p,
+      contradictions: contradictionsByDim[p.dimension] ?? [],
+    }));
     const blocked_claims = patterns
       .filter((p) => !(p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE))
       .slice(0, 5);
