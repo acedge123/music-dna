@@ -105,6 +105,7 @@ class _SessionStubPageState extends State<SessionStubPage> {
                           pairing: pairing,
                           isBusy: true,
                           onChoose: (_) {},
+                          onSkip: () {},
                         ),
                       const SizedBox(height: 20),
                       const Center(child: CircularProgressIndicator()),
@@ -130,6 +131,7 @@ class _SessionStubPageState extends State<SessionStubPage> {
                                 isBusy: isBusy,
                                 onChoose: (songId) =>
                                     _chooseSong(context, chosenSongId: songId),
+                                onSkip: () => _skipPairing(context),
                               ),
                             ],
                           ),
@@ -207,6 +209,11 @@ class _SessionStubPageState extends State<SessionStubPage> {
       chosenSongId: chosenSongId,
       msToDecide: elapsedMs,
     );
+  }
+
+  void _skipPairing(BuildContext context) {
+    final elapsedMs = _stopwatch?.elapsedMilliseconds ?? 0;
+    context.read<SessionCubit>().skipPairing(msToDecide: elapsedMs);
   }
 
   void _syncStopwatch(String? pairingId) {
@@ -409,30 +416,46 @@ class _PairingCard extends StatelessWidget {
     required this.pairing,
     required this.isBusy,
     required this.onChoose,
+    required this.onSkip,
   });
 
   final SessionPairing pairing;
   final bool isBusy;
   final ValueChanged<String> onChoose;
+  final VoidCallback onSkip;
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    return Column(
       children: <Widget>[
-        Expanded(
-          child: _SongChoiceCard(
-            song: pairing.songA,
-            isBusy: isBusy,
-            onChoose: () => onChoose(pairing.songA.id),
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              Expanded(
+                child: _SongChoiceCard(
+                  song: pairing.songA,
+                  isBusy: isBusy,
+                  onChoose: () => onChoose(pairing.songA.id),
+                ),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: _SongChoiceCard(
+                  song: pairing.songB,
+                  isBusy: isBusy,
+                  onChoose: () => onChoose(pairing.songB.id),
+                ),
+              ),
+            ],
           ),
         ),
-        const SizedBox(width: 12),
-        Expanded(
-          child: _SongChoiceCard(
-            song: pairing.songB,
-            isBusy: isBusy,
-            onChoose: () => onChoose(pairing.songB.id),
+        const SizedBox(height: 14),
+        Align(
+          alignment: Alignment.center,
+          child: TextButton(
+            onPressed: isBusy ? null : onSkip,
+            child: const Text('Skip this pairing'),
           ),
         ),
       ],

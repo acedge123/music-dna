@@ -34,6 +34,21 @@ class SessionRemoteDataSource {
     return _decodeJson(response);
   }
 
+  Future<void> skipPairing({
+    required String sessionId,
+    required String pairingId,
+    required int msToDecide,
+  }) async {
+    final response = await _apiClient.post(
+      '/api/v1/session/$sessionId/skip',
+      body: <String, dynamic>{
+        'pairing_id': pairingId,
+        'ms_to_decide': msToDecide,
+      },
+    );
+    _decodeJson(response);
+  }
+
   Future<Map<String, dynamic>> revealSession({
     required String sessionId,
   }) async {

@@ -7,9 +7,9 @@
 
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
-import { HttpError, verifyBearer } from "./_auth";
 import { skipPairingImpl } from "@/lib/musicdna.functions";
+import { HttpError, verifyBearer } from "./_auth";
+import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 
 const BodySchema = z.object({
   pairing_id: z.string().uuid(),
@@ -25,15 +25,22 @@ export const Route = createFileRoute("/api/v1/session/$id/skip")({
       POST: async ({ request, params }) => {
         try {
           const sid = UUID.safeParse(params.id);
-          if (!sid.success) return errorResponse("INVALID_INPUT", "Invalid session id", 400);
+          if (!sid.success) {
+            return errorResponse("INVALID_INPUT", "Invalid session id", 400);
+          }
+
           let raw: unknown;
           try {
             raw = await request.json();
           } catch {
             return errorResponse("INVALID_INPUT", "Invalid JSON body", 400);
           }
+
           const body = BodySchema.safeParse(raw);
-          if (!body.success) return errorResponse("INVALID_INPUT", body.error.message, 400);
+          if (!body.success) {
+            return errorResponse("INVALID_INPUT", body.error.message, 400);
+          }
+
           const { supabase, userId } = await verifyBearer(request);
           const result = await skipPairingImpl(supabase, userId, {
             sessionId: sid.data,
@@ -42,7 +49,9 @@ export const Route = createFileRoute("/api/v1/session/$id/skip")({
           });
           return jsonResponse(result);
         } catch (e) {
-          if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
+          if (e instanceof HttpError) {
+            return errorResponse(e.code, e.message, e.status);
+          }
           const msg = e instanceof Error ? e.message : String(e);
           return errorResponse("INTERNAL", msg, 500);
         }

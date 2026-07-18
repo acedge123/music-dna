@@ -42,6 +42,19 @@ class SessionRepositoryImpl implements SessionRepository {
   }
 
   @override
+  Future<void> skipPairing({
+    required String sessionId,
+    required String pairingId,
+    required int msToDecide,
+  }) {
+    return _remoteDataSource.skipPairing(
+      sessionId: sessionId,
+      pairingId: pairingId,
+      msToDecide: msToDecide,
+    );
+  }
+
+  @override
   Future<SessionReveal> revealSession({required String sessionId}) async {
     final response = await _remoteDataSource.revealSession(
       sessionId: sessionId,

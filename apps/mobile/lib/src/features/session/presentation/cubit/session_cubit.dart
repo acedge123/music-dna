@@ -209,6 +209,60 @@ class SessionCubit extends Cubit<SessionState> {
     }
   }
 
+  Future<void> skipPairing({required int msToDecide}) async {
+    final sessionId = state.sessionId;
+    final pairingId = state.currentRound?.pairing?.id;
+    _logger.event('session.skip_requested', <String, Object?>{
+      'sessionId': sessionId,
+      'pairingId': pairingId,
+      'msToDecide': msToDecide,
+    });
+    if (sessionId == null || pairingId == null) {
+      emit(
+        state.copyWith(
+          status: SessionStatus.failure,
+          errorMessage: 'No active pairing is available yet.',
+          requiresReauthentication: false,
+        ),
+      );
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        status: SessionStatus.submitting,
+        clearLastFeedback: true,
+        clearErrorMessage: true,
+      ),
+    );
+
+    try {
+      await _repository.skipPairing(
+        sessionId: sessionId,
+        pairingId: pairingId,
+        msToDecide: msToDecide,
+      );
+      _logger.event('session.skip_succeeded', <String, Object?>{
+        'sessionId': sessionId,
+        'pairingId': pairingId,
+      });
+      await _loadNextPairing(sessionId: sessionId, keepFeedback: false);
+    } catch (error) {
+      _logger.error('session.skip_failed', error, <String, Object?>{
+        'sessionId': sessionId,
+        'pairingId': pairingId,
+      });
+      final apiError = error is AppApiException ? error : null;
+      emit(
+        state.copyWith(
+          status: SessionStatus.failure,
+          errorMessage: _readableError(apiError ?? error),
+          requiresReauthentication: apiError?.isAuthRelated == true,
+        ),
+      );
+    }
+  }
+
   void clearFeedback() {
     emit(
       state.copyWith(

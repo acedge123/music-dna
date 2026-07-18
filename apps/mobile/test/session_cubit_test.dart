@@ -100,6 +100,65 @@ void main() {
       },
     );
 
+    test('skips a pairing and advances without feedback', () async {
+      final repository = FakeSessionRepository(
+        nextPairings: <SessionRoundState>[
+          SessionRoundState(
+            sessionId: 'session-1',
+            round: 1,
+            confidence: 0.42,
+            done: false,
+            pairing: SessionPairing(
+              id: 'pairing-1',
+              songA: const SessionPairingSong(
+                id: 'song-a',
+                title: 'Song A',
+                artist: 'Artist A',
+              ),
+              songB: const SessionPairingSong(
+                id: 'song-b',
+                title: 'Song B',
+                artist: 'Artist B',
+              ),
+              tests: const <String>['drive'],
+            ),
+          ),
+          SessionRoundState(
+            sessionId: 'session-1',
+            round: 2,
+            confidence: 0.51,
+            done: false,
+            pairing: SessionPairing(
+              id: 'pairing-2',
+              songA: const SessionPairingSong(
+                id: 'song-c',
+                title: 'Song C',
+                artist: 'Artist C',
+              ),
+              songB: const SessionPairingSong(
+                id: 'song-d',
+                title: 'Song D',
+                artist: 'Artist D',
+              ),
+              tests: const <String>['texture'],
+            ),
+          ),
+        ],
+      );
+      final cubit = SessionCubit(repository, startedSession: _startedSession());
+
+      addTearDown(cubit.close);
+
+      await cubit.initialize();
+      await cubit.skipPairing(msToDecide: 900);
+
+      expect(repository.lastSkippedPairingId, 'pairing-1');
+      expect(repository.lastSkipMsToDecide, 900);
+      expect(cubit.state.status, SessionStatus.ready);
+      expect(cubit.state.currentRound?.pairing?.id, 'pairing-2');
+      expect(cubit.state.lastFeedback, isNull);
+    });
+
     test(
       'builds a reveal and shared reading once the session is complete',
       () async {
@@ -278,6 +337,8 @@ class FakeSessionRepository implements SessionRepository {
   final Object? nextPairingsError;
   String? lastChoiceSongId;
   int? lastChoiceMsToDecide;
+  String? lastSkippedPairingId;
+  int? lastSkipMsToDecide;
 
   @override
   Future<SessionRoundState> fetchNextPairing({
@@ -302,6 +363,16 @@ class FakeSessionRepository implements SessionRepository {
     lastChoiceSongId = chosenSongId;
     lastChoiceMsToDecide = msToDecide;
     return feedback;
+  }
+
+  @override
+  Future<void> skipPairing({
+    required String sessionId,
+    required String pairingId,
+    required int msToDecide,
+  }) async {
+    lastSkippedPairingId = pairingId;
+    lastSkipMsToDecide = msToDecide;
   }
 
   @override

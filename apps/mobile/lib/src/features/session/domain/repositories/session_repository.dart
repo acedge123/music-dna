@@ -11,6 +11,12 @@ abstract class SessionRepository {
     required int msToDecide,
   });
 
+  Future<void> skipPairing({
+    required String sessionId,
+    required String pairingId,
+    required int msToDecide,
+  });
+
   Future<SessionReveal> revealSession({required String sessionId});
 
   Future<SharedReveal> fetchSharedReveal({required String token});

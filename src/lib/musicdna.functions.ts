@@ -1894,6 +1894,7 @@ const EVENT_TYPES = [
   "onboarding_classified",
   "pairing_shown",
   "choice_made",
+  "pairing_skipped",
   "reveal_shown",
   "reveal_continued",
   "session_completed",
