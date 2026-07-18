@@ -399,11 +399,12 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
       supabase
         .from("sessions")
-        .select("vector, lane, probe_candidate_lanes, probe_state, bootstrap_choices_json")
+        .select("vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json")
         .eq("id", data.sessionId)
         .single(),
     ]);
     const sessionLane = (sessionRes.data?.lane as Lane | null) ?? "general";
+    const laneConfidence = Number(sessionRes.data?.lane_confidence ?? 0);
     const probeCandidates = (sessionRes.data?.probe_candidate_lanes as Lane[] | null) ?? [];
     const probeState = (sessionRes.data?.probe_state ?? {}) as ProbeState;
     probeState.probes_shown = probeState.probes_shown ?? [];
