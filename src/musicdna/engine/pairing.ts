@@ -14,8 +14,8 @@ export type PairingCandidate = {
   lane?: string | null;
   tests: string[] | null;
   diagnostic_weight: number | null;
-  song_a?: { artist?: string | null } | null;
-  song_b?: { artist?: string | null } | null;
+  song_a?: { artist?: string | null; canon_score?: number | null; year?: number | null } | null;
+  song_b?: { artist?: string | null; canon_score?: number | null; year?: number | null } | null;
 };
 
 export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = {
