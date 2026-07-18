@@ -389,7 +389,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
       supabase
         .from("sessions")
-        .select("vector, lane, probe_candidate_lanes, probe_state")
+        .select("vector, lane, probe_candidate_lanes, probe_state, bootstrap_choices_json")
         .eq("id", data.sessionId)
         .single(),
     ]);
@@ -400,9 +400,11 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     probeState.pending = probeState.pending ?? {};
     probeState.lane_alignment = probeState.lane_alignment ?? {};
     probeState.flips = probeState.flips ?? [];
+    const bootstrapChoices = ((sessionRes.data as { bootstrap_choices_json?: unknown } | null)
+      ?.bootstrap_choices_json as BootstrapChoiceEntry[] | null) ?? [];
 
     const pairingSelect = `
-      id, tests, hypothesis, why_good, diagnostic_weight, lane,
+      id, tests, hypothesis, why_good, diagnostic_weight, lane, is_bootstrap,
       song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane),
       song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane)
     `;
@@ -424,11 +426,60 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       );
     }
 
+    // -------- Bootstrap phase --------
+    // If the session opened as `general` (opener didn't produce a confident
+    // lane call) and we haven't yet shown 2 bootstrap pairings, prefer a
+    // marked bootstrap pairing so we can promote the session to a real lane
+    // from the first 2 winners. Silent fallthrough when no bootstrap pool
+    // exists (the flag defaults false, so an unseeded install behaves
+    // exactly as before).
+    if (sessionLane === "general" && bootstrapChoices.length < 2) {
+      const bootRes = await supabase
+        .from("pairings")
+        .select(pairingSelect)
+        .eq("active", true)
+        .eq("is_bootstrap", true);
+      const bootPool = ((bootRes.data ?? []) as unknown as Array<PairingCandidate & { is_bootstrap?: boolean; song_a?: { primary_lane?: string | null } | null; song_b?: { primary_lane?: string | null } | null }>)
+        .filter((p) => !usedIds.has(p.id));
+      if (bootPool.length > 0) {
+        // Prefer pairings whose two songs have different primary_lane so the
+        // winner is diagnostic. Fall back to any bootstrap pairing.
+        const differing = bootPool.filter((p) => {
+          const a = p.song_a?.primary_lane ?? null;
+          const b = p.song_b?.primary_lane ?? null;
+          return a && b && a !== b;
+        });
+        const finalPool = differing.length > 0 ? differing : bootPool;
+        const pickIdx = Math.floor(Math.random() * finalPool.length);
+        const bootPicked = finalPool[pickIdx];
+        return {
+          pairing: bootPicked,
+          round: round + 1,
+          confidence: stop.confidence,
+          done: false as const,
+          selection_reason: {
+            leaning_axes: [],
+            fork_matched: false,
+            tests: (bootPicked.tests ?? []) as string[],
+            axes_needed: [],
+            axis_need_score: 0,
+            challenge_boost: false,
+            diagnostic_weight: bootPicked.diagnostic_weight ?? 50,
+            pool_size: finalPool.length,
+            weight: 0,
+            bootstrap: true,
+          } as never,
+        };
+      }
+      // No bootstrap pool → normal general-pool selection below.
+    }
+
     // -------- Fetch lane-scoped pool, fall back to general when empty --------
     let pairingsRes = sessionLane === "general"
       ? await supabase.from("pairings").select(pairingSelect).eq("active", true)
       : await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", sessionLane);
     if (pairingsRes.error) throw new Error(pairingsRes.error.message);
+
 
     const rng = { next: () => Math.random() };
     let picked = selectPairing({
