@@ -1095,14 +1095,77 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
     // mem://product/within-lane-only.md. The nextPairing invariant guarantees
     // probe_state.pending is empty, so there is nothing to score here — the
     // session's lane and probe_state pass through unchanged.
-    const nextLane: Lane = session.lane;
+    let nextLane: Lane = session.lane;
+    let nextLaneConfidence: number | null = null;
     const probeState = session.probe_state ?? { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] };
 
+    // -------- Bootstrap-phase bookkeeping + lane promotion --------
+    // If this pairing was flagged is_bootstrap AND the session is still
+    // general, append the winner's primary_lane to bootstrap_choices_json.
+    // After the 2nd bootstrap choice, if both winners agree on a lane,
+    // promote sessions.lane and confidence so the remaining pairings come
+    // from that lane. Disagreement leaves the session in general.
+    let bootstrapChoices = session.bootstrap_choices_json ?? [];
+    let bootstrapEvent: null | { type: "lane_promoted" | "lane_promotion_failed"; props: Record<string, unknown> } = null;
+    if (pairing.is_bootstrap && session.lane === "general" && bootstrapChoices.length < 2) {
+      bootstrapChoices = [
+        ...bootstrapChoices,
+        {
+          pairing_id: data.pairingId,
+          winner_primary_lane: winner.primary_lane ?? null,
+          loser_primary_lane: loser.primary_lane ?? null,
+        },
+      ];
+      if (bootstrapChoices.length === 2) {
+        const [a, b] = bootstrapChoices;
+        const aLane = a.winner_primary_lane;
+        const bLane = b.winner_primary_lane;
+        if (aLane && bLane && aLane === bLane && (LANES as readonly string[]).includes(aLane) && aLane !== "general") {
+          nextLane = aLane as Lane;
+          nextLaneConfidence = 0.65;
+          bootstrapEvent = {
+            type: "lane_promoted",
+            props: { from: "general", to: aLane, winners: bootstrapChoices, confidence: 0.65 },
+          };
+        } else {
+          bootstrapEvent = {
+            type: "lane_promotion_failed",
+            props: { winners: bootstrapChoices, reason: aLane === bLane ? "invalid_lane" : "winners_disagree" },
+          };
+        }
+      }
+    }
+
+    const updatePayload: Record<string, unknown> = {
+      vector: vec,
+      lane: nextLane,
+      probe_state: probeState,
+      bootstrap_choices_json: bootstrapChoices,
+    };
+    if (nextLaneConfidence !== null) updatePayload.lane_confidence = nextLaneConfidence;
     const { error: uErr } = await supabase
       .from("sessions")
-      .update({ vector: vec, lane: nextLane, probe_state: probeState as never })
+      .update(updatePayload as never)
       .eq("id", data.sessionId);
     if (uErr) throw new Error(uErr.message);
+
+    // Fire-and-forget promotion event. Diagnostics only.
+    if (bootstrapEvent) {
+      try {
+        await supabase.from("event_log").insert({
+          user_id: userId,
+          session_id: data.sessionId,
+          pairing_id: data.pairingId,
+          event_type: bootstrapEvent.type,
+          client: "server",
+          props: bootstrapEvent.props,
+        } as never);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn("[musicdna] bootstrap event log failed:", e instanceof Error ? e.message : e);
+      }
+    }
+
 
     // -------- Instrumentation: emit choice_scored + (milestone) archetype_ranking_snapshot --------
     // Fire-and-forget. Failures never break the choice flow — diagnostics are
