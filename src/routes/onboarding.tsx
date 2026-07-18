@@ -449,11 +449,14 @@ function Onboarding() {
         </div>
       </section>
     </main>
+    </>
     );
   }
 
   // TRANSCRIPT: slot2 → slot3 → playing → done in one continuous scroll
   return (
+    <>
+    <HomeLogo />
     <main className="mx-auto max-w-3xl px-6 pt-12 pb-24 space-y-12">
       <header className="space-y-2">
         <p className="eyebrow">the interview</p>
