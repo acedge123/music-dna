@@ -497,7 +497,12 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       // Keep only pairings that intersect the user's opener lanes. If the
       // opener produced no usable lanes (should be rare — total scatter),
       // fall back to the full bootstrap pool so we still probe.
-      const bootPool = openerLanes.size > 0
+      // Keep only pairings that intersect the user's opener lanes. If the
+      // opener produced no usable lanes, OR the user has already hit "skip"
+      // (wants_wider_probe), fall back to the full bootstrap pool so we can
+      // reach adjacent territory (rap/R&B/country/etc).
+      const widenProbe = probeState.wants_wider_probe === true;
+      const bootPool = openerLanes.size > 0 && !widenProbe
         ? rawBootPool.filter((p) => {
             const pairingLane = (p.lane ?? null) as string | null;
             const aLane = p.song_a?.primary_lane ?? null;
