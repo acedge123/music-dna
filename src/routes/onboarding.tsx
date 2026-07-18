@@ -669,6 +669,7 @@ function Onboarding() {
         </section>
       )}
     </main>
+    </>
   );
 }
 
