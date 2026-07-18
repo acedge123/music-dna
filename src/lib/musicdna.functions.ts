@@ -1600,12 +1600,19 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
     });
 
     // If the critic AI failed, don't strand the user — fall back to a
-    // deterministic narrative built from the allowed claims. The error is
-    // already logged to llm_calls above.
+    // deterministic narrative built from the allowed claims. Single-toned:
+    // either we have a read, or we don't. No "convinced-but-tentative"
+    // dissonance.
     if (criticStatus === "error" || !narrative.trim()) {
-      narrative = allowed_claims.length
-        ? `Across these matchups you kept choosing ${allowed_claims[0].tradeoff} (${allowed_claims[0].supporting_choices} of ${allowed_claims[0].tested_total} relevant picks). The shape's there — consistent, if not loud.`
-        : `Nothing cleared the evidence threshold this round. Either you're harder to read than most, or the matchups didn't catch you. Worth another pass.`;
+      if (allowed_claims.length >= 2) {
+        const a = allowed_claims[0], b = allowed_claims[1];
+        narrative = `Across these matchups you kept choosing ${a.tradeoff} (${a.supporting_choices} of ${a.tested_total}) and ${b.tradeoff} (${b.supporting_choices} of ${b.tested_total}). That's the shape — two axes, consistently.`;
+      } else if (allowed_claims.length === 1) {
+        const a = allowed_claims[0];
+        narrative = `One thing came through cleanly: ${a.tradeoff}, on ${a.supporting_choices} of ${a.tested_total} relevant picks. Everything else is still a sketch. Another pass would sharpen it.`;
+      } else {
+        narrative = `Nothing cleared the evidence threshold this round. Either you're harder to read than most, or the matchups didn't catch you. Worth another pass.`;
+      }
     }
 
     // -------- Persist --------
