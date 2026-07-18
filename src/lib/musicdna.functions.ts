@@ -381,6 +381,13 @@ type ProbeState = {
   pending: Record<string, Lane>; // pairing_id → probe lane (not yet recorded)
   lane_alignment: Record<string, { wins: number; total: number; magnitude: number; cosine_sum: number }>;
   flips: Array<{ round: number; from: Lane; to: Lane; reason: string }>;
+  // Pairings the user explicitly skipped ("I don't know either of these").
+  // Excluded from every future selection in this session. Never scored.
+  skipped_pairing_ids?: string[];
+  // Set true the first time a user hits Skip. Signals to nextPairingImpl
+  // that we may widen bootstrap probes beyond opener lanes — the user has
+  // told us the in-lane read isn't landing, so try adjacent territory.
+  wants_wider_probe?: boolean;
 };
 
 // One row per bootstrap pairing the user has answered while in `general`.
