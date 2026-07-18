@@ -49,9 +49,7 @@ class SessionRemoteDataSource {
   }
 
   Map<String, dynamic> _decodeJson(http.Response response) {
-    final body = response.body.isEmpty
-        ? const <String, dynamic>{}
-        : jsonDecode(response.body) as Map<String, dynamic>;
+    final body = _readBody(response);
 
     if (response.statusCode >= 400) {
       final error = body['error'];
@@ -74,6 +72,27 @@ class SessionRemoteDataSource {
     }
 
     return body;
+  }
+
+  Map<String, dynamic> _readBody(http.Response response) {
+    if (response.body.isEmpty) {
+      return const <String, dynamic>{};
+    }
+
+    try {
+      final decoded = jsonDecode(response.body);
+      if (decoded is Map<String, dynamic>) {
+        return decoded;
+      }
+    } catch (_) {
+      // Normalized below.
+    }
+
+    throw AppApiException(
+      kind: AppApiErrorKind.unknown,
+      statusCode: response.statusCode,
+      message: 'The server returned an unexpected response.',
+    );
   }
 
   AppApiErrorKind _mapErrorKind(String? code) {

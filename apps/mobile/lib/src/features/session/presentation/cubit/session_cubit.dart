@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/logging/app_logger.dart';
 import '../../../../core/network/app_api_exception.dart';
 import '../../../onboarding/domain/entities/started_music_session.dart';
+import '../../data/session_resume_store.dart';
 import '../../domain/entities/session_pairing.dart';
 import '../../domain/entities/session_reveal.dart';
 import '../../domain/repositories/session_repository.dart';
@@ -99,15 +100,26 @@ class SessionCubit extends Cubit<SessionState> {
   SessionCubit(
     this._repository, {
     StartedMusicSession? startedSession,
+    SessionResumeStore? resumeStore,
     AppLogger? logger,
   }) : _logger = logger ?? const AppLogger(),
+       _resumeStore = resumeStore,
        super(SessionState(startedSession: startedSession));
 
   final SessionRepository _repository;
   final AppLogger _logger;
+  final SessionResumeStore? _resumeStore;
 
   Future<void> initialize() async {
-    final sessionId = state.sessionId;
+    var sessionId = state.sessionId;
+    if ((sessionId == null || sessionId.isEmpty) && _resumeStore != null) {
+      final resumedSession = await _resumeStore.load();
+      if (resumedSession != null) {
+        emit(state.copyWith(startedSession: resumedSession));
+        sessionId = resumedSession.sessionId;
+      }
+    }
+
     _logger.event('session.initialize', <String, Object?>{
       'hasSessionId': sessionId?.isNotEmpty == true,
     });
@@ -238,9 +250,16 @@ class SessionCubit extends Cubit<SessionState> {
       final reveal = await _repository.revealSession(sessionId: sessionId);
       SharedReveal? sharedReveal;
       if (reveal.shareToken != null && reveal.shareToken!.isNotEmpty) {
-        sharedReveal = await _repository.fetchSharedReveal(
-          token: reveal.shareToken!,
-        );
+        try {
+          sharedReveal = await _repository.fetchSharedReveal(
+            token: reveal.shareToken!,
+          );
+        } catch (error) {
+          _logger.error('session.share_fetch_failed', error, <String, Object?>{
+            'sessionId': sessionId,
+            'shareToken': reveal.shareToken,
+          });
+        }
       }
       _logger.event('session.reveal_succeeded', <String, Object?>{
         'sessionId': sessionId,

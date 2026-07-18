@@ -9,7 +9,13 @@ import '../../domain/repositories/auth_repository.dart';
 
 enum AuthStatus { loading, authenticated, unauthenticated }
 
-enum AuthSubmissionStatus { idle, submitting, success, failure }
+enum AuthSubmissionStatus {
+  idle,
+  submitting,
+  success,
+  emailConfirmationRequired,
+  failure,
+}
 
 class AuthState extends Equatable {
   const AuthState({
@@ -17,6 +23,7 @@ class AuthState extends Equatable {
     this.user,
     this.submissionStatus = AuthSubmissionStatus.idle,
     this.errorMessage,
+    this.infoMessage,
   });
 
   const AuthState.loading() : this(status: AuthStatus.loading);
@@ -30,6 +37,7 @@ class AuthState extends Equatable {
   final AuthUser? user;
   final AuthSubmissionStatus submissionStatus;
   final String? errorMessage;
+  final String? infoMessage;
 
   AuthState copyWith({
     AuthStatus? status,
@@ -38,6 +46,8 @@ class AuthState extends Equatable {
     AuthSubmissionStatus? submissionStatus,
     String? errorMessage,
     bool clearErrorMessage = false,
+    String? infoMessage,
+    bool clearInfoMessage = false,
   }) {
     return AuthState(
       status: status ?? this.status,
@@ -46,6 +56,7 @@ class AuthState extends Equatable {
       errorMessage: clearErrorMessage
           ? null
           : errorMessage ?? this.errorMessage,
+      infoMessage: clearInfoMessage ? null : infoMessage ?? this.infoMessage,
     );
   }
 
@@ -55,6 +66,7 @@ class AuthState extends Equatable {
     user,
     submissionStatus,
     errorMessage,
+    infoMessage,
   ];
 }
 
@@ -90,12 +102,14 @@ class AuthCubit extends Cubit<AuthState> {
                 status: AuthStatus.unauthenticated,
                 clearUser: true,
                 submissionStatus: AuthSubmissionStatus.idle,
+                clearInfoMessage: true,
               )
             : state.copyWith(
                 status: AuthStatus.authenticated,
                 user: user,
                 submissionStatus: AuthSubmissionStatus.success,
                 clearErrorMessage: true,
+                clearInfoMessage: true,
               ),
       );
     });
@@ -107,6 +121,7 @@ class AuthCubit extends Cubit<AuthState> {
       state.copyWith(
         submissionStatus: AuthSubmissionStatus.submitting,
         clearErrorMessage: true,
+        clearInfoMessage: true,
       ),
     );
     try {
@@ -123,6 +138,7 @@ class AuthCubit extends Cubit<AuthState> {
           user: user,
           submissionStatus: AuthSubmissionStatus.success,
           clearErrorMessage: true,
+          clearInfoMessage: true,
         ),
       );
     } catch (error) {
@@ -144,6 +160,7 @@ class AuthCubit extends Cubit<AuthState> {
       state.copyWith(
         submissionStatus: AuthSubmissionStatus.submitting,
         clearErrorMessage: true,
+        clearInfoMessage: true,
       ),
     );
     try {
@@ -157,6 +174,7 @@ class AuthCubit extends Cubit<AuthState> {
           user: user,
           submissionStatus: AuthSubmissionStatus.success,
           clearErrorMessage: true,
+          clearInfoMessage: true,
         ),
       );
     } catch (error) {
@@ -176,22 +194,39 @@ class AuthCubit extends Cubit<AuthState> {
       state.copyWith(
         submissionStatus: AuthSubmissionStatus.submitting,
         clearErrorMessage: true,
+        clearInfoMessage: true,
       ),
     );
     try {
-      final user = await _authRepository.signUp(
+      final result = await _authRepository.signUp(
         email: email,
         password: password,
       );
       _logger.event('auth.sign_up_succeeded', <String, Object?>{
-        'userId': user.id,
+        'userId': result.user.id,
+        'hasActiveSession': result.hasActiveSession,
       });
+      if (!result.hasActiveSession) {
+        emit(
+          state.copyWith(
+            status: AuthStatus.unauthenticated,
+            clearUser: true,
+            submissionStatus: AuthSubmissionStatus.emailConfirmationRequired,
+            infoMessage:
+                'Check your email to confirm your account, then sign in.',
+            clearErrorMessage: true,
+          ),
+        );
+        return;
+      }
+
       emit(
         state.copyWith(
           status: AuthStatus.authenticated,
-          user: user,
+          user: result.user,
           submissionStatus: AuthSubmissionStatus.success,
           clearErrorMessage: true,
+          clearInfoMessage: true,
         ),
       );
     } catch (error) {
@@ -212,11 +247,41 @@ class AuthCubit extends Cubit<AuthState> {
     return _authRepository.signOut();
   }
 
+  Future<void> deleteAccount() async {
+    _logger.event('auth.delete_account_requested');
+    emit(
+      state.copyWith(
+        submissionStatus: AuthSubmissionStatus.submitting,
+        clearErrorMessage: true,
+        clearInfoMessage: true,
+      ),
+    );
+    try {
+      await _authRepository.deleteAccount();
+      _logger.event('auth.delete_account_succeeded');
+      emit(
+        const AuthState.unauthenticated().copyWith(
+          submissionStatus: AuthSubmissionStatus.success,
+          infoMessage: 'Your account has been deleted.',
+        ),
+      );
+    } catch (error) {
+      _logger.error('auth.delete_account_failed', error);
+      emit(
+        state.copyWith(
+          submissionStatus: AuthSubmissionStatus.failure,
+          errorMessage: _readableError(error),
+        ),
+      );
+    }
+  }
+
   void clearFeedback() {
     emit(
       state.copyWith(
         submissionStatus: AuthSubmissionStatus.idle,
         clearErrorMessage: true,
+        clearInfoMessage: true,
       ),
     );
   }

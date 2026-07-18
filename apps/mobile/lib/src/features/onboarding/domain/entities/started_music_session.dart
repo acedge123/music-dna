@@ -25,6 +25,41 @@ class StartedMusicSession extends Equatable {
   final List<String> secondaryLanes;
   final List<String> songs;
 
+  Map<String, dynamic> toJson() {
+    return <String, dynamic>{
+      'sessionId': sessionId,
+      'sessionLane': sessionLane,
+      'sessionLaneConfidence': sessionLaneConfidence,
+      'analysisLane': analysisLane,
+      'analysisConfidence': analysisConfidence,
+      'hypothesis': hypothesis,
+      'reaction': reaction,
+      'reasoning': reasoning,
+      'secondaryLanes': secondaryLanes,
+      'songs': songs,
+    };
+  }
+
+  static StartedMusicSession? fromJson(Map<String, dynamic> json) {
+    final sessionId = json['sessionId'];
+    if (sessionId is! String || sessionId.isEmpty) {
+      return null;
+    }
+
+    return StartedMusicSession(
+      sessionId: sessionId,
+      sessionLane: json['sessionLane'] as String? ?? '',
+      sessionLaneConfidence: _readDouble(json['sessionLaneConfidence']),
+      analysisLane: json['analysisLane'] as String? ?? '',
+      analysisConfidence: _readDouble(json['analysisConfidence']),
+      hypothesis: json['hypothesis'] as String? ?? '',
+      reaction: json['reaction'] as String? ?? '',
+      reasoning: _readStringList(json['reasoning']),
+      secondaryLanes: _readStringList(json['secondaryLanes']),
+      songs: _readStringList(json['songs']),
+    );
+  }
+
   @override
   List<Object?> get props => <Object?>[
     sessionId,
@@ -38,4 +73,18 @@ class StartedMusicSession extends Equatable {
     secondaryLanes,
     songs,
   ];
+
+  static double _readDouble(Object? value) {
+    if (value is num) {
+      return value.toDouble();
+    }
+    return 0;
+  }
+
+  static List<String> _readStringList(Object? value) {
+    if (value is List) {
+      return value.whereType<String>().toList(growable: false);
+    }
+    return const <String>[];
+  }
 }

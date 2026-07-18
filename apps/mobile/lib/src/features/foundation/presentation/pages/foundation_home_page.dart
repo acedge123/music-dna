@@ -80,8 +80,8 @@ class FoundationHomePage extends StatelessWidget {
                       ? 'Songs that never leave your playlist. Songs that still hit you years later.'
                       : 'Songs that never leave your playlist. Songs that still hit you years later.',
                   primaryLabel: hasAccount
-                      ? 'Start your Music DNA'
-                      : 'Start your Music DNA',
+                      ? 'Start your MusicDNA'
+                      : 'Start your MusicDNA',
                   primaryAction: () => context.go('/onboarding'),
                   footnote: 'Free · No signup required',
                 ),
@@ -129,15 +129,6 @@ class FoundationHomePage extends StatelessWidget {
                       child: const Text('Terms of Service'),
                     ),
                   ],
-                ),
-                const SizedBox(height: 8),
-                Center(
-                  child: Text(
-                    '${config.environment.toUpperCase()} · ${config.apiBaseUrl}',
-                    style: theme.textTheme.labelSmall?.copyWith(
-                      color: AppTheme.mutedForeground,
-                    ),
-                  ),
                 ),
               ],
             );
@@ -247,7 +238,11 @@ class _SectionCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            Text(eyebrow, style: theme.textTheme.labelSmall, textAlign: TextAlign.center),
+            Text(
+              eyebrow,
+              style: theme.textTheme.labelSmall,
+              textAlign: TextAlign.center,
+            ),
             const SizedBox(height: 14),
             Text(
               title,
@@ -293,7 +288,7 @@ class _HowItWorksSteps extends StatelessWidget {
         number: '03',
         title: 'See what your choices reveal',
         body:
-            'Discover the hidden patterns in your taste. Hidden inside your choices are patterns you probably never noticed: what moves you, what you value, and why certain songs stay with you long after others fade away. Think of it as a personality test written by your record collection.',
+            'Discover the hidden patterns in your taste: what moves you, what you keep choosing, and why certain songs stay with you long after others fade.',
       ),
     ];
 

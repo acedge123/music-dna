@@ -38,6 +38,30 @@ void main() {
       expect(cubit.state.submissionStatus, AuthSubmissionStatus.failure);
       expect(cubit.state.errorMessage, contains('bad credentials'));
     });
+
+    test(
+      'keeps sign up unauthenticated when email confirmation is required',
+      () async {
+        final repository = FakeAuthRepository(signUpHasActiveSession: false);
+        final cubit = AuthCubit(repository);
+
+        addTearDown(repository.dispose);
+        addTearDown(cubit.close);
+
+        cubit.initialize();
+        await cubit.signUp(
+          email: 'alan@example.com',
+          password: 'good-password',
+        );
+
+        expect(cubit.state.status, AuthStatus.unauthenticated);
+        expect(
+          cubit.state.submissionStatus,
+          AuthSubmissionStatus.emailConfirmationRequired,
+        );
+        expect(cubit.state.infoMessage, contains('Check your email'));
+      },
+    );
   });
 }
 
@@ -46,10 +70,12 @@ class FakeAuthRepository implements AuthRepository {
     AuthUser? initialUser,
     this.signInError,
     this.signUpError,
+    this.signUpHasActiveSession = true,
   }) : _currentUser = initialUser;
 
   final Object? signInError;
   final Object? signUpError;
+  final bool signUpHasActiveSession;
   final _controller = StreamController<AuthUser?>.broadcast();
   AuthUser? _currentUser;
 
@@ -82,7 +108,7 @@ class FakeAuthRepository implements AuthRepository {
   }
 
   @override
-  Future<AuthUser> signUp({
+  Future<AuthSignUpResult> signUp({
     required String email,
     required String password,
   }) async {
@@ -90,15 +116,25 @@ class FakeAuthRepository implements AuthRepository {
       throw signUpError!;
     }
     final user = AuthUser(id: 'signed-up', email: email);
-    _currentUser = user;
-    _controller.add(user);
-    return user;
+    if (signUpHasActiveSession) {
+      _currentUser = user;
+      _controller.add(user);
+    }
+    return AuthSignUpResult(
+      user: user,
+      hasActiveSession: signUpHasActiveSession,
+    );
   }
 
   @override
   Future<void> signOut() async {
     _currentUser = null;
     _controller.add(null);
+  }
+
+  @override
+  Future<void> deleteAccount() async {
+    await signOut();
   }
 
   Future<void> dispose() async {

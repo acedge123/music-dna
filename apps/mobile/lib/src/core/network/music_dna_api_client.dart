@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -16,6 +17,8 @@ class MusicDnaApiClient {
        _accessTokenProvider = accessTokenProvider,
        _httpClient = httpClient ?? http.Client();
 
+  static const Duration _requestTimeout = Duration(seconds: 20);
+
   final Uri _baseUri;
   final AccessTokenProvider _accessTokenProvider;
   final http.Client _httpClient;
@@ -24,7 +27,14 @@ class MusicDnaApiClient {
 
   Future<http.Response> get(String path) async {
     try {
-      return _httpClient.get(buildUri(path), headers: await _headers());
+      return _httpClient
+          .get(buildUri(path), headers: await _headers())
+          .timeout(_requestTimeout);
+    } on TimeoutException {
+      throw AppApiException(
+        kind: AppApiErrorKind.network,
+        message: 'The request timed out. Check your connection and try again.',
+      );
     } on SocketException {
       throw AppApiException(
         kind: AppApiErrorKind.network,
@@ -40,10 +50,40 @@ class MusicDnaApiClient {
 
   Future<http.Response> post(String path, {Map<String, dynamic>? body}) async {
     try {
-      return _httpClient.post(
-        buildUri(path),
-        headers: await _headers(),
-        body: body == null ? null : jsonEncode(body),
+      return _httpClient
+          .post(
+            buildUri(path),
+            headers: await _headers(),
+            body: body == null ? null : jsonEncode(body),
+          )
+          .timeout(_requestTimeout);
+    } on TimeoutException {
+      throw AppApiException(
+        kind: AppApiErrorKind.network,
+        message: 'The request timed out. Check your connection and try again.',
+      );
+    } on SocketException {
+      throw AppApiException(
+        kind: AppApiErrorKind.network,
+        message: 'No network connection is available right now.',
+      );
+    } on http.ClientException catch (error) {
+      throw AppApiException(
+        kind: AppApiErrorKind.network,
+        message: error.message,
+      );
+    }
+  }
+
+  Future<http.Response> delete(String path) async {
+    try {
+      return _httpClient
+          .delete(buildUri(path), headers: await _headers())
+          .timeout(_requestTimeout);
+    } on TimeoutException {
+      throw AppApiException(
+        kind: AppApiErrorKind.network,
+        message: 'The request timed out. Check your connection and try again.',
       );
     } on SocketException {
       throw AppApiException(

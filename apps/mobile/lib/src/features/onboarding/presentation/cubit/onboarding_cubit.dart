@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/logging/app_logger.dart';
 import '../../../../core/network/app_api_exception.dart';
+import '../../../session/data/session_resume_store.dart';
 import '../../domain/entities/onboarding_reaction.dart';
 import '../../domain/entities/started_music_session.dart';
 import '../../domain/repositories/onboarding_repository.dart';
@@ -75,12 +76,17 @@ class OnboardingState extends Equatable {
 }
 
 class OnboardingCubit extends Cubit<OnboardingState> {
-  OnboardingCubit(this._repository, {AppLogger? logger})
-    : _logger = logger ?? const AppLogger(),
-      super(const OnboardingState());
+  OnboardingCubit(
+    this._repository, {
+    SessionResumeStore? resumeStore,
+    AppLogger? logger,
+  }) : _logger = logger ?? const AppLogger(),
+       _resumeStore = resumeStore,
+       super(const OnboardingState());
 
   final OnboardingRepository _repository;
   final AppLogger _logger;
+  final SessionResumeStore? _resumeStore;
 
   Future<void> submitSong({required String song}) async {
     final trimmedSong = song.trim();
@@ -138,6 +144,7 @@ class OnboardingCubit extends Cubit<OnboardingState> {
         'sessionId': startedSession.sessionId,
         'analysisLane': startedSession.analysisLane,
       });
+      await _resumeStore?.save(startedSession);
       emit(
         state.copyWith(
           stage: OnboardingStage.success,

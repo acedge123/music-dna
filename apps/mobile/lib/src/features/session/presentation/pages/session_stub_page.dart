@@ -57,6 +57,8 @@ class _SessionStubPageState extends State<SessionStubPage> {
           builder: (context, state) {
             final round = state.currentRound;
             final pairing = round?.pairing;
+            final startedSession =
+                state.startedSession ?? widget.startedSession;
             final isBusy =
                 state.status == SessionStatus.loading ||
                 state.status == SessionStatus.submitting;
@@ -65,11 +67,11 @@ class _SessionStubPageState extends State<SessionStubPage> {
               padding: const EdgeInsets.fromLTRB(28, 28, 28, 52),
               children: <Widget>[
                 Text('THE INTERVIEW', style: theme.textTheme.labelSmall),
-                if (widget.startedSession != null) ...<Widget>[
+                if (startedSession != null) ...<Widget>[
                   const SizedBox(height: 34),
-                  _OpeningTranscript(session: widget.startedSession!),
+                  _OpeningTranscript(session: startedSession),
                   const SizedBox(height: 34),
-                  _CriticBridge(hypothesis: widget.startedSession!.hypothesis),
+                  _CriticBridge(hypothesis: startedSession.hypothesis),
                   const SizedBox(height: 26),
                 ],
                 if (state.lastFeedback != null)
@@ -96,8 +98,7 @@ class _SessionStubPageState extends State<SessionStubPage> {
                   SessionStatus.submitting => Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      if (pairing != null)
-                        _PairingIntro(pairing: pairing),
+                      if (pairing != null) _PairingIntro(pairing: pairing),
                       if (pairing != null) const SizedBox(height: 18),
                       if (pairing != null)
                         _PairingCard(
@@ -127,10 +128,8 @@ class _SessionStubPageState extends State<SessionStubPage> {
                               _PairingCard(
                                 pairing: pairing,
                                 isBusy: isBusy,
-                                onChoose: (songId) => _chooseSong(
-                                  context,
-                                  chosenSongId: songId,
-                                ),
+                                onChoose: (songId) =>
+                                    _chooseSong(context, chosenSongId: songId),
                               ),
                             ],
                           ),
@@ -312,7 +311,8 @@ class _PairingIntro extends StatelessWidget {
         ),
         const SizedBox(height: 12),
         Text(
-          pairing.whyGood ?? 'Trust the one that feels more instinctively yours.',
+          pairing.whyGood ??
+              'Trust the one that feels more instinctively yours.',
           style: theme.textTheme.bodyLarge?.copyWith(
             color: AppTheme.mutedForeground,
           ),
@@ -463,7 +463,9 @@ class _SongChoiceCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppTheme.surface,
             border: Border.all(
-              color: isBusy ? theme.colorScheme.outlineVariant : AppTheme.border,
+              color: isBusy
+                  ? theme.colorScheme.outlineVariant
+                  : AppTheme.border,
             ),
             borderRadius: BorderRadius.circular(20),
           ),
@@ -480,7 +482,10 @@ class _SongChoiceCard extends StatelessWidget {
                       child: Text(
                         [
                           if (song.primaryLane != null)
-                            song.primaryLane!.toUpperCase().replaceAll('-', '_'),
+                            song.primaryLane!.toUpperCase().replaceAll(
+                              '-',
+                              '_',
+                            ),
                           if (song.year != null) song.year.toString(),
                         ].join('  ·  '),
                         style: theme.textTheme.labelSmall?.copyWith(

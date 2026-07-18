@@ -44,6 +44,14 @@ class _AuthStubPageState extends State<AuthStubPage> {
               ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
             }
 
+            if (state.submissionStatus ==
+                    AuthSubmissionStatus.emailConfirmationRequired &&
+                state.infoMessage != null) {
+              ScaffoldMessenger.of(
+                context,
+              ).showSnackBar(SnackBar(content: Text(state.infoMessage!)));
+            }
+
             if (state.submissionStatus == AuthSubmissionStatus.success &&
                 state.status == AuthStatus.authenticated) {
               context.go(_mode == _AuthFormMode.signUp ? '/onboarding' : '/');
@@ -168,12 +176,22 @@ class _AuthStubPageState extends State<AuthStubPage> {
                               ),
                             ),
                           ],
+                          if (state.infoMessage != null) ...<Widget>[
+                            const SizedBox(height: 14),
+                            Text(
+                              state.infoMessage!,
+                              style: theme.textTheme.bodySmall?.copyWith(
+                                color: AppTheme.mutedForeground,
+                              ),
+                            ),
+                          ],
                         ],
                       ),
                     ),
                   ),
                 ),
-                if (state.user != null) ...<Widget>[
+                if (state.status == AuthStatus.authenticated &&
+                    state.user != null) ...<Widget>[
                   const SizedBox(height: 20),
                   Card(
                     child: Padding(
@@ -203,6 +221,15 @@ class _AuthStubPageState extends State<AuthStubPage> {
                                 onPressed: () =>
                                     context.read<AuthCubit>().signOut(),
                                 child: const Text('Sign out'),
+                              ),
+                              OutlinedButton(
+                                onPressed: isSubmitting
+                                    ? null
+                                    : () => _confirmDeleteAccount(context),
+                                style: OutlinedButton.styleFrom(
+                                  foregroundColor: theme.colorScheme.error,
+                                ),
+                                child: const Text('Delete account'),
                               ),
                             ],
                           ),
@@ -234,6 +261,37 @@ class _AuthStubPageState extends State<AuthStubPage> {
     }
 
     authCubit.signUp(email: email, password: password);
+  }
+
+  Future<void> _confirmDeleteAccount(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Delete account?'),
+        content: const Text(
+          'This deletes your MusicDNA account and associated session data. This cannot be undone.',
+        ),
+        actions: <Widget>[
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(context).pop(true),
+            child: const Text('Delete account'),
+          ),
+        ],
+      ),
+    );
+
+    if (!context.mounted || confirmed != true) {
+      return;
+    }
+
+    await context.read<AuthCubit>().deleteAccount();
+    if (context.mounted) {
+      context.go('/');
+    }
   }
 }
 

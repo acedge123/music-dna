@@ -10,3 +10,13 @@ class AuthUser extends Equatable {
   @override
   List<Object?> get props => <Object?>[id, email, isAnonymous];
 }
+
+class AuthSignUpResult extends Equatable {
+  const AuthSignUpResult({required this.user, required this.hasActiveSession});
+
+  final AuthUser user;
+  final bool hasActiveSession;
+
+  @override
+  List<Object?> get props => <Object?>[user, hasActiveSession];
+}

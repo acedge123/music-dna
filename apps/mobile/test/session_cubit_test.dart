@@ -177,6 +177,39 @@ void main() {
       },
     );
 
+    test('keeps reveal when optional shared reveal fetch fails', () async {
+      final repository = FakeSessionRepository(
+        nextPairings: <SessionRoundState>[
+          const SessionRoundState(
+            sessionId: 'session-1',
+            round: 2,
+            confidence: 0.77,
+            done: true,
+          ),
+        ],
+        reveal: const SessionReveal(
+          archetypeName: 'Architect',
+          interpretation: 'You keep choosing pressure over polish.',
+          vector: <String, double>{},
+          allowedClaims: <RevealClaim>[],
+          counterarguments: <RevealCounterargument>[],
+          shareToken: 'share-12345678',
+        ),
+        sharedRevealError: Exception('share endpoint down'),
+      );
+      final cubit = SessionCubit(repository, startedSession: _startedSession());
+
+      addTearDown(cubit.close);
+
+      await cubit.initialize();
+      await cubit.revealSession();
+
+      expect(cubit.state.status, SessionStatus.revealed);
+      expect(cubit.state.reveal?.archetypeName, 'Architect');
+      expect(cubit.state.sharedReveal, isNull);
+      expect(cubit.state.errorMessage, isNull);
+    });
+
     test(
       'moves to missingSession when no started session is available',
       () async {
@@ -230,6 +263,7 @@ class FakeSessionRepository implements SessionRepository {
       counterarguments: <RevealCounterargument>[],
     ),
     SharedReveal? sharedReveal,
+    this.sharedRevealError,
     this.nextPairingsError,
   }) : _nextPairings = List<SessionRoundState>.from(
          nextPairings ?? const <SessionRoundState>[],
@@ -240,6 +274,7 @@ class FakeSessionRepository implements SessionRepository {
   final SessionChoiceFeedback feedback;
   final SessionReveal reveal;
   final SharedReveal? _sharedReveal;
+  final Object? sharedRevealError;
   final Object? nextPairingsError;
   String? lastChoiceSongId;
   int? lastChoiceMsToDecide;
@@ -276,6 +311,9 @@ class FakeSessionRepository implements SessionRepository {
 
   @override
   Future<SharedReveal> fetchSharedReveal({required String token}) async {
+    if (sharedRevealError != null) {
+      throw sharedRevealError!;
+    }
     return _sharedReveal ??
         SharedReveal(
           sessionId: 'session-1',
