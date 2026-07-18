@@ -53,8 +53,8 @@ Do not add `immersion` or `scale` to scoring yet. They remain candidate dimensio
 
 ## Required Product Flow
 
-1. User enters/selects five songs in onboarding.
-2. App classifies the user's lane from those five songs.
+1. User enters/selects three songs in onboarding.
+2. App classifies the user's lane from those three songs.
 3. App shows:
    - one short user-facing hypothesis
    - lane label
@@ -386,4 +386,4 @@ Store LLM reasoning artifacts separately from final prose, following `docs/music
 - Archetypes remain shared across lanes.
 - Result copy references actual choices and tradeoffs.
 - Build passes.
-- Fresh user can complete: auth -> five songs -> lane classification -> 20 choices -> result.
+- Fresh user can complete: auth -> three songs -> lane classification -> 20 choices -> result.

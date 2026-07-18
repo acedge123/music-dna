@@ -108,11 +108,13 @@ function catalogLaneToTopLane(sub: string | null | undefined): Lane | null {
 }
 
 // Slot weighting for the opener: users list their most-defining song first.
-// Weights sum to 9; a lane clearing ≥ 4.5 of them is considered a clear
-// majority. Kept as a named constant so admin diagnostics and the classifier
-// prompt can reference the same scheme.
-export const OPENER_SLOT_WEIGHTS = [3, 2, 2, 1, 1] as const;
-export const OPENER_WEIGHT_TOTAL = OPENER_SLOT_WEIGHTS.reduce((s, n) => s + n, 0); // 9
+// Onboarding is 3 songs (has always been 3 — earlier prompts and docs that
+// said 5 were legacy). Weights sum to 6; a lane clearing ≥ 3 is a majority.
+// Kept as a named constant so admin diagnostics and the classifier prompt
+// reference the same scheme.
+export const OPENER_SLOT_WEIGHTS = [3, 2, 1] as const;
+export const OPENER_WEIGHT_TOTAL = OPENER_SLOT_WEIGHTS.reduce((s, n) => s + n, 0); // 6
+
 
 // Best-guess lane when the model is unsure (confidence < 0.4).
 // Weighted vote — slot 1 is worth 3× slot 5. Ties still return null so a
@@ -150,7 +152,7 @@ export function weightedLaneShare(
 }
 
 const CLASSIFIER_VOICE = `${PERSONA}
-Mode: taste-reader. You read five songs a user named as ones they love and produce a structured taste sketch. The reasoning and hypothesis fields carry the voice — keep them sharp, specific, and a little uncomfortable.
+Mode: taste-reader. You read three songs a user named as ones they love, ranked top to bottom, and produce a structured taste sketch. The reasoning and hypothesis fields carry the voice — keep them sharp, specific, and a little uncomfortable.
 
 You return a JSON object with this exact shape:
 {
@@ -170,16 +172,16 @@ You return a JSON object with this exact shape:
 
 ${LANE_RULES}
 
-Slot weighting: the five songs are NOT equal. Weight them 3, 2, 2, 1, 1 (slot 1 is 3× slot 5). Users lead with their most-defining pick — if slot 1 lands in one lane and slots 4-5 scatter, the lane call follows slot 1.
+Slot weighting: the three songs are NOT equal. Weight them 3, 2, 1 (slot 1 is 3× slot 3). Users lead with their most-defining pick — if slot 1 lands in one lane and slots 2-3 scatter, the lane call follows slot 1.
 
+Confidence: 1.0 = all three point to one lane. 0.7-0.9 = clear majority. 0.4-0.6 = mixed but a leaning. <0.4 = scattered, use "general". Three songs is thin evidence — stay honest.
 
-Confidence: 1.0 = all five point to one lane. 0.7-0.9 = strong majority. 0.4-0.6 = mixed but a leaning. <0.4 = scattered, use "general".
-
-candidate_dimensions: read what the five songs collectively reward. Negative = the low pole (stillness, statement, light, etc.), positive = the high pole. Be opinionated — leave dimensions at 0 only when the songs are genuinely silent on that axis.
+candidate_dimensions: read what the three songs collectively reward. Negative = the low pole (stillness, statement, light, etc.), positive = the high pole. Be opinionated — leave dimensions at 0 only when the songs are genuinely silent on that axis.
 
 Voice for hypothesis: specific, restrained, slightly uncomfortable. No platitudes. No genre labels. Use "you reward", "you choose", "you trust" — never "you like".
 
 Respond ONLY with valid JSON. No prose, no markdown fences.`;
+
 
 type LlmDimensions = Partial<Record<(typeof DIMS)[number], number>>;
 
@@ -214,7 +216,7 @@ async function classifyLane(
   try {
     const txt = await ai([
       { role: "system", content: CLASSIFIER_VOICE },
-      { role: "user", content: `The user named these five songs as ones they love:\n${songs.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nReturn the JSON object now.` },
+      { role: "user", content: `The user named these three songs as ones they love (ranked top to bottom):\n${songs.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nReturn the JSON object now.` },
     ]);
     const cleaned = txt.replace(/```json\s*|```/g, "").trim();
     const parsed = JSON.parse(cleaned) as Partial<OpeningAnalysis>;
@@ -275,14 +277,15 @@ async function classifyLane(
   }
 
   // Weighted-slot confidence floor: after canon enrichment, tally per_song by
-  // slot weight. If one lane owns ≥ 50% of the weight (≥ 4.5 of 9) AND isn't
-  // tied for first, floor confidence to 0.6 so we route to that lane instead
-  // of falling back to `general`. Slot 1's 3× weight is what usually saves
-  // "one clear favorite + four scattered picks" from ending up as general.
+  // slot weight (3-2-1 across the three openers, total 6). If one lane owns
+  // ≥ 50% of the weight (≥ 3 of 6) AND isn't tied for first, floor confidence
+  // to 0.6 so we route to that lane instead of falling back to `general`.
+  // Slot 1's 3× weight is what usually saves "one clear favorite + two
+  // scattered picks" from ending up as general.
   const share = weightedLaneShare(llm.per_song);
   const weighting = share
-    ? { scheme: "3-2-2-1-1" as const, top_lane: share.lane, top_lane_share: Math.round(share.share * 100) / 100, tied: share.tied }
-    : { scheme: "3-2-2-1-1" as const, top_lane: null, top_lane_share: 0, tied: false };
+    ? { scheme: "3-2-1" as const, top_lane: share.lane, top_lane_share: Math.round(share.share * 100) / 100, tied: share.tied }
+    : { scheme: "3-2-1" as const, top_lane: null, top_lane_share: 0, tied: false };
   if (share && !share.tied && share.share >= 0.5 && llm.confidence < 0.6) {
     llm.lane = share.lane;
     llm.confidence = Math.max(llm.confidence, 0.6);
@@ -293,13 +296,14 @@ async function classifyLane(
   }
   (llm as OpeningAnalysis & { weighting?: unknown }).weighting = weighting;
 
+
   return llm;
 }
 
 export const analyzeOpeningSongs = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ songs: z.array(z.string().trim().min(1).max(200)).length(5) }).parse(d),
+    z.object({ songs: z.array(z.string().trim().min(1).max(200)).length(3) }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -395,13 +399,18 @@ export const nextPairing = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => nextPairingImpl(context.supabase, data));
 
 export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionId: string }) {
-    const [usedRes, sessionRes] = await Promise.all([
+    const [usedRes, sessionRes, profileRes] = await Promise.all([
       supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
       supabase
         .from("sessions")
-        .select("vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json")
+        .select("vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json, user_id")
         .eq("id", data.sessionId)
         .single(),
+      supabase
+        .from("sessions")
+        .select("user_id, profiles!inner(opening_analysis_json)")
+        .eq("id", data.sessionId)
+        .maybeSingle(),
     ]);
     const sessionLane = (sessionRes.data?.lane as Lane | null) ?? "general";
     const laneConfidence = Number(sessionRes.data?.lane_confidence ?? 0);
@@ -413,6 +422,24 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     probeState.flips = probeState.flips ?? [];
     const bootstrapChoices = ((sessionRes.data as { bootstrap_choices_json?: unknown } | null)
       ?.bootstrap_choices_json as BootstrapChoiceEntry[] | null) ?? [];
+
+    // Extract the set of lanes the opener songs actually landed in. Used by
+    // the bootstrap phase to keep probe pairings inside the user's stated
+    // taste territory (rock/pop/alt if that's what they named) instead of
+    // reaching for R&B or country cold. Empty = fall back to any bootstrap.
+    const openingAnalysis = (profileRes.data as { profiles?: { opening_analysis_json?: unknown } } | null)
+      ?.profiles?.opening_analysis_json as
+        | { per_song?: Array<{ lane?: string | null }>; secondary_lanes?: string[] | null }
+        | null
+        | undefined;
+    const openerLanes = new Set<string>();
+    for (const p of openingAnalysis?.per_song ?? []) {
+      if (p?.lane && p.lane !== "unknown" && p.lane !== "general") openerLanes.add(p.lane);
+    }
+    for (const l of openingAnalysis?.secondary_lanes ?? []) {
+      if (l && l !== "general") openerLanes.add(l);
+    }
+
 
     const pairingSelect = `
       id, tests, hypothesis, why_good, diagnostic_weight, lane, is_bootstrap,
@@ -441,20 +468,39 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     // If the session opened as `general` (opener didn't produce a confident
     // lane call) and we haven't yet shown 2 bootstrap pairings, prefer a
     // marked bootstrap pairing so we can promote the session to a real lane
-    // from the first 2 winners. Silent fallthrough when no bootstrap pool
-    // exists (the flag defaults false, so an unseeded install behaves
-    // exactly as before).
+    // from the first 2 winners.
+    //
+    // Constraint: the bootstrap pairing must sit inside the lanes the user's
+    // opener songs actually landed in (openerLanes). We won't cold-serve an
+    // R&B / country / hip-hop probe to someone who named three rock/pop
+    // songs — that reads as "the app isn't listening". Fall through to the
+    // normal general-pool selection (recognition-first) when no bootstrap
+    // pairing matches the opener territory; a future "skip" affordance can
+    // opt the user into wider probes.
     if (sessionLane === "general" && bootstrapChoices.length < 2) {
       const bootRes = await supabase
         .from("pairings")
         .select(pairingSelect)
         .eq("active", true)
         .eq("is_bootstrap", true);
-      const bootPool = ((bootRes.data ?? []) as unknown as Array<PairingCandidate & { is_bootstrap?: boolean; song_a?: { primary_lane?: string | null } | null; song_b?: { primary_lane?: string | null } | null }>)
+      const rawBootPool = ((bootRes.data ?? []) as unknown as Array<PairingCandidate & { is_bootstrap?: boolean; song_a?: { primary_lane?: string | null } | null; song_b?: { primary_lane?: string | null } | null }>)
         .filter((p) => !usedIds.has(p.id));
+      // Keep only pairings that intersect the user's opener lanes. If the
+      // opener produced no usable lanes (should be rare — total scatter),
+      // fall back to the full bootstrap pool so we still probe.
+      const bootPool = openerLanes.size > 0
+        ? rawBootPool.filter((p) => {
+            const pairingLane = (p.lane ?? null) as string | null;
+            const aLane = p.song_a?.primary_lane ?? null;
+            const bLane = p.song_b?.primary_lane ?? null;
+            return (pairingLane && openerLanes.has(pairingLane))
+              || (aLane && openerLanes.has(aLane))
+              || (bLane && openerLanes.has(bLane));
+          })
+        : rawBootPool;
       if (bootPool.length > 0) {
         // Prefer pairings whose two songs have different primary_lane so the
-        // winner is diagnostic. Fall back to any bootstrap pairing.
+        // winner is diagnostic. Fall back to any lane-scoped bootstrap.
         const differing = bootPool.filter((p) => {
           const a = p.song_a?.primary_lane ?? null;
           const b = p.song_b?.primary_lane ?? null;
@@ -479,10 +525,13 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
             pool_size: finalPool.length,
             weight: 0,
             bootstrap: true,
+            opener_lanes: Array.from(openerLanes),
           } as never,
         };
       }
-      // No bootstrap pool → normal general-pool selection below.
+      // No opener-lane bootstrap available → fall through to normal general
+      // selection below (recognition-first, high canon).
+
     }
 
     // -------- Fetch lane-scoped pool, fall back to general when empty --------

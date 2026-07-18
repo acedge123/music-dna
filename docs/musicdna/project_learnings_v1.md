@@ -184,7 +184,7 @@ These are emotionally appealing, but they introduce ambiguity.
 
 A simpler approach may produce better signal:
 
-> Tell me five songs you love.
+> Tell me three songs you love.
 
 The songs themselves are usually more revealing than the prompt.
 
