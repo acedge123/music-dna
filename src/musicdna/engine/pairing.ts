@@ -109,12 +109,26 @@ export function selectPairing<P extends PairingCandidate>(
   input: SelectPairingInput<P>,
 ): SelectPairingResult<P> {
   const { vector, used_ids, dims, rng } = input;
+  const mode: SelectionMode = input.mode ?? "diagnostic_first";
+  const recognition = input.recognition;
+  const canonFloor = input.min_canon_floor ?? RECOGNITION_FLOORS[mode];
+
   let pool = input.pool.filter((p) => !used_ids.has(p.id)).filter(differentArtist);
   if (!pool.length) return { kind: "empty" };
 
+  // Recognition floor: filter out pairings the user probably won't know when
+  // we're not lane-confident. If the floor empties the pool, drop it so we
+  // still return something rather than nothing.
+  if (mode !== "diagnostic_first" && recognition && canonFloor > 0) {
+    const recognisable = pool.filter((p) => {
+      const r = recognition.get(p.id);
+      return r ? r.min_canon >= canonFloor : true; // no data = don't exclude
+    });
+    if (recognisable.length > 0) pool = recognisable;
+  }
+
   // Hypothesis-challenging filter: prefer pairings that test the axes the
-  // running vector already leans hardest on. If filtering would empty the
-  // pool, fall back to a scoring boost.
+  // running vector already leans hardest on.
   const leaningAxes = new Set(
     dims
       .map((d) => ({ d, v: Math.abs(vector[d] ?? 0) }))
@@ -133,13 +147,23 @@ export function selectPairing<P extends PairingCandidate>(
   }
 
   const need = (dim: string) => 1 / (1 + Math.abs(vector[dim] ?? 0));
+  // Blend factor for recognition vs diagnostic weight.
+  // recognition_first: recognition dominates (0.6 / 0.4).
+  // recognition_boost: balanced-ish (0.4 / 0.6).
+  const recogBlend = mode === "recognition_first" ? 0.6 : mode === "recognition_boost" ? 0.4 : 0;
   const scored = pool.map((p) => {
     const tests = (p.tests?.length ? p.tests : dims.slice()) as string[];
     const axisNeed = tests.reduce((s, d) => s + need(d), 0) / Math.max(1, tests.length);
     const challengesHypothesis = leaningAxes.size > 0 && tests.some((t) => leaningAxes.has(t));
     const challengeBoost = challengesHypothesis ? 1.5 : 1;
-    const w = ((p.diagnostic_weight ?? 50) / 100) * (0.4 + 0.6 * axisNeed) * challengeBoost;
-    return { p, w, tests, axisNeed, challengesHypothesis };
+    const dw = (p.diagnostic_weight ?? 50) / 100;
+    const rec = recognition?.get(p.id);
+    const recNorm = rec ? Math.max(0, Math.min(100, rec.recognition_score)) / 100 : 0.5;
+    const base = recogBlend > 0
+      ? (recogBlend * recNorm + (1 - recogBlend) * dw)
+      : dw;
+    const w = base * (0.4 + 0.6 * axisNeed) * challengeBoost;
+    return { p, w, tests, axisNeed, challengesHypothesis, rec };
   });
   const total = scored.reduce((s, x) => s + x.w, 0);
   let r = rng.next() * total;
@@ -156,6 +180,8 @@ export function selectPairing<P extends PairingCandidate>(
     diagnostic_weight: pick.p.diagnostic_weight ?? 50,
     pool_size: pool.length,
     weight: Math.round(pick.w * 1000) / 1000,
+    mode,
+    recognition_score: pick.rec?.recognition_score,
   };
   return { kind: "picked", pairing: pick.p, selection_reason };
 }
