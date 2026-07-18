@@ -216,7 +216,7 @@ async function classifyLane(
   try {
     const txt = await ai([
       { role: "system", content: CLASSIFIER_VOICE },
-      { role: "user", content: `The user named these five songs as ones they love:\n${songs.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nReturn the JSON object now.` },
+      { role: "user", content: `The user named these three songs as ones they love (ranked top to bottom):\n${songs.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nReturn the JSON object now.` },
     ]);
     const cleaned = txt.replace(/```json\s*|```/g, "").trim();
     const parsed = JSON.parse(cleaned) as Partial<OpeningAnalysis>;
