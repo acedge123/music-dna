@@ -1027,6 +1027,12 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
     .slice(0, 100);
 
   const [copied, setCopied] = useState(false);
+  const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const toggle = (id: string) => setExpanded((s) => {
+    const n = new Set(s);
+    if (n.has(id)) n.delete(id); else n.add(id);
+    return n;
+  });
 
   const exportRows = d.pairing_health
     .filter((p) => !laneFilter || p.lane === laneFilter);
