@@ -8,6 +8,7 @@ import {
   startSession,
   nextPairing,
   recordChoice,
+  skipPairing,
   finalizeSession,
   finalSynthesis,
   currentRead,
