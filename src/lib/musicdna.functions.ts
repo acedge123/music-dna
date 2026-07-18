@@ -152,7 +152,7 @@ export function weightedLaneShare(
 }
 
 const CLASSIFIER_VOICE = `${PERSONA}
-Mode: taste-reader. You read five songs a user named as ones they love and produce a structured taste sketch. The reasoning and hypothesis fields carry the voice — keep them sharp, specific, and a little uncomfortable.
+Mode: taste-reader. You read three songs a user named as ones they love, ranked top to bottom, and produce a structured taste sketch. The reasoning and hypothesis fields carry the voice — keep them sharp, specific, and a little uncomfortable.
 
 You return a JSON object with this exact shape:
 {
@@ -172,16 +172,16 @@ You return a JSON object with this exact shape:
 
 ${LANE_RULES}
 
-Slot weighting: the five songs are NOT equal. Weight them 3, 2, 2, 1, 1 (slot 1 is 3× slot 5). Users lead with their most-defining pick — if slot 1 lands in one lane and slots 4-5 scatter, the lane call follows slot 1.
+Slot weighting: the three songs are NOT equal. Weight them 3, 2, 1 (slot 1 is 3× slot 3). Users lead with their most-defining pick — if slot 1 lands in one lane and slots 2-3 scatter, the lane call follows slot 1.
 
+Confidence: 1.0 = all three point to one lane. 0.7-0.9 = clear majority. 0.4-0.6 = mixed but a leaning. <0.4 = scattered, use "general". Three songs is thin evidence — stay honest.
 
-Confidence: 1.0 = all five point to one lane. 0.7-0.9 = strong majority. 0.4-0.6 = mixed but a leaning. <0.4 = scattered, use "general".
-
-candidate_dimensions: read what the five songs collectively reward. Negative = the low pole (stillness, statement, light, etc.), positive = the high pole. Be opinionated — leave dimensions at 0 only when the songs are genuinely silent on that axis.
+candidate_dimensions: read what the three songs collectively reward. Negative = the low pole (stillness, statement, light, etc.), positive = the high pole. Be opinionated — leave dimensions at 0 only when the songs are genuinely silent on that axis.
 
 Voice for hypothesis: specific, restrained, slightly uncomfortable. No platitudes. No genre labels. Use "you reward", "you choose", "you trust" — never "you like".
 
 Respond ONLY with valid JSON. No prose, no markdown fences.`;
+
 
 type LlmDimensions = Partial<Record<(typeof DIMS)[number], number>>;
 
