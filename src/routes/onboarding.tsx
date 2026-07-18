@@ -124,6 +124,7 @@ function Onboarding() {
   const startFn = useServerFn(startSession);
   const nextFn = useServerFn(nextPairing);
   const chooseFn = useServerFn(recordChoice);
+  const skipFn = useServerFn(skipPairing);
   const finalizeFn = useServerFn(finalizeSession);
   const synthFn = useServerFn(finalSynthesis);
   const readFn = useServerFn(currentRead);
