@@ -238,6 +238,7 @@ function Onboarding() {
     if (pairing && pairingAnchorRef.current) {
       pairingAnchorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
     }
+    setPendingSongId(null);
   }, [pairing?.id]);
   useEffect(() => {
     if (phase === "done" && doneAnchorRef.current) {
