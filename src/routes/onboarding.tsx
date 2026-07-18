@@ -627,6 +627,16 @@ function Onboarding() {
               </button>
             ))}
           </div>
+          <div className="flex justify-center pt-1">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={skip}
+              className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
+            >
+              Skip — I don't know these
+            </button>
+          </div>
         </section>
       )}
 
