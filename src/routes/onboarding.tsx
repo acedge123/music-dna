@@ -102,6 +102,19 @@ function LineReveal({
   );
 }
 
+function HomeLogo() {
+  return (
+    <Link
+      to="/"
+      className="fixed top-4 left-4 z-50 flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity"
+      aria-label="MusicDNA — home / start over"
+      title="Home / start over"
+    >
+      <img src="/music-dna-logo.png" alt="MusicDNA" className="h-12 w-auto" />
+    </Link>
+  );
+}
+
 function Onboarding() {
   const reactOneFn = useServerFn(reactToOne);
   const commitFn = useServerFn(commitOpeningThree);
