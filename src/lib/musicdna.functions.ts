@@ -967,23 +967,28 @@ export const recordChoice = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => recordChoiceImpl(context.supabase, context.userId, data));
 
 export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string; pairingId: string; chosenSongId: string; msToDecide?: number }) {
-    const songCols = "id,title,artist,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+    const songCols = "id,title,artist,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
     const [pairingRes, sessionRes] = await Promise.all([
       supabase
         .from("pairings")
-        .select(`tests, diagnostic_weight, song_a_id, song_b_id, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`)
+        .select(`tests, diagnostic_weight, song_a_id, song_b_id, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`)
         .eq("id", data.pairingId).single(),
-      supabase.from("sessions").select("vector,user_id,lane,probe_state").eq("id", data.sessionId).single(),
+      supabase.from("sessions").select("vector,user_id,lane,probe_state,bootstrap_choices_json").eq("id", data.sessionId).single(),
     ]);
     const pairing = pairingRes.data as unknown as {
       tests: string[] | null; diagnostic_weight: number; song_a_id: string; song_b_id: string;
-      song_a: Record<string, number> & { id: string; title: string; artist: string };
-      song_b: Record<string, number> & { id: string; title: string; artist: string };
+      is_bootstrap: boolean | null;
+      song_a: Record<string, number> & { id: string; title: string; artist: string; primary_lane: string | null };
+      song_b: Record<string, number> & { id: string; title: string; artist: string; primary_lane: string | null };
     } | null;
-    const session = sessionRes.data as { vector: Record<string, number>; user_id: string; lane: Lane; probe_state: ProbeState | null } | null;
+    const session = sessionRes.data as {
+      vector: Record<string, number>; user_id: string; lane: Lane; probe_state: ProbeState | null;
+      bootstrap_choices_json: BootstrapChoiceEntry[] | null;
+    } | null;
     if (pairingRes.error || !pairing) throw new Error(pairingRes.error?.message ?? "pairing not found");
     if (sessionRes.error || !session) throw new Error(sessionRes.error?.message ?? "session not found");
     if (session.user_id !== userId) throw new Error("forbidden");
+
 
     // Reject choices that don't actually correspond to one of this pairing's songs.
     if (data.chosenSongId !== pairing.song_a_id && data.chosenSongId !== pairing.song_b_id) {
