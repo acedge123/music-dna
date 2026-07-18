@@ -108,11 +108,13 @@ function catalogLaneToTopLane(sub: string | null | undefined): Lane | null {
 }
 
 // Slot weighting for the opener: users list their most-defining song first.
-// Weights sum to 9; a lane clearing ≥ 4.5 of them is considered a clear
-// majority. Kept as a named constant so admin diagnostics and the classifier
-// prompt can reference the same scheme.
-export const OPENER_SLOT_WEIGHTS = [3, 2, 2, 1, 1] as const;
-export const OPENER_WEIGHT_TOTAL = OPENER_SLOT_WEIGHTS.reduce((s, n) => s + n, 0); // 9
+// Onboarding is 3 songs (has always been 3 — earlier prompts and docs that
+// said 5 were legacy). Weights sum to 6; a lane clearing ≥ 3 is a majority.
+// Kept as a named constant so admin diagnostics and the classifier prompt
+// reference the same scheme.
+export const OPENER_SLOT_WEIGHTS = [3, 2, 1] as const;
+export const OPENER_WEIGHT_TOTAL = OPENER_SLOT_WEIGHTS.reduce((s, n) => s + n, 0); // 6
+
 
 // Best-guess lane when the model is unsure (confidence < 0.4).
 // Weighted vote — slot 1 is worth 3× slot 5. Ties still return null so a
