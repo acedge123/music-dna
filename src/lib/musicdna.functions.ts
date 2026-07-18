@@ -360,8 +360,8 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
 
     const pairingSelect = `
       id, tests, hypothesis, why_good, diagnostic_weight, lane,
-      song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane),
-      song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane)
+      song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane,canon_score),
+      song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane,canon_score)
     `;
 
     const usedIds = new Set((usedRes.data ?? []).map((c) => c.pairing_id));
@@ -381,14 +381,85 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       );
     }
 
-    // -------- Fetch lane-scoped pool, fall back to general when empty --------
-    let pairingsRes = sessionLane === "general"
-      ? await supabase.from("pairings").select(pairingSelect).eq("active", true)
-      : await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", sessionLane);
+    // -------- Calibration mode (rounds 1–2 when lane is uncertain) --------
+    const calibration = (probeState as unknown as { calibration?: {
+      active: boolean; candidate_lanes: string[]; decade_clusters: string[];
+      round_budget: number; lane_wins: Record<string, number>;
+    } }).calibration;
+    const inCalibration = !!calibration?.active && round < (calibration?.round_budget ?? 2);
+    if (inCalibration && (calibration?.candidate_lanes?.length ?? 0) > 0) {
+      const calPool = await supabase
+        .from("pairings")
+        .select(pairingSelect)
+        .eq("active", true)
+        .in("lane", calibration!.candidate_lanes);
+      if (calPool.error) throw new Error(calPool.error.message);
+      const picked = selectCalibrationPairing({
+        pool: (calPool.data ?? []) as unknown as PairingCandidate[],
+        used_ids: usedIds,
+        candidate_lanes: calibration!.candidate_lanes,
+        decade_clusters: calibration!.decade_clusters ?? [],
+        rng: { next: () => Math.random() },
+      });
+      if (picked.kind === "empty") {
+        return { pairing: null, round, confidence: stop.confidence, done: true as const };
+      }
+      return {
+        pairing: picked.pairing,
+        round: round + 1,
+        confidence: stop.confidence,
+        done: false as const,
+        selection_reason: {
+          leaning_axes: [],
+          fork_matched: false,
+          tests: (picked.pairing as { tests?: string[] | null }).tests ?? [],
+          axes_needed: [],
+          axis_need_score: 0,
+          challenge_boost: false,
+          diagnostic_weight: (picked.pairing as { diagnostic_weight?: number | null }).diagnostic_weight ?? 50,
+          pool_size: (calPool.data ?? []).length,
+          weight: 0,
+          calibration: picked.reason,
+        } as never,
+      };
+    }
+
+    // -------- Post-calibration or lane-locked pool --------
+    // If lane is still "general" after calibration and we have no curated
+    // general pairings, STOP SAFELY. Never spray across all active pairings —
+    // that was the old bug that walked users through metal/R&B/country.
+    if (sessionLane === "general") {
+      const generalRes = await supabase
+        .from("pairings")
+        .select(pairingSelect)
+        .eq("active", true)
+        .eq("lane", "general");
+      if (generalRes.error) throw new Error(generalRes.error.message);
+      const picked = selectPairing({
+        pool: (generalRes.data ?? []) as unknown as PairingCandidate[],
+        vector,
+        used_ids: usedIds,
+        session_lane: sessionLane,
+        dims: DIMS as readonly string[],
+        rng: { next: () => Math.random() },
+      });
+      if (picked.kind === "empty") {
+        return { pairing: null, round, confidence: stop.confidence, done: true as const };
+      }
+      return {
+        pairing: picked.pairing,
+        round: round + 1,
+        confidence: stop.confidence,
+        done: false as const,
+        selection_reason: picked.selection_reason,
+      };
+    }
+
+    const pairingsRes = await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", sessionLane);
     if (pairingsRes.error) throw new Error(pairingsRes.error.message);
 
     const rng = { next: () => Math.random() };
-    let picked = selectPairing({
+    const picked = selectPairing({
       pool: (pairingsRes.data ?? []) as unknown as PairingCandidate[],
       vector,
       used_ids: usedIds,
@@ -396,19 +467,6 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       dims: DIMS as readonly string[],
       rng,
     });
-
-    if (picked.kind === "empty" && sessionLane !== "general") {
-      pairingsRes = await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", "general");
-      if (pairingsRes.error) throw new Error(pairingsRes.error.message);
-      picked = selectPairing({
-        pool: (pairingsRes.data ?? []) as unknown as PairingCandidate[],
-        vector,
-        used_ids: usedIds,
-        session_lane: sessionLane,
-        dims: DIMS as readonly string[],
-        rng,
-      });
-    }
     if (picked.kind === "empty") {
       return { pairing: null, round, confidence: stop.confidence, done: true as const };
     }
@@ -418,8 +476,6 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       round: round + 1,
       confidence: stop.confidence,
       done: false as const,
-      // Instrumentation: client echoes this back in the `pairing_shown` event so
-      // downstream analysis can join "why we picked it" to "what the user did".
       selection_reason: picked.selection_reason,
     };
 }
