@@ -322,7 +322,7 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
 
 function columnsFor(e: Entity): string[] {
   if (e === "songs") return ["title", "artist", "year", "primary_lane", "diagnostic_power", "canon_score", "curator_count"];
-  if (e === "pairings") return ["user_facing_tradeoff", "hypothesis", "song_a_id", "song_b_id", "lane", "difficulty", "diagnostic_weight", "is_bootstrap", "active"];
+  if (e === "pairings") return ["user_facing_tradeoff", "song_a_id", "song_b_id", "lane", "diagnostic_weight", "recognition_score", "min_canon", "era_bucket", "cross_subculture", "is_bootstrap", "active"];
   return ["name", "tagline", "description"];
 }
 
