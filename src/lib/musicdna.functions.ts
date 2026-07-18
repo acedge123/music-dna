@@ -491,6 +491,34 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       : await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", sessionLane);
     if (pairingsRes.error) throw new Error(pairingsRes.error.message);
 
+    // -------- Hydrate recognition data for the current pool --------
+    // View mirrors pairings visibility; a failed read isn't fatal — selector
+    // gracefully degrades to diagnostic-weight-only scoring.
+    const poolIds = (pairingsRes.data ?? []).map((p: { id: string }) => p.id);
+    const recognition = new Map<string, { min_canon: number; avg_canon: number; recognition_score: number }>();
+    if (poolIds.length > 0) {
+      const recRes = await supabase
+        .from("pairing_recognition")
+        .select("pairing_id, min_canon, avg_canon, recognition_score")
+        .in("pairing_id", poolIds);
+      for (const row of (recRes.data ?? []) as Array<{ pairing_id: string; min_canon: number | null; avg_canon: number | null; recognition_score: number | null }>) {
+        recognition.set(row.pairing_id, {
+          min_canon: Number(row.min_canon ?? 0),
+          avg_canon: Number(row.avg_canon ?? 0),
+          recognition_score: Number(row.recognition_score ?? 0),
+        });
+      }
+    }
+
+    // Pick mode from lane_confidence. General/low-confidence sessions after
+    // the bootstrap phase get recognition-forward selection so users see
+    // pairings they can actually engage with.
+    const mode: "diagnostic_first" | "recognition_boost" | "recognition_first" =
+      sessionLane === "general"
+        ? "recognition_first"
+        : laneConfidence < 0.6
+          ? "recognition_boost"
+          : "diagnostic_first";
 
     const rng = { next: () => Math.random() };
     let picked = selectPairing({
@@ -500,6 +528,8 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       session_lane: sessionLane,
       dims: DIMS as readonly string[],
       rng,
+      mode,
+      recognition,
     });
 
     if (picked.kind === "empty" && sessionLane !== "general") {
@@ -512,6 +542,8 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
         session_lane: sessionLane,
         dims: DIMS as readonly string[],
         rng,
+        mode: "recognition_first",
+        recognition,
       });
     }
     if (picked.kind === "empty") {
