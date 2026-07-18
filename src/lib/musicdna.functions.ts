@@ -303,7 +303,7 @@ async function classifyLane(
 export const analyzeOpeningSongs = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ songs: z.array(z.string().trim().min(1).max(200)).length(5) }).parse(d),
+    z.object({ songs: z.array(z.string().trim().min(1).max(200)).length(3) }).parse(d),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
