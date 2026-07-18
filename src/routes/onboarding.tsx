@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -99,6 +99,19 @@ function LineReveal({
         </p>
       ))}
     </div>
+  );
+}
+
+function HomeLogo() {
+  return (
+    <Link
+      to="/"
+      className="fixed top-4 left-4 z-50 flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity"
+      aria-label="MusicDNA — home / start over"
+      title="Home / start over"
+    >
+      <img src="/music-dna-logo.png" alt="MusicDNA" className="h-12 w-auto" />
+    </Link>
   );
 }
 
@@ -384,16 +397,21 @@ function Onboarding() {
 
   if (bootError) {
     return (
+      <>
+      <HomeLogo />
       <main className="mx-auto max-w-2xl px-6 pt-24 text-center space-y-4">
         <p className="eyebrow">can't start a session</p>
         <p className="font-serif text-xl text-muted-foreground">{bootError}</p>
       </main>
+      </>
     );
   }
 
   // INITIAL: cold open — single slot only
   if (phase === "slot1") {
     return (
+    <>
+    <HomeLogo />
     <main className="mx-auto max-w-2xl px-6 pt-24 pb-24 min-h-screen flex flex-col">
       <section className="space-y-16 animate-in fade-in duration-500">
         <header className="space-y-4 text-center sm:text-left">
@@ -431,11 +449,14 @@ function Onboarding() {
         </div>
       </section>
     </main>
+    </>
     );
   }
 
   // TRANSCRIPT: slot2 → slot3 → playing → done in one continuous scroll
   return (
+    <>
+    <HomeLogo />
     <main className="mx-auto max-w-3xl px-6 pt-12 pb-24 space-y-12">
       <header className="space-y-2">
         <p className="eyebrow">the interview</p>
@@ -648,6 +669,7 @@ function Onboarding() {
         </section>
       )}
     </main>
+    </>
   );
 }
 
