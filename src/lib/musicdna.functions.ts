@@ -1498,39 +1498,63 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
     });
 
     // -------- Layer 5: Critic (AI narrative, constrained) --------
+    // Pull the opening hypothesis so the critic can explicitly confirm,
+    // revise, or reject it — nothing floats disconnected from what we told
+    // the user in the first three songs.
+    const { data: profile } = await supabase
+      .from("profiles")
+      .select("opening_hypothesis")
+      .eq("user_id", userId)
+      .maybeSingle();
+    const openingHypothesis = (profile?.opening_hypothesis as string | null | undefined)?.trim() || null;
+
     const evidenceBlock = allowed_claims.length
-      ? allowed_claims.map((c) =>
-          `- ${c.tradeoff} (${c.supporting_choices}/${c.tested_total} relevant matchups, confidence ${c.confidence}). Examples: ${c.examples.map((e) => `${e.chosen} > ${e.rejected}`).join("; ") || "—"}`
-        ).join("\n")
+      ? allowed_claims.map((c) => {
+          const contras = c.contradictions.length
+            ? ` Contradicting picks: ${c.contradictions.map((e) => `${e.chosen} > ${e.rejected}`).join("; ")}.`
+            : "";
+          return `- ${c.tradeoff} (${c.supporting_choices}/${c.tested_total} relevant matchups, confidence ${c.confidence}). Examples: ${c.examples.map((e) => `${e.chosen} > ${e.rejected}`).join("; ") || "—"}.${contras}`;
+        }).join("\n")
       : "- (no claims cleared the evidence threshold)";
     const counterBlock = counterarguments.length
       ? counterarguments.map((c) => `- ${c.claim} (${c.impact} impact — ${c.notes})`).join("\n")
       : "- (none)";
 
-    // Pick the confidence tier from the winning cosine score. Each archetype
-    // ships its own phrasings for 20/50/80/95, so the critic's opening hedge
-    // tracks the actual evidence instead of always sounding equally sure.
+    // Confidence tier from cosine, then CAPPED for mixed/general sessions and
+    // for sessions where too few axes cleared. We refuse to promise more
+    // certainty than the evidence supports.
     const bestScore = assignment?.score ?? 0;
-    const tier = bestScore >= 0.95 ? "95"
+    const laneConfidence = Number(session.lane_confidence ?? 0);
+    const isMixedSession = (session.lane as string | null) === "general" || laneConfidence < 0.6;
+    const strongAxes = allowed_claims.filter((c) => c.supporting_choices >= 3 && c.confidence >= 0.7).length;
+    let tier = bestScore >= 0.95 ? "95"
                : bestScore >= 0.80 ? "80"
                : bestScore >= 0.50 ? "50"
                : "20";
+    if (isMixedSession && (tier === "95" || tier === "80")) tier = "50";
+    if (allowed_claims.length < 2 && (tier === "95" || tier === "80")) tier = "50";
+    if (strongAxes === 0 && tier === "95") tier = "80";
     const thresholds = (bestRow?.confidence_thresholds ?? {}) as Record<string, string>;
     const openingHedge = thresholds[tier] ?? null;
     const keywords = (bestRow?.commentary_keywords ?? []) as string[];
     const coreQuestion = bestRow?.core_question ?? null;
 
     const archetypeVoiceBlock = bestRow
-      ? `\nARCHETYPE (aesthetic, not personality): ${bestRow.name}${coreQuestion ? ` — core question: "${coreQuestion}"` : ""}. Cosine confidence: ${Math.round(bestScore * 100)}%.
-Opening hedge for this confidence tier (use as your first move; do not quote verbatim if it doesn't fit the flow): "${openingHedge ?? ""}"
+      ? `\nARCHETYPE (aesthetic, not personality): ${bestRow.name}${coreQuestion ? ` — core question: "${coreQuestion}"` : ""}. Cosine score: ${Math.round(bestScore * 100)}% (fit tier ${tier}${isMixedSession ? ", capped for mixed-lane session" : ""}).
+Opening hedge for this fit tier (use as your first move; do not quote verbatim if it doesn't fit the flow): "${openingHedge ?? ""}"
 Draw from this archetype's vocabulary where natural (do not list, do not overuse, no more than 3-4 of these across the write-up): ${keywords.slice(0, 24).join(", ") || "(none)"}.`
       : "";
 
+    const openingBlock = openingHypothesis
+      ? `\nOPENING HYPOTHESIS (told to the user after their first three songs — you MUST explicitly confirm, revise, or reject it in your write-up):\n"${openingHypothesis}"`
+      : "";
+
     const criticPrompt = `Write 3-4 sentences about this listener. Use ONLY the allowed claims below. \
-Cite the evidence inline (e.g. "across 7 of 12 matchups"). If a strong counter-hypothesis exists, name it. \
-If no claims cleared the threshold, say so plainly — do not invent. \
+Cite the evidence inline (e.g. "across 5 of 6 matchups"). If a claim has contradicting picks listed, NAME one of them — do not pretend they don't exist. \
+If a strong counter-hypothesis exists, name it. If no claims cleared the threshold, say so plainly — do not invent. \
+Pick ONE tone and hold it: either you have a working read, or you don't. Do NOT mix "I'm convinced" with "shape isn't loud yet". \
 Frame the archetype as what this listener SEEKS from music, not who they are as a person.
-${archetypeVoiceBlock}
+${archetypeVoiceBlock}${openingBlock}
 
 ALLOWED CLAIMS:
 ${evidenceBlock}
