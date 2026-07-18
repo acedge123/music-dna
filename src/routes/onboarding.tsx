@@ -394,6 +394,7 @@ function Onboarding() {
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Choice failed.");
       setBusy(false);
+    }
   }
 
   async function skip() {
@@ -404,7 +405,7 @@ function Onboarding() {
     try {
       await skipFn({ data: { sessionId, pairingId: currentPairing.id, msToDecide: ms } });
       track({
-        event_type: "pairing_shown", // reuse; server also logs pairing_skipped
+        event_type: "pairing_shown",
         session_id: sessionId,
         pairing_id: currentPairing.id,
         response_time_ms: ms,
@@ -435,7 +436,7 @@ function Onboarding() {
       setBusy(false);
     }
   }
-  }
+
 
   if (bootError) {
     return (
