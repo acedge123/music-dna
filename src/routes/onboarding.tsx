@@ -158,6 +158,7 @@ function Onboarding() {
   // play state
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [pairing, setPairing] = useState<Pairing | null>(null);
+  const [pendingSongId, setPendingSongId] = useState<string | null>(null);
   const [round, setRound] = useState(0);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [synthesis, setSynthesis] = useState<string | null>(null);
