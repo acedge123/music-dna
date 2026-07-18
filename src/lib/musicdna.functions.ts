@@ -381,6 +381,13 @@ type ProbeState = {
   pending: Record<string, Lane>; // pairing_id → probe lane (not yet recorded)
   lane_alignment: Record<string, { wins: number; total: number; magnitude: number; cosine_sum: number }>;
   flips: Array<{ round: number; from: Lane; to: Lane; reason: string }>;
+  // Pairings the user explicitly skipped ("I don't know either of these").
+  // Excluded from every future selection in this session. Never scored.
+  skipped_pairing_ids?: string[];
+  // Set true the first time a user hits Skip. Signals to nextPairingImpl
+  // that we may widen bootstrap probes beyond opener lanes — the user has
+  // told us the in-lane read isn't landing, so try adjacent territory.
+  wants_wider_probe?: boolean;
 };
 
 // One row per bootstrap pairing the user has answered while in `general`.
@@ -448,6 +455,8 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     `;
 
     const usedIds = new Set((usedRes.data ?? []).map((c) => c.pairing_id));
+    // Skipped pairings are excluded from every future selection in this session.
+    for (const pid of probeState.skipped_pairing_ids ?? []) usedIds.add(pid);
     const round = usedIds.size;
     const vector = (sessionRes.data?.vector ?? {}) as Record<string, number>;
     const stop = shouldStop({ round, vector, dims: DIMS as readonly string[] });
@@ -488,7 +497,12 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       // Keep only pairings that intersect the user's opener lanes. If the
       // opener produced no usable lanes (should be rare — total scatter),
       // fall back to the full bootstrap pool so we still probe.
-      const bootPool = openerLanes.size > 0
+      // Keep only pairings that intersect the user's opener lanes. If the
+      // opener produced no usable lanes, OR the user has already hit "skip"
+      // (wants_wider_probe), fall back to the full bootstrap pool so we can
+      // reach adjacent territory (rap/R&B/country/etc).
+      const widenProbe = probeState.wants_wider_probe === true;
+      const bootPool = openerLanes.size > 0 && !widenProbe
         ? rawBootPool.filter((p) => {
             const pairingLane = (p.lane ?? null) as string | null;
             const aLane = p.song_a?.primary_lane ?? null;
@@ -1273,6 +1287,73 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
 
     return { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
 }
+
+// ============ Skip pairing ============
+// User signal: "I don't know either of these — show me something else."
+// Never affects the vector, never counts as a bootstrap choice. We record
+// the pairing_id in probe_state.skipped_pairing_ids so it can't be re-served
+// this session, flip probe_state.wants_wider_probe so nextPairingImpl can
+// reach outside the opener lanes on the next bootstrap draw, and log a
+// pairing_skipped event for diagnostics.
+export const skipPairing = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      sessionId: z.string().uuid(),
+      pairingId: z.string().uuid(),
+      msToDecide: z.number().int().nonnegative().max(600000).optional(),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => skipPairingImpl(context.supabase, context.userId, data));
+
+export async function skipPairingImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string; pairingId: string; msToDecide?: number },
+) {
+  const sessionRes = await supabase
+    .from("sessions")
+    .select("user_id, probe_state")
+    .eq("id", data.sessionId)
+    .single();
+  if (sessionRes.error || !sessionRes.data) {
+    throw new Error(sessionRes.error?.message ?? "session not found");
+  }
+  if (sessionRes.data.user_id !== userId) throw new Error("forbidden");
+  const probeState = (sessionRes.data.probe_state ?? {}) as ProbeState;
+  probeState.probes_shown = probeState.probes_shown ?? [];
+  probeState.pending = probeState.pending ?? {};
+  probeState.lane_alignment = probeState.lane_alignment ?? {};
+  probeState.flips = probeState.flips ?? [];
+  const skipped = new Set(probeState.skipped_pairing_ids ?? []);
+  skipped.add(data.pairingId);
+  probeState.skipped_pairing_ids = Array.from(skipped);
+  probeState.wants_wider_probe = true;
+
+  const { error: uErr } = await supabase
+    .from("sessions")
+    .update({ probe_state: probeState } as never)
+    .eq("id", data.sessionId);
+  if (uErr) throw new Error(uErr.message);
+
+  try {
+    await supabase.from("event_log").insert({
+      user_id: userId,
+      session_id: data.sessionId,
+      pairing_id: data.pairingId,
+      event_type: "pairing_skipped",
+      client: "server",
+      props: { ms_to_decide: data.msToDecide ?? null },
+    } as never);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.warn("[musicdna] pairing_skipped event log failed:", e instanceof Error ? e.message : e);
+  }
+
+  return { ok: true as const };
+}
+
+
 
 // ============ Instrumentation helper (per-choice diagnostic snapshot) ============
 // Loads the archetype catalog, recomputes rankings on the just-updated

@@ -8,6 +8,7 @@ import {
   startSession,
   nextPairing,
   recordChoice,
+  skipPairing,
   finalizeSession,
   finalSynthesis,
   currentRead,
@@ -123,6 +124,7 @@ function Onboarding() {
   const startFn = useServerFn(startSession);
   const nextFn = useServerFn(nextPairing);
   const chooseFn = useServerFn(recordChoice);
+  const skipFn = useServerFn(skipPairing);
   const finalizeFn = useServerFn(finalizeSession);
   const synthFn = useServerFn(finalSynthesis);
   const readFn = useServerFn(currentRead);
@@ -395,6 +397,47 @@ function Onboarding() {
     }
   }
 
+  async function skip() {
+    if (!pairing || !sessionId || busy) return;
+    setBusy(true);
+    const ms = Math.min(600000, Date.now() - startedAt.current);
+    const currentPairing = pairing;
+    try {
+      await skipFn({ data: { sessionId, pairingId: currentPairing.id, msToDecide: ms } });
+      track({
+        event_type: "pairing_shown",
+        session_id: sessionId,
+        pairing_id: currentPairing.id,
+        response_time_ms: ms,
+        props: { skipped: true },
+      });
+      setPairing(null);
+      const { pairing: nxt, round: nr, done: isDone, selection_reason } = await nextFn({ data: { sessionId } }) as {
+        pairing: Pairing | null; round: number; done: boolean; selection_reason?: unknown;
+      };
+      if (isDone || !nxt || nr > MAX_ROUNDS) {
+        try { await finalizeFn({ data: { sessionId } }); } catch (e) { console.error("finalizeSession failed", e); }
+        setPhase("done");
+        setBusy(false);
+        return;
+      }
+      setPairing(nxt as unknown as Pairing);
+      setRound(nr);
+      startedAt.current = Date.now();
+      track({
+        event_type: "pairing_shown",
+        session_id: sessionId,
+        pairing_id: (nxt as unknown as Pairing).id,
+        props: { round: nr, tests: (nxt as unknown as Pairing).tests, selection_reason, after_skip: true },
+      });
+      setBusy(false);
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Skip failed.");
+      setBusy(false);
+    }
+  }
+
+
   if (bootError) {
     return (
       <>
@@ -584,6 +627,16 @@ function Onboarding() {
                 <p className="text-sm text-muted-foreground">{song.artist}</p>
               </button>
             ))}
+          </div>
+          <div className="flex justify-center pt-1">
+            <button
+              type="button"
+              disabled={busy}
+              onClick={skip}
+              className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
+            >
+              Skip — I don't know these
+            </button>
           </div>
         </section>
       )}
