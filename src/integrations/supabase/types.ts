@@ -909,6 +909,9 @@ export type Database = {
           rationale: string | null
           routing_power: number | null
           scale: number | null
+          scored_at: string | null
+          scoring_provenance: Json | null
+          scoring_version: string | null
           sub_lane: string | null
           subculture: string[]
           tension: number | null
@@ -946,6 +949,9 @@ export type Database = {
           rationale?: string | null
           routing_power?: number | null
           scale?: number | null
+          scored_at?: string | null
+          scoring_provenance?: Json | null
+          scoring_version?: string | null
           sub_lane?: string | null
           subculture?: string[]
           tension?: number | null
@@ -983,6 +989,9 @@ export type Database = {
           rationale?: string | null
           routing_power?: number | null
           scale?: number | null
+          scored_at?: string | null
+          scoring_provenance?: Json | null
+          scoring_version?: string | null
           sub_lane?: string | null
           subculture?: string[]
           tension?: number | null
