@@ -473,6 +473,7 @@ export type Database = {
           expected_split: string | null
           hypothesis: string | null
           id: string
+          is_bootstrap: boolean
           lane: string
           song_a_id: string
           song_b_id: string
@@ -489,6 +490,7 @@ export type Database = {
           expected_split?: string | null
           hypothesis?: string | null
           id?: string
+          is_bootstrap?: boolean
           lane?: string
           song_a_id: string
           song_b_id: string
@@ -505,6 +507,7 @@ export type Database = {
           expected_split?: string | null
           hypothesis?: string | null
           id?: string
+          is_bootstrap?: boolean
           lane?: string
           song_a_id?: string
           song_b_id?: string
@@ -677,6 +680,7 @@ export type Database = {
           archetype_margin: number | null
           archetype_score: number | null
           archetype_top3: Json
+          bootstrap_choices_json: Json
           completed_at: string | null
           created_at: string
           id: string
@@ -699,6 +703,7 @@ export type Database = {
           archetype_margin?: number | null
           archetype_score?: number | null
           archetype_top3?: Json
+          bootstrap_choices_json?: Json
           completed_at?: string | null
           created_at?: string
           id?: string
@@ -721,6 +726,7 @@ export type Database = {
           archetype_margin?: number | null
           archetype_score?: number | null
           archetype_top3?: Json
+          bootstrap_choices_json?: Json
           completed_at?: string | null
           created_at?: string
           id?: string
