@@ -583,22 +583,52 @@ function Onboarding() {
           {entries.map((e, i) => {
             const isLatest = i === entries.length - 1;
             const reactionLines = e.reaction.split("\n").map((s) => s.trim()).filter(Boolean);
+            // First "X over Y." line is the verdict — bigger. A hedge line
+            // ("Early read:", "Starting to believe:") sits above it small.
+            const verdictIdx = reactionLines.findIndex((l) => / over .+\.$/.test(l));
             const thesisFirst = (e.thesis.split("\n").map((s) => s.trim()).filter(Boolean)[0]) ?? "";
             return (
-              <article key={e.round} className="space-y-4">
-                <LineReveal
-                  lines={reactionLines}
-                  animate={isLatest}
-                  intervalMs={700}
-                  className="font-serif text-lg md:text-xl leading-snug text-foreground"
-                />
+              <article key={e.round} className="space-y-3">
+                {reactionLines.map((line, idx) => {
+                  const isHedge = idx < verdictIdx && line.endsWith(":");
+                  const isVerdict = idx === verdictIdx;
+                  if (isHedge) {
+                    return (
+                      <p key={idx} className="eyebrow text-primary animate-in fade-in duration-500">
+                        {line.replace(/:$/, "")}
+                      </p>
+                    );
+                  }
+                  if (isVerdict) {
+                    return (
+                      <LineReveal
+                        key={idx}
+                        lines={[line]}
+                        animate={isLatest}
+                        startDelayMs={isLatest ? 200 : 0}
+                        intervalMs={0}
+                        className="display text-2xl md:text-3xl leading-tight text-foreground"
+                      />
+                    );
+                  }
+                  return (
+                    <LineReveal
+                      key={idx}
+                      lines={[line]}
+                      animate={isLatest}
+                      startDelayMs={isLatest ? 200 + (idx - Math.max(verdictIdx, 0)) * 550 : 0}
+                      intervalMs={0}
+                      className="font-serif text-base md:text-lg text-muted-foreground leading-snug"
+                    />
+                  );
+                })}
                 {thesisFirst && (
                   <LineReveal
                     lines={[thesisFirst]}
                     animate={isLatest}
-                    startDelayMs={isLatest ? reactionLines.length * 700 + 250 : 0}
+                    startDelayMs={isLatest ? 200 + reactionLines.length * 550 : 0}
                     intervalMs={700}
-                    className="font-serif italic text-base md:text-lg text-foreground/90 leading-snug border-l-2 border-primary/40 pl-4 py-1"
+                    className="font-serif italic text-base md:text-lg text-foreground/90 leading-snug border-l-2 border-primary/40 pl-4 py-1 mt-2"
                   />
                 )}
               </article>
@@ -615,7 +645,7 @@ function Onboarding() {
             <div className="h-px flex-1 ml-6 bg-border" />
           </div>
           <p className="font-serif text-xl md:text-2xl text-muted-foreground">
-            {entries.length === 0 ? "Pick one. Don't overthink it." : "Next one — go with your gut."}
+            {entries.length === 0 ? "Pick one. Don't overthink it." : ROUND_PROMPTS[(round - 2) % ROUND_PROMPTS.length]}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border rounded-sm overflow-hidden">
             {[pairing.song_a, pairing.song_b].map((song) => {
