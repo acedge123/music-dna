@@ -1131,8 +1131,11 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
     const hedge = hedgeForRound(round);
 
     // Line 1: reaction. Round 1 skips the hedge (avoid pretending pattern).
+    // Hedge goes on its own line so the UI can render it as a small label
+    // above the actual verdict — otherwise "Early read: Rehab over Blank
+    // Space." reads flat and same-size as everything else.
     const reactionCore = `${winner.title} over ${loser.title}.`;
-    const reaction = round === 1 ? reactionCore : `${hedge} ${reactionCore}`;
+    const reaction = round === 1 ? reactionCore : `${hedge}\n${reactionCore}`;
 
     // Line 2: axis label (first mention) OR a fresh observation. Never both.
     let inference = "";
