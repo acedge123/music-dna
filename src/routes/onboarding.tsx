@@ -47,6 +47,19 @@ const PLACEHOLDERS = [
   "Untrue — Burial",
 ];
 
+// Rotating per-round prompts so the transition between pairings doesn't
+// read as a copy-pasted "Next one — go with your gut." every time.
+const ROUND_PROMPTS = [
+  "Next one — go with your gut.",
+  "Round two. No overthinking.",
+  "Alright, quick — which one.",
+  "Don't read them twice. Pick.",
+  "Instinct answer. Go.",
+  "Last look. Which one wins.",
+  "One more. First reaction.",
+  "Snap call — ready?",
+];
+
 type Phase = "slot1" | "slot2" | "slot3" | "playing" | "done";
 type Refined = { reaction?: string; hypothesis: string; lane: string; confidence: number; secondary_lanes?: string[]; observation?: string; fork?: string; stakes?: string };
 type Song = { id: string; title: string; artist: string; year: number | null; lane: string };
