@@ -16,12 +16,40 @@ export const HEDGES = [
 ] as const;
 
 export const HESITATION_BUCKETS: ReadonlyArray<{ max: number; lines: readonly string[] }> = [
-  { max: 500,      lines: ["Instinct.", "Reflex.", "No thought required.", "That was pre-loaded.", "Zero hesitation."] },
-  { max: 1200,     lines: ["Immediate.", "Instant call.", "That wasn't a decision.", "Snap verdict.", "You didn't blink."] },
-  { max: 2500,     lines: ["No debate.", "Quick call.", "Clean pick.", "You knew.", "That landed fast."] },
-  { max: 5000,     lines: ["Had to think.", "You took a second there.", "Interesting pause.", "That wasn't automatic.", "You weighed it."] },
-  { max: 8000,     lines: ["That one wasn't obvious.", "You weighed both.", "That was close.", "You almost changed your mind.", "No instant answer there.", "You gave that some respect."] },
-  { max: Infinity, lines: ["You really wrestled with that one.", "You stared this one down.", "That was a battle.", "You took the long look.", "That one earned its answer."] },
+  { max: 500,      lines: [
+    "Instinct.", "Reflex.", "No thought required.", "That was pre-loaded.", "Zero hesitation.",
+    "Muscle memory.", "Already answered before I asked.", "Prewired.", "You didn't even read it.",
+    "That was a twitch, not a choice.", "Cocked and loaded.", "Answered in the eyebrows.",
+  ] },
+  { max: 1200,     lines: [
+    "Immediate.", "Instant call.", "That wasn't a decision.", "Snap verdict.", "You didn't blink.",
+    "Faster than the page loaded.", "Half a heartbeat.", "No wind-up.", "Straight through.",
+    "Confident tap.", "That came out of your fingers, not your head.",
+  ] },
+  { max: 2500,     lines: [
+    "No debate.", "Quick call.", "Clean pick.", "You knew.", "That landed fast.",
+    "Barely a pause.", "Easy.", "Wasn't a coin flip.", "Short work.", "You were ready for that one.",
+    "In and out.", "You already had a favorite.",
+  ] },
+  { max: 5000,     lines: [
+    "Had to think.", "You took a second there.", "Interesting pause.", "That wasn't automatic.",
+    "You weighed it.", "You did the math.", "Not instinct — deliberation.", "A real beat.",
+    "You checked yourself.", "You listened before you answered.", "Not a reflex answer.",
+    "You gave it a look.",
+  ] },
+  { max: 8000,     lines: [
+    "That one wasn't obvious.", "You weighed both.", "That was close.", "You almost switched.",
+    "No instant answer there.", "You gave that some respect.", "You sized it up.",
+    "That took real weighing.", "You did some negotiating.", "You looked at both of them properly.",
+    "You had a version where the other one won.", "You cared about that one.",
+  ] },
+  { max: Infinity, lines: [
+    "You really wrestled with that one.", "You stared this one down.", "That was a battle.",
+    "You took the long look.", "That one earned its answer.", "You lived inside that decision.",
+    "You didn't want to pick.", "You made me wait for that.", "That one hurt a little.",
+    "Neither one felt like a loss you wanted to take.", "You almost refused to answer.",
+    "That was a slow burn of a choice.",
+  ] },
 ];
 
 // Words that leak internal vocabulary into user copy. Dev-only guard —
