@@ -40,9 +40,16 @@ export const Route = createFileRoute("/api/v1/onboarding/opener")({
           return jsonResponse({
             ok: true,
             lane: analysis.lane,
+            confidence: analysis.confidence,
             lane_confidence: analysis.confidence,
             hypothesis: analysis.hypothesis,
+            reaction: analysis.reaction,
+            observation: analysis.observation,
+            reasoning: analysis.reasoning,
             secondary_lanes: analysis.secondary_lanes,
+            candidate_dimensions: analysis.candidate_dimensions,
+            per_song: analysis.per_song,
+            canon_matches: analysis.canon_matches,
           });
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);

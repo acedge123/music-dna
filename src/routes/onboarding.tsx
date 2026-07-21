@@ -51,9 +51,9 @@ const PLACEHOLDERS = [
 // read as a copy-pasted "Next one — go with your gut." every time.
 const ROUND_PROMPTS = [
   "Next one — go with your gut.",
-  "Round two. No overthinking.",
+  "Round two. First pull.",
   "Alright, quick — which one.",
-  "Don't read them twice. Pick.",
+  "Read once. Pick.",
   "Instinct answer. Go.",
   "Last look. Which one wins.",
   "One more. First reaction.",
@@ -658,7 +658,7 @@ function Onboarding() {
             <div className="h-px flex-1 ml-6 bg-border" />
           </div>
           <p className="font-serif text-xl md:text-2xl text-muted-foreground">
-            {entries.length === 0 ? "Pick one. Don't overthink it." : ROUND_PROMPTS[(round - 2) % ROUND_PROMPTS.length]}
+            {entries.length === 0 ? "Pick one. First instinct." : ROUND_PROMPTS[(round - 2) % ROUND_PROMPTS.length]}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border rounded-sm overflow-hidden">
             {[pairing.song_a, pairing.song_b].map((song) => {

@@ -2254,11 +2254,28 @@ export const ReactToOneInput = z.object({
   priorSongs: z.array(z.string().trim().min(1).max(200)).max(20).default([]),
 });
 
+function deterministicMicroReaction(
+  data: { song: string; index: number; priorSongs: string[] },
+  ctx: { title: string; artist: string; year: number | null; primary_lane: string | null } | null,
+): string {
+  if (!ctx) {
+    return ["Interesting.", "Noted.", "Okay. Still listening."][data.index % 3];
+  }
+  if (data.index === 0) {
+    return `${ctx.artist} as the opener — specific enough to keep me listening.`;
+  }
+  if (data.index === 1) {
+    return `${ctx.title}${ctx.year ? ` (${ctx.year})` : ""} gives this a second clear reference point.`;
+  }
+  return `${ctx.title} makes three; now there is enough shape to test.`;
+}
+
 export async function reactToOneImpl(
   supabase: AuthedSupabase,
   data: { song: string; index: number; priorSongs: string[] },
 ): Promise<{ text: string; nextLabel: string | null }> {
   const fallbacks = ["Interesting.", "Noted.", "Mm.", "Okay.", "Now we're talking."];
+  let fallbackText = fallbacks[data.index % fallbacks.length];
   const nextRank = data.index + 2;
   try {
     const prior = data.priorSongs.length
@@ -2266,6 +2283,7 @@ export async function reactToOneImpl(
       : "";
 
     const ctx = await lookupSongContext(supabase as never, data.song);
+    fallbackText = deterministicMicroReaction(data, ctx);
     const ctxBlock = ctx
       ? `Catalog knows: ${ctx.title} — ${ctx.artist}${ctx.year ? ` (${ctx.year})` : ""}${ctx.primary_lane ? ` · ${ctx.primary_lane}` : ""}. You may use this. Do not invent anything beyond it.`
       : `Catalog has no match for this song. Don't invent facts — riff on instinct or mood.`;
@@ -2302,11 +2320,11 @@ Rules for nextLabel:
     } catch {
       reaction = cleaned.split("\n")[0].replace(/^["'`\s]+|["'`\s]+$/g, "").trim();
     }
-    if (!reaction) reaction = fallbacks[data.index % fallbacks.length];
+    if (!reaction) reaction = fallbackText;
     const capped = reaction.length > 200 ? reaction.slice(0, 197) + "…" : reaction;
     return { text: capped, nextLabel };
   } catch {
-    return { text: fallbacks[data.index % fallbacks.length], nextLabel: null };
+    return { text: fallbackText, nextLabel: null };
   }
 }
 
