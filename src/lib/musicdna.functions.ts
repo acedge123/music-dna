@@ -588,7 +588,24 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
         const finalPool = differing.length > 0 ? differing : bootPool;
         const pickIdx = Math.floor(Math.random() * finalPool.length);
         const bootPicked = finalPool[pickIdx];
-        await emitShadowRecommendation(bootPicked.id);
+        const bootReason = {
+          leaning_axes: [],
+          fork_matched: false,
+          tests: (bootPicked.tests ?? []) as string[],
+          axes_needed: [],
+          axis_need_score: 0,
+          challenge_boost: false,
+          diagnostic_weight: bootPicked.diagnostic_weight ?? 50,
+          pool_size: finalPool.length,
+          weight: 0,
+          bootstrap: true,
+          opener_lanes: Array.from(openerLanes),
+        } as Record<string, unknown>;
+        await emitShadowRecommendation(bootPicked.id, {
+          selected_mode: "bootstrap",
+          selection_reason: bootReason,
+          is_bootstrap: true,
+        });
         return {
           pairing: bootPicked,
           round: round + 1,
