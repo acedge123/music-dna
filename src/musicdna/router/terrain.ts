@@ -20,6 +20,7 @@ export type ChoiceEventRow = {
 
 export type TerrainInputs = {
   lane_confidence: number;      // 0..1
+  vector_confidence?: number;   // 0..1, mean |v-50|/50 across moved dims (Cursor #3)
   round: number;                // rounds completed (0-based; = choices.length)
   max_rounds: number;           // 6 for web today
   choices: ChoiceEventRow[];    // ordered oldest→newest, only real choices (not skips)
@@ -32,9 +33,10 @@ export type TerrainFeatures = {
   feedback_latency: "fast";
   reversibility: "medium";               // Refinement #1: corrected from "high".
   adversariality: "none";
-  information_cost: "medium";            // Refinement #1: corrected from "low".
+  // Cursor #4: information_cost and environment_stability are derived, not constant.
+  information_cost: TrinaryLow;
   coordination_load: "low";
-  environment_stability: "stable";
+  environment_stability: "stable" | "unstable";
   time_horizon: "iterative";
   // Derived from session state:
   uncertainty: TrinaryLow;
@@ -45,6 +47,7 @@ export type TerrainFeatures = {
   // Instrumentation only — not scored.
   derived: {
     lane_confidence: number;
+    vector_confidence: number;       // Cursor #3
     delta_volatility: number | null; // stddev of |raw_delta| across recent choices; null if <2 samples
     delta_samples: number;
     artist_bias_share: number;       // max share of a single artist among winners; 0..1
