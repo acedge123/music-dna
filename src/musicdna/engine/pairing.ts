@@ -49,6 +49,39 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
   recognition?: Map<string, RecognitionRow>;
   // Optional override; falls back to RECOGNITION_FLOORS[mode].
   min_canon_floor?: number;
+  // Phase 3 (Knobs refactor). Structural knobs that used to be literals in
+  // this file. Defaults MUST byte-match the pre-refactor behavior — this
+  // struct only exists so Agent Brain's regime router can swap them out in a
+  // later phase. See docs/musicdna/agent-brain-integration-plan.md Step 3.
+  knobs?: Partial<PairingKnobs>;
+};
+
+// Phase 3: the seven literal knobs `selectPairing` used to embed inline.
+// Every default here reproduces the pre-refactor value exactly.
+export type PairingKnobs = {
+  // Axes with |v| >= this are considered "leaning" — feed the fork filter
+  // and the challenge boost.
+  leaning_threshold: number;                // was 15
+  // Cap on how many leaning axes we track.
+  leaning_top_k: number;                    // was 3
+  // Multiplier applied to pairings whose tests overlap a leaning axis.
+  challenge_boost: number;                  // was 1.5
+  // axis_need weighting: w *= (base + slope * axisNeed).
+  axis_need_base: number;                   // was 0.4
+  axis_need_slope: number;                  // was 0.6
+  // Recognition/diagnostic blend factors per mode.
+  recog_blend_recognition_first: number;    // was 0.6
+  recog_blend_recognition_boost: number;    // was 0.4
+};
+
+export const DEFAULT_PAIRING_KNOBS: PairingKnobs = {
+  leaning_threshold: 15,
+  leaning_top_k: 3,
+  challenge_boost: 1.5,
+  axis_need_base: 0.4,
+  axis_need_slope: 0.6,
+  recog_blend_recognition_first: 0.6,
+  recog_blend_recognition_boost: 0.4,
 };
 
 // Instrumentation.
@@ -72,6 +105,7 @@ export const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
   recognition_boost: 45,
   recognition_first: 55,
 };
+
 
 export type SelectPairingResult<P extends PairingCandidate = PairingCandidate> =
   | { kind: "picked"; pairing: P; selection_reason: SelectionReason }
@@ -112,7 +146,10 @@ export function selectPairing<P extends PairingCandidate>(
   const mode: SelectionMode = input.mode ?? "diagnostic_first";
   const recognition = input.recognition;
   const canonFloor = input.min_canon_floor ?? RECOGNITION_FLOORS[mode];
+  const knobs: PairingKnobs = { ...DEFAULT_PAIRING_KNOBS, ...(input.knobs ?? {}) };
 
+  // Same-artist exclusion is UNCONDITIONAL — see Step 3 gate in the
+  // integration plan. Not knob-controlled on purpose.
   let pool = input.pool.filter((p) => !used_ids.has(p.id)).filter(differentArtist);
   if (!pool.length) return { kind: "empty" };
 
@@ -132,9 +169,9 @@ export function selectPairing<P extends PairingCandidate>(
   const leaningAxes = new Set(
     dims
       .map((d) => ({ d, v: Math.abs(vector[d] ?? 0) }))
-      .filter((x) => x.v >= 15)
+      .filter((x) => x.v >= knobs.leaning_threshold)
       .sort((a, b) => b.v - a.v)
-      .slice(0, 3)
+      .slice(0, knobs.leaning_top_k)
       .map((x) => x.d),
   );
   const testsFork = (p: P) => {
@@ -148,28 +185,31 @@ export function selectPairing<P extends PairingCandidate>(
 
   const need = (dim: string) => 1 / (1 + Math.abs(vector[dim] ?? 0));
   // Blend factor for recognition vs diagnostic weight.
-  // recognition_first: recognition dominates (0.6 / 0.4).
-  // recognition_boost: balanced-ish (0.4 / 0.6).
-  const recogBlend = mode === "recognition_first" ? 0.6 : mode === "recognition_boost" ? 0.4 : 0;
+  const recogBlend =
+    mode === "recognition_first"
+      ? knobs.recog_blend_recognition_first
+      : mode === "recognition_boost"
+        ? knobs.recog_blend_recognition_boost
+        : 0;
   const scored = pool.map((p) => {
     const tests = (p.tests?.length ? p.tests : dims.slice()) as string[];
     const axisNeed = tests.reduce((s, d) => s + need(d), 0) / Math.max(1, tests.length);
     const challengesHypothesis = leaningAxes.size > 0 && tests.some((t) => leaningAxes.has(t));
-    const challengeBoost = challengesHypothesis ? 1.5 : 1;
+    const challengeBoost = challengesHypothesis ? knobs.challenge_boost : 1;
     const dw = (p.diagnostic_weight ?? 50) / 100;
     const rec = recognition?.get(p.id);
     const recNorm = rec ? Math.max(0, Math.min(100, rec.recognition_score)) / 100 : 0.5;
     const base = recogBlend > 0
       ? (recogBlend * recNorm + (1 - recogBlend) * dw)
       : dw;
-    const w = base * (0.4 + 0.6 * axisNeed) * challengeBoost;
+    const w = base * (knobs.axis_need_base + knobs.axis_need_slope * axisNeed) * challengeBoost;
     return { p, w, tests, axisNeed, challengesHypothesis, rec };
   });
   const total = scored.reduce((s, x) => s + x.w, 0);
   let r = rng.next() * total;
   const pick = scored.find((x) => (r -= x.w) <= 0) ?? scored[0];
   const pickedTests = pick.tests;
-  const axesNeeded = pickedTests.filter((d) => Math.abs(vector[d] ?? 0) < 15);
+  const axesNeeded = pickedTests.filter((d) => Math.abs(vector[d] ?? 0) < knobs.leaning_threshold);
   const selection_reason: SelectionReason = {
     leaning_axes: Array.from(leaningAxes),
     fork_matched: leaningAxes.size > 0 && pickedTests.some((t) => leaningAxes.has(t)),
@@ -185,6 +225,7 @@ export function selectPairing<P extends PairingCandidate>(
   };
   return { kind: "picked", pairing: pick.p, selection_reason };
 }
+
 
 // Guard used by the route/server-fn to fail loud if we ever pick a pairing
 // outside the session's lane. Never mutate; throw at the caller.
