@@ -120,3 +120,27 @@ After two weeks of real sessions with feedback:
   aggressively.
 - If `v_contradiction_load.contradiction_ratio > 0.3` correlates with
   fit_tier ≥ 80, the Critic voice should hedge harder in that regime.
+
+## `regime_recommended` (shadow router, 2026-07-25)
+
+Emitted by `nextPairingImpl` on every successful pairing selection, including
+bootstrap picks. **Shadow-only** — the recommendation never influences which
+pairing is served. See `docs/musicdna/agent-brain-integration-plan.md` for the
+mapper/scorer contract and the nine refinements this event exists to validate.
+
+- `event_type`: `regime_recommended`
+- `session_id`, `pairing_id`, `user_id`: as usual
+- `client`: `"server"`
+- `props`:
+  - `regime`: `"explore" | "prune" | "compound" | "coordinate"`
+  - `confidence`: 0..1 (margin over runner-up, normalized)
+  - `margin`: raw score gap (winner minus runner-up)
+  - `scores`: `{ explore, prune, compound, coordinate }` — full table
+  - `archetype_margin`: null in Step 0 (populated once the caller wires
+    ranking output — refinement #9)
+  - `features_summary`: flattened `TerrainFeatures.derived` plus the four
+    trinary axes and the winning `mode_pressure` for offline slicing
+
+Analysis queries live alongside the other diagnostics views; a follow-up
+migration adds `v_regime_distribution` and `v_regime_vs_fit_tier` once we
+have ~1k events to slice.
