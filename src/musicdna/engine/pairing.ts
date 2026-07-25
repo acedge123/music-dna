@@ -145,7 +145,11 @@ export function shouldStop(input: {
   confidence_threshold?: number;
   axis_confidence_threshold?: number;
 }): { done: boolean; confidence: number; confident_axes: number } {
-  const minRounds = input.min_rounds ?? 12;
+  // Phase 3.5: default aligned with the web UX (6 rounds). Earlier default
+  // (12) predated the current onboarding budget and let the REST loop drift
+  // past the user-facing stop. Callers with a different budget still pass
+  // min_rounds explicitly.
+  const minRounds = input.min_rounds ?? 6;
   const confThresh = input.confidence_threshold ?? 0.6;
   const axisConf = input.axis_confidence_threshold ?? 30;
   const confident_axes = input.dims.filter(
