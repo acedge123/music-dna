@@ -497,6 +497,14 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       return "explore";
     };
 
+    // Phase 3.5 note on completion: `emitShadowRecommendation` is `await`ed
+    // BEFORE nextPairingImpl returns (see the two call sites below). On
+    // Cloudflare Workers / workerd, promises awaited inside a request
+    // handler complete synchronously with the response — no waitUntil()
+    // needed. The fire-and-forget hazard the earlier review flagged would
+    // only apply if we removed the await. If a future change makes this
+    // truly fire-and-forget, switch to `event.waitUntil(promise)` from the
+    // server route's ctx instead of dropping the await.
     const emitShadowRecommendation = async (
       pairingId: string | null,
       ctx: { selected_mode: string; selection_reason: Record<string, unknown> | null; is_bootstrap: boolean },
