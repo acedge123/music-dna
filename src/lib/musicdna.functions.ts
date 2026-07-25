@@ -645,6 +645,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       return { pairing: null, round, confidence: stop.confidence, done: true as const };
     }
     assertWithinLane((picked.pairing as { lane?: string | null }).lane ?? null, sessionLane);
+    emitShadowRecommendation((picked.pairing as { id: string }).id);
     return {
       pairing: picked.pairing,
       round: round + 1,
