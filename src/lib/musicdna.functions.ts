@@ -7,6 +7,23 @@ import { assignArchetype } from "@/musicdna/engine/archetypes";
 import { CRITIC_PERSONA as PERSONA, CRITIC_VOICE_EDITORIAL as VOICE } from "@/musicdna/engine/critic";
 import { callLovableAi, DEFAULT_MODEL as MODEL } from "@/musicdna/adapters/llm-gateway";
 import { recommendForSession, type Regime } from "@/musicdna/router";
+import { regimeToKnobs } from "@/musicdna/router/knobs";
+
+// Phase 4: routing mode. Read once per request from env.
+//   "legacy"  — original behavior, no shadow diff, no regime knobs.
+//   "shadow"  — compute a shadow pick with regime-derived knobs and log the
+//               divergence on `regime_recommended`. User still gets the
+//               legacy pick. This is the default when a router
+//               recommendation is available.
+//   "live"    — apply the regime knobs to the real `selectPairing` call.
+//               Reserved for Phase 5 canary. Not enabled unless the env
+//               variable is set explicitly.
+type RoutingMode = "legacy" | "shadow" | "live";
+function readRoutingMode(): RoutingMode {
+  const v = (typeof process !== "undefined" ? process.env?.MUSICDNA_ROUTING_MODE : undefined) ?? "";
+  if (v === "legacy" || v === "shadow" || v === "live") return v;
+  return "shadow";
+}
 
 // Shared Supabase client type used by the *Impl exports below. The test
 // harness (src/routes/api/public/test/$action.ts) calls these Impl variants
