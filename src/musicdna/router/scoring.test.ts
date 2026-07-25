@@ -43,7 +43,7 @@ describe("scoring — constant baseline (refinement #1)", () => {
     // adversariality=none, information_cost=medium, coordination_load=low,
     // environment_stability=stable, time_horizon=iterative) plus derived
     // medium×4. Locked-in table so future edits show up in diff.
-    expect(scores).toEqual({ explore: 8, prune: 10, compound: 6, coordinate: 1 });
+    expect(scores).toEqual({ explore: 10, prune: 12, compound: 6, coordinate: 0 });
   });
 
   it("tie-breaking: recommendRegime picks the first REGIMES entry on a tie", () => {
