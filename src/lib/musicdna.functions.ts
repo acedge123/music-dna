@@ -1464,6 +1464,8 @@ async function emitChoiceDiagnostics(
       round: args.round,
       chosen_song_id: args.chosenSongId,
       rejected_song_id: args.rejectedSongId,
+      chosen_artist: args.chosenArtist,
+      ms_to_decide: args.msToDecide,
       axes_tested: args.tests,
       vector_before: args.priorVec,
       raw_delta: args.deltaVec,
