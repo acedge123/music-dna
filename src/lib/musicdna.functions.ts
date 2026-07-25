@@ -1315,6 +1315,8 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
         deltaVec,
         weightedVec: vec,
         diagnosticWeight: pairing.diagnostic_weight ?? 50,
+        chosenArtist: winner.artist ?? null,
+        msToDecide: data.msToDecide ?? null,
       });
     } catch (e) {
       // eslint-disable-next-line no-console
