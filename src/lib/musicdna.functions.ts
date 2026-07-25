@@ -477,6 +477,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     // fully confident. Use the same test shouldStop() applies: count axes
     // whose |v| has crossed the 30-point confidence threshold, divided by
     // the total dimension count. Matches Cursor review #3.
+    const dimsRef = DIMS as readonly string[];
     const AXIS_CONF_THRESHOLD = 30;
     const confidentAxes = dimsRef.filter(
       (d) => Math.abs(Number(vector[d] ?? 0)) >= AXIS_CONF_THRESHOLD,
