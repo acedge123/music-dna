@@ -20,7 +20,11 @@ export type ChoiceEventRow = {
 
 export type TerrainInputs = {
   lane_confidence: number;      // 0..1
-  vector_confidence?: number;   // 0..1, mean |v-50|/50 across moved dims (Cursor #3)
+  // Phase 3.5: vectors accumulate around 0, not 50. Correct definition is
+  // count(|v[d]| >= 30) / dims.length — matches shouldStop(). undefined =
+  // caller has no vector signal yet (fall back to lane_confidence). A real
+  // 0 means "vector is neutral" and is a valid uncertainty signal.
+  vector_confidence?: number;   // 0..1, or undefined = unknown
   round: number;                // rounds completed (0-based; = choices.length)
   max_rounds: number;           // 6 for web today
   choices: ChoiceEventRow[];    // ordered oldest→newest, only real choices (not skips)
