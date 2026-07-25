@@ -22,6 +22,11 @@ Everything else is sequencing and guardrails.
 
 ---
 
+## Shipped so far
+
+- **Step 0 (2026-07-25).** Shadow router live under `src/musicdna/router/*`. `nextPairingImpl` emits fire-and-forget `regime_recommended` events on every successful pick (bootstrap and normal). Selector untouched. 11 mapper/scorer unit tests green.
+- **Step 1 (2026-07-25).** Admin → Shadow Router tab (`adminShadowRouter` server fn + `ShadowRouterPanel`) surfaces the Step 1 baselines against real `regime_recommended` / `choice_scored` / `pairing_skipped` / `sessions.vector` rows: regime mix, avg confidence, per-round drift, feature distribution, empirical compound-reachability (D1 rubric — bucketed peak count of confident axes), axis coverage, and empty-reveal rate. Read-only; window selector 7/14/30/90 days. Waiting on session volume to populate D1.
+
 ## Refinements adopted from review (2026-07-25)
 
 Nine weaknesses were identified in the prior draft during review. Each is now reflected in the plan; this section records them explicitly so downstream readers (and Agent Brain) can see what changed and why.

@@ -12,6 +12,7 @@ import {
   adminResidualQueue,
   adminOntology,
   adminDiagnostics,
+  adminShadowRouter,
 } from "@/lib/admin.functions";
 import {
   listDecadePrompts,
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Entity = "songs" | "pairings" | "archetypes";
-type Tab = Entity | "decade_prompts" | "residuals" | "ontology" | "diagnostics";
+type Tab = Entity | "decade_prompts" | "residuals" | "ontology" | "diagnostics" | "shadow";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
   { key: "pairings", label: "Pairings" },
@@ -39,6 +40,7 @@ const ENTITIES: { key: Tab; label: string }[] = [
   { key: "ontology", label: "Ontology" },
   { key: "residuals", label: "Residuals" },
   { key: "diagnostics", label: "Diagnostics" },
+  { key: "shadow", label: "Shadow Router" },
 ];
 
 type Row = Record<string, unknown> & { id: string };
@@ -115,7 +117,7 @@ function AdminPage() {
             Edit songs, pairings, and archetypes. Changes go live immediately.
           </p>
         </div>
-        {tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && (
+        {tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && tab !== "shadow" && (
           <button
             onClick={() => setEditing({ row: null })}
             className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
@@ -149,6 +151,8 @@ function AdminPage() {
         <OntologyPanel />
       ) : tab === "diagnostics" ? (
         <DiagnosticsPanel />
+      ) : tab === "shadow" ? (
+        <ShadowRouterPanel />
       ) : (
         <EntityTable
           key={tab}
@@ -157,7 +161,7 @@ function AdminPage() {
         />
       )}
 
-      {editing && tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && (
+      {editing && tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && tab !== "shadow" && (
         <EditDrawer
           entity={tab as Exclude<Entity, "decade_prompts">}
           row={editing.row}
@@ -1336,6 +1340,198 @@ function DiagnosticsPanel() {
       <Table title="Contradiction load (evidence pushing against the winner)" block={d.contradiction_load} />
       <Table title="Residual rate (sessions where nobody fit cleanly)" block={d.residual_rate} />
       <Table title="Human agreement (fit tier vs. listener feedback)" block={d.human_agreement} />
+    </div>
+  );
+}
+
+// ---- Shadow Router Panel (Step 1 baseline) ------------------------------------
+// Reads the fire-and-forget `regime_recommended` events that nextPairingImpl
+// writes on every successful pick, plus session vectors, and shows the
+// baseline distributions Step 1 of the Agent Brain integration plan asks for:
+// regime mix, feature mix, per-round drift, empirical compound-reachability
+// (D1), axis coverage, and empty-reveal rate. Read-only — the selector is
+// still untouched. See docs/musicdna/agent-brain-integration-plan.md.
+function ShadowRouterPanel() {
+  const fn = useServerFn(adminShadowRouter);
+  const [days, setDays] = useState<number>(30);
+  const q = useQuery({
+    queryKey: ["admin", "shadow", days],
+    queryFn: () => fn({ data: { days } }),
+    staleTime: 30_000,
+  });
+
+  if (q.isLoading) return <p className="text-sm text-muted-foreground">Loading shadow telemetry…</p>;
+  if (q.isError) return <p className="text-sm text-red-600">Failed: {(q.error as Error).message}</p>;
+  const d = q.data!;
+
+  const total = d.totals.regime_events || 1;
+  const regimes = Object.entries(d.regime_distribution).sort((a, b) => b[1] - a[1]);
+  const Card = ({ label, value, sub }: { label: string; value: ReactNode; sub?: string }) => (
+    <div className="border hairline rounded-sm px-4 py-3 bg-surface">
+      <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">{label}</p>
+      <p className="font-serif text-2xl mt-1">{value}</p>
+      {sub && <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{sub}</p>}
+    </div>
+  );
+
+  const Bar = ({ label, count, denom }: { label: string; count: number; denom: number }) => {
+    const pct = denom > 0 ? Math.round((count / denom) * 1000) / 10 : 0;
+    return (
+      <div className="flex items-center gap-3">
+        <span className="text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground w-32 shrink-0">{label}</span>
+        <div className="flex-1 h-2 bg-muted rounded-sm overflow-hidden">
+          <div className="h-full bg-primary" style={{ width: `${Math.min(100, pct)}%` }} />
+        </div>
+        <span className="text-xs font-mono tabular-nums w-24 text-right">{count} · {pct}%</span>
+      </div>
+    );
+  };
+
+  const perRoundKeys = Object.keys(d.per_round).map(Number).sort((a, b) => a - b);
+  const regimeNames = ["explore", "prune", "compound", "coordinate"] as const;
+
+  const axisEntries = Object.entries(d.axis_coverage).sort((a, b) => b[1] - a[1]);
+  const axisMax = axisEntries[0]?.[1] ?? 1;
+
+  return (
+    <div>
+      <div className="flex items-baseline justify-between mb-4 flex-wrap gap-3">
+        <p className="text-xs text-muted-foreground max-w-2xl">
+          Shadow-mode telemetry from <code className="font-mono">regime_recommended</code> events.
+          The selector is untouched — this is what Agent Brain <em>would</em> recommend.
+          See <code className="font-mono">docs/musicdna/agent-brain-integration-plan.md</code>.
+        </p>
+        <label className="text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground flex items-center gap-2">
+          Window
+          <select
+            value={days}
+            onChange={(e) => setDays(Number(e.target.value))}
+            className="border hairline rounded-sm bg-transparent px-2 py-1 text-xs"
+          >
+            <option value={7}>7d</option>
+            <option value={14}>14d</option>
+            <option value={30}>30d</option>
+            <option value={90}>90d</option>
+          </select>
+        </label>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
+        <Card label="Regime events" value={d.totals.regime_events} sub={`${d.totals.unique_sessions} sessions`} />
+        <Card label="Choice events" value={d.totals.choice_events} sub={`${d.totals.skip_events} skips`} />
+        <Card label="Sessions in window" value={d.totals.sessions_in_window} sub={`${d.totals.sessions_completed} completed`} />
+        <Card label="Avg confidence" value={d.avg_confidence ?? "—"} sub="margin ÷ 6, clipped 0..1" />
+      </div>
+
+      {d.totals.regime_events === 0 ? (
+        <p className="text-xs font-mono text-amber-600 bg-amber-50 border hairline rounded-sm px-3 py-2">
+          No <code>regime_recommended</code> events in this window yet. Play a session or two
+          (or seed synthetic volume) and refresh.
+        </p>
+      ) : (
+        <>
+          <section className="mt-4">
+            <h2 className="eyebrow mb-3">Regime distribution</h2>
+            <div className="space-y-2">
+              {regimes.map(([r, n]) => <Bar key={r} label={r} count={n} denom={total} />)}
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <h2 className="eyebrow mb-3">Per-round drift</h2>
+            <div className="overflow-x-auto border hairline rounded-sm">
+              <table className="w-full text-xs font-mono">
+                <thead className="bg-surface">
+                  <tr>
+                    <th className="text-left px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">round</th>
+                    {regimeNames.map((r) => (
+                      <th key={r} className="text-right px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{r}</th>
+                    ))}
+                    <th className="text-right px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">total</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {perRoundKeys.map((rk) => {
+                    const row = d.per_round[rk] ?? {};
+                    const tot = regimeNames.reduce((s, r) => s + (row[r] ?? 0), 0);
+                    return (
+                      <tr key={rk} className="border-t hairline">
+                        <td className="px-2 py-1.5">{rk}</td>
+                        {regimeNames.map((r) => {
+                          const n = row[r] ?? 0;
+                          const pct = tot > 0 ? Math.round((n / tot) * 100) : 0;
+                          return <td key={r} className="px-2 py-1.5 text-right tabular-nums">{n} <span className="text-muted-foreground">({pct}%)</span></td>;
+                        })}
+                        <td className="px-2 py-1.5 text-right tabular-nums">{tot}</td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section className="mt-8">
+            <h2 className="eyebrow mb-3">Feature distribution</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {Object.entries(d.feature_distribution).map(([feat, buckets]) => {
+                const entries = Object.entries(buckets).sort((a, b) => b[1] - a[1]);
+                const denom = entries.reduce((s, [, n]) => s + n, 0);
+                return (
+                  <div key={feat}>
+                    <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground mb-2">{feat}</p>
+                    <div className="space-y-1.5">
+                      {entries.map(([k, n]) => <Bar key={k} label={k} count={n} denom={denom} />)}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </section>
+        </>
+      )}
+
+      <section className="mt-8">
+        <div className="flex items-baseline justify-between mb-2">
+          <h2 className="eyebrow">Compound reachability (D1)</h2>
+          <span className="text-[10px] font-mono text-muted-foreground">
+            axes with |vector − 50| ≥ {d.compound_reachability.threshold} · {d.compound_reachability.sessions_measured} sessions
+          </span>
+        </div>
+        <p className="text-xs text-muted-foreground mb-3 max-w-2xl">
+          Peak count of confident axes reached per session. With a 6-round budget,
+          <code className="font-mono"> compound</code> is only reachable when this
+          distribution has meaningful mass at ≥3.
+        </p>
+        <div className="space-y-2">
+          {Object.entries(d.compound_reachability.buckets).map(([k, n]) => (
+            <Bar key={k} label={`${k} axes`} count={n} denom={d.compound_reachability.sessions_measured || 1} />
+          ))}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="eyebrow mb-3">Axis coverage (from <code className="font-mono text-[11px]">choice_scored.axes_tested</code>)</h2>
+        <div className="space-y-1.5">
+          {axisEntries.slice(0, 20).map(([axis, n]) => (
+            <Bar key={axis} label={axis} count={n} denom={axisMax} />
+          ))}
+          {axisEntries.length === 0 && <p className="text-xs text-muted-foreground">No axes tested in window.</p>}
+        </div>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="eyebrow mb-3">Empty-reveal rate</h2>
+        <p className="text-xs text-muted-foreground mb-2 max-w-2xl">
+          Completed sessions whose vector never moved off 50 on any axis. High
+          values here mean the pipeline is delivering revelations without evidence.
+        </p>
+        <div className="grid grid-cols-3 gap-3">
+          <Card label="Completed" value={d.empty_reveal.completed} />
+          <Card label="Flat" value={d.empty_reveal.flat} />
+          <Card label="Rate" value={d.empty_reveal.rate == null ? "—" : `${Math.round(d.empty_reveal.rate * 100)}%`} />
+        </div>
+      </section>
     </div>
   );
 }

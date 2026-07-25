@@ -484,3 +484,167 @@ export const adminDiagnostics = createServerFn({ method: "GET" })
       human_agreement: rows(agreement),
     };
   });
+
+
+// ============ Shadow router telemetry (Step 1 of Agent Brain integration) ============
+// Reads the `regime_recommended` events written fire-and-forget by
+// nextPairingImpl, plus supporting `choice_scored` events, and returns the
+// baseline distributions the plan calls for: regime mix, feature mix,
+// per-round drift, and empirical compound-reachability. Read-only; the
+// selector remains untouched. See docs/musicdna/agent-brain-integration-plan.md
+// Step 1 for the acceptance criteria this powers.
+const CONFIDENT_AXIS_THRESHOLD = 20; // |vector - 50| >= 20 → axis is "confident"
+
+export const adminShadowRouter = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({
+      days: z.number().int().min(1).max(90).default(30),
+    }).parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const admin = await assertAdminAndGetClient(context.userId);
+    const since = new Date(Date.now() - data.days * 86400_000).toISOString();
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const db = admin as any;
+
+    const [regimeRes, choiceRes, skipRes, sessionRes] = await Promise.all([
+      db.from("event_log")
+        .select("session_id, pairing_id, created_at, props")
+        .eq("event_type", "regime_recommended")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(5000),
+      db.from("event_log")
+        .select("session_id, created_at, props")
+        .eq("event_type", "choice_scored")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(5000),
+      db.from("event_log")
+        .select("session_id, created_at")
+        .eq("event_type", "pairing_skipped")
+        .gte("created_at", since)
+        .limit(5000),
+      db.from("sessions")
+        .select("id, lane, lane_confidence, completed_at, archetype_margin, vector, created_at")
+        .gte("created_at", since)
+        .order("created_at", { ascending: false })
+        .limit(2000),
+    ]);
+
+    type Row = { session_id: string | null; pairing_id?: string | null; created_at: string; props: Record<string, unknown> | null };
+    const regimeRows = (regimeRes.data ?? []) as Row[];
+    const choiceRows = (choiceRes.data ?? []) as Row[];
+    const skipRows = (skipRes.data ?? []) as Row[];
+    const sessions = (sessionRes.data ?? []) as Array<{
+      id: string;
+      lane: string | null;
+      lane_confidence: number | null;
+      completed_at: string | null;
+      archetype_margin: number | null;
+      vector: Record<string, number> | null;
+      created_at: string;
+    }>;
+
+    // ---- Regime distribution + confidence ----
+    const regimeCounts: Record<string, number> = { explore: 0, prune: 0, compound: 0, coordinate: 0 };
+    const featureCounts: Record<string, Record<string, number>> = {
+      uncertainty: {}, ruggedness: {}, local_minima_risk: {}, branching_factor: {}, mode_pressure: {},
+    };
+    const perRound: Record<number, Record<string, number>> = {};
+    let confidenceSum = 0;
+    let confidenceN = 0;
+    const uniqSessions = new Set<string>();
+
+    for (const r of regimeRows) {
+      const p = r.props ?? {};
+      const regime = String((p as { regime?: unknown }).regime ?? "");
+      if (regime && regime in regimeCounts) regimeCounts[regime]++;
+      const conf = Number((p as { confidence?: unknown }).confidence);
+      if (Number.isFinite(conf)) { confidenceSum += conf; confidenceN++; }
+      if (r.session_id) uniqSessions.add(r.session_id);
+
+      const fs = ((p as { features_summary?: Record<string, unknown> }).features_summary ?? {}) as Record<string, unknown>;
+      for (const k of Object.keys(featureCounts)) {
+        const v = String(fs[k] ?? "");
+        if (v) featureCounts[k][v] = (featureCounts[k][v] ?? 0) + 1;
+      }
+      const round = Number((fs as { round?: unknown }).round ?? -1);
+      if (round >= 0 && regime) {
+        perRound[round] ??= { explore: 0, prune: 0, compound: 0, coordinate: 0 };
+        perRound[round][regime] = (perRound[round][regime] ?? 0) + 1;
+      }
+    }
+
+    // ---- Compound reachability (D1): per-session peak count of |vec-50| ≥ THRESHOLD ----
+    // We use the final session.vector as the "peak" — sessions still in flight
+    // are included but under-represented, which biases the estimate low
+    // (conservative for reachability claims).
+    const peakBuckets: Record<string, number> = { "0": 0, "1": 0, "2": 0, "3": 0, "4+": 0 };
+    let sessionsWithVector = 0;
+    let completedSessions = 0;
+    for (const s of sessions) {
+      if (s.completed_at) completedSessions++;
+      const v = s.vector;
+      if (!v || typeof v !== "object") continue;
+      sessionsWithVector++;
+      let confident = 0;
+      for (const val of Object.values(v)) {
+        if (typeof val === "number" && Math.abs(val - 50) >= CONFIDENT_AXIS_THRESHOLD) confident++;
+      }
+      const key = confident >= 4 ? "4+" : String(confident);
+      peakBuckets[key] = (peakBuckets[key] ?? 0) + 1;
+    }
+
+    // ---- Axis coverage: how often each axis appears in axes_tested ----
+    const axisCounts: Record<string, number> = {};
+    let choiceCount = 0;
+    for (const c of choiceRows) {
+      const axes = ((c.props as { axes_tested?: unknown })?.axes_tested ?? []) as unknown[];
+      if (!Array.isArray(axes)) continue;
+      choiceCount++;
+      for (const a of axes) {
+        const k = String(a);
+        axisCounts[k] = (axisCounts[k] ?? 0) + 1;
+      }
+    }
+
+    // ---- Empty-reveal proxy: completed sessions whose vector never left 50 on ANY axis ----
+    let flatSessions = 0;
+    for (const s of sessions) {
+      if (!s.completed_at || !s.vector) continue;
+      const anyMoved = Object.values(s.vector).some(
+        (v) => typeof v === "number" && Math.abs(v - 50) >= 5,
+      );
+      if (!anyMoved) flatSessions++;
+    }
+
+    return {
+      window_days: data.days,
+      totals: {
+        regime_events: regimeRows.length,
+        unique_sessions: uniqSessions.size,
+        choice_events: choiceCount,
+        skip_events: skipRows.length,
+        sessions_in_window: sessions.length,
+        sessions_completed: completedSessions,
+      },
+      regime_distribution: regimeCounts,
+      avg_confidence: confidenceN > 0 ? Math.round((confidenceSum / confidenceN) * 1000) / 1000 : null,
+      feature_distribution: featureCounts,
+      per_round: perRound,
+      compound_reachability: {
+        threshold: CONFIDENT_AXIS_THRESHOLD,
+        sessions_measured: sessionsWithVector,
+        buckets: peakBuckets,
+      },
+      axis_coverage: axisCounts,
+      empty_reveal: {
+        completed: completedSessions,
+        flat: flatSessions,
+        rate: completedSessions > 0 ? Math.round((flatSessions / completedSessions) * 1000) / 1000 : null,
+      },
+    };
+  });
