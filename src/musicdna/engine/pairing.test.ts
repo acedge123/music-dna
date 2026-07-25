@@ -92,7 +92,7 @@ describe("selectPairing — Phase 3 knobs default parity", () => {
     };
   };
 
-  const scenarios = [
+  const scenarios: Array<{ vector: Record<string, number>; seed: number }> = [
     { vector: {}, seed: 1 },
     { vector: { movement: 40, atmosphere: 20 }, seed: 2 },
     { vector: { scale: -25, community: 30 }, seed: 3 },
