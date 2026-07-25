@@ -211,25 +211,34 @@ describe("selectPairing — mode + canon_floor knobs (Phase 3.5)", () => {
   });
 
   it("canon_floor knob overrides RECOGNITION_FLOORS default", () => {
-    // Default recognition_first floor is 55 → obscure (10) filtered out.
-    // Lower the knob floor to 5 → obscure survives; both should be pickable
-    // across seeds.
-    const seen = new Set<string>();
-    for (let seed = 1; seed <= 200; seed++) {
-      const r = selectPairing({
-        pool: CORPUS,
-        vector: {},
-        used_ids: new Set(),
-        session_lane: "general" as never,
-        dims: DIMS,
-        rng: seededRng(seed),
-        recognition: rec,
-        knobs: { mode: "recognition_first", canon_floor: 5 },
-      });
-      if (r.kind === "picked") seen.add(r.pairing.id);
+    // Default recognition_first floor is 55 → obscure (min_canon=10) is
+    // filtered out. Lower the knob floor to 5 so obscure survives, then
+    // drive selection with two hand-picked rng values: rng≈0.05 falls in
+    // obscure's slice, rng≈0.95 falls in known's slice. Both must be
+    // pickable — proves the knob floor took effect.
+    const rngLow = { next: () => 0.05 };
+    const rngHigh = { next: () => 0.95 };
+    const args = {
+      pool: CORPUS,
+      vector: {},
+      used_ids: new Set<string>(),
+      session_lane: "general" as never,
+      dims: DIMS,
+      recognition: rec,
+      knobs: { mode: "recognition_first" as const, canon_floor: 5 },
+    };
+    const rLow = selectPairing({ ...args, rng: rngLow });
+    const rHigh = selectPairing({ ...args, rng: rngHigh });
+    expect(rLow.kind).toBe("picked");
+    expect(rHigh.kind).toBe("picked");
+    if (rLow.kind === "picked" && rHigh.kind === "picked") {
+      // Whichever pairing sits first in the scored array gets the low-rng
+      // slice — different rng picks the other. What matters is that BOTH
+      // ids are reachable (i.e. the floor didn't exclude obscure).
+      const picked = new Set([rLow.pairing.id, rHigh.pairing.id]);
+      expect(picked.has("obscure")).toBe(true);
+      expect(picked.has("known")).toBe(true);
     }
-    expect(seen.has("obscure")).toBe(true);
-    expect(seen.has("known")).toBe(true);
   });
 });
 
