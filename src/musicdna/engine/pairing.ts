@@ -38,6 +38,18 @@ export type SelectionMode =
   | "recognition_boost"
   | "recognition_first";
 
+// Phase 3.5: fork filter is now a first-class knob so the regime router can
+// switch between hard filtering (prune/compound), soft weighting (explore),
+// and disabled (no hypothesis-challenge nudging at all).
+//   - "hard": legacy behaviour — restrict pool to fork-matching pairings when
+//     leaning axes exist; challenge_boost is redundant (inert) here because
+//     every survivor already matches.
+//   - "soft": keep the full pool; challenge_boost is the ONLY thing pulling
+//     leaning-axis pairings up. This is what the "explore" regime wants —
+//     leaning axes are a preference, not a filter.
+//   - "off": no fork filter, no challenge boost. Pure weight-driven selection.
+export type ForkFilterMode = "hard" | "soft" | "off";
+
 export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = {
   pool: P[];
   vector: Vector;
@@ -45,19 +57,22 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
   session_lane: Lane;
   dims: readonly string[];
   rng: Rng;
+  // Legacy top-level fields. When present, they override the corresponding
+  // knob. Kept so existing call sites don't need to migrate before Phase 4.
   mode?: SelectionMode;
   recognition?: Map<string, RecognitionRow>;
-  // Optional override; falls back to RECOGNITION_FLOORS[mode].
   min_canon_floor?: number;
   // Phase 3 (Knobs refactor). Structural knobs that used to be literals in
   // this file. Defaults MUST byte-match the pre-refactor behavior — this
-  // struct only exists so Agent Brain's regime router can swap them out in a
+  // struct exists so Agent Brain's regime router can swap them out in a
   // later phase. See docs/musicdna/agent-brain-integration-plan.md Step 3.
   knobs?: Partial<PairingKnobs>;
 };
 
-// Phase 3: the seven literal knobs `selectPairing` used to embed inline.
-// Every default here reproduces the pre-refactor value exactly.
+// Phase 3: the knobs `selectPairing` used to embed inline, plus the three
+// planned controls (`mode`, `canon_floor`, `fork_filter`) so the regime
+// router can drive the full selection surface without touching this file
+// again.
 export type PairingKnobs = {
   // Axes with |v| >= this are considered "leaning" — feed the fork filter
   // and the challenge boost.
@@ -65,6 +80,8 @@ export type PairingKnobs = {
   // Cap on how many leaning axes we track.
   leaning_top_k: number;                    // was 3
   // Multiplier applied to pairings whose tests overlap a leaning axis.
+  // Only meaningful when fork_filter is "soft" or "off" — with "hard" the
+  // pool is already restricted to fork-matching pairings.
   challenge_boost: number;                  // was 1.5
   // axis_need weighting: w *= (base + slope * axisNeed).
   axis_need_base: number;                   // was 0.4
@@ -72,6 +89,11 @@ export type PairingKnobs = {
   // Recognition/diagnostic blend factors per mode.
   recog_blend_recognition_first: number;    // was 0.6
   recog_blend_recognition_boost: number;    // was 0.4
+  // Phase 3.5 additions — nullable so top-level fields on SelectPairingInput
+  // can override without ambiguity.
+  mode: SelectionMode;                      // was hard-coded to "diagnostic_first"
+  fork_filter: ForkFilterMode;              // was hard-coded to "hard"
+  canon_floor: number | null;               // null = use RECOGNITION_FLOORS[mode]
 };
 
 export const DEFAULT_PAIRING_KNOBS: PairingKnobs = {
@@ -82,6 +104,9 @@ export const DEFAULT_PAIRING_KNOBS: PairingKnobs = {
   axis_need_slope: 0.6,
   recog_blend_recognition_first: 0.6,
   recog_blend_recognition_boost: 0.4,
+  mode: "diagnostic_first",
+  fork_filter: "hard",
+  canon_floor: null,
 };
 
 // Instrumentation.
@@ -96,6 +121,7 @@ export type SelectionReason = {
   pool_size: number;
   weight: number;
   mode: SelectionMode;
+  fork_filter: ForkFilterMode;
   recognition_score?: number;
 };
 
