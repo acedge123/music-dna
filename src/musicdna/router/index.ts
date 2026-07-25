@@ -17,6 +17,7 @@ const ATTEMPT_WINDOW = 3;
 export type RecommendationSnapshot = Recommendation & {
   features_summary: {
     lane_confidence: number;
+    vector_confidence: number;
     round: number;
     max_rounds: number;
     delta_samples: number;
@@ -30,6 +31,8 @@ export type RecommendationSnapshot = Recommendation & {
     local_minima_risk: string;
     branching_factor: string;
     mode_pressure: string;
+    environment_stability: string;
+    information_cost: string;
   };
 };
 
