@@ -17,6 +17,7 @@ const baseFeatures = (overrides: Partial<TerrainFeatures> = {}): TerrainFeatures
   mode_pressure: "none",
   derived: {
     lane_confidence: 0.7,
+    vector_confidence: 0.5,
     delta_volatility: 5,
     delta_samples: 5,
     artist_bias_share: 0.2,
