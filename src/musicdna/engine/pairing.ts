@@ -169,10 +169,15 @@ export function selectPairing<P extends PairingCandidate>(
   input: SelectPairingInput<P>,
 ): SelectPairingResult<P> {
   const { vector, used_ids, dims, rng } = input;
-  const mode: SelectionMode = input.mode ?? "diagnostic_first";
-  const recognition = input.recognition;
-  const canonFloor = input.min_canon_floor ?? RECOGNITION_FLOORS[mode];
   const knobs: PairingKnobs = { ...DEFAULT_PAIRING_KNOBS, ...(input.knobs ?? {}) };
+  // Top-level fields on the input override the corresponding knob (Phase 3.5
+  // backward-compat). Callers that migrate to Phase 4 will pass everything
+  // through `knobs`.
+  const mode: SelectionMode = input.mode ?? knobs.mode;
+  const recognition = input.recognition;
+  const canonFloor =
+    input.min_canon_floor ?? knobs.canon_floor ?? RECOGNITION_FLOORS[mode];
+  const forkFilter: ForkFilterMode = knobs.fork_filter;
 
   // Same-artist exclusion is UNCONDITIONAL — see Step 3 gate in the
   // integration plan. Not knob-controlled on purpose.
@@ -190,8 +195,7 @@ export function selectPairing<P extends PairingCandidate>(
     if (recognisable.length > 0) pool = recognisable;
   }
 
-  // Hypothesis-challenging filter: prefer pairings that test the axes the
-  // running vector already leans hardest on.
+  // Hypothesis-challenging: identify axes the vector already leans on.
   const leaningAxes = new Set(
     dims
       .map((d) => ({ d, v: Math.abs(vector[d] ?? 0) }))
@@ -204,7 +208,11 @@ export function selectPairing<P extends PairingCandidate>(
     const tests = (p.tests ?? []) as string[];
     return tests.some((t) => leaningAxes.has(t));
   };
-  if (leaningAxes.size > 0) {
+  // Fork filter modes:
+  //   "hard" — restrict pool to fork-matching pairings when any exist.
+  //   "soft" — keep full pool; challenge_boost is the only preference signal.
+  //   "off"  — no fork logic at all (challenge_boost also disabled below).
+  if (forkFilter === "hard" && leaningAxes.size > 0) {
     const forkPool = pool.filter(testsFork);
     if (forkPool.length > 0) pool = forkPool;
   }
@@ -217,10 +225,12 @@ export function selectPairing<P extends PairingCandidate>(
       : mode === "recognition_boost"
         ? knobs.recog_blend_recognition_boost
         : 0;
+  const boostEnabled = forkFilter !== "off";
   const scored = pool.map((p) => {
     const tests = (p.tests?.length ? p.tests : dims.slice()) as string[];
     const axisNeed = tests.reduce((s, d) => s + need(d), 0) / Math.max(1, tests.length);
-    const challengesHypothesis = leaningAxes.size > 0 && tests.some((t) => leaningAxes.has(t));
+    const challengesHypothesis =
+      boostEnabled && leaningAxes.size > 0 && tests.some((t) => leaningAxes.has(t));
     const challengeBoost = challengesHypothesis ? knobs.challenge_boost : 1;
     const dw = (p.diagnostic_weight ?? 50) / 100;
     const rec = recognition?.get(p.id);
@@ -247,6 +257,7 @@ export function selectPairing<P extends PairingCandidate>(
     pool_size: pool.length,
     weight: Math.round(pick.w * 1000) / 1000,
     mode,
+    fork_filter: forkFilter,
     recognition_score: pick.rec?.recognition_score,
   };
   return { kind: "picked", pairing: pick.p, selection_reason };
