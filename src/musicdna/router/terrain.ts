@@ -112,10 +112,14 @@ function stddev(xs: number[]): number {
 
 export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   const { lane_confidence, round, max_rounds, choices, skipped_rounds_last3 } = input;
-  // Cursor #3: vector confidence — how far the axis vector has moved from
-  // neutral. Complements lane_confidence: a session can be firmly in a lane
-  // but still have a wobbly archetype vector (or vice versa).
-  const vectorConfidence = Math.max(0, Math.min(1, Number(input.vector_confidence ?? 0)));
+  // Phase 3.5: vector_confidence is optional — undefined means the caller
+  // has no vector reading yet (e.g. round 0), and we should fall back to
+  // lane_confidence rather than pretend the vector is fully unsettled. A
+  // real 0 means the vector IS neutral and should count against confidence.
+  const vectorConfidenceProvided = input.vector_confidence !== undefined && input.vector_confidence !== null;
+  const vectorConfidence = vectorConfidenceProvided
+    ? Math.max(0, Math.min(1, Number(input.vector_confidence)))
+    : null;
 
   // --- delta volatility (ruggedness input) --------------------------------
   const rawDeltas = choices.map((c) => c.raw_delta ?? null);
@@ -143,11 +147,13 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   const snapping = snapShare >= SNAP_SHARE_HI;
 
   // --- uncertainty ---------------------------------------------------------
-  // Cursor #3: use the WEAKER of lane_confidence and vector_confidence. A
-  // strong lane read with a flat vector is still uncertain about the archetype.
+  // Use the WEAKER of lane_confidence and vector_confidence when we have
+  // both; fall back to lane alone if vector_confidence is unknown.
   const skipPenalty = skipped_rounds_last3;
   const noDeltaSignal = deltaSamples === 0 && choices.length > 0;
-  const combinedConfidence = Math.min(lane_confidence, vectorConfidence > 0 ? vectorConfidence : lane_confidence);
+  const combinedConfidence = vectorConfidence !== null
+    ? Math.min(lane_confidence, vectorConfidence)
+    : lane_confidence;
   let uncertainty: TrinaryLow;
   if (combinedConfidence < 0.4 || skipPenalty >= 2) uncertainty = "high";
   else if (combinedConfidence < 0.65 || skipPenalty >= 1 || snapping || noDeltaSignal) uncertainty = "medium";
