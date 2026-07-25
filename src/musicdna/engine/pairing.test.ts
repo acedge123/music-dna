@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { selectPairing, shouldStop, assertWithinLane, type PairingCandidate } from "./pairing";
+import { selectPairing, shouldStop, assertWithinLane, DEFAULT_PAIRING_KNOBS, type PairingCandidate } from "./pairing";
 
 const DIMS = ["movement", "atmosphere", "immersion", "scale", "community", "perspective", "confidence", "tension", "texture", "transformation"] as const;
 
