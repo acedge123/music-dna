@@ -466,26 +466,62 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     }
 
     // ---- Shadow router (Step 0 of Agent Brain integration) -----------------
-    // Emit a `regime_recommended` event WITHOUT touching selection. Fire-and-
-    // forget: never awaited, never surfaced to the client. Analysis of these
-    // events over real sessions is what validates the mapper/scorer before we
-    // let the regime drive anything. See docs/musicdna/agent-brain-integration-plan.md
-    // (Step 0, refinements #1–#9).
-    const emitShadowRecommendation = async (pairingId: string | null): Promise<void> => {
+    // Emit a `regime_recommended` event WITHOUT touching selection. Awaited so
+    // the write actually lands in serverless runtimes (Cursor telemetry fix).
+    // Also logs the legacy selector's decision (selected_mode, selection_reason)
+    // and whether the regime agrees — that's the metric Step 4 rollout gates on.
+    //
+    // Cursor #3: pass vector_confidence (mean |v-50|/50 across moved dims) so
+    // the mapper doesn't treat lane confidence as the only signal.
+    const dimsRef = DIMS as readonly string[];
+    const movedDims = dimsRef.filter((d) => {
+      const v = Number(vector[d]);
+      return Number.isFinite(v) && v !== 50;
+    });
+    const vectorConfidence = movedDims.length > 0
+      ? movedDims.reduce((s, d) => s + Math.min(1, Math.abs(Number(vector[d]) - 50) / 50), 0) / movedDims.length
+      : 0;
+
+    // Cursor #5: legacy selector → regime mapping so we can compute `scoring_agrees`.
+    //   bootstrap             → explore (probing lane boundaries)
+    //   recognition_first     → explore (widening / general lane)
+    //   recognition_boost     → prune   (narrowing within a leaning lane)
+    //   diagnostic_first      → compound (confident lane, exploiting signal)
+    const legacyToRegime = (mode: string, isBootstrap: boolean): Regime => {
+      if (isBootstrap) return "explore";
+      if (mode === "recognition_first") return "explore";
+      if (mode === "recognition_boost") return "prune";
+      if (mode === "diagnostic_first") return "compound";
+      return "explore";
+    };
+
+    const emitShadowRecommendation = async (
+      pairingId: string | null,
+      ctx: { selected_mode: string; selection_reason: Record<string, unknown> | null; is_bootstrap: boolean },
+    ): Promise<void> => {
       try {
         const rec = await recommendForSession(supabase, data.sessionId, {
           laneConfidence,
+          vectorConfidence,
           round,
           maxRounds: 6,
         });
         if (!rec) return;
+        const legacyRegime = legacyToRegime(ctx.selected_mode, ctx.is_bootstrap);
+        const props = {
+          ...rec,
+          selected_mode: ctx.selected_mode,
+          legacy_regime: legacyRegime,
+          scoring_agrees: rec.regime === legacyRegime,
+          selection_reason: ctx.selection_reason,
+        };
         await supabase.from("event_log").insert({
           user_id: sessionRes.data?.user_id ?? null,
           session_id: data.sessionId,
           pairing_id: pairingId,
           event_type: "regime_recommended",
           client: "server",
-          props: rec as never,
+          props: props as never,
         } as never);
       } catch (e) {
         // eslint-disable-next-line no-console
