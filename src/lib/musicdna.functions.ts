@@ -6,6 +6,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { assignArchetype } from "@/musicdna/engine/archetypes";
 import { CRITIC_PERSONA as PERSONA, CRITIC_VOICE_EDITORIAL as VOICE } from "@/musicdna/engine/critic";
 import { callLovableAi, DEFAULT_MODEL as MODEL } from "@/musicdna/adapters/llm-gateway";
+import { recommendForSession } from "@/musicdna/router";
 
 // Shared Supabase client type used by the *Impl exports below. The test
 // harness (src/routes/api/public/test/$action.ts) calls these Impl variants
