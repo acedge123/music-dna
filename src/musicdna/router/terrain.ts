@@ -113,8 +113,10 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   const validDeltas = rawDeltas.filter((d) => d !== null && vecMag(d) !== null) as Array<Record<string, number>>;
   const deltaSamples = validDeltas.length;
   const steps = stepDistances(validDeltas);
+  // Mean step distance: identical vectors → 0; +50/-50/+50 → 100. Stddev of
+  // identical steps is 0 and would false-negative on steady direction flips.
   const deltaVolatility = steps.length >= 1
-    ? (steps.length >= 2 ? stddev(steps) : steps[0])
+    ? steps.reduce((s, x) => s + x, 0) / steps.length
     : null;
 
   // --- artist bias (local_minima_risk input) ------------------------------
