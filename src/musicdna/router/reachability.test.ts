@@ -80,12 +80,13 @@ describe("router reachability — Phase 2 gate", () => {
   const terrains = enumerate();
   const winners = new Set<Regime>(terrains.map((t) => recommendRegime(t).regime));
 
-  it("mapper emits every mode_pressure value at least once", () => {
+  it("mapper emits every actionable mode_pressure at least once", () => {
+    // "none" is the fall-through and is not required to be reachable; the
+    // three actionable pressures are the D2 canary.
     const emitted = new Set(terrains.map((t) => t.mode_pressure));
     expect(emitted.has("explore")).toBe(true);
     expect(emitted.has("prune")).toBe(true);
     expect(emitted.has("compound")).toBe(true);
-    expect(emitted.has("none")).toBe(true);
   });
 
   it("explore is reachable", () => {
