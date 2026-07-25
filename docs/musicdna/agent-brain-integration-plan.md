@@ -22,6 +22,22 @@ Everything else is sequencing and guardrails.
 
 ---
 
+## Refinements adopted from review (2026-07-25)
+
+Nine weaknesses were identified in the prior draft during review. Each is now reflected in the plan; this section records them explicitly so downstream readers (and Agent Brain) can see what changed and why.
+
+1. **Constants before weights.** Prior draft de-weighted `mode_pressure` in isolation, which silently removed `compound` as a reachable regime. Fix: correct `information_cost` and `reversibility` from `low`/`high` to `medium` first, *then* set `mode_pressure = +2`. See D2.
+2. **`mode_pressure = +2`, not `+1`.** `+1` ties compound with prune after the constants are fixed and hands every decision back to the constant baseline. `+2` keeps compound winnable with a 1-point margin while halving `mode_pressure`'s dominance. See D2 tuning table.
+3. **Compound reachability is empirical, not asserted.** Prior draft asserted compound was unreachable in 6 rounds by arithmetic. Replaced with a SQL query over `event_log.props.vector_after` and a three-branch action table; the pairing corpus decides. See Part 1 / "Settling compound reachability empirically."
+4. **`delta_vector` sourcing.** Prior draft proposed a `choices.delta_vector` column migration up front. Fix: `event_log.props.raw_delta` is already persisted on every `choice_scored` event; shadow reads from there. Column promotion is deferred to Step 5, gated on hardening the fire-and-forget emit so a dropped event doesn't flatten `recentDeltas` into false "not volatile." See D4.
+5. **Skip is a first-class routing signal.** Prior draft omitted skips. `skipPairingImpl` advances `round` without moving the vector — treating that as "no signal" biases ruggedness low. Fix: the mapper counts skips in the last 3 rounds as high-uncertainty observations feeding `ruggedness` and `uncertainty`. See Part 3.
+6. **Regime does not gate `shouldStop` in V1.** Keeps average-rounds a clean rollout metric — regime cannot be changing the very thing being measured. See D3.
+7. **Reuse `finalizeSession`'s derived signals.** Artist bias (`n >= 3` per artist) and snap-decision rate (`ms_to_decide < 2000` at ≥60%) are already computed in `finalizeSession`. The mapper consumes those definitions rather than re-deriving them, preventing drift between reveal and router. See Part 3.
+8. **Probe cadence follows lane confidence, not round number.** Softens the "Compound disables probes" rule so a high-confidence early session isn't starved of probes and a low-confidence late one isn't flooded. Round-indexed rules were tautological given the 6-round budget. See Part 3.
+9. **Convergence metric: `archetype_margin`.** Gap between the #1 and #2 archetype scores is the primary shadow-analysis convergence readout; raw confidence alone hides ties where two archetypes co-lead. See Step 0 telemetry rubric.
+
+---
+
 ## Part 1 — What is actually true today
 
 Facts verified in the current codebase. Several contradict earlier drafts.
