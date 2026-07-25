@@ -552,7 +552,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
         const finalPool = differing.length > 0 ? differing : bootPool;
         const pickIdx = Math.floor(Math.random() * finalPool.length);
         const bootPicked = finalPool[pickIdx];
-        emitShadowRecommendation(bootPicked.id);
+        await emitShadowRecommendation(bootPicked.id);
         return {
           pairing: bootPicked,
           round: round + 1,
