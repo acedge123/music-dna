@@ -1,16 +1,25 @@
-// Step 4 gate (integration plan, Part 6): every transition rule must be
-// reachable from the terrain the MusicDNA mapper can actually emit. We
-// enumerate the mapper's output space by driving `mapTerrain` across a
+// Phase 2 gate (integration plan, Part 6): every regime the scorer can pick
+// must be reachable from the terrain the MusicDNA mapper can actually emit.
+// We enumerate the mapper's output space by driving `mapTerrain` across a
 // realistic Cartesian product of inputs, then assert that every regime the
 // scorer can pick appears at least once.
 //
-// This is the Phase 2 "reachable transitions" deliverable. It does NOT change
-// scoring weights — it pins the contract so a later mapper change can't
-// silently kill a regime.
+// PROXY, NOT TRANSITION TEST. The plan's Step 4 gate targets Agent Brain's
+// `transition_candidate` rules — the "given previous regime P, is next
+// regime Q reachable?" enumeration. MusicDNA's local scorer has no
+// transition rules and no persisted `current_regime`, so we can't test that
+// directly yet. Regime *reachability* is the strictest test the local
+// scorer supports; when the fork syncs to Agent Brain and transitions land,
+// add the real transition matrix test alongside this one. Until then, this
+// file pins the mapper contract: a later mapper change can't silently kill
+// a regime.
+//
+// This test does NOT change scoring weights.
 
 import { describe, expect, it } from "vitest";
 import { mapTerrain, type ChoiceEventRow, type TerrainFeatures } from "./terrain";
 import { recommendRegime, type Regime } from "./scoring";
+
 
 // Sweep grid — kept small but covers the levers that actually move terrain
 // outputs today: lane/vector confidence, round position, skip pressure, delta
