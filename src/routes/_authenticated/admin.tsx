@@ -12,6 +12,7 @@ import {
   adminResidualQueue,
   adminOntology,
   adminDiagnostics,
+  adminShadowRouter,
 } from "@/lib/admin.functions";
 import {
   listDecadePrompts,
@@ -30,7 +31,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Entity = "songs" | "pairings" | "archetypes";
-type Tab = Entity | "decade_prompts" | "residuals" | "ontology" | "diagnostics";
+type Tab = Entity | "decade_prompts" | "residuals" | "ontology" | "diagnostics" | "shadow";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
   { key: "pairings", label: "Pairings" },
@@ -39,6 +40,7 @@ const ENTITIES: { key: Tab; label: string }[] = [
   { key: "ontology", label: "Ontology" },
   { key: "residuals", label: "Residuals" },
   { key: "diagnostics", label: "Diagnostics" },
+  { key: "shadow", label: "Shadow Router" },
 ];
 
 type Row = Record<string, unknown> & { id: string };
@@ -115,7 +117,7 @@ function AdminPage() {
             Edit songs, pairings, and archetypes. Changes go live immediately.
           </p>
         </div>
-        {tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && (
+        {tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && tab !== "shadow" && (
           <button
             onClick={() => setEditing({ row: null })}
             className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
@@ -149,6 +151,8 @@ function AdminPage() {
         <OntologyPanel />
       ) : tab === "diagnostics" ? (
         <DiagnosticsPanel />
+      ) : tab === "shadow" ? (
+        <ShadowRouterPanel />
       ) : (
         <EntityTable
           key={tab}
@@ -157,7 +161,7 @@ function AdminPage() {
         />
       )}
 
-      {editing && tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && (
+      {editing && tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && tab !== "shadow" && (
         <EditDrawer
           entity={tab as Exclude<Entity, "decade_prompts">}
           row={editing.row}
