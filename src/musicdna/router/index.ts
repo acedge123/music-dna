@@ -2,8 +2,7 @@
 //
 // Loads the last N `choice_scored` events for a session from event_log,
 // maps them into TerrainFeatures, and returns a regime recommendation.
-// Fire-and-forget by design; failures propagate as `null`. Selector is
-// never touched.
+// Failures propagate as `null`. Selector is never touched.
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
@@ -13,7 +12,7 @@ import { recommendRegime, type Recommendation } from "./scoring";
 type AuthedSupabase = SupabaseClient<Database>;
 
 const HISTORY_LIMIT = 6; // matches MAX_ROUNDS in onboarding.tsx
-const SKIP_WINDOW = 3;
+const ATTEMPT_WINDOW = 3;
 
 export type RecommendationSnapshot = Recommendation & {
   features_summary: {
@@ -43,7 +42,10 @@ export async function recommendForSession(
   },
 ): Promise<RecommendationSnapshot | null> {
   try {
-    const [choiceRes, skipRes] = await Promise.all([
+    // Load recent choice history AND the last N attempts (choice or skip),
+    // so `skips_last3` really means "skips among the last 3 attempts" instead
+    // of "last 3 skip events from the whole session".
+    const [choiceRes, attemptsRes] = await Promise.all([
       supabase
         .from("event_log")
         .select("props, created_at")
@@ -53,11 +55,11 @@ export async function recommendForSession(
         .limit(HISTORY_LIMIT),
       supabase
         .from("event_log")
-        .select("created_at")
+        .select("event_type, created_at")
         .eq("session_id", sessionId)
-        .eq("event_type", "pairing_skipped")
+        .in("event_type", ["choice_scored", "pairing_skipped"])
         .order("created_at", { ascending: false })
-        .limit(SKIP_WINDOW),
+        .limit(ATTEMPT_WINDOW),
     ]);
 
     const rawChoices = ((choiceRes.data ?? []) as Array<{ props: Record<string, unknown> | null }>)
@@ -71,18 +73,29 @@ export async function recommendForSession(
       ms_to_decide: (p as { ms_to_decide?: number | null }).ms_to_decide ?? null,
     }));
 
-    const skips = (skipRes.data ?? []).length;
+    // Refinement: skips among the last 3 attempts, not the last 3 skip events.
+    const attempts = (attemptsRes.data ?? []) as Array<{ event_type: string }>;
+    const skips = attempts.filter((r) => r.event_type === "pairing_skipped").length;
+
+    // Refinement #4: archetype_margin as convergence signal — pull from the
+    // most recent choice_scored event unless the caller supplied one.
+    let archetypeMargin: number | null = opts.archetypeMargin ?? null;
+    if (archetypeMargin === null && choiceRes.data && choiceRes.data.length > 0) {
+      const latest = (choiceRes.data[0] as { props: Record<string, unknown> | null }).props ?? {};
+      const m = (latest as { margin?: unknown }).margin;
+      if (typeof m === "number" && Number.isFinite(m)) archetypeMargin = m;
+    }
 
     const features = mapTerrain({
       lane_confidence: opts.laneConfidence,
       round: opts.round,
       max_rounds: opts.maxRounds ?? 6,
       choices,
-      skipped_rounds_last3: Math.min(SKIP_WINDOW, skips),
+      skipped_rounds_last3: Math.min(ATTEMPT_WINDOW, skips),
     });
 
     const rec = recommendRegime(features);
-    if (opts.archetypeMargin !== undefined) rec.archetype_margin = opts.archetypeMargin;
+    rec.archetype_margin = archetypeMargin;
 
     return {
       ...rec,
