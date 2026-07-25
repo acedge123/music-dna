@@ -220,7 +220,7 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
     mode_pressure: modePressure,
     derived: {
       lane_confidence,
-      vector_confidence: Math.round(vectorConfidence * 1000) / 1000,
+      vector_confidence: vectorConfidence === null ? 0 : Math.round(vectorConfidence * 1000) / 1000,
       delta_volatility: deltaVolatility,
       delta_samples: deltaSamples,
       artist_bias_share: Math.round(artistBiasShare * 1000) / 1000,
