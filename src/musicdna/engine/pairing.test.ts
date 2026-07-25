@@ -215,7 +215,7 @@ describe("selectPairing — mode + canon_floor knobs (Phase 3.5)", () => {
     // Lower the knob floor to 5 → obscure survives; both should be pickable
     // across seeds.
     const seen = new Set<string>();
-    for (let seed = 1; seed <= 30; seed++) {
+    for (let seed = 1; seed <= 200; seed++) {
       const r = selectPairing({
         pool: CORPUS,
         vector: {},
