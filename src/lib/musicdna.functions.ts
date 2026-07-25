@@ -25,6 +25,34 @@ function readRoutingMode(): RoutingMode {
   return "shadow";
 }
 
+// Deterministic RNG shared by the live and shadow selectPairing calls so
+// their draw sequences match — divergence between the two picks is then
+// attributable to knob differences, not to Math.random() luck. mulberry32
+// is a 32-bit seeded PRNG; the seed is derived from sessionId + round so
+// each pick is reproducible and independent across rounds.
+function mulberry32(seed: number): { next: () => number } {
+  let s = seed >>> 0;
+  return {
+    next: () => {
+      s = (s + 0x6d2b79f5) >>> 0;
+      let t = s;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    },
+  };
+}
+function seedFrom(sessionId: string, round: number): number {
+  let h = 2166136261 >>> 0;
+  const s = `${sessionId}:${round}`;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+
 // Shared Supabase client type used by the *Impl exports below. The test
 // harness (src/routes/api/public/test/$action.ts) calls these Impl variants
 // directly with a service-role admin client + synthetic userId, bypassing
