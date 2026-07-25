@@ -54,20 +54,41 @@ describe("mapTerrain — skips as first-class signal (refinement #5)", () => {
   });
 });
 
-describe("mapTerrain — missing raw_delta (refinement #4)", () => {
-  it("null raw_delta counts as insufficient data, not smooth", () => {
+describe("mapTerrain — missing raw_delta (refinement #4 revised)", () => {
+  it("null raw_delta with pending choice → unknown, mapped to medium not low", () => {
     const f = mapTerrain({
-      lane_confidence: 0.7,
+      lane_confidence: 0.8,
       round: 1,
       max_rounds: 6,
       choices: [choice({ raw_delta: null })],
       skipped_rounds_last3: 0,
     });
-    // With <2 delta samples and no skips, ruggedness lands at "low" but the
-    // derived summary must expose the sample count so shadow analysis can
-    // discount the result.
     expect(f.derived.delta_samples).toBe(0);
     expect(f.derived.delta_volatility).toBeNull();
+    // "Unknown delta" must never look smooth — the old branch mapped this
+    // to ruggedness=low, which biased the router toward compound.
+    expect(f.ruggedness).toBe("medium");
+    expect(f.uncertainty).toBe("medium");
+  });
+});
+
+describe("mapTerrain — volatility captures direction, not just magnitude", () => {
+  it("direction-flipping deltas (+50 / -50 / +50) register as rugged", () => {
+    const f = mapTerrain({
+      lane_confidence: 0.8,
+      round: 3,
+      max_rounds: 6,
+      choices: [
+        choice({ raw_delta: { m: 50 } }),
+        choice({ raw_delta: { m: -50 } }),
+        choice({ raw_delta: { m: 50 } }),
+      ],
+      skipped_rounds_last3: 0,
+    });
+    // L2 step distance between (+50) and (-50) is 100; old mean-|delta|
+    // metric would have called this perfectly smooth.
+    expect(f.derived.delta_volatility).not.toBeNull();
+    expect(f.ruggedness).toBe("high");
   });
 });
 
