@@ -10,7 +10,7 @@ const choice = (over: Partial<ChoiceEventRow> = {}): ChoiceEventRow => ({
 });
 
 describe("mapTerrain — constants (refinement #1)", () => {
-  it("hard-codes information_cost=medium and reversibility=medium", () => {
+  it("quiet session: information_cost=low, environment_stability=stable (Cursor #4)", () => {
     const f = mapTerrain({
       lane_confidence: 0.7,
       round: 3,
@@ -18,10 +18,36 @@ describe("mapTerrain — constants (refinement #1)", () => {
       choices: [choice(), choice(), choice()],
       skipped_rounds_last3: 0,
     });
-    expect(f.information_cost).toBe("medium");
+    expect(f.information_cost).toBe("low");
+    expect(f.environment_stability).toBe("stable");
     expect(f.reversibility).toBe("medium");
     expect(f.feedback_latency).toBe("fast");
     expect(f.adversariality).toBe("none");
+  });
+
+  it("skip pressure drives information_cost=high and environment_stability=unstable (Cursor #4)", () => {
+    const f = mapTerrain({
+      lane_confidence: 0.7,
+      round: 3,
+      max_rounds: 6,
+      choices: [choice(), choice(), choice()],
+      skipped_rounds_last3: 2,
+    });
+    expect(f.information_cost).toBe("high");
+    expect(f.environment_stability).toBe("unstable");
+  });
+
+  it("vector_confidence=0 with strong lane_confidence still raises uncertainty (Cursor #3)", () => {
+    const f = mapTerrain({
+      lane_confidence: 0.9,
+      vector_confidence: 0.1,
+      round: 3,
+      max_rounds: 6,
+      choices: [choice(), choice(), choice()],
+      skipped_rounds_last3: 0,
+    });
+    // Weak vector (0.1) dominates; combined confidence < 0.4 → high uncertainty.
+    expect(f.uncertainty).toBe("high");
   });
 });
 
