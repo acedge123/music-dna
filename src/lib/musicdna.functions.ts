@@ -465,6 +465,36 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       return { pairing: null, round, confidence: stop.confidence, done: true as const };
     }
 
+    // ---- Shadow router (Step 0 of Agent Brain integration) -----------------
+    // Emit a `regime_recommended` event WITHOUT touching selection. Fire-and-
+    // forget: never awaited, never surfaced to the client. Analysis of these
+    // events over real sessions is what validates the mapper/scorer before we
+    // let the regime drive anything. See docs/musicdna/agent-brain-integration-plan.md
+    // (Step 0, refinements #1–#9).
+    const emitShadowRecommendation = (pairingId: string | null): void => {
+      void (async () => {
+        try {
+          const rec = await recommendForSession(supabase, data.sessionId, {
+            laneConfidence,
+            round,
+            maxRounds: 6,
+          });
+          if (!rec) return;
+          await supabase.from("event_log").insert({
+            user_id: sessionRes.data?.user_id ?? null,
+            session_id: data.sessionId,
+            pairing_id: pairingId,
+            event_type: "regime_recommended",
+            client: "server",
+            props: rec as never,
+          } as never);
+        } catch (e) {
+          // eslint-disable-next-line no-console
+          console.warn("[musicdna] regime_recommended emit failed:", e instanceof Error ? e.message : e);
+        }
+      })();
+    };
+
     // Cross-lane probes intentionally disabled — see mem://product/within-lane-only.md.
     void probeCandidates; void PROBE_ROUNDS;
     if (Object.keys(probeState.pending).length > 0) {
