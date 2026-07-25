@@ -28,8 +28,8 @@ const baseFeatures = (overrides: Partial<TerrainFeatures> = {}): TerrainFeatures
 });
 
 describe("scoring — constant baseline (refinement #1)", () => {
-  it("with corrected constants explore/prune/compound tie at similar values", () => {
-    // Strip derived signals to reveal ONLY the constant contribution.
+  it("exact score table for the neutral-signal baseline", () => {
+    // Strip derived signals so ONLY the constants contribute + medium trinaries.
     const scores = scoreTerrain(
       baseFeatures({
         uncertainty: "medium",
@@ -39,13 +39,28 @@ describe("scoring — constant baseline (refinement #1)", () => {
         mode_pressure: "none",
       }),
     );
-    // Expect the corrected constants to put prune ahead of the +3-lead explore
-    // baseline that the old constants (information_cost: low, reversibility: high)
-    // produced. Sanity: no regime is untouchable.
-    expect(scores.explore).toBeGreaterThan(0);
-    expect(scores.prune).toBeGreaterThan(0);
-    expect(scores.compound).toBeGreaterThan(0);
-    expect(scores.coordinate).toBeLessThanOrEqual(scores.prune);
+    // Sum of constant weights (feedback_latency=fast, reversibility=medium,
+    // adversariality=none, information_cost=medium, coordination_load=low,
+    // environment_stability=stable, time_horizon=iterative) plus derived
+    // medium×4. Locked-in table so future edits show up in diff.
+    expect(scores).toEqual({ explore: 10, prune: 12, compound: 6, coordinate: 0 });
+  });
+
+  it("tie-breaking: recommendRegime picks the first REGIMES entry on a tie", () => {
+    // Force explore == prune by adding no signal at all; the deterministic
+    // sort in recommendRegime keeps the enum order.
+    const rec = recommendRegime(
+      baseFeatures({
+        uncertainty: "medium",
+        ruggedness: "medium",
+        local_minima_risk: "medium",
+        branching_factor: "medium",
+        mode_pressure: "none",
+      }),
+    );
+    // Prune leads by 2 here (10 vs 8) — sanity that the exact table wins.
+    expect(rec.regime).toBe("prune");
+    expect(rec.margin).toBe(2);
   });
 });
 

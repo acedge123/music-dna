@@ -471,28 +471,26 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     // events over real sessions is what validates the mapper/scorer before we
     // let the regime drive anything. See docs/musicdna/agent-brain-integration-plan.md
     // (Step 0, refinements #1–#9).
-    const emitShadowRecommendation = (pairingId: string | null): void => {
-      void (async () => {
-        try {
-          const rec = await recommendForSession(supabase, data.sessionId, {
-            laneConfidence,
-            round,
-            maxRounds: 6,
-          });
-          if (!rec) return;
-          await supabase.from("event_log").insert({
-            user_id: sessionRes.data?.user_id ?? null,
-            session_id: data.sessionId,
-            pairing_id: pairingId,
-            event_type: "regime_recommended",
-            client: "server",
-            props: rec as never,
-          } as never);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.warn("[musicdna] regime_recommended emit failed:", e instanceof Error ? e.message : e);
-        }
-      })();
+    const emitShadowRecommendation = async (pairingId: string | null): Promise<void> => {
+      try {
+        const rec = await recommendForSession(supabase, data.sessionId, {
+          laneConfidence,
+          round,
+          maxRounds: 6,
+        });
+        if (!rec) return;
+        await supabase.from("event_log").insert({
+          user_id: sessionRes.data?.user_id ?? null,
+          session_id: data.sessionId,
+          pairing_id: pairingId,
+          event_type: "regime_recommended",
+          client: "server",
+          props: rec as never,
+        } as never);
+      } catch (e) {
+        // eslint-disable-next-line no-console
+        console.warn("[musicdna] regime_recommended emit failed:", e instanceof Error ? e.message : e);
+      }
     };
 
     // Cross-lane probes intentionally disabled — see mem://product/within-lane-only.md.
@@ -554,7 +552,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
         const finalPool = differing.length > 0 ? differing : bootPool;
         const pickIdx = Math.floor(Math.random() * finalPool.length);
         const bootPicked = finalPool[pickIdx];
-        emitShadowRecommendation(bootPicked.id);
+        await emitShadowRecommendation(bootPicked.id);
         return {
           pairing: bootPicked,
           round: round + 1,
@@ -645,7 +643,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       return { pairing: null, round, confidence: stop.confidence, done: true as const };
     }
     assertWithinLane((picked.pairing as { lane?: string | null }).lane ?? null, sessionLane);
-    emitShadowRecommendation((picked.pairing as { id: string }).id);
+    await emitShadowRecommendation((picked.pairing as { id: string }).id);
     return {
       pairing: picked.pairing,
       round: round + 1,
@@ -1315,6 +1313,8 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
         deltaVec,
         weightedVec: vec,
         diagnosticWeight: pairing.diagnostic_weight ?? 50,
+        chosenArtist: winner.artist ?? null,
+        msToDecide: data.msToDecide ?? null,
       });
     } catch (e) {
       // eslint-disable-next-line no-console
@@ -1412,6 +1412,8 @@ async function emitChoiceDiagnostics(
     deltaVec: Record<string, number>;
     weightedVec: Record<string, number>;
     diagnosticWeight: number;
+    chosenArtist: string | null;
+    msToDecide: number | null;
   },
 ): Promise<void> {
   const archRes = await supabase
@@ -1460,6 +1462,8 @@ async function emitChoiceDiagnostics(
       round: args.round,
       chosen_song_id: args.chosenSongId,
       rejected_song_id: args.rejectedSongId,
+      chosen_artist: args.chosenArtist,
+      ms_to_decide: args.msToDecide,
       axes_tested: args.tests,
       vector_before: args.priorVec,
       raw_delta: args.deltaVec,

@@ -60,17 +60,40 @@ const SNAP_MS = 2000;
 const SNAP_SHARE_HI = 0.6;
 const ARTIST_BIAS_N = 3;
 
-function magnitude(v: Record<string, number> | null | undefined): number | null {
+// Vector L2 magnitude — captures direction, not just size.
+function vecMag(v: Record<string, number> | null | undefined): number | null {
   if (!v) return null;
-  let sum = 0;
+  let sumSq = 0;
   let count = 0;
   for (const raw of Object.values(v)) {
     const n = Number(raw);
     if (!Number.isFinite(n)) continue;
-    sum += Math.abs(n);
+    sumSq += n * n;
     count += 1;
   }
-  return count === 0 ? null : sum / count;
+  return count === 0 ? null : Math.sqrt(sumSq);
+}
+
+// Successive-delta drift: L2 distance between consecutive raw_delta vectors.
+// A sequence like +50/-50/+50 (same magnitude, flipped direction) still
+// registers as rugged because each step moves ~2×|delta| in axis space.
+function stepDistances(deltas: Array<Record<string, number> | null | undefined>): number[] {
+  const steps: number[] = [];
+  for (let i = 1; i < deltas.length; i++) {
+    const a = deltas[i - 1];
+    const b = deltas[i];
+    if (!a || !b) continue;
+    const keys = new Set([...Object.keys(a), ...Object.keys(b)]);
+    let sumSq = 0;
+    for (const k of keys) {
+      const av = Number(a[k] ?? 0);
+      const bv = Number(b[k] ?? 0);
+      if (!Number.isFinite(av) || !Number.isFinite(bv)) continue;
+      sumSq += (av - bv) ** 2;
+    }
+    steps.push(Math.sqrt(sumSq));
+  }
+  return steps;
 }
 
 function stddev(xs: number[]): number {
@@ -84,11 +107,17 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   const { lane_confidence, round, max_rounds, choices, skipped_rounds_last3 } = input;
 
   // --- delta volatility (ruggedness input) --------------------------------
-  const deltaMags = choices
-    .map((c) => magnitude(c.raw_delta))
-    .filter((m): m is number => m !== null);
-  const deltaSamples = deltaMags.length;
-  const deltaVolatility = deltaSamples >= 2 ? stddev(deltaMags) : null;
+  // Refinement: use L2 distance between consecutive raw_delta vectors so
+  // direction reversals (+50, -50, +50) register as rugged instead of smooth.
+  const rawDeltas = choices.map((c) => c.raw_delta ?? null);
+  const validDeltas = rawDeltas.filter((d) => d !== null && vecMag(d) !== null) as Array<Record<string, number>>;
+  const deltaSamples = validDeltas.length;
+  const steps = stepDistances(validDeltas);
+  // Mean step distance: identical vectors → 0; +50/-50/+50 → 100. Stddev of
+  // identical steps is 0 and would false-negative on steady direction flips.
+  const deltaVolatility = steps.length >= 1
+    ? steps.reduce((s, x) => s + x, 0) / steps.length
+    : null;
 
   // --- artist bias (local_minima_risk input) ------------------------------
   const artistCounts = new Map<string, number>();
@@ -107,20 +136,22 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   const snapping = snapShare >= SNAP_SHARE_HI;
 
   // --- uncertainty ---------------------------------------------------------
-  // Low lane confidence, high skip count, or all-snap decisions all raise it.
-  // Refinement #5: skips are first-class here — each recent skip counts.
+  // Low lane confidence, recent skips, all-snap decisions, or a total lack of
+  // delta samples all raise uncertainty. Missing deltas are "unknown", not
+  // "confident": treat as at least medium.
   const skipPenalty = skipped_rounds_last3;
+  const noDeltaSignal = deltaSamples === 0 && choices.length > 0;
   let uncertainty: TrinaryLow;
   if (lane_confidence < 0.4 || skipPenalty >= 2) uncertainty = "high";
-  else if (lane_confidence < 0.65 || skipPenalty >= 1 || snapping) uncertainty = "medium";
+  else if (lane_confidence < 0.65 || skipPenalty >= 1 || snapping || noDeltaSignal) uncertainty = "medium";
   else uncertainty = "low";
 
   // --- ruggedness ----------------------------------------------------------
-  // Refinement #4: null deltaVolatility means "insufficient data", not "smooth".
-  // Refinement #5: skips inject artificial roughness.
+  // Refinement (revised): null deltaVolatility means "unknown". Never map
+  // unknown to "low"; that's the false-smooth assumption the plan warned about.
   let ruggedness: TrinaryLow;
   if (deltaVolatility === null) {
-    ruggedness = skipPenalty > 0 ? "medium" : "low";
+    ruggedness = skipPenalty >= 2 ? "high" : "medium";
   } else if (deltaVolatility >= 20 || skipPenalty >= 2) {
     ruggedness = "high";
   } else if (deltaVolatility >= 10 || skipPenalty >= 1 || snapping) {
