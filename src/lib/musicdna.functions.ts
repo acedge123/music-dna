@@ -522,9 +522,22 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     // only apply if we removed the await. If a future change makes this
     // truly fire-and-forget, switch to `event.waitUntil(promise)` from the
     // server route's ctx instead of dropping the await.
+    const routingMode: RoutingMode = readRoutingMode();
     const emitShadowRecommendation = async (
       pairingId: string | null,
-      ctx: { selected_mode: string; selection_reason: Record<string, unknown> | null; is_bootstrap: boolean },
+      ctx: {
+        selected_mode: string;
+        selection_reason: Record<string, unknown> | null;
+        is_bootstrap: boolean;
+        // Phase 4: shadow-pick diff. Optional so bootstrap callers (which
+        // don't run selectPairing) can omit it.
+        shadow?: {
+          pick_id: string | null;
+          agrees: boolean;
+          knobs: Record<string, unknown>;
+          selection_reason: Record<string, unknown> | null;
+        } | null;
+      },
     ): Promise<void> => {
       try {
         const rec = await recommendForSession(supabase, data.sessionId, {
@@ -541,6 +554,8 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
           legacy_regime: legacyRegime,
           scoring_agrees: rec.regime === legacyRegime,
           selection_reason: ctx.selection_reason,
+          routing_mode: routingMode,
+          shadow_pick: ctx.shadow ?? null,
         };
         await supabase.from("event_log").insert({
           user_id: sessionRes.data?.user_id ?? null,
