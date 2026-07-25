@@ -564,16 +564,24 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
           agrees: boolean;
           knobs: Record<string, unknown>;
           selection_reason: Record<string, unknown> | null;
+          knobs_differ?: boolean;
+          pick_differs?: boolean;
         } | null;
+        // Cursor #1 fix: caller may pass a cached router recommendation so
+        // we don't run recommendForSession twice per pick. Bootstrap
+        // callers omit it and we fall back to computing here.
+        cachedRec?: Awaited<ReturnType<typeof recommendForSession>> | null;
       },
     ): Promise<void> => {
       try {
-        const rec = await recommendForSession(supabase, data.sessionId, {
-          laneConfidence,
-          vectorConfidence,
-          round,
-          maxRounds: 6,
-        });
+        const rec = ctx.cachedRec !== undefined
+          ? ctx.cachedRec
+          : await recommendForSession(supabase, data.sessionId, {
+              laneConfidence,
+              vectorConfidence,
+              round,
+              maxRounds: 6,
+            });
         if (!rec) return;
         const legacyRegime = legacyToRegime(ctx.selected_mode, ctx.is_bootstrap);
         const props = {
@@ -598,6 +606,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
         console.warn("[musicdna] regime_recommended emit failed:", e instanceof Error ? e.message : e);
       }
     };
+
 
     // Cross-lane probes intentionally disabled — see mem://product/within-lane-only.md.
     void probeCandidates; void PROBE_ROUNDS;
