@@ -39,15 +39,15 @@ export type RecommendationSnapshot = Recommendation & {
 export async function recommendForSession(
   supabase: AuthedSupabase,
   sessionId: string,
-  opts: { laneConfidence: number; round: number; maxRounds?: number; archetypeMargin?: number | null } = {
-    laneConfidence: 0,
-    round: 0,
-  },
+  opts: {
+    laneConfidence: number;
+    vectorConfidence?: number;
+    round: number;
+    maxRounds?: number;
+    archetypeMargin?: number | null;
+  } = { laneConfidence: 0, round: 0 },
 ): Promise<RecommendationSnapshot | null> {
   try {
-    // Load recent choice history AND the last N attempts (choice or skip),
-    // so `skips_last3` really means "skips among the last 3 attempts" instead
-    // of "last 3 skip events from the whole session".
     const [choiceRes, attemptsRes] = await Promise.all([
       supabase
         .from("event_log")
@@ -67,7 +67,7 @@ export async function recommendForSession(
 
     const rawChoices = ((choiceRes.data ?? []) as Array<{ props: Record<string, unknown> | null }>)
       .map((row) => row.props ?? {})
-      .reverse(); // oldest → newest
+      .reverse();
 
     const choices: ChoiceEventRow[] = rawChoices.map((p) => ({
       round: Number((p as { round?: unknown }).round ?? 0),
@@ -76,12 +76,9 @@ export async function recommendForSession(
       ms_to_decide: (p as { ms_to_decide?: number | null }).ms_to_decide ?? null,
     }));
 
-    // Refinement: skips among the last 3 attempts, not the last 3 skip events.
     const attempts = (attemptsRes.data ?? []) as Array<{ event_type: string }>;
     const skips = attempts.filter((r) => r.event_type === "pairing_skipped").length;
 
-    // Refinement #4: archetype_margin as convergence signal — pull from the
-    // most recent choice_scored event unless the caller supplied one.
     let archetypeMargin: number | null = opts.archetypeMargin ?? null;
     if (archetypeMargin === null && choiceRes.data && choiceRes.data.length > 0) {
       const latest = (choiceRes.data[0] as { props: Record<string, unknown> | null }).props ?? {};
@@ -91,6 +88,7 @@ export async function recommendForSession(
 
     const features = mapTerrain({
       lane_confidence: opts.laneConfidence,
+      vector_confidence: opts.vectorConfidence,
       round: opts.round,
       max_rounds: opts.maxRounds ?? 6,
       choices,
@@ -104,6 +102,7 @@ export async function recommendForSession(
       ...rec,
       features_summary: {
         lane_confidence: features.derived.lane_confidence,
+        vector_confidence: features.derived.vector_confidence,
         round: opts.round,
         max_rounds: opts.maxRounds ?? 6,
         delta_samples: features.derived.delta_samples,
@@ -117,6 +116,8 @@ export async function recommendForSession(
         local_minima_risk: features.local_minima_risk,
         branching_factor: features.branching_factor,
         mode_pressure: features.mode_pressure,
+        environment_stability: features.environment_stability,
+        information_cost: features.information_cost,
       },
     };
   } catch (e) {
