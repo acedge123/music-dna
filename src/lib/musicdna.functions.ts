@@ -471,16 +471,18 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     // Also logs the legacy selector's decision (selected_mode, selection_reason)
     // and whether the regime agrees — that's the metric Step 4 rollout gates on.
     //
-    // Cursor #3: pass vector_confidence (mean |v-50|/50 across moved dims) so
-    // the mapper doesn't treat lane confidence as the only signal.
+    // Cursor #3 (Phase 3.5 corrected): vectors accumulate around 0 in
+    // choice.ts (`vec[d] = (vec[d] ?? 0) + delta * w`), not around 50. The
+    // old |v-50|/50 formula was mis-centered — a neutral session read as
+    // fully confident. Use the same test shouldStop() applies: count axes
+    // whose |v| has crossed the 30-point confidence threshold, divided by
+    // the total dimension count. Matches Cursor review #3.
     const dimsRef = DIMS as readonly string[];
-    const movedDims = dimsRef.filter((d) => {
-      const v = Number(vector[d]);
-      return Number.isFinite(v) && v !== 50;
-    });
-    const vectorConfidence = movedDims.length > 0
-      ? movedDims.reduce((s, d) => s + Math.min(1, Math.abs(Number(vector[d]) - 50) / 50), 0) / movedDims.length
-      : 0;
+    const AXIS_CONF_THRESHOLD = 30;
+    const confidentAxes = dimsRef.filter(
+      (d) => Math.abs(Number(vector[d] ?? 0)) >= AXIS_CONF_THRESHOLD,
+    ).length;
+    const vectorConfidence = dimsRef.length > 0 ? confidentAxes / dimsRef.length : 0;
 
     // Cursor #5: legacy selector → regime mapping so we can compute `scoring_agrees`.
     //   bootstrap             → explore (probing lane boundaries)
@@ -495,6 +497,14 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       return "explore";
     };
 
+    // Phase 3.5 note on completion: `emitShadowRecommendation` is `await`ed
+    // BEFORE nextPairingImpl returns (see the two call sites below). On
+    // Cloudflare Workers / workerd, promises awaited inside a request
+    // handler complete synchronously with the response — no waitUntil()
+    // needed. The fire-and-forget hazard the earlier review flagged would
+    // only apply if we removed the await. If a future change makes this
+    // truly fire-and-forget, switch to `event.waitUntil(promise)` from the
+    // server route's ctx instead of dropping the await.
     const emitShadowRecommendation = async (
       pairingId: string | null,
       ctx: { selected_mode: string; selection_reason: Record<string, unknown> | null; is_bootstrap: boolean },

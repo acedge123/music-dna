@@ -1,0 +1,136 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`selectPairing — golden regression across all three modes > golden: diagnostic_first leaning 1`] = `
+{
+  "id": "m5",
+  "reason": {
+    "axes_needed": [
+      "texture",
+    ],
+    "axis_need_score": 0.524,
+    "challenge_boost": true,
+    "diagnostic_weight": 70,
+    "fork_filter": "hard",
+    "fork_matched": true,
+    "leaning_axes": [
+      "movement",
+      "atmosphere",
+    ],
+    "mode": "diagnostic_first",
+    "pool_size": 3,
+    "recognition_score": 68,
+    "tests": [
+      "texture",
+      "atmosphere",
+    ],
+    "weight": 0.75,
+  },
+}
+`;
+
+exports[`selectPairing — golden regression across all three modes > golden: diagnostic_first neutral 1`] = `
+{
+  "id": "m5",
+  "reason": {
+    "axes_needed": [
+      "texture",
+      "atmosphere",
+    ],
+    "axis_need_score": 1,
+    "challenge_boost": false,
+    "diagnostic_weight": 70,
+    "fork_filter": "hard",
+    "fork_matched": false,
+    "leaning_axes": [],
+    "mode": "diagnostic_first",
+    "pool_size": 6,
+    "recognition_score": 68,
+    "tests": [
+      "texture",
+      "atmosphere",
+    ],
+    "weight": 0.7,
+  },
+}
+`;
+
+exports[`selectPairing — golden regression across all three modes > golden: recognition_boost mid 1`] = `
+{
+  "id": "m3",
+  "reason": {
+    "axes_needed": [
+      "movement",
+    ],
+    "axis_need_score": 0.516,
+    "challenge_boost": true,
+    "diagnostic_weight": 90,
+    "fork_filter": "hard",
+    "fork_matched": true,
+    "leaning_axes": [
+      "community",
+      "scale",
+    ],
+    "mode": "recognition_boost",
+    "pool_size": 1,
+    "recognition_score": 75,
+    "tests": [
+      "community",
+      "movement",
+    ],
+    "weight": 0.894,
+  },
+}
+`;
+
+exports[`selectPairing — golden regression across all three modes > golden: recognition_first cold 1`] = `
+{
+  "id": "m5",
+  "reason": {
+    "axes_needed": [
+      "texture",
+      "atmosphere",
+    ],
+    "axis_need_score": 1,
+    "challenge_boost": false,
+    "diagnostic_weight": 70,
+    "fork_filter": "hard",
+    "fork_matched": false,
+    "leaning_axes": [],
+    "mode": "recognition_first",
+    "pool_size": 4,
+    "recognition_score": 68,
+    "tests": [
+      "texture",
+      "atmosphere",
+    ],
+    "weight": 0.688,
+  },
+}
+`;
+
+exports[`selectPairing — golden regression across all three modes > golden: recognition_first leaning 1`] = `
+{
+  "id": "m5",
+  "reason": {
+    "axes_needed": [],
+    "axis_need_score": 0.022,
+    "challenge_boost": true,
+    "diagnostic_weight": 70,
+    "fork_filter": "hard",
+    "fork_matched": true,
+    "leaning_axes": [
+      "texture",
+      "atmosphere",
+      "confidence",
+    ],
+    "mode": "recognition_first",
+    "pool_size": 3,
+    "recognition_score": 68,
+    "tests": [
+      "texture",
+      "atmosphere",
+    ],
+    "weight": 0.426,
+  },
+}
+`;
