@@ -1414,6 +1414,8 @@ async function emitChoiceDiagnostics(
     deltaVec: Record<string, number>;
     weightedVec: Record<string, number>;
     diagnosticWeight: number;
+    chosenArtist: string | null;
+    msToDecide: number | null;
   },
 ): Promise<void> {
   const archRes = await supabase
