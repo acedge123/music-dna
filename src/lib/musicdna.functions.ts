@@ -709,8 +709,35 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
           : "diagnostic_first";
 
     const rng = { next: () => Math.random() };
+    const finalPool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
+
+    // Phase 4: consult the shadow router for regime-derived knobs.
+    // - "legacy": ignore entirely.
+    // - "shadow": still pick with legacy knobs; compute a parallel pick with
+    //   regime knobs on a deterministic RNG seeded from the same call so we
+    //   can log agrees/disagrees without perturbing the user's selection.
+    // - "live":   apply regime knobs directly. Only reached when the env is
+    //   explicitly set to "live" — off by default.
+    let regimeKnobs: ReturnType<typeof regimeToKnobs> | null = null;
+    let regimeForShadow: Regime | null = null;
+    if (routingMode !== "legacy") {
+      try {
+        const rec = await recommendForSession(supabase, data.sessionId, {
+          laneConfidence,
+          vectorConfidence,
+          round,
+          maxRounds: 6,
+        });
+        if (rec) {
+          regimeForShadow = rec.regime;
+          regimeKnobs = regimeToKnobs(rec.regime);
+        }
+      } catch { /* shadow only — never fail the user */ }
+    }
+
+    const liveKnobs = routingMode === "live" && regimeKnobs ? regimeKnobs : undefined;
     let picked = selectPairing({
-      pool: (pairingsRes.data ?? []) as unknown as PairingCandidate[],
+      pool: finalPool,
       vector,
       used_ids: usedIds,
       session_lane: sessionLane,
@@ -718,6 +745,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       rng,
       mode,
       recognition,
+      knobs: liveKnobs,
     });
 
     if (picked.kind === "empty" && sessionLane !== "general") {
@@ -732,16 +760,55 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
         rng,
         mode: "recognition_first",
         recognition,
+        knobs: liveKnobs,
       });
     }
     if (picked.kind === "empty") {
       return { pairing: null, round, confidence: stop.confidence, done: true as const };
     }
     assertWithinLane((picked.pairing as { lane?: string | null }).lane ?? null, sessionLane);
+
+    // Shadow-only: run a parallel pick with regime knobs to measure divergence.
+    // Uses a fresh Math.random RNG — we're measuring "would regime pick something
+    // different on this same pool", not attempting exact determinism.
+    let shadowInfo: {
+      pick_id: string | null;
+      agrees: boolean;
+      knobs: Record<string, unknown>;
+      selection_reason: Record<string, unknown> | null;
+    } | null = null;
+    if (routingMode === "shadow" && regimeKnobs) {
+      try {
+        const shadowRng = { next: () => Math.random() };
+        const shadowPick = selectPairing({
+          pool: finalPool,
+          vector,
+          used_ids: usedIds,
+          session_lane: sessionLane,
+          dims: DIMS as readonly string[],
+          rng: shadowRng,
+          mode,
+          recognition,
+          knobs: regimeKnobs,
+        });
+        if (shadowPick.kind === "picked") {
+          const shadowId = (shadowPick.pairing as { id: string }).id;
+          const liveId = (picked.pairing as { id: string }).id;
+          shadowInfo = {
+            pick_id: shadowId,
+            agrees: shadowId === liveId,
+            knobs: regimeKnobs as Record<string, unknown>,
+            selection_reason: shadowPick.selection_reason as unknown as Record<string, unknown>,
+          };
+        }
+      } catch { /* shadow only */ }
+    }
+
     await emitShadowRecommendation((picked.pairing as { id: string }).id, {
-      selected_mode: mode,
+      selected_mode: routingMode === "live" && regimeForShadow ? `live:${regimeForShadow}` : mode,
       selection_reason: (picked.selection_reason ?? null) as Record<string, unknown> | null,
       is_bootstrap: false,
+      shadow: shadowInfo,
     });
     return {
       pairing: picked.pairing,
