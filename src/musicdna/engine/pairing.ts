@@ -49,6 +49,39 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
   recognition?: Map<string, RecognitionRow>;
   // Optional override; falls back to RECOGNITION_FLOORS[mode].
   min_canon_floor?: number;
+  // Phase 3 (Knobs refactor). Structural knobs that used to be literals in
+  // this file. Defaults MUST byte-match the pre-refactor behavior — this
+  // struct only exists so Agent Brain's regime router can swap them out in a
+  // later phase. See docs/musicdna/agent-brain-integration-plan.md Step 3.
+  knobs?: Partial<PairingKnobs>;
+};
+
+// Phase 3: the seven literal knobs `selectPairing` used to embed inline.
+// Every default here reproduces the pre-refactor value exactly.
+export type PairingKnobs = {
+  // Axes with |v| >= this are considered "leaning" — feed the fork filter
+  // and the challenge boost.
+  leaning_threshold: number;                // was 15
+  // Cap on how many leaning axes we track.
+  leaning_top_k: number;                    // was 3
+  // Multiplier applied to pairings whose tests overlap a leaning axis.
+  challenge_boost: number;                  // was 1.5
+  // axis_need weighting: w *= (base + slope * axisNeed).
+  axis_need_base: number;                   // was 0.4
+  axis_need_slope: number;                  // was 0.6
+  // Recognition/diagnostic blend factors per mode.
+  recog_blend_recognition_first: number;    // was 0.6
+  recog_blend_recognition_boost: number;    // was 0.4
+};
+
+export const DEFAULT_PAIRING_KNOBS: PairingKnobs = {
+  leaning_threshold: 15,
+  leaning_top_k: 3,
+  challenge_boost: 1.5,
+  axis_need_base: 0.4,
+  axis_need_slope: 0.6,
+  recog_blend_recognition_first: 0.6,
+  recog_blend_recognition_boost: 0.4,
 };
 
 // Instrumentation.
@@ -72,6 +105,7 @@ export const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
   recognition_boost: 45,
   recognition_first: 55,
 };
+
 
 export type SelectPairingResult<P extends PairingCandidate = PairingCandidate> =
   | { kind: "picked"; pairing: P; selection_reason: SelectionReason }
