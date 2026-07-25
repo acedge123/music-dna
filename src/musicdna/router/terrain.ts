@@ -20,6 +20,7 @@ export type ChoiceEventRow = {
 
 export type TerrainInputs = {
   lane_confidence: number;      // 0..1
+  vector_confidence?: number;   // 0..1, mean |v-50|/50 across moved dims (Cursor #3)
   round: number;                // rounds completed (0-based; = choices.length)
   max_rounds: number;           // 6 for web today
   choices: ChoiceEventRow[];    // ordered oldest→newest, only real choices (not skips)
@@ -32,9 +33,10 @@ export type TerrainFeatures = {
   feedback_latency: "fast";
   reversibility: "medium";               // Refinement #1: corrected from "high".
   adversariality: "none";
-  information_cost: "medium";            // Refinement #1: corrected from "low".
+  // Cursor #4: information_cost and environment_stability are derived, not constant.
+  information_cost: TrinaryLow;
   coordination_load: "low";
-  environment_stability: "stable";
+  environment_stability: "stable" | "unstable";
   time_horizon: "iterative";
   // Derived from session state:
   uncertainty: TrinaryLow;
@@ -45,6 +47,7 @@ export type TerrainFeatures = {
   // Instrumentation only — not scored.
   derived: {
     lane_confidence: number;
+    vector_confidence: number;       // Cursor #3
     delta_volatility: number | null; // stddev of |raw_delta| across recent choices; null if <2 samples
     delta_samples: number;
     artist_bias_share: number;       // max share of a single artist among winners; 0..1
@@ -105,16 +108,16 @@ function stddev(xs: number[]): number {
 
 export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   const { lane_confidence, round, max_rounds, choices, skipped_rounds_last3 } = input;
+  // Cursor #3: vector confidence — how far the axis vector has moved from
+  // neutral. Complements lane_confidence: a session can be firmly in a lane
+  // but still have a wobbly archetype vector (or vice versa).
+  const vectorConfidence = Math.max(0, Math.min(1, Number(input.vector_confidence ?? 0)));
 
   // --- delta volatility (ruggedness input) --------------------------------
-  // Refinement: use L2 distance between consecutive raw_delta vectors so
-  // direction reversals (+50, -50, +50) register as rugged instead of smooth.
   const rawDeltas = choices.map((c) => c.raw_delta ?? null);
   const validDeltas = rawDeltas.filter((d) => d !== null && vecMag(d) !== null) as Array<Record<string, number>>;
   const deltaSamples = validDeltas.length;
   const steps = stepDistances(validDeltas);
-  // Mean step distance: identical vectors → 0; +50/-50/+50 → 100. Stddev of
-  // identical steps is 0 and would false-negative on steady direction flips.
   const deltaVolatility = steps.length >= 1
     ? steps.reduce((s, x) => s + x, 0) / steps.length
     : null;
@@ -136,19 +139,17 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   const snapping = snapShare >= SNAP_SHARE_HI;
 
   // --- uncertainty ---------------------------------------------------------
-  // Low lane confidence, recent skips, all-snap decisions, or a total lack of
-  // delta samples all raise uncertainty. Missing deltas are "unknown", not
-  // "confident": treat as at least medium.
+  // Cursor #3: use the WEAKER of lane_confidence and vector_confidence. A
+  // strong lane read with a flat vector is still uncertain about the archetype.
   const skipPenalty = skipped_rounds_last3;
   const noDeltaSignal = deltaSamples === 0 && choices.length > 0;
+  const combinedConfidence = Math.min(lane_confidence, vectorConfidence > 0 ? vectorConfidence : lane_confidence);
   let uncertainty: TrinaryLow;
-  if (lane_confidence < 0.4 || skipPenalty >= 2) uncertainty = "high";
-  else if (lane_confidence < 0.65 || skipPenalty >= 1 || snapping || noDeltaSignal) uncertainty = "medium";
+  if (combinedConfidence < 0.4 || skipPenalty >= 2) uncertainty = "high";
+  else if (combinedConfidence < 0.65 || skipPenalty >= 1 || snapping || noDeltaSignal) uncertainty = "medium";
   else uncertainty = "low";
 
   // --- ruggedness ----------------------------------------------------------
-  // Refinement (revised): null deltaVolatility means "unknown". Never map
-  // unknown to "low"; that's the false-smooth assumption the plan warned about.
   let ruggedness: TrinaryLow;
   if (deltaVolatility === null) {
     ruggedness = skipPenalty >= 2 ? "high" : "medium";
@@ -161,24 +162,32 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   }
 
   // --- local_minima_risk ---------------------------------------------------
-  // Same threshold finalizeSession uses to flag artist bias.
   let localMinima: TrinaryLow;
   if (artistBiased && artistBiasShare >= 0.6) localMinima = "high";
   else if (artistBiased || artistBiasShare >= 0.4) localMinima = "medium";
   else localMinima = "low";
 
   // --- branching_factor ----------------------------------------------------
-  // Early rounds have more meaningful branch choices; late rounds are narrow.
   const roundPosition = max_rounds > 0 ? round / max_rounds : 0;
   let branching: TrinaryLow;
   if (roundPosition < 0.33) branching = "high";
   else if (roundPosition < 0.66) branching = "medium";
   else branching = "low";
 
+  // --- environment_stability (Cursor #4) -----------------------------------
+  // Skip pressure IS environment instability: the user is telling us the
+  // pairings we're serving don't fit. Stable when quiet; unstable at ≥2 skips.
+  const environmentStability: "stable" | "unstable" = skipPenalty >= 2 ? "unstable" : "stable";
+
+  // --- information_cost (Cursor #4) ----------------------------------------
+  // Skips make additional evidence expensive: each skipped round burns a
+  // round without producing a delta. High cost pushes the scorer toward prune.
+  let informationCost: TrinaryLow;
+  if (skipPenalty >= 2) informationCost = "high";
+  else if (skipPenalty >= 1 || noDeltaSignal) informationCost = "medium";
+  else informationCost = "low";
+
   // --- mode_pressure -------------------------------------------------------
-  // Combine the strongest active signal. Order matters: bias > uncertainty >
-  // stability. Refinement #2 tunes the DOWNSTREAM weight; here we just name
-  // the winning pressure.
   let modePressure: TerrainFeatures["mode_pressure"];
   if (localMinima === "high") modePressure = "explore";
   else if (uncertainty === "high") modePressure = "explore";
@@ -190,9 +199,9 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
     feedback_latency: "fast",
     reversibility: "medium",
     adversariality: "none",
-    information_cost: "medium",
+    information_cost: informationCost,
     coordination_load: "low",
-    environment_stability: "stable",
+    environment_stability: environmentStability,
     time_horizon: "iterative",
     uncertainty,
     ruggedness,
@@ -201,6 +210,7 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
     mode_pressure: modePressure,
     derived: {
       lane_confidence,
+      vector_confidence: Math.round(vectorConfidence * 1000) / 1000,
       delta_volatility: deltaVolatility,
       delta_samples: deltaSamples,
       artist_bias_share: Math.round(artistBiasShare * 1000) / 1000,

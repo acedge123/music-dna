@@ -22,13 +22,23 @@ export type Recommendation = {
 
 // Weight table. Constant fields contribute a fixed baseline per regime.
 // Derived fields contribute the DERIVED value on the mapped regime.
+// Refinement (Cursor #4): information_cost and environment_stability are now
+// derived trinaries driven by skip pressure — they widen the weight table so
+// unstable environments push toward explore and costly info pushes toward prune.
 const CONSTANT_WEIGHTS = {
   feedback_latency: { fast: { explore: 2, prune: 1, compound: 0, coordinate: 0 } },
   reversibility:    { medium: { explore: 1, prune: 1, compound: 0, coordinate: 0 } },
   adversariality:   { none:   { explore: 0, prune: 1, compound: 1, coordinate: 0 } },
-  information_cost: { medium: { explore: 1, prune: 1, compound: 1, coordinate: 0 } },
+  information_cost: {
+    low:    { explore: 2, prune: 0, compound: 1, coordinate: 0 },
+    medium: { explore: 1, prune: 1, compound: 1, coordinate: 0 },
+    high:   { explore: 0, prune: 2, compound: 1, coordinate: 0 },
+  },
   coordination_load:{ low:    { explore: 0, prune: 1, compound: 1, coordinate: 0 } },
-  environment_stability: { stable: { explore: 0, prune: 1, compound: 2, coordinate: 0 } },
+  environment_stability: {
+    stable:   { explore: 0, prune: 1, compound: 2, coordinate: 0 },
+    unstable: { explore: 2, prune: 1, compound: 0, coordinate: 0 },
+  },
   time_horizon:     { iterative: { explore: 2, prune: 0, compound: 1, coordinate: 0 } },
 } as const;
 
