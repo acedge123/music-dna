@@ -25,6 +25,34 @@ function readRoutingMode(): RoutingMode {
   return "shadow";
 }
 
+// Deterministic RNG shared by the live and shadow selectPairing calls so
+// their draw sequences match — divergence between the two picks is then
+// attributable to knob differences, not to Math.random() luck. mulberry32
+// is a 32-bit seeded PRNG; the seed is derived from sessionId + round so
+// each pick is reproducible and independent across rounds.
+function mulberry32(seed: number): { next: () => number } {
+  let s = seed >>> 0;
+  return {
+    next: () => {
+      s = (s + 0x6d2b79f5) >>> 0;
+      let t = s;
+      t = Math.imul(t ^ (t >>> 15), t | 1);
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    },
+  };
+}
+function seedFrom(sessionId: string, round: number): number {
+  let h = 2166136261 >>> 0;
+  const s = `${sessionId}:${round}`;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+
+
 // Shared Supabase client type used by the *Impl exports below. The test
 // harness (src/routes/api/public/test/$action.ts) calls these Impl variants
 // directly with a service-role admin client + synthetic userId, bypassing
@@ -536,16 +564,24 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
           agrees: boolean;
           knobs: Record<string, unknown>;
           selection_reason: Record<string, unknown> | null;
+          knobs_differ?: boolean;
+          pick_differs?: boolean;
         } | null;
+        // Cursor #1 fix: caller may pass a cached router recommendation so
+        // we don't run recommendForSession twice per pick. Bootstrap
+        // callers omit it and we fall back to computing here.
+        cachedRec?: Awaited<ReturnType<typeof recommendForSession>> | null;
       },
     ): Promise<void> => {
       try {
-        const rec = await recommendForSession(supabase, data.sessionId, {
-          laneConfidence,
-          vectorConfidence,
-          round,
-          maxRounds: 6,
-        });
+        const rec = ctx.cachedRec !== undefined
+          ? ctx.cachedRec
+          : await recommendForSession(supabase, data.sessionId, {
+              laneConfidence,
+              vectorConfidence,
+              round,
+              maxRounds: 6,
+            });
         if (!rec) return;
         const legacyRegime = legacyToRegime(ctx.selected_mode, ctx.is_bootstrap);
         const props = {
@@ -570,6 +606,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
         console.warn("[musicdna] regime_recommended emit failed:", e instanceof Error ? e.message : e);
       }
     };
+
 
     // Cross-lane probes intentionally disabled — see mem://product/within-lane-only.md.
     void probeCandidates; void PROBE_ROUNDS;
@@ -708,33 +745,35 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
           ? "recognition_boost"
           : "diagnostic_first";
 
-    const rng = { next: () => Math.random() };
     const finalPool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
 
-    // Phase 4: consult the shadow router for regime-derived knobs.
-    // - "legacy": ignore entirely.
-    // - "shadow": still pick with legacy knobs; compute a parallel pick with
-    //   regime knobs on a deterministic RNG seeded from the same call so we
-    //   can log agrees/disagrees without perturbing the user's selection.
-    // - "live":   apply regime knobs directly. Only reached when the env is
-    //   explicitly set to "live" — off by default.
+    // Phase 4 (cursor #1 fix): consult the shadow router ONCE per pick and
+    // reuse the result for both knob derivation and the event emitter.
+    // Previously we called recommendForSession twice, doubling router work
+    // and letting the two calls disagree if any input drifted.
     let regimeKnobs: ReturnType<typeof regimeToKnobs> | null = null;
     let regimeForShadow: Regime | null = null;
+    let cachedRec: Awaited<ReturnType<typeof recommendForSession>> | null = null;
     if (routingMode !== "legacy") {
       try {
-        const rec = await recommendForSession(supabase, data.sessionId, {
+        cachedRec = await recommendForSession(supabase, data.sessionId, {
           laneConfidence,
           vectorConfidence,
           round,
           maxRounds: 6,
         });
-        if (rec) {
-          regimeForShadow = rec.regime;
-          regimeKnobs = regimeToKnobs(rec.regime);
+        if (cachedRec) {
+          regimeForShadow = cachedRec.regime;
+          regimeKnobs = regimeToKnobs(cachedRec.regime);
         }
       } catch { /* shadow only — never fail the user */ }
     }
 
+    // Cursor #1 blocker fix: share a seeded RNG between the live and shadow
+    // picks so both consume the same draw sequence. Divergence between the
+    // two picks then reflects knob differences only, not Math.random() luck.
+    const rngSeed = seedFrom(data.sessionId, round);
+    const rng = mulberry32(rngSeed);
     const liveKnobs = routingMode === "live" && regimeKnobs ? regimeKnobs : undefined;
     let picked = selectPairing({
       pool: finalPool,
@@ -748,17 +787,26 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       knobs: liveKnobs,
     });
 
+    // Track the actual pool + mode the live selector used (post-fallback) so
+    // the shadow pick scores the same universe. Cursor: "General-lane
+    // fallback under-counts real diverge cases" — fixed here.
+    let livePool = finalPool;
+    let liveMode = mode;
     if (picked.kind === "empty" && sessionLane !== "general") {
       pairingsRes = await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", "general");
       if (pairingsRes.error) throw new Error(pairingsRes.error.message);
+      livePool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
+      liveMode = "recognition_first";
+      // Reseed for the fallback attempt so shadow can reproduce it exactly.
+      const fbRng = mulberry32(rngSeed ^ 0x9e3779b9);
       picked = selectPairing({
-        pool: (pairingsRes.data ?? []) as unknown as PairingCandidate[],
+        pool: livePool,
         vector,
         used_ids: usedIds,
         session_lane: sessionLane,
         dims: DIMS as readonly string[],
-        rng,
-        mode: "recognition_first",
+        rng: fbRng,
+        mode: liveMode,
         recognition,
         knobs: liveKnobs,
       });
@@ -768,47 +816,61 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     }
     assertWithinLane((picked.pairing as { lane?: string | null }).lane ?? null, sessionLane);
 
-    // Shadow-only: run a parallel pick with regime knobs to measure divergence.
-    // Uses a fresh Math.random RNG — we're measuring "would regime pick something
-    // different on this same pool", not attempting exact determinism.
+    // Shadow-only: run a parallel pick with regime knobs against the SAME
+    // pool + mode + seed the live selector actually used. Any divergence is
+    // now attributable to knob differences.
     let shadowInfo: {
       pick_id: string | null;
       agrees: boolean;
       knobs: Record<string, unknown>;
       selection_reason: Record<string, unknown> | null;
+      knobs_differ: boolean;
+      pick_differs: boolean;
     } | null = null;
     if (routingMode === "shadow" && regimeKnobs) {
       try {
-        const shadowRng = { next: () => Math.random() };
+        // Reseed to the exact seed used for the live pick that produced
+        // `picked` (fallback path used a xor'd seed).
+        const shadowSeed = livePool === finalPool ? rngSeed : (rngSeed ^ 0x9e3779b9);
+        const shadowRng = mulberry32(shadowSeed);
         const shadowPick = selectPairing({
-          pool: finalPool,
+          pool: livePool,
           vector,
           used_ids: usedIds,
           session_lane: sessionLane,
           dims: DIMS as readonly string[],
           rng: shadowRng,
-          mode,
+          mode: liveMode,
           recognition,
           knobs: regimeKnobs,
         });
         if (shadowPick.kind === "picked") {
           const shadowId = (shadowPick.pairing as { id: string }).id;
           const liveId = (picked.pairing as { id: string }).id;
+          // knobs_differ: legacy runs with knobs=undefined (defaults).
+          // Any regimeKnobs value at all counts as a knob difference for
+          // shadow-mode diagnostics.
+          const knobsDiffer = liveKnobs === undefined
+            ? true
+            : JSON.stringify(liveKnobs) !== JSON.stringify(regimeKnobs);
           shadowInfo = {
             pick_id: shadowId,
             agrees: shadowId === liveId,
             knobs: regimeKnobs as Record<string, unknown>,
             selection_reason: shadowPick.selection_reason as unknown as Record<string, unknown>,
+            knobs_differ: knobsDiffer,
+            pick_differs: shadowId !== liveId,
           };
         }
       } catch { /* shadow only */ }
     }
 
     await emitShadowRecommendation((picked.pairing as { id: string }).id, {
-      selected_mode: routingMode === "live" && regimeForShadow ? `live:${regimeForShadow}` : mode,
+      selected_mode: routingMode === "live" && regimeForShadow ? `live:${regimeForShadow}` : liveMode,
       selection_reason: (picked.selection_reason ?? null) as Record<string, unknown> | null,
       is_bootstrap: false,
       shadow: shadowInfo,
+      cachedRec,
     });
     return {
       pairing: picked.pairing,
@@ -820,6 +882,7 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       selection_reason: picked.selection_reason,
     };
 }
+
 
 
 // ============ Record choice ============
