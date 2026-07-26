@@ -67,21 +67,18 @@ const DIMENSION_WEIGHTS: DimensionWeightTable = {
     iterative: { explore: 2, compound: 1 },
   },
   mode_pressure: {
-    explore: { explore: 4 },
-    prune: { prune: 4 },
-    compound: { compound: 4 },
+    // Singleton-regime pressures contribute +2 to their matching regime.
+    // (Historically encoded as +4 with a post-hoc -2 adjustment; inlined here
+    // so the weight table is the single source of truth.)
+    explore: { explore: 2 },
+    prune: { prune: 2 },
+    compound: { compound: 2 },
     escape: { explore: 2, prune: 1, compound: -1 },
-    coordinate: { coordinate: 4 },
+    coordinate: { coordinate: 2 },
     create: { explore: 2, prune: -1, compound: -1 },
   },
 };
 
-const SINGLE_REGIME_MODE_PRESSURES: ReadonlySet<ModePressure> = new Set([
-  "explore",
-  "prune",
-  "compound",
-  "coordinate",
-]);
 
 const OPPOSING: Record<Regime, Regime> = {
   prune: "explore",
