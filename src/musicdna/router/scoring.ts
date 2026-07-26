@@ -133,11 +133,8 @@ export function scoreMusicDNATerrain(features: TerrainFeatures): Recommendation 
     }
   }
 
-  const mp = features.mode_pressure;
-  if (SINGLE_REGIME_MODE_PRESSURES.has(mp) && isRegime(mp)) {
-    scores[mp] -= 2;
-    reasons[mp].push("musicdna: mode_pressure weight adjusted +4->+2 (-2)");
-  }
+
+
 
   const breakdown = SEARCH_REGIMES.map((regime) => ({
     regime,
