@@ -221,7 +221,14 @@ export function recommendRegime(features: TerrainFeatures): Recommendation & {
 }
 
 export function scoringAgrees(modePressureIn: ModePressure, regimeOut: Regime): boolean {
-  return modePressureIn === regimeOut;
+  // `escape` is a late-round rescue pressure whose intended regime is `explore`
+  // (see DIMENSION_WEIGHTS.mode_pressure.escape). Treat that mapping as
+  // agreement so shadow telemetry doesn't over-report disagreement on the
+  // very contract we designed.
+  const normalized: Regime | ModePressure =
+    modePressureIn === "escape" ? "explore" : modePressureIn;
+  return normalized === regimeOut;
 }
+
 
 export type { Recommendation, Regime };
