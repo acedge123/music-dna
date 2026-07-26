@@ -99,6 +99,8 @@ function createEmptyScoreMap(): Scores {
 function isRegime(value: string): value is Regime {
   return (SEARCH_REGIMES as readonly string[]).includes(value);
 }
+void isRegime;
+
 
 export function scoreTerrain(features: TerrainFeatures): Scores {
   return scoreMusicDNATerrain(features).breakdown.reduce<Scores>(
