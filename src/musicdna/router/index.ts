@@ -6,26 +6,31 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { mapTerrain, type ChoiceEventRow } from "./terrain";
-import { recommendRegime, type Recommendation } from "./scoring";
+import {
+  choiceRowsToTerrainInput,
+  sessionConfidence,
+  sessionToTerrain,
+  type ChoiceEventRow,
+} from "./terrain";
+import { regimeToPairingKnobs, regimeToSelectionMode } from "./knobs";
+import { recommendRegime, scoringAgrees, type Recommendation } from "./scoring";
+import type {
+  MusicDNARegimeRecommendation,
+  MusicDNATerrainInput,
+  Regime,
+} from "./types";
 
 type AuthedSupabase = SupabaseClient<Database>;
 
 const HISTORY_LIMIT = 6; // matches MAX_ROUNDS in onboarding.tsx
 const ATTEMPT_WINDOW = 3;
 
-export type RecommendationSnapshot = Recommendation & {
+export type RecommendationSnapshot = MusicDNARegimeRecommendation & {
   features_summary: {
     lane_confidence: number;
     vector_confidence: number;
     round: number;
     max_rounds: number;
-    delta_samples: number;
-    delta_volatility: number | null;
-    artist_bias_share: number;
-    snap_share: number;
-    skips_last3: number;
-    round_position: number;
     uncertainty: string;
     ruggedness: string;
     local_minima_risk: string;
@@ -41,7 +46,9 @@ export async function recommendForSession(
   sessionId: string,
   opts: {
     laneConfidence: number;
-    vectorConfidence?: number;
+    vector?: Record<string, number>;
+    lane?: string;
+    skippedPairingIds?: string[];
     round: number;
     maxRounds?: number;
     archetypeMargin?: number | null;
@@ -77,7 +84,9 @@ export async function recommendForSession(
     }));
 
     const attempts = (attemptsRes.data ?? []) as Array<{ event_type: string }>;
-    const skips = attempts.filter((r) => r.event_type === "pairing_skipped").length;
+    const recentSkipCount = attempts.filter((r) => r.event_type === "pairing_skipped").length;
+    const skippedPairingIds =
+      opts.skippedPairingIds ?? Array.from({ length: recentSkipCount }, (_, i) => `recent-skip-${i}`);
 
     let archetypeMargin: number | null = opts.archetypeMargin ?? null;
     if (archetypeMargin === null && choiceRes.data && choiceRes.data.length > 0) {
@@ -86,38 +95,35 @@ export async function recommendForSession(
       if (typeof m === "number" && Number.isFinite(m)) archetypeMargin = m;
     }
 
-    const features = mapTerrain({
+    const input = choiceRowsToTerrainInput({
+      session_id: sessionId,
+      lane: opts.lane ?? "alternative",
       lane_confidence: opts.laneConfidence,
-      vector_confidence: opts.vectorConfidence,
-      round: opts.round,
-      max_rounds: opts.maxRounds ?? 6,
+      vector: opts.vector ?? {},
+      rounds_shown: opts.round,
+      skipped_pairing_ids: skippedPairingIds,
       choices,
-      skipped_rounds_last3: Math.min(ATTEMPT_WINDOW, skips),
+      config: { round_budget: opts.maxRounds ?? 6 },
     });
 
-    const rec = recommendRegime(features);
+    const rec = recommendMusicDNARegime(input);
     rec.archetype_margin = archetypeMargin;
+    const vectorConfidence = sessionConfidence(input.session.vector).confidence;
 
     return {
       ...rec,
       features_summary: {
-        lane_confidence: features.derived.lane_confidence,
-        vector_confidence: features.derived.vector_confidence,
+        lane_confidence: input.session.lane_confidence,
+        vector_confidence: vectorConfidence,
         round: opts.round,
         max_rounds: opts.maxRounds ?? 6,
-        delta_samples: features.derived.delta_samples,
-        delta_volatility: features.derived.delta_volatility,
-        artist_bias_share: features.derived.artist_bias_share,
-        snap_share: features.derived.snap_share,
-        skips_last3: features.derived.skips_last3,
-        round_position: features.derived.round_position,
-        uncertainty: features.uncertainty,
-        ruggedness: features.ruggedness,
-        local_minima_risk: features.local_minima_risk,
-        branching_factor: features.branching_factor,
-        mode_pressure: features.mode_pressure,
-        environment_stability: features.environment_stability,
-        information_cost: features.information_cost,
+        uncertainty: rec.terrain.uncertainty,
+        ruggedness: rec.terrain.ruggedness,
+        local_minima_risk: rec.terrain.local_minima_risk,
+        branching_factor: rec.terrain.branching_factor,
+        mode_pressure: rec.terrain.mode_pressure,
+        environment_stability: rec.terrain.environment_stability,
+        information_cost: rec.terrain.information_cost,
       },
     };
   } catch (e) {
@@ -127,7 +133,56 @@ export async function recommendForSession(
   }
 }
 
-export { mapTerrain } from "./terrain";
-export { recommendRegime, scoreTerrain } from "./scoring";
-export type { TerrainFeatures } from "./terrain";
+export function recommendMusicDNARegime(input: MusicDNATerrainInput): MusicDNARegimeRecommendation {
+  const terrain = sessionToTerrain(input);
+  const scoring = recommendRegime(terrain);
+  const { session } = input;
+  const { confidence, confident_axes, total_axes } = sessionConfidence(session.vector);
+  const mode_pressure_in = terrain.mode_pressure;
+  const regime = scoring.primary_regime;
+  const selection_mode = regimeToSelectionMode(regime, session.lane, session.lane_confidence);
+  const pairing_knobs = regimeToPairingKnobs(regime, session.lane, session.lane_confidence);
+
+  const rationale: string[] = [
+    `Round ${session.rounds_shown} (${session.rounds_answered} answered / ${session.rounds_skipped} skipped), ` +
+      `confidence ${(confidence * 100).toFixed(0)}% (${confident_axes}/${total_axes} axes)`,
+  ];
+
+  if (terrain.uncertainty === "high") {
+    rationale.push("Uncertainty is high - favoring exploration");
+  } else if (terrain.uncertainty === "low") {
+    rationale.push("Uncertainty is low - ready to compound");
+  }
+  if (terrain.local_minima_risk === "high") {
+    rationale.push("Artist bias detected - local-minima risk elevated");
+  }
+  if (terrain.ruggedness === "high") {
+    rationale.push("Vector volatility - taste landscape is rugged");
+  }
+  if (terrain.environment_stability === "shifting") {
+    rationale.push("Skip pressure - environment treated as shifting");
+  }
+  if (mode_pressure_in === "escape") {
+    rationale.push("Escape pressure - stuck at low confidence late in the budget");
+  }
+  rationale.push(...(scoring.breakdown[0]?.reasons.slice(0, 3) ?? []));
+
+  return {
+    regime,
+    confidence: scoring.confidence,
+    terrain,
+    mode_pressure_in,
+    scoring_agrees: scoringAgrees(mode_pressure_in, regime),
+    rationale,
+    transition_candidate: scoring.transition_candidate,
+    selection_mode,
+    pairing_knobs,
+    scoring,
+    archetype_margin: null,
+  };
+}
+
+export { mapTerrain, sessionToTerrain } from "./terrain";
+export { recommendRegime, scoreTerrain, scoreMusicDNATerrain } from "./scoring";
+export type { MusicDNATerrainInput, TerrainFeatures } from "./types";
 export type { Regime, Recommendation, Scores } from "./scoring";

@@ -17,7 +17,7 @@
 // This test does NOT change scoring weights.
 
 import { describe, expect, it } from "vitest";
-import { mapTerrain, type ChoiceEventRow, type TerrainFeatures } from "./terrain";
+import { enumerateMusicDNATerrains, mapTerrain, type ChoiceEventRow, type TerrainFeatures } from "./terrain";
 import { recommendRegime, type Regime } from "./scoring";
 
 
@@ -86,7 +86,7 @@ function enumerate(): TerrainFeatures[] {
 }
 
 describe("router reachability — Phase 2 gate", () => {
-  const terrains = enumerate();
+  const terrains = enumerateMusicDNATerrains();
   const winners = new Set<Regime>(terrains.map((t) => recommendRegime(t).regime));
 
   it("mapper emits every actionable mode_pressure at least once", () => {
@@ -130,8 +130,8 @@ describe("router reachability — Phase 2 gate", () => {
       skipped_rounds_last3: 2,
     });
     expect(quiet.environment_stability).toBe("stable");
-    expect(quiet.information_cost).toBe("low");
-    expect(noisy.environment_stability).toBe("unstable");
+    expect(quiet.information_cost).toBe("medium");
+    expect(noisy.environment_stability).toBe("shifting");
     expect(noisy.information_cost).toBe("high");
   });
 

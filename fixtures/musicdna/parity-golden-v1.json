@@ -1,0 +1,244 @@
+{
+  "version": "musicdna-agent-brain-parity-v1",
+  "cases": [
+    {
+      "id": "early_uncertain_explore",
+      "input": {
+        "session": {
+          "session_id": "golden-early",
+          "rounds_answered": 1,
+          "rounds_skipped": 0,
+          "rounds_shown": 1,
+          "vector": {},
+          "lane": "alternative",
+          "lane_confidence": 0.82,
+          "skipped_pairing_ids": [],
+          "artist_frequency": {
+            "the cure": 1
+          }
+        },
+        "recentDeltas": [
+          {
+            "movement": 8
+          }
+        ],
+        "recentChoices": [
+          {
+            "ms_to_decide": 4200
+          }
+        ]
+      },
+      "expected": {
+        "terrain": {
+          "feedback_latency": "fast",
+          "adversariality": "none",
+          "coordination_load": "low",
+          "time_horizon": "iterative",
+          "reversibility": "medium",
+          "uncertainty": "high",
+          "branching_factor": "high",
+          "ruggedness": "medium",
+          "local_minima_risk": "medium",
+          "information_cost": "medium",
+          "environment_stability": "stable",
+          "mode_pressure": "explore"
+        },
+        "regime": "explore",
+        "confidence": 0.64,
+        "mode_pressure_in": "explore",
+        "scoring_agrees": true,
+        "transition_candidate": null,
+        "selection_mode": "recognition_boost",
+        "pairing_knobs": {
+          "mode": "recognition_boost",
+          "recog_blend": 0.4,
+          "canon_floor": 45,
+          "challenge_boost": 1.2,
+          "leaning_axis_threshold": 15,
+          "leaning_axis_count": 2,
+          "axis_need_floor": 0.3,
+          "axis_need_span": 0.7,
+          "fork_filter": "soft"
+        },
+        "scores": {
+          "explore": 14,
+          "prune": 11,
+          "compound": 3,
+          "coordinate": 2
+        }
+      }
+    },
+    {
+      "id": "settled_compound",
+      "input": {
+        "session": {
+          "session_id": "golden-settled",
+          "rounds_answered": 6,
+          "rounds_skipped": 0,
+          "rounds_shown": 6,
+          "vector": {
+            "movement": 44,
+            "atmosphere": 39,
+            "immersion": 41,
+            "scale": 35,
+            "community": 33,
+            "perspective": 36,
+            "confidence": 38
+          },
+          "lane": "alternative",
+          "lane_confidence": 0.86,
+          "skipped_pairing_ids": [],
+          "artist_frequency": {
+            "the cure": 2,
+            "new order": 2,
+            "echo": 2
+          }
+        },
+        "recentDeltas": [
+          {
+            "movement": 5
+          },
+          {
+            "atmosphere": 6
+          },
+          {
+            "immersion": 5
+          }
+        ],
+        "recentChoices": [
+          {
+            "ms_to_decide": 5100
+          },
+          {
+            "ms_to_decide": 4600
+          },
+          {
+            "ms_to_decide": 4900
+          }
+        ]
+      },
+      "expected": {
+        "terrain": {
+          "feedback_latency": "fast",
+          "adversariality": "none",
+          "coordination_load": "low",
+          "time_horizon": "iterative",
+          "reversibility": "medium",
+          "uncertainty": "low",
+          "branching_factor": "medium",
+          "ruggedness": "medium",
+          "local_minima_risk": "medium",
+          "information_cost": "medium",
+          "environment_stability": "stable",
+          "mode_pressure": "compound"
+        },
+        "regime": "compound",
+        "confidence": 0.48000000000000004,
+        "mode_pressure_in": "compound",
+        "scoring_agrees": true,
+        "transition_candidate": null,
+        "selection_mode": "diagnostic_first",
+        "pairing_knobs": {
+          "mode": "diagnostic_first",
+          "recog_blend": 0,
+          "canon_floor": 0,
+          "challenge_boost": 1.3,
+          "leaning_axis_threshold": 20,
+          "leaning_axis_count": 2,
+          "axis_need_floor": 0.5,
+          "axis_need_span": 0.5,
+          "fork_filter": "hard"
+        },
+        "scores": {
+          "compound": 11,
+          "prune": 10,
+          "explore": 7,
+          "coordinate": 1
+        }
+      }
+    },
+    {
+      "id": "skip_pressure_explore",
+      "input": {
+        "session": {
+          "session_id": "golden-skips",
+          "rounds_answered": 2,
+          "rounds_skipped": 2,
+          "rounds_shown": 4,
+          "vector": {
+            "movement": 40,
+            "atmosphere": 35,
+            "immersion": 32
+          },
+          "lane": "alternative",
+          "lane_confidence": 0.74,
+          "skipped_pairing_ids": [
+            "skip-a",
+            "skip-b"
+          ],
+          "artist_frequency": {
+            "radiohead": 3
+          }
+        },
+        "recentDeltas": [
+          {
+            "movement": 12
+          },
+          {
+            "atmosphere": -9
+          },
+          {
+            "immersion": 7
+          }
+        ],
+        "recentChoices": [
+          {
+            "ms_to_decide": 1800
+          },
+          {
+            "ms_to_decide": 2200
+          }
+        ]
+      },
+      "expected": {
+        "terrain": {
+          "feedback_latency": "fast",
+          "adversariality": "none",
+          "coordination_load": "low",
+          "time_horizon": "iterative",
+          "reversibility": "medium",
+          "uncertainty": "medium",
+          "branching_factor": "high",
+          "ruggedness": "medium",
+          "local_minima_risk": "high",
+          "information_cost": "high",
+          "environment_stability": "shifting",
+          "mode_pressure": "explore"
+        },
+        "regime": "explore",
+        "confidence": 0.48000000000000004,
+        "mode_pressure_in": "explore",
+        "scoring_agrees": true,
+        "transition_candidate": "prune",
+        "selection_mode": "recognition_boost",
+        "pairing_knobs": {
+          "mode": "recognition_boost",
+          "recog_blend": 0.4,
+          "canon_floor": 45,
+          "challenge_boost": 1.2,
+          "leaning_axis_threshold": 15,
+          "leaning_axis_count": 2,
+          "axis_need_floor": 0.3,
+          "axis_need_span": 0.7,
+          "fork_filter": "soft"
+        },
+        "scores": {
+          "explore": 11,
+          "prune": 10,
+          "coordinate": 4,
+          "compound": 2
+        }
+      }
+    }
+  ]
+}
