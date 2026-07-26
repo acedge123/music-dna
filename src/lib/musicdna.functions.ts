@@ -7,7 +7,7 @@ import { assignArchetype } from "@/musicdna/engine/archetypes";
 import { CRITIC_PERSONA as PERSONA, CRITIC_VOICE_EDITORIAL as VOICE } from "@/musicdna/engine/critic";
 import { callLovableAi, DEFAULT_MODEL as MODEL } from "@/musicdna/adapters/llm-gateway";
 import { recommendForSession, type Regime } from "@/musicdna/router";
-import { regimeToKnobs } from "@/musicdna/router/knobs";
+import { toEnginePairingKnobs } from "@/musicdna/router/knobs";
 
 // Phase 4: routing mode. Read once per request from env.
 //   "legacy"  — original behavior, no shadow diff, no regime knobs.
@@ -578,7 +578,9 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
           ? ctx.cachedRec
           : await recommendForSession(supabase, data.sessionId, {
               laneConfidence,
-              vectorConfidence,
+              lane: sessionLane,
+              vector,
+              skippedPairingIds: probeState.skipped_pairing_ids ?? [],
               round,
               maxRounds: 6,
             });
@@ -751,20 +753,22 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     // reuse the result for both knob derivation and the event emitter.
     // Previously we called recommendForSession twice, doubling router work
     // and letting the two calls disagree if any input drifted.
-    let regimeKnobs: ReturnType<typeof regimeToKnobs> | null = null;
+    let regimeKnobs: ReturnType<typeof toEnginePairingKnobs> | null = null;
     let regimeForShadow: Regime | null = null;
     let cachedRec: Awaited<ReturnType<typeof recommendForSession>> | null = null;
     if (routingMode !== "legacy") {
       try {
         cachedRec = await recommendForSession(supabase, data.sessionId, {
           laneConfidence,
-          vectorConfidence,
+          lane: sessionLane,
+          vector,
+          skippedPairingIds: probeState.skipped_pairing_ids ?? [],
           round,
           maxRounds: 6,
         });
         if (cachedRec) {
           regimeForShadow = cachedRec.regime;
-          regimeKnobs = regimeToKnobs(cachedRec.regime);
+          regimeKnobs = toEnginePairingKnobs(cachedRec.pairing_knobs);
         }
       } catch { /* shadow only — never fail the user */ }
     }

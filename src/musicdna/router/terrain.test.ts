@@ -1,5 +1,12 @@
 import { describe, expect, it } from "vitest";
-import { mapTerrain, type ChoiceEventRow } from "./terrain";
+import {
+  choiceRowsToTerrainInput,
+  detectSkipPressure,
+  detectVectorVolatility,
+  sessionConfidence,
+  sessionToTerrain,
+  type ChoiceEventRow,
+} from "./terrain";
 
 const choice = (over: Partial<ChoiceEventRow> = {}): ChoiceEventRow => ({
   round: 1,
@@ -9,167 +16,83 @@ const choice = (over: Partial<ChoiceEventRow> = {}): ChoiceEventRow => ({
   ...over,
 });
 
-describe("mapTerrain — constants (refinement #1)", () => {
-  it("quiet session: information_cost=low, environment_stability=stable (Cursor #4)", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.7,
-      round: 3,
-      max_rounds: 6,
-      choices: [choice(), choice(), choice()],
-      skipped_rounds_last3: 0,
+describe("sessionToTerrain canonical mapper", () => {
+  it("uses Agent Brain D2 constants", () => {
+    const terrain = sessionToTerrain(
+      choiceRowsToTerrainInput({
+        session_id: "quiet",
+        lane: "alternative",
+        lane_confidence: 0.8,
+        vector: { movement: 40, atmosphere: 40, immersion: 40 },
+        rounds_shown: 3,
+        skipped_pairing_ids: [],
+        choices: [choice(), choice(), choice()],
+      }),
+    );
+    expect(terrain).toMatchObject({
+      feedback_latency: "fast",
+      reversibility: "medium",
+      adversariality: "none",
+      coordination_load: "low",
+      time_horizon: "iterative",
+      information_cost: "medium",
+      environment_stability: "stable",
     });
-    expect(f.information_cost).toBe("low");
-    expect(f.environment_stability).toBe("stable");
-    expect(f.reversibility).toBe("medium");
-    expect(f.feedback_latency).toBe("fast");
-    expect(f.adversariality).toBe("none");
   });
 
-  it("skip pressure drives information_cost=high and environment_stability=unstable (Cursor #4)", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.7,
-      round: 3,
-      max_rounds: 6,
-      choices: [choice(), choice(), choice()],
-      skipped_rounds_last3: 2,
-    });
-    expect(f.information_cost).toBe("high");
-    expect(f.environment_stability).toBe("unstable");
+  it("treats skip pressure as high information cost and shifting environment", () => {
+    const terrain = sessionToTerrain(
+      choiceRowsToTerrainInput({
+        session_id: "skips",
+        lane: "alternative",
+        lane_confidence: 0.8,
+        vector: { movement: 40, atmosphere: 40, immersion: 40 },
+        rounds_shown: 3,
+        skipped_pairing_ids: ["a", "b"],
+        choices: [choice()],
+      }),
+    );
+    expect(terrain.information_cost).toBe("high");
+    expect(terrain.environment_stability).toBe("shifting");
+    expect(terrain.mode_pressure).toBe("explore");
   });
 
-  it("vector_confidence=0 with strong lane_confidence still raises uncertainty (Cursor #3)", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.9,
-      vector_confidence: 0.1,
-      round: 3,
-      max_rounds: 6,
-      choices: [choice(), choice(), choice()],
-      skipped_rounds_last3: 0,
-    });
-    // Weak vector (0.1) dominates; combined confidence < 0.4 → high uncertainty.
-    expect(f.uncertainty).toBe("high");
-  });
-});
-
-describe("mapTerrain — skips as first-class signal (refinement #5)", () => {
-  it("2+ recent skips force uncertainty=high even with strong lane confidence", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.9,
-      round: 4,
-      max_rounds: 6,
-      choices: [choice(), choice()],
-      skipped_rounds_last3: 2,
-    });
-    expect(f.uncertainty).toBe("high");
-    expect(f.ruggedness).toBe("high");
+  it("keeps missing deltas unknown instead of calm", () => {
+    const unknown = detectVectorVolatility(undefined);
+    expect(unknown.known).toBe(false);
+    expect(unknown.volatile).toBeNull();
+    const terrain = sessionToTerrain(
+      choiceRowsToTerrainInput({
+        session_id: "missing-deltas",
+        lane: "alternative",
+        lane_confidence: 0.8,
+        vector: { movement: 40, atmosphere: 40, immersion: 40 },
+        rounds_shown: 3,
+        skipped_pairing_ids: [],
+        choices: [choice({ raw_delta: null })],
+      }),
+    );
+    expect(terrain.ruggedness).toBe("medium");
   });
 
-  it("no skips + strong lane confidence + steady deltas → uncertainty=low", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.8,
-      round: 4,
-      max_rounds: 6,
-      choices: [
-        choice({ raw_delta: { m: 10 } }),
-        choice({ raw_delta: { m: 11 } }),
-        choice({ raw_delta: { m: 9 } }),
-      ],
-      skipped_rounds_last3: 0,
-    });
-    expect(f.uncertainty).toBe("low");
-  });
-});
+  it("detects confidence, artist bias, snap picks, and escape pressure", () => {
+    expect(sessionConfidence({ movement: 40, atmosphere: 40 }).confidence).toBe(0.2);
+    expect(detectSkipPressure(["a", "b"], 4).recognition_failing).toBe(true);
 
-describe("mapTerrain — missing raw_delta (refinement #4 revised)", () => {
-  it("null raw_delta with pending choice → unknown, mapped to medium not low", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.8,
-      round: 1,
-      max_rounds: 6,
-      choices: [choice({ raw_delta: null })],
-      skipped_rounds_last3: 0,
+    const terrain = sessionToTerrain({
+      session: {
+        session_id: "escape",
+        rounds_answered: 5,
+        rounds_skipped: 0,
+        rounds_shown: 5,
+        vector: {},
+        lane: "alternative",
+        lane_confidence: 0.8,
+        skipped_pairing_ids: [],
+        artist_frequency: {},
+      },
+      recentChoices: [],
     });
-    expect(f.derived.delta_samples).toBe(0);
-    expect(f.derived.delta_volatility).toBeNull();
-    // "Unknown delta" must never look smooth — the old branch mapped this
-    // to ruggedness=low, which biased the router toward compound.
-    expect(f.ruggedness).toBe("medium");
-    expect(f.uncertainty).toBe("medium");
-  });
-});
-
-describe("mapTerrain — volatility captures direction, not just magnitude", () => {
-  it("direction-flipping deltas (+50 / -50 / +50) register as rugged", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.8,
-      round: 3,
-      max_rounds: 6,
-      choices: [
-        choice({ raw_delta: { m: 50 } }),
-        choice({ raw_delta: { m: -50 } }),
-        choice({ raw_delta: { m: 50 } }),
-      ],
-      skipped_rounds_last3: 0,
-    });
-    // L2 step distance between (+50) and (-50) is 100; old mean-|delta|
-    // metric would have called this perfectly smooth.
-    expect(f.derived.delta_volatility).not.toBeNull();
-    expect(f.ruggedness).toBe("high");
-  });
-});
-
-describe("mapTerrain — artist bias mirrors finalizeSession (refinement #7)", () => {
-  it("3+ picks from one artist raises local_minima_risk", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.7,
-      round: 4,
-      max_rounds: 6,
-      choices: [
-        choice({ chosen_artist: "same" }),
-        choice({ chosen_artist: "same" }),
-        choice({ chosen_artist: "same" }),
-        choice({ chosen_artist: "same" }),
-      ],
-      skipped_rounds_last3: 0,
-    });
-    expect(f.derived.artist_bias_share).toBe(1);
-    expect(f.local_minima_risk).toBe("high");
-  });
-
-  it("mixed artists keep local_minima_risk low", () => {
-    const f = mapTerrain({
-      lane_confidence: 0.7,
-      round: 4,
-      max_rounds: 6,
-      choices: [
-        choice({ chosen_artist: "a" }),
-        choice({ chosen_artist: "b" }),
-        choice({ chosen_artist: "c" }),
-        choice({ chosen_artist: "d" }),
-      ],
-      skipped_rounds_last3: 0,
-    });
-    expect(f.local_minima_risk).toBe("low");
-  });
-});
-
-describe("mapTerrain — branching follows round position (refinement #8 setup)", () => {
-  it("round 1/6 = high branching; round 5/6 = low branching", () => {
-    const early = mapTerrain({
-      lane_confidence: 0.7,
-      round: 1,
-      max_rounds: 6,
-      choices: [choice()],
-      skipped_rounds_last3: 0,
-    });
-    const late = mapTerrain({
-      lane_confidence: 0.7,
-      round: 5,
-      max_rounds: 6,
-      choices: [choice(), choice(), choice(), choice(), choice()],
-      skipped_rounds_last3: 0,
-    });
-    expect(early.branching_factor).toBe("high");
-    expect(late.branching_factor).toBe("low");
+    expect(terrain.mode_pressure).toBe("escape");
   });
 });

@@ -1,109 +1,229 @@
-// Port of Agent Brain's scoreTerrain, tuned per D2 of the integration plan:
-//   • Refinement #1: information_cost=medium, reversibility=medium constants.
-//   • Refinement #2: mode_pressure weight reduced from +4 to +2.
-//   • Refinement #6: this scorer never influences shouldStop.
-//
-// Returns a regime recommendation plus the raw score table so shadow
-// analysis can second-guess the pick without re-running the mapper.
+import {
+  SEARCH_REGIMES,
+  type ModePressure,
+  type Recommendation,
+  type Regime,
+  type TerrainFeatures,
+} from "./types";
 
-import type { TerrainFeatures } from "./terrain";
-
-export type Regime = "explore" | "prune" | "compound" | "coordinate";
+type DimensionWeightTable = Partial<
+  Record<keyof TerrainFeatures, Partial<Record<string, Partial<Record<Regime, number>>>>>
+>;
 
 export type Scores = Record<Regime, number>;
 
-export type Recommendation = {
-  regime: Regime;
-  confidence: number;      // 0..1, from margin over max possible
-  margin: number;          // raw score gap #1 - #2
-  scores: Scores;
-  archetype_margin: number | null; // Refinement #9 — filled in by index.ts if the caller has archetype rankings
+const DIMENSION_WEIGHTS: DimensionWeightTable = {
+  feedback_latency: {
+    fast: { explore: 2, prune: 1 },
+    medium: { explore: 1, prune: 1, compound: 1 },
+    slow: { coordinate: 1, compound: -1, explore: -1 },
+  },
+  reversibility: {
+    high: { explore: 2, prune: 1 },
+    medium: { prune: 1, compound: 1 },
+    low: { compound: -2, coordinate: 1, prune: 1 },
+  },
+  uncertainty: {
+    low: { compound: 2, prune: 1, explore: -1 },
+    medium: { prune: 2, explore: 1, coordinate: 1 },
+    high: { explore: 3, coordinate: 1, compound: -2 },
+  },
+  branching_factor: {
+    low: { compound: 2, coordinate: 1 },
+    medium: { explore: 1, prune: 1, compound: 1 },
+    high: { prune: 3, explore: 2, compound: -1 },
+  },
+  adversariality: {
+    none: { compound: 1, prune: 1 },
+    some: { coordinate: 2, prune: 1 },
+    high: { coordinate: 4, compound: -1 },
+  },
+  ruggedness: {
+    low: { compound: 2, prune: 1 },
+    medium: { explore: 1, prune: 1, coordinate: 1 },
+    high: { explore: 2, coordinate: 1, compound: -1 },
+  },
+  local_minima_risk: {
+    low: { compound: 1, prune: 1 },
+    medium: { explore: 1, prune: 1 },
+    high: { explore: 2, compound: -1 },
+  },
+  information_cost: {
+    low: { explore: 2, prune: 1 },
+    medium: { explore: 1, prune: 1 },
+    high: { compound: 1, coordinate: 1, explore: -2 },
+  },
+  coordination_load: {
+    low: { compound: 1, prune: 1 },
+    medium: { coordinate: 2, prune: 1 },
+    high: { coordinate: 3, compound: -1 },
+  },
+  environment_stability: {
+    stable: { compound: 2, prune: 1 },
+    shifting: { explore: 1, coordinate: 1, compound: -1 },
+  },
+  time_horizon: {
+    one_shot: { prune: 1, coordinate: 1, explore: -1 },
+    iterative: { explore: 2, compound: 1 },
+  },
+  mode_pressure: {
+    explore: { explore: 4 },
+    prune: { prune: 4 },
+    compound: { compound: 4 },
+    escape: { explore: 2, prune: 1, compound: -1 },
+    coordinate: { coordinate: 4 },
+    create: { explore: 2, prune: -1, compound: -1 },
+  },
 };
 
-// Weight table. Constant fields contribute a fixed baseline per regime.
-// Derived fields contribute the DERIVED value on the mapped regime.
-// Refinement (Cursor #4): information_cost and environment_stability are now
-// derived trinaries driven by skip pressure — they widen the weight table so
-// unstable environments push toward explore and costly info pushes toward prune.
-const CONSTANT_WEIGHTS = {
-  feedback_latency: { fast: { explore: 2, prune: 1, compound: 0, coordinate: 0 } },
-  reversibility:    { medium: { explore: 1, prune: 1, compound: 0, coordinate: 0 } },
-  adversariality:   { none:   { explore: 0, prune: 1, compound: 1, coordinate: 0 } },
-  information_cost: {
-    low:    { explore: 2, prune: 0, compound: 1, coordinate: 0 },
-    medium: { explore: 1, prune: 1, compound: 1, coordinate: 0 },
-    high:   { explore: 0, prune: 2, compound: 1, coordinate: 0 },
-  },
-  coordination_load:{ low:    { explore: 0, prune: 1, compound: 1, coordinate: 0 } },
-  environment_stability: {
-    stable:   { explore: 0, prune: 1, compound: 2, coordinate: 0 },
-    unstable: { explore: 2, prune: 1, compound: 0, coordinate: 0 },
-  },
-  time_horizon:     { iterative: { explore: 2, prune: 0, compound: 1, coordinate: 0 } },
-} as const;
+const SINGLE_REGIME_MODE_PRESSURES: ReadonlySet<ModePressure> = new Set([
+  "explore",
+  "prune",
+  "compound",
+  "coordinate",
+]);
 
-// Derived-field contributions. Small — mapper already narrowed to trinaries.
-const DERIVED_WEIGHTS = {
-  uncertainty:       { high: { explore: 3, prune: 0, compound: 0, coordinate: 1 },
-                        medium: { explore: 1, prune: 2, compound: 0, coordinate: 0 },
-                        low: { explore: 0, prune: 1, compound: 2, coordinate: 0 } },
-  ruggedness:        { high: { explore: 2, prune: 1, compound: 0, coordinate: 0 },
-                        medium: { explore: 1, prune: 2, compound: 0, coordinate: 0 },
-                        low: { explore: 0, prune: 1, compound: 2, coordinate: 0 } },
-  local_minima_risk: { high: { explore: 3, prune: 0, compound: 0, coordinate: 0 },
-                        medium: { explore: 1, prune: 1, compound: 0, coordinate: 0 },
-                        low: { explore: 0, prune: 1, compound: 1, coordinate: 0 } },
-  branching_factor:  { high: { explore: 2, prune: 0, compound: 0, coordinate: 0 },
-                        medium: { explore: 1, prune: 1, compound: 0, coordinate: 0 },
-                        low: { explore: 0, prune: 1, compound: 1, coordinate: 0 } },
-} as const;
+const OPPOSING: Record<Regime, Regime> = {
+  prune: "explore",
+  explore: "compound",
+  compound: "explore",
+  coordinate: "explore",
+};
 
-// Refinement #2: mode_pressure weight halved from +4 to +2.
-const MODE_PRESSURE_WEIGHT = 2;
+function createEmptyScoreMap(): Scores {
+  return {
+    prune: 0,
+    explore: 0,
+    compound: 0,
+    coordinate: 0,
+  };
+}
 
-const REGIMES: Regime[] = ["explore", "prune", "compound", "coordinate"];
-
-function addRow(scores: Scores, row: Partial<Record<Regime, number>>): void {
-  for (const r of REGIMES) scores[r] += row[r] ?? 0;
+function isRegime(value: string): value is Regime {
+  return (SEARCH_REGIMES as readonly string[]).includes(value);
 }
 
 export function scoreTerrain(features: TerrainFeatures): Scores {
-  const scores: Scores = { explore: 0, prune: 0, compound: 0, coordinate: 0 };
-
-  addRow(scores, CONSTANT_WEIGHTS.feedback_latency[features.feedback_latency]);
-  addRow(scores, CONSTANT_WEIGHTS.reversibility[features.reversibility]);
-  addRow(scores, CONSTANT_WEIGHTS.adversariality[features.adversariality]);
-  addRow(scores, CONSTANT_WEIGHTS.information_cost[features.information_cost]);
-  addRow(scores, CONSTANT_WEIGHTS.coordination_load[features.coordination_load]);
-  addRow(scores, CONSTANT_WEIGHTS.environment_stability[features.environment_stability]);
-  addRow(scores, CONSTANT_WEIGHTS.time_horizon[features.time_horizon]);
-
-  addRow(scores, DERIVED_WEIGHTS.uncertainty[features.uncertainty]);
-  addRow(scores, DERIVED_WEIGHTS.ruggedness[features.ruggedness]);
-  addRow(scores, DERIVED_WEIGHTS.local_minima_risk[features.local_minima_risk]);
-  addRow(scores, DERIVED_WEIGHTS.branching_factor[features.branching_factor]);
-
-  if (features.mode_pressure !== "none") {
-    scores[features.mode_pressure as Regime] += MODE_PRESSURE_WEIGHT;
-  }
-
-  return scores;
+  return scoreMusicDNATerrain(features).breakdown.reduce<Scores>(
+    (scores, row) => {
+      scores[row.regime] = row.score;
+      return scores;
+    },
+    createEmptyScoreMap(),
+  );
 }
 
-export function recommendRegime(features: TerrainFeatures): Recommendation {
-  const scores = scoreTerrain(features);
-  const sorted = REGIMES.map((r) => ({ r, s: scores[r] })).sort((a, b) => b.s - a.s);
-  const winner = sorted[0];
-  const runnerUp = sorted[1];
-  const margin = winner.s - runnerUp.s;
-  // Confidence: margin as a fraction of the theoretical spread (roughly 15
-  // points end-to-end at the current weight table).
-  const confidence = Math.max(0, Math.min(1, margin / 6));
+export function scoreMusicDNATerrain(features: TerrainFeatures): Recommendation {
+  const scores = createEmptyScoreMap();
+  const reasons: Record<Regime, string[]> = {
+    prune: [],
+    explore: [],
+    compound: [],
+    coordinate: [],
+  };
+
+  for (const field of Object.keys(DIMENSION_WEIGHTS) as (keyof TerrainFeatures)[]) {
+    const fieldWeights = DIMENSION_WEIGHTS[field];
+    const fieldValue = features[field];
+    const appliedWeights = fieldWeights?.[String(fieldValue)];
+    if (!appliedWeights) continue;
+
+    for (const regime of SEARCH_REGIMES) {
+      const weight = appliedWeights[regime];
+      if (!weight) continue;
+      scores[regime] += weight;
+      reasons[regime].push(`${field}=${String(fieldValue)} (${weight > 0 ? "+" : ""}${weight})`);
+    }
+  }
+
+  const mp = features.mode_pressure;
+  if (SINGLE_REGIME_MODE_PRESSURES.has(mp) && isRegime(mp)) {
+    scores[mp] -= 2;
+    reasons[mp].push("musicdna: mode_pressure weight adjusted +4->+2 (-2)");
+  }
+
+  const breakdown = SEARCH_REGIMES.map((regime) => ({
+    regime,
+    score: scores[regime],
+    reasons: reasons[regime],
+  })).sort((left, right) => right.score - left.score);
+
+  const primary = breakdown[0]?.regime ?? "explore";
+  const secondary = breakdown[1]?.regime ?? null;
+  const topScore = breakdown[0]?.score ?? 0;
+  const secondScore = breakdown[1]?.score ?? 0;
+  const margin = topScore - secondScore;
+  const confidence = Math.max(0, Math.min(1, 0.4 + Math.max(0, margin) * 0.08));
+
   return {
-    regime: winner.r,
-    confidence: Math.round(confidence * 1000) / 1000,
+    primary_regime: primary,
+    secondary_regime: secondary,
+    opposing_regime: OPPOSING[primary],
+    confidence,
+    breakdown,
+    transition_candidate: transitionCandidateFor(features, primary),
+  };
+}
+
+function transitionCandidateFor(
+  profile: TerrainFeatures,
+  topRegime: Regime,
+): Regime | null {
+  if (
+    topRegime === "explore" &&
+    profile.uncertainty !== "high" &&
+    profile.branching_factor === "high"
+  ) {
+    return "prune";
+  }
+  if (
+    topRegime === "prune" &&
+    profile.uncertainty === "low" &&
+    profile.environment_stability === "stable"
+  ) {
+    return "compound";
+  }
+  if (
+    topRegime === "compound" &&
+    (profile.environment_stability === "shifting" || profile.local_minima_risk === "high")
+  ) {
+    return "explore";
+  }
+  if (
+    topRegime !== "coordinate" &&
+    (profile.adversariality === "high" || profile.coordination_load === "high")
+  ) {
+    return "coordinate";
+  }
+  return null;
+}
+
+export function recommendRegime(features: TerrainFeatures): Recommendation & {
+  regime: Regime;
+  margin: number;
+  scores: Scores;
+  archetype_margin: null;
+} {
+  const rec = scoreMusicDNATerrain(features);
+  const scores = rec.breakdown.reduce<Scores>(
+    (acc, row) => {
+      acc[row.regime] = row.score;
+      return acc;
+    },
+    createEmptyScoreMap(),
+  );
+  const margin = (rec.breakdown[0]?.score ?? 0) - (rec.breakdown[1]?.score ?? 0);
+  return {
+    ...rec,
+    regime: rec.primary_regime,
     margin,
     scores,
     archetype_margin: null,
   };
 }
+
+export function scoringAgrees(modePressureIn: ModePressure, regimeOut: Regime): boolean {
+  return modePressureIn === regimeOut;
+}
+
+export type { Recommendation, Regime };
