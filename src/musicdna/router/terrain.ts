@@ -242,7 +242,7 @@ export function mapTerrain(input: TerrainInputs): TerrainFeatures {
 
 export function enumerateMusicDNATerrains(): TerrainFeatures[] {
   const terrains: TerrainFeatures[] = [];
-  const vectors = [
+  const vectors: Array<Record<string, number>> = [
     {},
     { movement: 40, atmosphere: 40, immersion: 40 },
     {
@@ -255,7 +255,8 @@ export function enumerateMusicDNATerrains(): TerrainFeatures[] {
       confidence: 40,
     },
   ];
-  const artistFreqs = [{}, { Radiohead: 2 }, { Radiohead: 3 }, { Radiohead: 5 }];
+  const artistFreqs: Array<Record<string, number>> = [{}, { Radiohead: 2 }, { Radiohead: 3 }, { Radiohead: 5 }];
+
   const skipSets = [[], ["a"], ["a", "b", "c"]];
   const deltaSets: Array<Array<Record<string, number>> | undefined> = [
     undefined,

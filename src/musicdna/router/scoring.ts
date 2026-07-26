@@ -67,21 +67,18 @@ const DIMENSION_WEIGHTS: DimensionWeightTable = {
     iterative: { explore: 2, compound: 1 },
   },
   mode_pressure: {
-    explore: { explore: 4 },
-    prune: { prune: 4 },
-    compound: { compound: 4 },
+    // Singleton-regime pressures contribute +2 to their matching regime.
+    // (Historically encoded as +4 with a post-hoc -2 adjustment; inlined here
+    // so the weight table is the single source of truth.)
+    explore: { explore: 2 },
+    prune: { prune: 2 },
+    compound: { compound: 2 },
     escape: { explore: 2, prune: 1, compound: -1 },
-    coordinate: { coordinate: 4 },
+    coordinate: { coordinate: 2 },
     create: { explore: 2, prune: -1, compound: -1 },
   },
 };
 
-const SINGLE_REGIME_MODE_PRESSURES: ReadonlySet<ModePressure> = new Set([
-  "explore",
-  "prune",
-  "compound",
-  "coordinate",
-]);
 
 const OPPOSING: Record<Regime, Regime> = {
   prune: "explore",
@@ -102,6 +99,10 @@ function createEmptyScoreMap(): Scores {
 function isRegime(value: string): value is Regime {
   return (SEARCH_REGIMES as readonly string[]).includes(value);
 }
+void isRegime;
+
+
+
 
 export function scoreTerrain(features: TerrainFeatures): Scores {
   return scoreMusicDNATerrain(features).breakdown.reduce<Scores>(
@@ -136,11 +137,8 @@ export function scoreMusicDNATerrain(features: TerrainFeatures): Recommendation 
     }
   }
 
-  const mp = features.mode_pressure;
-  if (SINGLE_REGIME_MODE_PRESSURES.has(mp) && isRegime(mp)) {
-    scores[mp] -= 2;
-    reasons[mp].push("musicdna: mode_pressure weight adjusted +4->+2 (-2)");
-  }
+
+
 
   const breakdown = SEARCH_REGIMES.map((regime) => ({
     regime,
@@ -223,7 +221,14 @@ export function recommendRegime(features: TerrainFeatures): Recommendation & {
 }
 
 export function scoringAgrees(modePressureIn: ModePressure, regimeOut: Regime): boolean {
-  return modePressureIn === regimeOut;
+  // `escape` is a late-round rescue pressure whose intended regime is `explore`
+  // (see DIMENSION_WEIGHTS.mode_pressure.escape). Treat that mapping as
+  // agreement so shadow telemetry doesn't over-report disagreement on the
+  // very contract we designed.
+  const normalized: Regime | ModePressure =
+    modePressureIn === "escape" ? "explore" : modePressureIn;
+  return normalized === regimeOut;
 }
+
 
 export type { Recommendation, Regime };
