@@ -3668,59 +3668,187 @@ export const listChat = createServerFn({ method: "GET" })
 
 
 // ============================================================
-// Per-round running hypothesis — the "detective board" line.
-// Templated (no LLM): reads the session vector, returns the
-// strongest axis as a one-liner. Client compares topDim across
-// rounds to render forming / holding / revising.
+// Per-round running read — the "detective board" line.
+//
+// Tiered, never blank. Templated (no LLM):
+//   tier "observation" (1-2 answered) — a concrete note about the choice the
+//     user just made. No personality claim, no axis names.
+//   tier "theory" (3-4, or weak evidence) — a hedged thread, revised only
+//     when the evidence actually changed.
+//   tier "read" (>= 3 supporting choices, 0 contradicting) — the claim.
+//
+// Evidence is recomputed from the real choices every time (chosen vs rejected
+// song axis values), so a revision reflects changed evidence rather than
+// rotating copy.
 // ============================================================
+type ReadEvidence = {
+  supporting: number;
+  contradicting: number;
+  tested: number;
+  examples: { chosen: string; rejected: string }[];
+};
+export type CurrentReadResult = {
+  thesis: string;
+  hook: string;
+  topDim: string | null;
+  strength: number;
+  tier: "observation" | "theory" | "read";
+  direction: "forming" | "holding" | "contested" | "revising";
+  evidence: ReadEvidence;
+  question: string;
+};
+
 export const currentRead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z.object({ sessionId: z.string().uuid() }).parse(d),
   )
-  .handler(async ({ data, context }): Promise<{ thesis: string; hook: string; topDim: string | null; strength: number }> => {
+  .handler(async ({ data, context }): Promise<CurrentReadResult> => {
     const { supabase, userId } = context;
-    const { data: session } = await supabase
-      .from("sessions")
-      .select("vector,user_id")
-      .eq("id", data.sessionId)
-      .single();
-    const s = session as { vector: Record<string, number>; user_id: string } | null;
-    if (!s || s.user_id !== userId) return { thesis: "Still listening.", hook: "", topDim: null, strength: 0 };
+    const emptyEvidence: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
+    const axisCols = (DIMS as readonly string[]).join(",");
+    const [sessionRes, choicesRes] = await Promise.all([
+      supabase.from("sessions").select("vector,user_id").eq("id", data.sessionId).single(),
+      supabase
+        .from("choices")
+        .select(
+          `created_at, chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
+        )
+        .eq("session_id", data.sessionId)
+        .order("created_at", { ascending: true }),
+    ]);
+    const s = sessionRes.data as { vector: Record<string, number>; user_id: string } | null;
+    if (!s || s.user_id !== userId) {
+      return {
+        thesis: "Nothing to read yet.",
+        hook: "",
+        topDim: null,
+        strength: 0,
+        tier: "observation",
+        direction: "forming",
+        evidence: emptyEvidence,
+        question: "",
+      };
+    }
+
+    type SongRow = Record<string, unknown> & { title?: string; artist?: string };
+    type ChoiceRow = { chosen: SongRow | null; rejected: SongRow | null };
+    const choices = (choicesRes.data ?? []) as unknown as ChoiceRow[];
+    const answered = choices.length;
+    const num = (row: SongRow | null, dim: string) => {
+      const v = row?.[dim];
+      return typeof v === "number" ? v : 0;
+    };
+    const label = (row: SongRow | null) =>
+      row?.title ? `${row.title}${row.artist ? ` (${row.artist})` : ""}` : "that one";
+
     const vector = s.vector ?? {};
     const ranked = (DIMS as readonly string[])
       .map((d) => ({ d, v: vector[d] ?? 0 }))
       .sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
     const top = ranked[0];
-    // Rotate variants by current choice count so the running thesis evolves
-    // round to round instead of repeating the same line on the same axis.
-    const { count: choiceCount } = await supabase
-      .from("choices")
-      .select("id", { count: "exact", head: true })
-      .eq("session_id", data.sessionId);
-    const round = choiceCount ?? 0;
-    // Gate identity claims: need real support AND enough rounds to make it
-    // sound like observation rather than assumption.
-    if (!top || Math.abs(top.v) < 12 || round < 5) {
+
+    // ---- Tier 1: too little evidence for a thread. Talk about the choice. ----
+    const latest = choices[answered - 1];
+    if (!top || answered < 3) {
+      if (!latest) {
+        return {
+          thesis: "First one's yours to call.",
+          hook: "Pick the one you'd actually put on.",
+          topDim: null,
+          strength: 0,
+          tier: "observation",
+          direction: "forming",
+          evidence: emptyEvidence,
+          question: "",
+        };
+      }
+      // Biggest gap in the choice they just made — that's the real tradeoff.
+      const gaps = (DIMS as readonly string[])
+        .map((d) => ({ d, delta: num(latest.chosen, d) - num(latest.rejected, d) }))
+        .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+      const g = gaps[0];
+      const pole = g ? POLES[g.d]?.[g.delta >= 0 ? "hi" : "lo"] : undefined;
+      const line = pickByHash(pole?.observations, answered + dimSeed(g?.d ?? "x"));
       return {
-        thesis: "Still listening.\nToo early to call.\nKeep picking.",
-        hook: "Throw me another one.",
-        topDim: top?.d ?? null,
-        strength: top ? Math.abs(top.v) : 0,
+        thesis: `${label(latest.chosen)} over ${label(latest.rejected)}. ${line ?? "Noted."}`,
+        hook: answered === 1 ? "One data point. Let's get another." : "Twice now. Could still be a coincidence.",
+        topDim: g?.d ?? null,
+        strength: g ? Math.abs(g.delta) : 0,
+        tier: "observation",
+        direction: "forming",
+        evidence: { supporting: 0, contradicting: 0, tested: answered, examples: [] },
+        question: "Does that hold when the other side is a song you love?",
       };
     }
-    const variantSeed = round + dimSeed(top.d) + (top.v >= 0 ? 0 : 1);
+
+    // ---- Evidence for the leading axis, straight from the choices. ----
+    const sign = top.v >= 0 ? 1 : -1;
+    const ev: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
+    for (const c of choices) {
+      const delta = num(c.chosen, top.d) - num(c.rejected, top.d);
+      if (Math.abs(delta) < 10) continue;
+      ev.tested += 1;
+      if (Math.sign(delta) === sign) {
+        ev.supporting += 1;
+        if (ev.examples.length < 2) ev.examples.push({ chosen: label(c.chosen), rejected: label(c.rejected) });
+      } else {
+        ev.contradicting += 1;
+      }
+    }
+    const direction: CurrentReadResult["direction"] =
+      ev.contradicting > ev.supporting
+        ? "revising"
+        : ev.contradicting > 0
+          ? "contested"
+          : ev.supporting >= 2
+            ? "holding"
+            : "forming";
+
+    const variantSeed = answered + dimSeed(top.d) + (top.v >= 0 ? 0 : 1);
     const beat = BEAT[top.d];
     const pole = pickVariant(top.v >= 0 ? beat?.hi : beat?.lo, variantSeed);
-    if (!pole) {
-      const p = POLES[top.d]?.[top.v >= 0 ? "hi" : "lo"];
-      const line = pickByHash(p?.observations, variantSeed);
+    const fallback = POLES[top.d]?.[top.v >= 0 ? "hi" : "lo"];
+    const claimLine = pole?.thesis ?? pickByHash(fallback?.observations, variantSeed) ?? `Leaning ${top.d}.`;
+    const axisLabel = fallback?.axis_label ?? top.d;
+
+    // ---- Tier 3: earned claim — 3+ supporting, nothing against it. ----
+    if (ev.supporting >= 3 && ev.contradicting === 0 && Math.abs(top.v) >= 12) {
       return {
-        thesis: line ?? `Leaning ${top.d}.`,
-        hook: "Let's see if that holds.",
+        thesis: claimLine,
+        hook: pole?.hook ?? "That one's not a coincidence anymore.",
         topDim: top.d,
         strength: Math.abs(top.v),
+        tier: "read",
+        direction,
+        evidence: ev,
+        question: "",
       };
     }
-    return { thesis: pole.thesis, hook: pole.hook, topDim: top.d, strength: Math.abs(top.v) };
+
+    // ---- Tier 2: hedged thread, with the contradiction named out loud. ----
+    const hedged =
+      direction === "revising"
+        ? `I had you on ${axisLabel}. The last few say otherwise.`
+        : direction === "contested"
+          ? `${claimLine} Except once, where you went the other way.`
+          : `Might be ${axisLabel}. One more would tell me.`;
+    return {
+      thesis: hedged,
+      hook:
+        direction === "revising"
+          ? "Let me start that thread over."
+          : direction === "contested"
+            ? "So which was the exception?"
+            : "Let's test it properly.",
+      topDim: top.d,
+      strength: Math.abs(top.v),
+      tier: "theory",
+      direction,
+      evidence: ev,
+      question:
+        direction === "contested"
+          ? "Was that one a mood, or is my read wrong?"
+          : "Does it hold against something you already love?",
+    };
   });
