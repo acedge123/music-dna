@@ -21,8 +21,12 @@ export const Route = createFileRoute("/api/v1/session/$id/next")({
           if (!parsed.success) {
             return errorResponse("INVALID_INPUT", "Invalid session id", 400);
           }
+          // Optional ?steer=not_quite|harder — the reaction row on the client.
+          // Selection hint only; it never writes to the vector.
+          const rawSteer = new URL(request.url).searchParams.get("steer");
+          const steer = rawSteer === "not_quite" || rawSteer === "harder" ? rawSteer : undefined;
           const { supabase } = await verifyBearer(request);
-          const result = await nextPairingImpl(supabase, { sessionId: parsed.data });
+          const result = await nextPairingImpl(supabase, { sessionId: parsed.data, steer });
           return jsonResponse(result);
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
