@@ -381,7 +381,7 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
-import { selectPairing, shouldStop, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
+import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
 
@@ -448,10 +448,32 @@ type BootstrapChoiceEntry = {
 
 export const nextPairing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        sessionId: z.string().uuid(),
+        // Optional steer from the user's reaction row ("Not quite" / "Give me
+        // a harder one"). Never touches the vector — selection hint only.
+        steer: z.enum(["not_quite", "harder"]).optional(),
+      })
+      .parse(d),
+  )
   .handler(async ({ data, context }) => nextPairingImpl(context.supabase, data));
 
-export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionId: string }) {
+// The client must never see why_good / hypothesis before answering — those
+// leak the "right" answer and kill the diagnostic.
+function stripPrivatePairingFields<T>(p: T): T {
+  if (!p || typeof p !== "object") return p;
+  const clone = { ...(p as Record<string, unknown>) };
+  delete clone.why_good;
+  delete clone.hypothesis;
+  return clone as T;
+}
+
+export async function nextPairingImpl(
+  supabase: AuthedSupabase,
+  data: { sessionId: string; steer?: "not_quite" | "harder" },
+) {
     const [usedRes, sessionRes, profileRes] = await Promise.all([
       supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
       supabase
@@ -505,9 +527,26 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     for (const pid of probeState.skipped_pairing_ids ?? []) usedIds.add(pid);
     const round = usedIds.size;
     const vector = (sessionRes.data?.vector ?? {}) as Record<string, number>;
-    const stop = shouldStop({ round, vector, dims: DIMS as readonly string[] });
+    // Answered rounds are choices only. Skips are never preferences, so they
+    // don't advance the budget — they only bound the session via skip_bound.
+    const answered = new Set((usedRes.data ?? []).map((c) => c.pairing_id)).size;
+    const skippedCount = (probeState.skipped_pairing_ids ?? []).length;
+    const stop = sessionCompletion({
+      answered,
+      skipped: skippedCount,
+      vector,
+      dims: DIMS as readonly string[],
+    });
     if (stop.done) {
-      return { pairing: null, round, confidence: stop.confidence, done: true as const };
+      return {
+        pairing: null,
+        round,
+        answered,
+        max_rounds: stop.max_answered,
+        stop_reason: stop.reason,
+        confidence: stop.confidence,
+        done: true as const,
+      };
     }
 
     // ---- Shadow router (Step 0 of Agent Brain integration) -----------------
@@ -688,8 +727,11 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
           is_bootstrap: true,
         });
         return {
-          pairing: bootPicked,
+          pairing: stripPrivatePairingFields(bootPicked),
           round: round + 1,
+          answered,
+          max_rounds: stop.max_answered,
+          stop_reason: null,
           confidence: stop.confidence,
           done: false as const,
           selection_reason: {
@@ -778,7 +820,16 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
     // two picks then reflects knob differences only, not Math.random() luck.
     const rngSeed = seedFrom(data.sessionId, round);
     const rng = mulberry32(rngSeed);
-    const liveKnobs = routingMode === "live" && regimeKnobs ? regimeKnobs : undefined;
+    let liveKnobs = routingMode === "live" && regimeKnobs ? regimeKnobs : undefined;
+    // Reaction steering. "Not quite" = the read isn't landing, so stop
+    // filtering to pairings that confirm the leaning axes and let the
+    // opposite side of the same axis through. "Harder" = drop the
+    // recognition floor and lean on diagnostic weight.
+    if (data.steer === "not_quite") {
+      liveKnobs = { ...(liveKnobs ?? {}), fork_filter: "soft", challenge_boost: 2.2 } as typeof liveKnobs;
+    } else if (data.steer === "harder") {
+      liveKnobs = { ...(liveKnobs ?? {}), mode: "diagnostic_first", canon_floor: 0 } as typeof liveKnobs;
+    }
     let picked = selectPairing({
       pool: finalPool,
       vector,
@@ -816,7 +867,15 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       });
     }
     if (picked.kind === "empty") {
-      return { pairing: null, round, confidence: stop.confidence, done: true as const };
+      return {
+        pairing: null,
+        round,
+        answered,
+        max_rounds: stop.max_answered,
+        stop_reason: "budget" as const,
+        confidence: stop.confidence,
+        done: true as const,
+      };
     }
     assertWithinLane((picked.pairing as { lane?: string | null }).lane ?? null, sessionLane);
 
@@ -877,8 +936,13 @@ export async function nextPairingImpl(supabase: AuthedSupabase, data: { sessionI
       cachedRec,
     });
     return {
-      pairing: picked.pairing,
+      // why_good / hypothesis are the critic's private notes — never ship them
+      // to a client before the choice is made.
+      pairing: stripPrivatePairingFields(picked.pairing),
       round: round + 1,
+      answered,
+      max_rounds: stop.max_answered,
+      stop_reason: null,
       confidence: stop.confidence,
       done: false as const,
       // Instrumentation: client echoes this back in the `pairing_shown` event so
