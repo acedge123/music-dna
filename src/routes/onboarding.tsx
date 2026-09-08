@@ -711,13 +711,52 @@ function Onboarding() {
                   );
                 })}
                 {thesisFirst && (
-                  <LineReveal
-                    lines={[thesisFirst]}
-                    animate={isLatest}
-                    startDelayMs={isLatest ? 200 + reactionLines.length * 550 : 0}
-                    intervalMs={700}
-                    className="font-serif italic text-base md:text-lg text-foreground/90 leading-snug border-l-2 border-primary/40 pl-4 py-1 mt-2"
-                  />
+                  <div className="mt-2 border-l-2 border-primary/40 pl-4 py-1 space-y-1">
+                    {e.tier !== "observation" && (
+                      <p className="eyebrow text-primary">
+                        {e.direction === "holding"
+                          ? "the thread holds"
+                          : e.direction === "contested"
+                            ? "one pick argues back"
+                            : e.direction === "revising"
+                              ? "revising"
+                              : "theory forming"}
+                      </p>
+                    )}
+                    <LineReveal
+                      lines={[thesisFirst]}
+                      animate={isLatest}
+                      startDelayMs={isLatest ? 200 + reactionLines.length * 550 : 0}
+                      intervalMs={700}
+                      className={
+                        e.tier === "read"
+                          ? "display text-xl md:text-2xl leading-snug text-foreground"
+                          : "font-serif italic text-base md:text-lg text-foreground/90 leading-snug"
+                      }
+                    />
+                    {isLatest && e.question && e.tier !== "read" && (
+                      <p className="font-serif text-sm md:text-base text-muted-foreground">{e.question}</p>
+                    )}
+                  </div>
+                )}
+                {isLatest && e.round >= 2 && !reactedRounds.includes(round) && pairing && (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {([
+                      ["thats_me", "That's me"],
+                      ["not_quite", "Not quite"],
+                      ["harder", "Give me a harder one"],
+                    ] as const).map(([kind, label]) => (
+                      <button
+                        key={kind}
+                        type="button"
+                        disabled={busy}
+                        onClick={() => reactToRead(kind)}
+                        className="border hairline-strong rounded-sm px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground hover:bg-muted/40 disabled:opacity-40"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </article>
             );
@@ -729,11 +768,13 @@ function Onboarding() {
       {pairing && phase === "playing" && (
         <section ref={pairingAnchorRef} className="space-y-6 pt-2">
           <div className="flex items-center">
-            <p className="eyebrow">Round {String(round).padStart(2, "0")} / {MAX_ROUNDS}</p>
+            <p className="eyebrow">Round {String(round).padStart(2, "0")} / {maxRounds}</p>
             <div className="h-px flex-1 ml-6 bg-border" />
           </div>
           <p className="font-serif text-xl md:text-2xl text-muted-foreground">
-            {entries.length === 0 ? "Pick one. First instinct." : ROUND_PROMPTS[(round - 2) % ROUND_PROMPTS.length]}
+            {entries.length === 0
+              ? "Pick one. First instinct."
+              : nextPrompt || ROUND_PROMPTS[(round - 2) % ROUND_PROMPTS.length]}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border rounded-sm overflow-hidden">
             {[pairing.song_a, pairing.song_b].map((song) => {
