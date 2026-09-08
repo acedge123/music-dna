@@ -74,10 +74,26 @@ type Entry = {
   reaction: string;
   thesis: string;
   hook: string;
-  direction: "forming" | "holding" | "revising";
+  direction: "forming" | "holding" | "contested" | "revising";
   topDim: string | null;
+  tier: "observation" | "theory" | "read";
+  question: string;
 };
 
+
+// Respect the OS "reduce motion" setting: staged reveals collapse to one
+// frame, no decorative waiting.
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const on = () => setReduced(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return reduced;
+}
 
 function LineReveal({
   lines,
@@ -92,9 +108,10 @@ function LineReveal({
   startDelayMs?: number;
   className?: string;
 }) {
+  const reduced = usePrefersReducedMotion();
   const [shown, setShown] = useState(animate ? 0 : lines.length);
   useEffect(() => {
-    if (!animate) {
+    if (!animate || reduced) {
       setShown(lines.length);
       return;
     }
@@ -104,7 +121,7 @@ function LineReveal({
       timers.push(setTimeout(() => setShown((s) => Math.max(s, idx + 1)), startDelayMs + idx * intervalMs));
     });
     return () => { for (const t of timers) clearTimeout(t); };
-  }, [animate, lines.length, intervalMs, startDelayMs]);
+  }, [animate, reduced, lines.length, intervalMs, startDelayMs]);
   return (
     <div className={className}>
       {lines.slice(0, shown).map((line, i) => (
@@ -147,7 +164,8 @@ function Onboarding() {
     event_type:
       | "onboarding_viewed" | "onboarding_slot_submitted" | "onboarding_three_submitted" | "onboarding_classified"
       | "pairing_shown" | "choice_made" | "reveal_shown" | "reveal_continued"
-      | "session_completed" | "result_viewed" | "result_shared" | "session_quit";
+      | "session_completed" | "result_viewed" | "result_shared" | "session_quit"
+      | "read_reaction";
     session_id?: string | null;
     pairing_id?: string | null;
     choice_id?: string | null;
@@ -173,6 +191,11 @@ function Onboarding() {
   const [pairing, setPairing] = useState<Pairing | null>(null);
   const [pendingSongId, setPendingSongId] = useState<string | null>(null);
   const [round, setRound] = useState(0);
+  // The engine owns the completion policy; the screen just displays what it
+  // reports instead of enforcing its own cap.
+  const [maxRounds, setMaxRounds] = useState(MAX_ROUNDS);
+  const [nextPrompt, setNextPrompt] = useState<string | null>(null);
+  const [reactedRounds, setReactedRounds] = useState<number[]>([]);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [synthesis, setSynthesis] = useState<string | null>(null);
   const [kept, setKept] = useState<Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>>([]);
