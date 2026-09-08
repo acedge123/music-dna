@@ -159,6 +159,54 @@ export function shouldStop(input: {
   return { done: input.round >= minRounds && confidence >= confThresh, confidence, confident_axes };
 }
 
+// ---------------------------------------------------------------------------
+// One completion policy, owned by the engine.
+//
+// Before this, the web screen hard-stopped at 6 rounds while shouldStop()
+// required 6 answered AND 60% axis confidence — so an indecisive session
+// could run past the user-facing budget in the REST loop. Every client now
+// asks this function and trusts the answer.
+//
+// Rules, in order:
+//   1. answered >= max_answered            → "budget"     (hard cap)
+//   2. answered >= early_min && confident  → "confident"  (strong early read)
+//   3. skipped >= skip_bound && answered <= 2 → "skip_bound"
+//      (they don't know the catalog; give an honest short result instead of
+//       hunting for confidence forever)
+// ---------------------------------------------------------------------------
+export type StopReason = "confident" | "budget" | "skip_bound" | null;
+
+export function sessionCompletion(input: {
+  answered: number;
+  skipped?: number;
+  vector: Vector;
+  dims: readonly string[];
+  max_answered?: number;
+  early_min_answered?: number;
+  confidence_threshold?: number;
+  axis_confidence_threshold?: number;
+  skip_bound?: number;
+}): { done: boolean; reason: StopReason; confidence: number; confident_axes: number; max_answered: number } {
+  const maxAnswered = input.max_answered ?? 6;
+  const earlyMin = input.early_min_answered ?? 4;
+  const confThresh = input.confidence_threshold ?? 0.6;
+  const axisConf = input.axis_confidence_threshold ?? 30;
+  const skipBound = input.skip_bound ?? 3;
+  const skipped = input.skipped ?? 0;
+
+  const confident_axes = input.dims.filter(
+    (d) => Math.abs(input.vector[d] ?? 0) >= axisConf,
+  ).length;
+  const confidence = input.dims.length > 0 ? confident_axes / input.dims.length : 0;
+
+  let reason: StopReason = null;
+  if (input.answered >= maxAnswered) reason = "budget";
+  else if (input.answered >= earlyMin && confidence >= confThresh) reason = "confident";
+  else if (skipped >= skipBound && input.answered <= 2) reason = "skip_bound";
+
+  return { done: reason !== null, reason, confidence, confident_axes, max_answered: maxAnswered };
+}
+
 // Same-artist matchups aren't lane decisions — they're micro-comparisons
 // inside one artist's catalog. Drop them from the general selection pool.
 function differentArtist<P extends PairingCandidate>(p: P): boolean {

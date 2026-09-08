@@ -74,10 +74,26 @@ type Entry = {
   reaction: string;
   thesis: string;
   hook: string;
-  direction: "forming" | "holding" | "revising";
+  direction: "forming" | "holding" | "contested" | "revising";
   topDim: string | null;
+  tier: "observation" | "theory" | "read";
+  question: string;
 };
 
+
+// Respect the OS "reduce motion" setting: staged reveals collapse to one
+// frame, no decorative waiting.
+function usePrefersReducedMotion() {
+  const [reduced, setReduced] = useState(false);
+  useEffect(() => {
+    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
+    setReduced(mq.matches);
+    const on = () => setReduced(mq.matches);
+    mq.addEventListener("change", on);
+    return () => mq.removeEventListener("change", on);
+  }, []);
+  return reduced;
+}
 
 function LineReveal({
   lines,
@@ -92,9 +108,10 @@ function LineReveal({
   startDelayMs?: number;
   className?: string;
 }) {
+  const reduced = usePrefersReducedMotion();
   const [shown, setShown] = useState(animate ? 0 : lines.length);
   useEffect(() => {
-    if (!animate) {
+    if (!animate || reduced) {
       setShown(lines.length);
       return;
     }
@@ -104,7 +121,7 @@ function LineReveal({
       timers.push(setTimeout(() => setShown((s) => Math.max(s, idx + 1)), startDelayMs + idx * intervalMs));
     });
     return () => { for (const t of timers) clearTimeout(t); };
-  }, [animate, lines.length, intervalMs, startDelayMs]);
+  }, [animate, reduced, lines.length, intervalMs, startDelayMs]);
   return (
     <div className={className}>
       {lines.slice(0, shown).map((line, i) => (
@@ -147,7 +164,8 @@ function Onboarding() {
     event_type:
       | "onboarding_viewed" | "onboarding_slot_submitted" | "onboarding_three_submitted" | "onboarding_classified"
       | "pairing_shown" | "choice_made" | "reveal_shown" | "reveal_continued"
-      | "session_completed" | "result_viewed" | "result_shared" | "session_quit";
+      | "session_completed" | "result_viewed" | "result_shared" | "session_quit"
+      | "read_reaction";
     session_id?: string | null;
     pairing_id?: string | null;
     choice_id?: string | null;
@@ -173,6 +191,11 @@ function Onboarding() {
   const [pairing, setPairing] = useState<Pairing | null>(null);
   const [pendingSongId, setPendingSongId] = useState<string | null>(null);
   const [round, setRound] = useState(0);
+  // The engine owns the completion policy; the screen just displays what it
+  // reports instead of enforcing its own cap.
+  const [maxRounds, setMaxRounds] = useState(MAX_ROUNDS);
+  const [nextPrompt, setNextPrompt] = useState<string | null>(null);
+  const [reactedRounds, setReactedRounds] = useState<number[]>([]);
   const [entries, setEntries] = useState<Entry[]>([]);
   const [synthesis, setSynthesis] = useState<string | null>(null);
   const [kept, setKept] = useState<Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>>([]);
@@ -346,35 +369,37 @@ function Onboarding() {
       let thesis = "Reading you now.";
       let hook = "";
       let topDim: string | null = null;
+      // The running read now comes with its own tier / direction / open
+      // question, derived from the real choices — no client-side guessing
+      // from "did the top axis change".
+      let tier: Entry["tier"] = "observation";
+      let direction: Entry["direction"] = "forming";
+      let question = "";
       try {
         const r = await readFn({ data: { sessionId } });
         thesis = r.thesis;
         hook = r.hook ?? "";
         topDim = r.topDim;
+        tier = r.tier;
+        direction = r.direction;
+        question = r.question ?? "";
       } catch { /* keep default */ }
-
-      const direction: Entry["direction"] =
-        currentRound <= 1 || !prevTopDim.current
-          ? "forming"
-          : topDim && topDim === prevTopDim.current
-            ? "holding"
-            : topDim && topDim !== prevTopDim.current
-              ? "revising"
-              : "holding";
       prevTopDim.current = topDim ?? prevTopDim.current;
+      setNextPrompt(hook || null);
 
       const reaction = why ? `${verdict}\n${why}` : verdict;
       const entry: Entry = {
         round: currentRound, pairing: currentPairing, chosenSongId: songId,
-        reaction, thesis, hook, direction, topDim,
+        reaction, thesis, hook, direction, topDim, tier, question,
       };
       setEntries((prev) => [...prev, entry]);
       setPairing(null);
 
-      const { pairing: nxt, round: nr, done: isDone, selection_reason } = await nextFn({ data: { sessionId } }) as {
-        pairing: Pairing | null; round: number; done: boolean; selection_reason?: unknown;
+      const { pairing: nxt, round: nr, done: isDone, max_rounds, selection_reason } = await nextFn({ data: { sessionId } }) as {
+        pairing: Pairing | null; round: number; done: boolean; max_rounds?: number; selection_reason?: unknown;
       };
-      if (isDone || !nxt || nr > MAX_ROUNDS) {
+      if (max_rounds) setMaxRounds(max_rounds);
+      if (isDone || !nxt) {
         try {
           await finalizeFn({ data: { sessionId } });
         } catch (e) {
@@ -413,6 +438,70 @@ function Onboarding() {
     }
   }
 
+  // Pulling the closing read is shared by the choice path and the
+  // repeated-skip path — a skipped-out session still gets an honest result.
+  async function loadFinalRead() {
+    if (!sessionId) return;
+    try {
+      const r = await synthFn({ data: { sessionId } }) as {
+        synthesis: string;
+        kept_choosing: Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>;
+        counter_reads: Array<{ claim: string; notes: string }>;
+      };
+      setSynthesis(r.synthesis);
+      setKept(r.kept_choosing ?? []);
+      setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
+    } catch (e) {
+      console.error("finalSynthesis failed", e);
+    }
+  }
+
+  // Reaction row. "That's me" is acknowledgement only. The other two change
+  // what gets asked next — they never touch the scores.
+  async function reactToRead(kind: "thats_me" | "not_quite" | "harder") {
+    if (!sessionId || busy) return;
+    const currentRound = round;
+    setReactedRounds((prev) => [...prev, currentRound]);
+    track({ event_type: "read_reaction", session_id: sessionId, props: { kind, round: currentRound } });
+    if (kind === "thats_me") {
+      setNextPrompt("Good. Then let's push on it.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { pairing: nxt, round: nr, done: isDone, max_rounds } = await nextFn({
+        data: { sessionId, steer: kind === "harder" ? "harder" : "not_quite" },
+      }) as { pairing: Pairing | null; round: number; done: boolean; max_rounds?: number };
+      if (max_rounds) setMaxRounds(max_rounds);
+      if (!isDone && nxt) {
+        setPairing(nxt as unknown as Pairing);
+        setRound(nr);
+        startedAt.current = Date.now();
+        setNextPrompt(kind === "harder" ? "Fine. Try this one." : "Alright — other side of the same question.");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't switch that up.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  // Share the read, not the conversation: /s/:id renders the public card and
+  // invites the recipient to run the same short challenge.
+  async function shareRead() {
+    if (!sessionId) return;
+    const url = `${window.location.origin}/s/${sessionId}`;
+    track({ event_type: "result_shared", session_id: sessionId });
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "My MusicDNA read", url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied — send it and let them try the same choices.");
+    } catch { /* user dismissed the share sheet */ }
+  }
+
   async function skip() {
     if (!pairing || !sessionId || busy) return;
     setBusy(true);
@@ -428,11 +517,13 @@ function Onboarding() {
         props: { skipped: true },
       });
       setPairing(null);
-      const { pairing: nxt, round: nr, done: isDone, selection_reason } = await nextFn({ data: { sessionId } }) as {
-        pairing: Pairing | null; round: number; done: boolean; selection_reason?: unknown;
+      const { pairing: nxt, round: nr, done: isDone, max_rounds, selection_reason } = await nextFn({ data: { sessionId } }) as {
+        pairing: Pairing | null; round: number; done: boolean; max_rounds?: number; selection_reason?: unknown;
       };
-      if (isDone || !nxt || nr > MAX_ROUNDS) {
+      if (max_rounds) setMaxRounds(max_rounds);
+      if (isDone || !nxt) {
         try { await finalizeFn({ data: { sessionId } }); } catch (e) { console.error("finalizeSession failed", e); }
+        await loadFinalRead();
         setPhase("done");
         setBusy(false);
         return;
@@ -636,13 +727,52 @@ function Onboarding() {
                   );
                 })}
                 {thesisFirst && (
-                  <LineReveal
-                    lines={[thesisFirst]}
-                    animate={isLatest}
-                    startDelayMs={isLatest ? 200 + reactionLines.length * 550 : 0}
-                    intervalMs={700}
-                    className="font-serif italic text-base md:text-lg text-foreground/90 leading-snug border-l-2 border-primary/40 pl-4 py-1 mt-2"
-                  />
+                  <div className="mt-2 border-l-2 border-primary/40 pl-4 py-1 space-y-1">
+                    {e.tier !== "observation" && (
+                      <p className="eyebrow text-primary">
+                        {e.direction === "holding"
+                          ? "the thread holds"
+                          : e.direction === "contested"
+                            ? "one pick argues back"
+                            : e.direction === "revising"
+                              ? "revising"
+                              : "theory forming"}
+                      </p>
+                    )}
+                    <LineReveal
+                      lines={[thesisFirst]}
+                      animate={isLatest}
+                      startDelayMs={isLatest ? 200 + reactionLines.length * 550 : 0}
+                      intervalMs={700}
+                      className={
+                        e.tier === "read"
+                          ? "display text-xl md:text-2xl leading-snug text-foreground"
+                          : "font-serif italic text-base md:text-lg text-foreground/90 leading-snug"
+                      }
+                    />
+                    {isLatest && e.question && e.tier !== "read" && (
+                      <p className="font-serif text-sm md:text-base text-muted-foreground">{e.question}</p>
+                    )}
+                  </div>
+                )}
+                {isLatest && e.round >= 2 && !reactedRounds.includes(round) && pairing && (
+                  <div className="flex flex-wrap gap-2 pt-1">
+                    {([
+                      ["thats_me", "That's me"],
+                      ["not_quite", "Not quite"],
+                      ["harder", "Give me a harder one"],
+                    ] as const).map(([kind, label]) => (
+                      <button
+                        key={kind}
+                        type="button"
+                        disabled={busy}
+                        onClick={() => reactToRead(kind)}
+                        className="border hairline-strong rounded-sm px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground hover:bg-muted/40 disabled:opacity-40"
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 )}
               </article>
             );
@@ -654,11 +784,13 @@ function Onboarding() {
       {pairing && phase === "playing" && (
         <section ref={pairingAnchorRef} className="space-y-6 pt-2">
           <div className="flex items-center">
-            <p className="eyebrow">Round {String(round).padStart(2, "0")} / {MAX_ROUNDS}</p>
+            <p className="eyebrow">Round {String(round).padStart(2, "0")} / {maxRounds}</p>
             <div className="h-px flex-1 ml-6 bg-border" />
           </div>
           <p className="font-serif text-xl md:text-2xl text-muted-foreground">
-            {entries.length === 0 ? "Pick one. First instinct." : ROUND_PROMPTS[(round - 2) % ROUND_PROMPTS.length]}
+            {entries.length === 0
+              ? "Pick one. First instinct."
+              : nextPrompt || ROUND_PROMPTS[(round - 2) % ROUND_PROMPTS.length]}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border rounded-sm overflow-hidden">
             {[pairing.song_a, pairing.song_b].map((song) => {
@@ -708,16 +840,19 @@ function Onboarding() {
       {/* Final report */}
       {phase === "done" && (
         <section ref={doneAnchorRef} className="space-y-14 pt-6 animate-in fade-in duration-700">
+          {/* Lead with the one distinctive sentence, not a generic header. */}
           <header className="space-y-3">
             <p className="eyebrow">the read</p>
-            <h2 className="display text-3xl md:text-4xl leading-tight">What you kept choosing.</h2>
+            <h2 className="display text-3xl md:text-4xl leading-tight">
+              {synthesis || (kept.length > 0 ? "What you kept choosing." : "Not enough to call it yet.")}
+            </h2>
           </header>
 
           {kept.length > 0 ? (
             <section className="space-y-5">
               <p className="eyebrow">evidence</p>
               <ul className="space-y-4">
-                {kept.map((k, i) => (
+                {kept.slice(0, 2).map((k, i) => (
                   <li key={i} className="border-l-2 border-primary/40 pl-5 space-y-2">
                     <p className="font-serif text-xl md:text-2xl leading-snug">
                       You repeatedly favored <span className="italic">{k.tradeoff}</span>.
@@ -740,26 +875,32 @@ function Onboarding() {
             </section>
           )}
 
-          {synthesis && (
-            <section className="space-y-3">
-              <p className="eyebrow">what this might mean</p>
-              <p className="font-serif text-2xl md:text-3xl leading-snug border-l-2 border-primary pl-6 italic">
-                {synthesis}
-              </p>
-            </section>
-          )}
-
           {counters.length > 0 && (
             <section className="space-y-3">
-              <p className="eyebrow">other possible explanations</p>
-              <ul className="space-y-2">
-                {counters.map((c, i) => (
-                  <li key={i} className="text-sm md:text-base text-muted-foreground">
-                    <span className="font-serif italic text-foreground">{c.claim}</span>
-                    {c.notes && <span className="block font-mono text-[11px] uppercase tracking-[0.22em] mt-1">{c.notes}</span>}
-                  </li>
-                ))}
-              </ul>
+              <p className="eyebrow">still unresolved</p>
+              <p className="font-serif text-xl md:text-2xl leading-snug border-l-2 border-primary pl-6 italic">
+                {counters[0].claim}
+              </p>
+              {counters[0].notes && (
+                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground pl-6">
+                  {counters[0].notes}
+                </p>
+              )}
+              {counters.length > 1 && (
+                <details className="pl-6">
+                  <summary className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground cursor-pointer hover:text-foreground">
+                    other explanations
+                  </summary>
+                  <ul className="space-y-2 pt-3">
+                    {counters.slice(1).map((c, i) => (
+                      <li key={i} className="text-sm md:text-base text-muted-foreground">
+                        <span className="font-serif italic text-foreground">{c.claim}</span>
+                        {c.notes && <span className="block font-mono text-[11px] uppercase tracking-[0.22em] mt-1">{c.notes}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
             </section>
           )}
 
@@ -771,8 +912,14 @@ function Onboarding() {
               Push back on this →
             </button>
             <button
-              onClick={() => navigate({ to: "/profile" })}
+              onClick={shareRead}
               className="border hairline-strong rounded-sm px-6 py-3 text-sm font-medium hover:bg-muted/40"
+            >
+              Share this read
+            </button>
+            <button
+              onClick={() => navigate({ to: "/profile" })}
+              className="rounded-sm px-6 py-3 text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               See your full reading
             </button>
