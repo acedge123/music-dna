@@ -486,6 +486,22 @@ function Onboarding() {
     }
   }
 
+  // Share the read, not the conversation: /s/:id renders the public card and
+  // invites the recipient to run the same short challenge.
+  async function shareRead() {
+    if (!sessionId) return;
+    const url = `${window.location.origin}/s/${sessionId}`;
+    track({ event_type: "result_shared", session_id: sessionId });
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "My MusicDNA read", url });
+        return;
+      }
+      await navigator.clipboard.writeText(url);
+      toast.success("Link copied — send it and let them try the same choices.");
+    } catch { /* user dismissed the share sheet */ }
+  }
+
   async function skip() {
     if (!pairing || !sessionId || busy) return;
     setBusy(true);
@@ -824,16 +840,19 @@ function Onboarding() {
       {/* Final report */}
       {phase === "done" && (
         <section ref={doneAnchorRef} className="space-y-14 pt-6 animate-in fade-in duration-700">
+          {/* Lead with the one distinctive sentence, not a generic header. */}
           <header className="space-y-3">
             <p className="eyebrow">the read</p>
-            <h2 className="display text-3xl md:text-4xl leading-tight">What you kept choosing.</h2>
+            <h2 className="display text-3xl md:text-4xl leading-tight">
+              {synthesis || (kept.length > 0 ? "What you kept choosing." : "Not enough to call it yet.")}
+            </h2>
           </header>
 
           {kept.length > 0 ? (
             <section className="space-y-5">
               <p className="eyebrow">evidence</p>
               <ul className="space-y-4">
-                {kept.map((k, i) => (
+                {kept.slice(0, 2).map((k, i) => (
                   <li key={i} className="border-l-2 border-primary/40 pl-5 space-y-2">
                     <p className="font-serif text-xl md:text-2xl leading-snug">
                       You repeatedly favored <span className="italic">{k.tradeoff}</span>.
@@ -856,26 +875,32 @@ function Onboarding() {
             </section>
           )}
 
-          {synthesis && (
-            <section className="space-y-3">
-              <p className="eyebrow">what this might mean</p>
-              <p className="font-serif text-2xl md:text-3xl leading-snug border-l-2 border-primary pl-6 italic">
-                {synthesis}
-              </p>
-            </section>
-          )}
-
           {counters.length > 0 && (
             <section className="space-y-3">
-              <p className="eyebrow">other possible explanations</p>
-              <ul className="space-y-2">
-                {counters.map((c, i) => (
-                  <li key={i} className="text-sm md:text-base text-muted-foreground">
-                    <span className="font-serif italic text-foreground">{c.claim}</span>
-                    {c.notes && <span className="block font-mono text-[11px] uppercase tracking-[0.22em] mt-1">{c.notes}</span>}
-                  </li>
-                ))}
-              </ul>
+              <p className="eyebrow">still unresolved</p>
+              <p className="font-serif text-xl md:text-2xl leading-snug border-l-2 border-primary pl-6 italic">
+                {counters[0].claim}
+              </p>
+              {counters[0].notes && (
+                <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground pl-6">
+                  {counters[0].notes}
+                </p>
+              )}
+              {counters.length > 1 && (
+                <details className="pl-6">
+                  <summary className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground cursor-pointer hover:text-foreground">
+                    other explanations
+                  </summary>
+                  <ul className="space-y-2 pt-3">
+                    {counters.slice(1).map((c, i) => (
+                      <li key={i} className="text-sm md:text-base text-muted-foreground">
+                        <span className="font-serif italic text-foreground">{c.claim}</span>
+                        {c.notes && <span className="block font-mono text-[11px] uppercase tracking-[0.22em] mt-1">{c.notes}</span>}
+                      </li>
+                    ))}
+                  </ul>
+                </details>
+              )}
             </section>
           )}
 
@@ -887,8 +912,14 @@ function Onboarding() {
               Push back on this →
             </button>
             <button
-              onClick={() => navigate({ to: "/profile" })}
+              onClick={shareRead}
               className="border hairline-strong rounded-sm px-6 py-3 text-sm font-medium hover:bg-muted/40"
+            >
+              Share this read
+            </button>
+            <button
+              onClick={() => navigate({ to: "/profile" })}
+              className="rounded-sm px-6 py-3 text-sm font-medium text-muted-foreground hover:text-foreground"
             >
               See your full reading
             </button>
