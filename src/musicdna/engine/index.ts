@@ -15,6 +15,7 @@ import { buildStartSessionSeed, type BuildStartSessionInputs, type StartSessionS
 import {
   selectPairing,
   shouldStop,
+  sessionCompletion,
   assertWithinLane,
   type PairingCandidate,
   type SelectPairingInput,
@@ -34,6 +35,7 @@ export type MusicDNAEngine = {
     input: Omit<SelectPairingInput<P>, "rng">,
   ): SelectPairingResult<P>;
   shouldStop: typeof shouldStop;
+  sessionCompletion: typeof sessionCompletion;
   assertWithinLane: typeof assertWithinLane;
   applyChoice(input: ApplyChoiceInput): ReturnType<typeof applyChoice>;
   assignArchetype(
@@ -51,6 +53,7 @@ export function createEngine(deps: EngineDeps): MusicDNAEngine {
     buildStartSessionSeed: (input) => buildStartSessionSeed({ ...input, rng: deps.rng }),
     selectPairing: (input) => selectPairing({ ...input, rng: deps.rng }),
     shouldStop,
+    sessionCompletion,
     assertWithinLane,
     applyChoice,
     assignArchetype: (v, catalog) => assignArchetype(v, catalog),
