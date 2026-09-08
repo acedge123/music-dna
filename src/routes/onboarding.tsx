@@ -369,35 +369,37 @@ function Onboarding() {
       let thesis = "Reading you now.";
       let hook = "";
       let topDim: string | null = null;
+      // The running read now comes with its own tier / direction / open
+      // question, derived from the real choices — no client-side guessing
+      // from "did the top axis change".
+      let tier: Entry["tier"] = "observation";
+      let direction: Entry["direction"] = "forming";
+      let question = "";
       try {
         const r = await readFn({ data: { sessionId } });
         thesis = r.thesis;
         hook = r.hook ?? "";
         topDim = r.topDim;
+        tier = r.tier;
+        direction = r.direction;
+        question = r.question ?? "";
       } catch { /* keep default */ }
-
-      const direction: Entry["direction"] =
-        currentRound <= 1 || !prevTopDim.current
-          ? "forming"
-          : topDim && topDim === prevTopDim.current
-            ? "holding"
-            : topDim && topDim !== prevTopDim.current
-              ? "revising"
-              : "holding";
       prevTopDim.current = topDim ?? prevTopDim.current;
+      setNextPrompt(hook || null);
 
       const reaction = why ? `${verdict}\n${why}` : verdict;
       const entry: Entry = {
         round: currentRound, pairing: currentPairing, chosenSongId: songId,
-        reaction, thesis, hook, direction, topDim,
+        reaction, thesis, hook, direction, topDim, tier, question,
       };
       setEntries((prev) => [...prev, entry]);
       setPairing(null);
 
-      const { pairing: nxt, round: nr, done: isDone, selection_reason } = await nextFn({ data: { sessionId } }) as {
-        pairing: Pairing | null; round: number; done: boolean; selection_reason?: unknown;
+      const { pairing: nxt, round: nr, done: isDone, max_rounds, selection_reason } = await nextFn({ data: { sessionId } }) as {
+        pairing: Pairing | null; round: number; done: boolean; max_rounds?: number; selection_reason?: unknown;
       };
-      if (isDone || !nxt || nr > MAX_ROUNDS) {
+      if (max_rounds) setMaxRounds(max_rounds);
+      if (isDone || !nxt) {
         try {
           await finalizeFn({ data: { sessionId } });
         } catch (e) {
@@ -436,6 +438,54 @@ function Onboarding() {
     }
   }
 
+  // Pulling the closing read is shared by the choice path and the
+  // repeated-skip path — a skipped-out session still gets an honest result.
+  async function loadFinalRead() {
+    if (!sessionId) return;
+    try {
+      const r = await synthFn({ data: { sessionId } }) as {
+        synthesis: string;
+        kept_choosing: Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>;
+        counter_reads: Array<{ claim: string; notes: string }>;
+      };
+      setSynthesis(r.synthesis);
+      setKept(r.kept_choosing ?? []);
+      setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
+    } catch (e) {
+      console.error("finalSynthesis failed", e);
+    }
+  }
+
+  // Reaction row. "That's me" is acknowledgement only. The other two change
+  // what gets asked next — they never touch the scores.
+  async function reactToRead(kind: "thats_me" | "not_quite" | "harder") {
+    if (!sessionId || busy) return;
+    const currentRound = round;
+    setReactedRounds((prev) => [...prev, currentRound]);
+    track({ event_type: "read_reaction", session_id: sessionId, props: { kind, round: currentRound } });
+    if (kind === "thats_me") {
+      setNextPrompt("Good. Then let's push on it.");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { pairing: nxt, round: nr, done: isDone, max_rounds } = await nextFn({
+        data: { sessionId, steer: kind === "harder" ? "harder" : "not_quite" },
+      }) as { pairing: Pairing | null; round: number; done: boolean; max_rounds?: number };
+      if (max_rounds) setMaxRounds(max_rounds);
+      if (!isDone && nxt) {
+        setPairing(nxt as unknown as Pairing);
+        setRound(nr);
+        startedAt.current = Date.now();
+        setNextPrompt(kind === "harder" ? "Fine. Try this one." : "Alright — other side of the same question.");
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Couldn't switch that up.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   async function skip() {
     if (!pairing || !sessionId || busy) return;
     setBusy(true);
@@ -451,11 +501,13 @@ function Onboarding() {
         props: { skipped: true },
       });
       setPairing(null);
-      const { pairing: nxt, round: nr, done: isDone, selection_reason } = await nextFn({ data: { sessionId } }) as {
-        pairing: Pairing | null; round: number; done: boolean; selection_reason?: unknown;
+      const { pairing: nxt, round: nr, done: isDone, max_rounds, selection_reason } = await nextFn({ data: { sessionId } }) as {
+        pairing: Pairing | null; round: number; done: boolean; max_rounds?: number; selection_reason?: unknown;
       };
-      if (isDone || !nxt || nr > MAX_ROUNDS) {
+      if (max_rounds) setMaxRounds(max_rounds);
+      if (isDone || !nxt) {
         try { await finalizeFn({ data: { sessionId } }); } catch (e) { console.error("finalizeSession failed", e); }
+        await loadFinalRead();
         setPhase("done");
         setBusy(false);
         return;
