@@ -1,54 +1,55 @@
-# Adopt review refinements + execute Step 0
+# Make the first session feel like a real critic conversation
 
-Two parts: first, record the nine review findings **inside** `docs/musicdna/agent-brain-integration-plan.md` as an explicit "Refinements adopted" section so downstream readers (and Agent Brain) see what the plan weakened-and-fixed. Second, ship Step 0 — the read-only shadow mode over `event_log`. No selector behavior changes.
+## My read on the brief
 
----
+Most of it is right and buildable in one pass. Three things I'd push back on:
 
-## Part A — Doc edit: "Refinements adopted from review"
+1. **"Six answered matchups" and the backend stop rule disagree.** The web screen hard-stops at 6 rounds; the engine only stops when round >= 6 **and** 60% of axes are confident. On a wishy-washy session the engine wants to keep going forever. One policy, owned by the engine: stop at 6 answered, or earlier if the read is already strong — and stop honestly if skips pile up.
+2. **The "arc" should be earned, not scheduled.** I'll shape pacing by round (opening → tradeoff → counterexample → resolution) but the claim thresholds stay: no trait talk without evidence, and a weak session gets told it was weak.
+3. **Skip the full friend-comparison and streaming work**, as the brief says. Sharing stays a polished card plus "try these same choices".
 
-Insert a new section right after the Summary, titled **"Refinements adopted from review (2026-07-25)"**. Each item names the weakness in the prior draft and the concrete fix now reflected downstream in the doc.
+## What changes for the person using it
 
-1. **Constants before weights.** Prior draft de-weighted `mode_pressure` in isolation, which silently removed `compound`. Fix: correct `information_cost` and `reversibility` to `medium` first, *then* set `mode_pressure = +2`. Landed in D2.
-2. **`mode_pressure = +2`, not `+1`.** `+1` ties compound with prune after the constants are fixed and hands every decision back to the baseline. Landed in D2 with the tuning table.
-3. **Compound reachability is empirical, not asserted.** Prior draft asserted compound was unreachable in 6 rounds. Replaced with a `vector_after` SQL query over `event_log` and a three-branch action table. Landed in Part 1 / "Settling compound reachability empirically."
-4. **`delta_vector` sourcing.** Prior draft proposed a `choices.delta_vector` migration up front. Fix: shadow reads `event_log.props.raw_delta` (already persisted); promotion to a column is deferred until Step 5, gated on the fire-and-forget emit being hardened. Landed in D4.
-5. **Skip is a first-class signal.** Prior draft omitted skips; they advance `round` without moving the vector and must feed ruggedness/uncertainty rather than be treated as no-ops. Add to the mapper contract in Part 3.
-6. **Regime does not gate `shouldStop` in V1.** Keeps average-rounds a clean rollout metric. Landed in D3.
-7. **Artist bias and snap-decision rate are already computed.** `finalizeSession` derives both. The mapper must consume them, not re-derive — prevents drift between reveal and router. Note in Part 3.
-8. **Probe cadence follows lane confidence, not round number.** Softens the "Compound disables probes" rule so a high-confidence early session isn't starved of probes and a low-confidence late one isn't flooded. Note in Part 3.
-9. **Convergence metric: `archetype_margin`.** Gap between #1 and #2 archetype scores is the primary convergence readout in shadow analysis; raw confidence alone hides ties. Add to the telemetry rubric in Step 0.
+- After each pick, the winner lights up instantly and the loser dims — then a short, specific line about *that* choice, and a nudge toward the next one.
+- No more "Still listening. Too early to call." for the first four rounds. Early rounds get a concrete observation or an open question instead of filler.
+- The critic visibly changes its mind: a small marker for a theory forming, holding, or being revised, tied to actual evidence changes.
+- Optional reactions at the right moments: "That's me", "Not quite", "Give me a harder one". Disagreeing changes what comes next; it never counts as a song vote.
+- Unknown song? Skipping is free and never scored. Skip a lot and you get an honest short result instead of an endless hunt.
+- The result leads with one sharp sentence, two real choices that back it up, and one loose end. Then: Push back · Share this read · Try these choices.
+- Motion is short and skippable, and respects reduced-motion settings.
 
-Each item is a two-liner in the doc. No structural rewrite of existing sections — the current positions already reflect items 1–4 and 6; items 5, 7, 8, 9 also get one-line callouts inline where they belong (mapper contract, Part 3 principle, Step 0 metrics).
+## Technical plan
 
----
+**1. One completion policy (`src/musicdna/engine/pairing.ts`, `src/lib/musicdna.functions.ts`)**
+- Extend `shouldStop` to a single `sessionCompletion({ round, answered, skipped, vector, dims })` returning `{ done, reason: "confident" | "budget" | "skip_bound", confidence }`.
+- Rules: `answered >= 6` → done; `answered >= 4 && confidence >= 0.6` → done (early strong read); `skipped >= 3 && answered <= 2` → done with `reason: "skip_bound"`.
+- `nextPairingImpl` returns `round`, `answered`, `max_rounds`, `done`, `stop_reason`. Web deletes its local `MAX_ROUNDS` gate and trusts the server.
 
-## Part B — Execute Step 0 (shadow telemetry, read-only)
+**2. Ungate the running read (`currentRead` in `src/lib/musicdna.functions.ts`)**
+- Replace the `round < 5` bail-out with tiered output: rounds 1–2 return a per-choice observation derived from the just-scored pairing's tradeoff (no trait claim); rounds 3–4 return a tentative thread plus a competing explanation; round 5+ returns the current thesis as today.
+- Return `direction: "forming" | "holding" | "revising"` and `evidence: { supporting: number, contradicting: number, examples: string[] }` computed server-side from choices, so `revising` means the evidence moved — not that a different axis happened to top the list. Web stops inferring direction from `prevTopDim`.
+- Never include `why_good`, axis names, or expected answers in any payload the client sees pre-choice (audit the `nextPairing` select — currently `why_good` is fetched; drop it from the response shape).
 
-Goal: emit a `regime_recommended` event on every `nextPairingImpl` call, computed from live session state, with **no effect on selection**. Everything reads from `event_log`; nothing writes to `sessions` or `choices`.
+**3. Onboarding screen (`src/routes/onboarding.tsx`)**
+- Optimistic pick state already dims the loser; add the two-step reveal (mark → observation → hook) with a single skippable timing pass and a `prefers-reduced-motion` short-circuit.
+- Render `hook` (currently stored, never shown) as the transition prompt, replacing the `ROUND_PROMPTS` rotation. Render `direction` as a small eyebrow chip.
+- Add a reaction row (`That's me` / `Not quite` / `Give me a harder one`) shown from round 2 on. Each records an event and sets a `steer` hint sent with the next `nextPairing` call: `not_quite` → prefer a pairing that tests the same axis from the other side; `harder` → raise the difficulty/lower recognition floor. Never writes to the vector.
+- Keep the active exchange in view with prior rounds collapsed into a compact history list.
 
-Files:
+**4. Result surface (`src/routes/onboarding.tsx` done phase, `src/routes/me.tsx`)**
+- Restructure `finalSynthesis` output into `{ headline, evidence: [two choices], tension, confidence_note }`; when evidence is thin, `headline` says so plainly instead of reaching for "eclectic".
+- Primary actions: Push back · Share this read · Try these choices yourself (share link carries the pairing set, not the conversation). Full analysis moves behind a secondary disclosure.
 
-- `src/musicdna/router/terrain.ts` *(new)* — pure mapper: `(session, recentChoices) → TerrainFeatures`. Consumes `vector_after`, `raw_delta`, `ms_to_decide`, `skipped_pairing_ids`, artist frequency, lane confidence. No I/O.
-- `src/musicdna/router/scoring.ts` *(new)* — port of Agent Brain `scoreTerrain` with the corrected constants (`information_cost: medium`, `reversibility: medium`) and `mode_pressure` weight `+2`. Exports `recommendRegime(features) → { regime, confidence, margin, scores }`.
-- `src/musicdna/router/index.ts` *(new)* — `recommendForSession(sessionId, supabase)`; loads the last N `choice_scored` rows from `event_log`, calls terrain + scoring, returns the recommendation.
-- `src/musicdna/router/*.test.ts` — unit tests: constant-baseline table, mapper handles skips/missing deltas as unknown (not zero), predicted regime distribution snapshot.
-- `src/lib/musicdna.functions.ts` — inside `nextPairingImpl`, after the pairing is selected, call the router and emit `regime_recommended` with `{ regime, confidence, margin, scores, features, selected_mode, pairing_id }`. Wrapped in try/catch, fire-and-forget. **Selector unchanged.**
-- `docs/musicdna/instrumentation.md` — document the new event.
+**5. Shared contract for the mobile handoff (`src/routes/api/v1/`, `docs/musicdna/`)**
+- Add `x-musicdna-experience: 1` opt-in versioning. Without the header, `/next`, `/choice`, `/reveal` return today's shapes (shipped Flutter keeps working). With it, they return the enriched fields: progress (`answered`, `max_rounds`, `stop_reason`), choice feedback, running theory + evidence, next prompt, final synthesis, disagreement, share payload.
+- New: `POST /api/v1/session/:id/react` for the disagreement/harder signals, mirroring the web steer hint.
+- Write `docs/musicdna/experience-contract-v1.md` — field-by-field, with which screen consumes what — and record fixtures under `fixtures/musicdna/` for a stable pattern, a contradiction, and an insufficient-evidence session.
 
-Explicitly out of scope for Step 0: `PairingKnobs` refactor, `sessions.routing_mode`, any change to `selectPairing`, any migration.
+**6. Verification**
+- Unit tests for `sessionCompletion` (budget, early-confident, skip-bound) and for `currentRead` tiering/direction.
+- Extend `src/routes/api/v1/e2e.test.ts` to drive both contract versions, plus retry-after-timeout and double-submit to prove no duplicate votes.
+- Playwright pass at small-phone width capturing key states (opening, post-pick reveal, revision, skip-bound result, strong result).
 
-### Verification
+## Out of scope this pass
 
-- `bunx vitest run src/musicdna/router` — mapper + scoring tests green.
-- `bun run build` — clean.
-- Manual: run one session end-to-end locally, confirm `regime_recommended` rows appear in `event_log` with sane distributions and the selector's `pairing_shown` events are unchanged.
-- Run the compound-reachability query from Part 1 against staging `event_log` and paste the peak-confident-axes distribution into a short note appended to the doc under D1.
-
----
-
-## Technical details
-
-- Terrain fields hard-coded to constants in v1 (documented in D2): `feedback_latency=fast`, `reversibility=medium`, `adversariality=none`, `information_cost=medium`, `coordination_load=low`, `environment_stability=stable`, `time_horizon=iterative`. Derived: `uncertainty` (from lane_confidence + evidence coverage), `ruggedness` (from recent |raw_delta| variance + skip rate), `local_minima_risk` (from artist bias share), `branching_factor` (from round position), `mode_pressure` (from bias/skip/uncertainty).
-- Missing `raw_delta` on a choice → treat as `unknown`, not `0`. Explicit `null` propagates into ruggedness as "insufficient data" rather than "smooth."
-- Skip weight in ruggedness/uncertainty: each skip in the last 3 rounds contributes as one high-uncertainty observation.
-- No `PairingKnobs` yet — Step 0 only recommends; Step 1 (separate turn) introduces the type with defaults that reproduce today's behavior byte-for-byte, gated on the golden fixture test.
+Flutter changes, streaming, catalog expansion, scoring redesign, friend comparison.
