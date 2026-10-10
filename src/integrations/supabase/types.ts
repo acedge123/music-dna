@@ -126,6 +126,7 @@ export type Database = {
       };
       choices: {
         Row: {
+          evidence_snapshot: Json | null;
           chosen_song_id: string;
           created_at: string;
           id: string;
@@ -137,6 +138,7 @@ export type Database = {
           session_id: string;
         };
         Insert: {
+          evidence_snapshot?: Json | null;
           chosen_song_id: string;
           created_at?: string;
           id?: string;
@@ -148,6 +150,7 @@ export type Database = {
           session_id: string;
         };
         Update: {
+          evidence_snapshot?: Json | null;
           chosen_song_id?: string;
           created_at?: string;
           id?: string;

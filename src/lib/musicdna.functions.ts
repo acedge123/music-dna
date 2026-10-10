@@ -524,17 +524,13 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
-import {
-  buildLedger,
-  detectRevision,
-  LEDGER_VERSION,
-  type LedgerSong,
-  type PriorRead,
-} from "@/musicdna/engine/evidence";
+import { detectRevision, LEDGER_VERSION, type PriorRead } from "@/musicdna/engine/evidence";
 import { ENGINE_VERSION } from "@/musicdna/engine/versions";
+import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
+import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
+import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
 import { nextPromptFor } from "@/musicdna/engine/prompts";
 import {
-  evaluateClaim,
   CLAIM_POLICY_VERSION,
   CLAIM_MIN_SUPPORT,
   CLAIM_MIN_CONSISTENCY,
@@ -664,8 +660,7 @@ export async function nextPairingImpl(
   probeState.flips = probeState.flips ?? [];
   const bootstrapChoices =
     ((sessionRes.data as { bootstrap_choices_json?: unknown } | null)?.bootstrap_choices_json as
-      | BootstrapChoiceEntry[]
-      | null) ?? [];
+      BootstrapChoiceEntry[] | null) ?? [];
 
   // Extract the set of lanes the opener songs actually landed in. Used by
   // the bootstrap phase to keep probe pairings inside the user's stated
@@ -1838,12 +1833,12 @@ export async function recordChoiceImpl(
       };
   }
   const songCols =
-    "id,title,artist,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+    "id,title,artist,year,lane,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
   const [pairingRes, sessionRes] = await Promise.all([
     supabase
       .from("pairings")
       .select(
-        `tests, diagnostic_weight, song_a_id, song_b_id, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`,
+        `tests, diagnostic_weight, updated_at, song_a_id, song_b_id, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`,
       )
       .eq("id", data.pairingId)
       .single(),
@@ -1854,6 +1849,7 @@ export async function recordChoiceImpl(
       .single(),
   ]);
   const pairing = pairingRes.data as unknown as {
+    updated_at: string;
     tests: string[] | null;
     diagnostic_weight: number;
     song_a_id: string;
@@ -1901,11 +1897,10 @@ export async function recordChoiceImpl(
     tests: (pairing.tests as string[] | null) ?? [],
     diagnostic_weight: pairing.diagnostic_weight,
     fallback_dims: DIMS as readonly string[],
+    strict_axes: true,
   });
   const vec = applied.vector;
-  const tests: string[] = pairing.tests?.length
-    ? pairing.tests
-    : (DIMS as readonly string[]).slice();
+  const tests = Object.keys(applied.delta_vector);
   const topDim = applied.top_dim;
   const topDelta = applied.top_delta;
   const deltaVec = applied.delta_vector;
@@ -2061,7 +2056,7 @@ export async function recordChoiceImpl(
       p_mutation_id: data.mutationId ?? null,
       p_prior_vector: session.vector ?? {},
       p_update: updatePayload,
-      p_response: response,
+      p_response: { ...response, _expected_catalog: expectedCatalog(pairing, winner, loser) },
     } as never,
   );
   if (rpcErr) {
@@ -2389,47 +2384,17 @@ export async function finalizeSessionImpl(
   if (sErr || !session) throw new Error(sErr?.message ?? "session not found");
   if (session.user_id !== userId) throw new Error("forbidden");
 
-  const songCols =
-    "id,title,artist,year,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
-
   // -------- Pull raw evidence --------
-  const [archRes, choicesRes] = await Promise.all([
+  const [archRes, evidence] = await Promise.all([
     supabase
       .from("archetypes")
       .select(
         "id,name,tagline,signature_axes,core_question,commentary_keywords,confidence_thresholds",
       ),
-    supabase
-      .from("choices")
-      .select(
-        `
-          ms_to_decide,
-          pairing_id,
-          pairing:pairing_id(tests, diagnostic_weight),
-          chosen:chosen_song_id(${songCols}),
-          rejected:rejected_song_id(${songCols})
-        `,
-      )
-      .eq("session_id", data.sessionId),
+    loadChoiceEvidence(supabase, data.sessionId),
   ]);
   const archetypes = archRes.data ?? [];
-  type SongRow = Record<string, number | string | null> & {
-    id: string;
-    title: string;
-    artist: string;
-    year: number | null;
-    lane: string;
-  };
-  type ChoiceRow = {
-    pairing_id: string | null;
-    ms_to_decide: number | null;
-    pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
-    chosen: SongRow | null;
-    rejected: SongRow | null;
-  };
-  const choices = ((choicesRes.data ?? []) as unknown as ChoiceRow[]).filter(
-    (c) => c.chosen && c.rejected,
-  );
+  const choices = evidence.choices.filter((c) => c.chosen && c.rejected);
 
   // -------- Layer 1: Observations --------
   const observations = choices.map((c) => ({
@@ -2437,21 +2402,12 @@ export async function finalizeSessionImpl(
     chosen_artist: c.chosen!.artist,
     rejected: c.rejected!.title,
     rejected_artist: c.rejected!.artist,
-    tested_dimensions: c.pairing?.tests ?? [],
+    tested_dimensions: c.tests ?? [],
     ms_to_decide: c.ms_to_decide,
   }));
 
   // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
-  const ledger = buildLedger(
-    choices.map((c) => ({
-      pairing_id: c.pairing_id ?? null,
-      tests: c.pairing?.tests ?? null,
-      diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
-      chosen: c.chosen as unknown as LedgerSong,
-      rejected: c.rejected as unknown as LedgerSong,
-    })),
-    DIMS as readonly string[],
-  );
+  const ledger = evidence.ledger;
   const patterns = ledger.axes.map((a) => {
     const label = DIM_LABEL[a.axis];
     const preferred = a.direction === "hi" ? label?.hi : label?.lo;
@@ -2487,51 +2443,11 @@ export async function finalizeSessionImpl(
     impact: "low" | "medium" | "high";
     notes: string;
   }> = [];
-  const artistCount: Record<string, number> = {};
-  const eraCount: Record<string, number> = {};
-  const laneCount: Record<string, number> = {};
-  let fastPicks = 0;
-  for (const c of choices) {
-    const artist = c.chosen!.artist;
-    artistCount[artist] = (artistCount[artist] ?? 0) + 1;
-    const year = Number(c.chosen!.year);
-    if (year) {
-      const decade = `${Math.floor(year / 10) * 10}s`;
-      eraCount[decade] = (eraCount[decade] ?? 0) + 1;
-    }
-    const lane = String(c.chosen!.lane ?? "");
-    if (lane) laneCount[lane] = (laneCount[lane] ?? 0) + 1;
-    if ((c.ms_to_decide ?? 99999) < 2000) fastPicks += 1;
-  }
-  for (const [artist, n] of Object.entries(artistCount)) {
-    if (n >= 3)
-      counterarguments.push({
-        claim: `User may simply prefer ${artist}.`,
-        impact: n >= 5 ? "high" : "medium",
-        notes: `${n} of ${choices.length} winning songs are by ${artist}.`,
-      });
-  }
-  for (const [decade, n] of Object.entries(eraCount)) {
-    if (n >= Math.max(4, Math.ceil(choices.length * 0.5)))
-      counterarguments.push({
-        claim: `User may be selecting on era (${decade}) rather than the tested dimensions.`,
-        impact: "medium",
-        notes: `${n} winning songs come from the ${decade}.`,
-      });
-  }
-  for (const [lane, n] of Object.entries(laneCount)) {
-    if (n >= Math.max(4, Math.ceil(choices.length * 0.6)))
-      counterarguments.push({
-        claim: `User may be selecting on lane (${lane}) rather than diagnostic tradeoffs.`,
-        impact: "medium",
-        notes: `${n} winning songs share the ${lane} lane.`,
-      });
-  }
-  if (choices.length >= 8 && fastPicks / choices.length >= 0.6)
+  for (const c of ledger.confounds)
     counterarguments.push({
-      claim: "Many picks were snap decisions. Familiarity may be driving choice as much as taste.",
+      claim: `Repeated ${c.kind} (${c.value}) is a possible concentration confound, not a listener trait.`,
       impact: "medium",
-      notes: `${fastPicks} of ${choices.length} choices resolved in under 2 seconds.`,
+      notes: `${c.count} of ${c.total} chosen songs share this ${c.kind}. Timing does not establish decisiveness.`,
     });
 
   // -------- Layer 4: Evidence threshold --------
@@ -2695,6 +2611,8 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
     allowed_claims,
     blocked_claims,
     evidence_thresholds: {
+      snapshot: "choice-evidence-v1",
+      unavailable_choices: ledger.unavailable,
       ledger: LEDGER_VERSION,
       policy: CLAIM_POLICY_VERSION,
       supporting_choices: CLAIM_MIN_SUPPORT,
@@ -2770,34 +2688,20 @@ export async function getMyResultImpl(supabase: AuthedSupabase, userId: string) 
   } | null = null;
 
   if (latest) {
-    const [choicesRes, reasoningRes] = await Promise.all([
-      supabase
-        .from("choices")
-        .select(
-          "created_at, ms_to_decide, chosen:chosen_song_id(title,artist), rejected:rejected_song_id(title,artist)",
-        )
-        .eq("session_id", latest.id)
-        .order("ms_to_decide", { ascending: true, nullsFirst: false })
-        .limit(5),
+    const [publicEvidence, reasoningRes] = await Promise.all([
+      loadPublicDefiningChoices(supabase, latest.id, 5),
       supabase
         .from("session_reasoning")
         .select("allowed_claims, blocked_claims, counterarguments, patterns")
         .eq("session_id", latest.id)
         .maybeSingle(),
     ]);
-    definingChoices = (
-      (choicesRes.data ?? []) as unknown as Array<{
-        chosen: { title: string; artist: string } | null;
-        rejected: { title: string; artist: string } | null;
-      }>
-    )
-      .filter((c) => c.chosen && c.rejected)
-      .map((c) => ({
-        chosen: c.chosen!.title,
-        chosenArtist: c.chosen!.artist,
-        rejected: c.rejected!.title,
-        rejectedArtist: c.rejected!.artist,
-      }));
+    definingChoices = publicEvidence.map((c) => ({
+      chosen: c.chosen_title,
+      chosenArtist: c.chosen_artist,
+      rejected: c.rejected_title,
+      rejectedArtist: c.rejected_artist,
+    }));
     reasoning = (reasoningRes.data as unknown as typeof reasoning) ?? null;
   }
   return { profile, sessions: sessions ?? [], definingChoices, reasoning };
@@ -3775,7 +3679,7 @@ type InsightKind = (typeof INSIGHT_KINDS)[number];
 
 const INSIGHT_VOICE = `${PERSONA}
 Mode: between-matchup aside. Drop ONE sharp observation, challenge, or counter-hypothesis. This is where the product earns its keep — the listener should feel seen, then slightly called out.
-You are given the listener's running axis vector (positive = high pole, negative = low pole) and their most recent choices. Pick the SHARPEST thing you can defend from this evidence. If a clear pattern is there, NAME it. If not, challenge or refine.
+You are given the authoritative pairing ledger and frozen choices. Only eligible axes support a tendency; provisional, mixed or insufficient evidence cannot become a supported claim. Opener priors, timing and conversation are not corroborating choices.
 
 Return STRICT JSON:
 {
@@ -3801,13 +3705,8 @@ export const roundInsight = createServerFn({ method: "POST" })
     const session = sessionRes.data as { vector: Record<string, number>; user_id: string } | null;
     if (!session || session.user_id !== userId) return null;
 
-    const vector = session.vector ?? {};
-    // Top 3 strongest axes so far.
-    const ranked = (DIMS as readonly string[])
-      .map((d) => ({ d, v: vector[d] ?? 0 }))
-      .filter((x) => Math.abs(x.v) >= 8)
-      .sort((a, b) => Math.abs(b.v) - Math.abs(a.v))
-      .slice(0, 3);
+    const { choices, ledger } = await loadChoiceEvidence(supabase, data.sessionId);
+    const ranked = ledger.axes.filter((a) => a.eligible).slice(0, 3);
 
     if (!ranked.length) {
       return {
@@ -3816,38 +3715,21 @@ export const roundInsight = createServerFn({ method: "POST" })
       };
     }
 
-    // Pull the last 4 choices for grounding.
-    const choicesRes = await supabase
-      .from("choices")
-      .select(
-        "ms_to_decide,chosen:chosen_song_id(title,artist),rejected:rejected_song_id(title,artist)",
-      )
-      .eq("session_id", data.sessionId)
-      .order("created_at", { ascending: false })
-      .limit(4);
-    type Row = {
-      ms_to_decide: number | null;
-      chosen: { title: string; artist: string } | null;
-      rejected: { title: string; artist: string } | null;
-    };
-    const recent = ((choicesRes.data ?? []) as unknown as Row[])
+    const recent = choices
+      .slice(-4)
       .filter((r) => r.chosen && r.rejected)
-      .map(
-        (r) =>
-          `${r.chosen!.title} > ${r.rejected!.title}${r.ms_to_decide != null ? ` (${r.ms_to_decide}ms)` : ""}`,
-      );
+      .map((r) => `${r.chosen!.title} > ${r.rejected!.title}`);
 
     const axisBlock = ranked
-      .map(({ d, v }) => {
-        const label = DIM_LABEL[d];
-        const pole = v >= 0 ? label?.hi : label?.lo;
-        return `- ${d}: ${v >= 0 ? "+" : ""}${Math.round(v)} (${pole})`;
+      .map((a) => {
+        const label = DIM_LABEL[a.axis];
+        return `- ${a.axis}: ${a.direction === "hi" ? label?.hi : label?.lo}, ${a.status}; ${a.supporting} supporting, ${a.contradicting} contradicting`;
       })
       .join("\n");
 
     const kindHint =
       data.round === 3 ? "observation" : data.round === 6 ? "challenge" : "refinement";
-    const prompt = `Round ${data.round}. Vector so far:\n${axisBlock}\n\nRecent picks:\n${recent.join("\n") || "(none)"}\n\nPreferred kind for this round: ${kindHint}. But override if the evidence demands the other.\n\nReturn the JSON now.`;
+    const prompt = `Round ${data.round}. Eligible ledger claims:\n${axisBlock}\n\nRecent frozen picks:\n${recent.join("\n") || "(none)"}\n\nPreferred kind for this round: ${kindHint}. But override if the evidence demands the other.\n\nReturn the JSON now.`;
 
     try {
       const txt = await ai([
@@ -3903,9 +3785,8 @@ type SynthPayload = {
 export const finalSynthesis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
-  .handler(
-    async ({ data, context }): Promise<SynthPayload> =>
-      finalSynthesisImpl(context.supabase, context.userId, data),
+  .handler(async ({ data, context }): Promise<SynthPayload> =>
+    finalSynthesisImpl(context.supabase, context.userId, data),
   );
 
 // RES04: the first pairing-based result is saved once and replayed verbatim
@@ -3928,21 +3809,14 @@ export async function finalSynthesisImpl(
   }
   const fresh = await computeFinalSynthesis(supabase, userId, data);
   if (!fresh.synthesis) return fresh;
-  const { data: reasoning } = await supabase
-    .from("session_reasoning")
-    .select("allowed_claims, counterarguments")
-    .eq("session_id", data.sessionId)
-    .maybeSingle();
+  const { ledger: savedLedger } = await loadChoiceEvidence(supabase, data.sessionId);
   const { error } = await supabase.from("session_results").insert({
     session_id: data.sessionId,
     user_id: userId,
     version: 1,
     source: "pairings",
     content: fresh as never,
-    evidence: {
-      allowed_claims: reasoning?.allowed_claims ?? [],
-      counterarguments: reasoning?.counterarguments ?? [],
-    } as never,
+    evidence: savedLedger as never,
     ledger_version: LEDGER_VERSION,
     policy_version: CLAIM_POLICY_VERSION,
     engine_version: ENGINE_VERSION,
@@ -3989,28 +3863,23 @@ async function computeFinalSynthesis(
   } | null;
   const empty: SynthPayload = { synthesis: "", kept_choosing: [], counter_reads: [] };
   if (!session || session.user_id !== userId) return empty;
-  const derivedMoods = deriveDescriptors(session.vector ?? {});
-
-  // Pull the Analyst's stored reasoning — that's the evidence. Don't re-derive.
-  const reasoningRes = await supabase
-    .from("session_reasoning")
-    .select("allowed_claims, counterarguments, observations")
-    .eq("session_id", data.sessionId)
-    .maybeSingle();
-  const reasoning = reasoningRes.data as {
-    allowed_claims?: Array<{
-      tradeoff?: string;
-      supporting_choices?: number;
-      tested_total?: number;
-      examples?: Array<{ chosen: string; rejected: string }>;
-    }>;
-    counterarguments?: Array<{ claim: string; impact: string; notes: string }>;
-    observations?: Array<{ chosen: string; rejected: string }>;
-  } | null;
-
-  const allowed = reasoning?.allowed_claims ?? [];
-  const counters = reasoning?.counterarguments ?? [];
-  const observations = reasoning?.observations ?? [];
+  const { choices, ledger } = await loadChoiceEvidence(supabase, data.sessionId);
+  const allowed = ledger.axes
+    .filter((a) => a.eligible)
+    .map((a) => ({
+      tradeoff: `${a.direction === "hi" ? DIM_LABEL[a.axis]?.hi : DIM_LABEL[a.axis]?.lo} over ${a.direction === "hi" ? DIM_LABEL[a.axis]?.lo : DIM_LABEL[a.axis]?.hi}`,
+      supporting_choices: a.supporting,
+      tested_total: a.tested,
+      examples: a.supporting_examples,
+    }));
+  const counters = ledger.confounds.map((c) => ({
+    claim: `${c.kind} concentration (${c.value})`,
+    impact: "medium",
+    notes: `${c.count} of ${c.total} frozen choices; a possible confound, not an identity claim.`,
+  }));
+  const observations = choices
+    .filter((c) => c.chosen && c.rejected)
+    .map((c) => ({ chosen: String(c.chosen!.title), rejected: String(c.rejected!.title) }));
 
   const kept_choosing: SynthEvidence[] = allowed
     .slice(0, 4)
@@ -4085,7 +3954,7 @@ COUNTER-EXPLANATIONS YOU MAY ACKNOWLEDGE:
 ${counterBlock}
 
 DERIVED MOODS (read off their tradeoffs — you MAY call them this if the evidence supports it, never as a label, only as flavor):
-${derivedMoods.length ? derivedMoods.join(", ") : "(none earned)"}
+${allowed.length ? allowed.map((c) => c.tradeoff).join(", ") : "(none earned)"}
 
 Return the JSON now.`,
         },
@@ -4501,34 +4370,25 @@ No prose, no markdown fences.`;
         // Extraction is best-effort; chat continues with the prior vector.
       }
 
-    const topAxes = (DIMS as readonly string[])
-      .map((d) => ({ d, v: vector[d] ?? 0 }))
-      .filter((x) => Math.abs(x.v) >= 8)
-      .sort((a, b) => Math.abs(b.v) - Math.abs(a.v))
-      .slice(0, 5);
+    const { ledger: chatLedger } = await loadChoiceEvidence(supabase, sessionId);
 
     const ctxLines: string[] = [];
     if (profile?.opening_songs?.length) {
       ctxLines.push(
-        `Opener songs (ranked):\n${(profile.opening_songs as string[]).map((s, i) => `${i + 1}. ${s}`).join("\n")}`,
+        `Opener priors, NOT pairing evidence (ranked):\n${(profile.opening_songs as string[]).map((s, i) => `${i + 1}. ${s}`).join("\n")}`,
       );
     }
     if (profile?.opening_hypothesis) {
-      ctxLines.push(`Working hypothesis: "${profile.opening_hypothesis}"`);
+      ctxLines.push(
+        `Unverified opener self-report hypothesis, not a supported claim: "${profile.opening_hypothesis}"`,
+      );
     }
     if (profile?.opening_lane) {
       ctxLines.push(`Lane: ${profile.opening_lane}`);
     }
-    if (topAxes.length) {
-      ctxLines.push(
-        `Strongest leans so far:\n${topAxes
-          .map(({ d, v }) => {
-            const lbl = DIM_LABEL[d];
-            return `- ${d}: ${v >= 0 ? "+" : ""}${Math.round(v)} (${v >= 0 ? lbl?.hi : lbl?.lo})`;
-          })
-          .join("\n")}`,
-      );
-    }
+    ctxLines.push(`Authoritative pairing ledger (${chatLedger.version}): ${JSON.stringify(chatLedger)}.
+Only eligible axes support tendencies. Other axes are provisional, mixed or insufficient.
+Reactions, skips, opener priors and conversation are separate self-report, never corroborating votes.`);
     const contextBlock = ctxLines.length
       ? `Listener context:\n${ctxLines.join("\n\n")}`
       : "No prior context yet.";
@@ -4669,16 +4529,9 @@ export async function currentReadImpl(
   data: { sessionId: string },
 ): Promise<CurrentReadResult> {
   const emptyEvidence: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
-  const axisCols = (DIMS as readonly string[]).join(",");
-  const [sessionRes, choicesRes] = await Promise.all([
+  const [sessionRes, evidence] = await Promise.all([
     supabase.from("sessions").select("vector,user_id").eq("id", data.sessionId).single(),
-    supabase
-      .from("choices")
-      .select(
-        `created_at, pairing_id, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
-      )
-      .eq("session_id", data.sessionId)
-      .order("created_at", { ascending: true }),
+    loadChoiceEvidence(supabase, data.sessionId),
   ]);
   const s = sessionRes.data as { vector: Record<string, number>; user_id: string } | null;
   if (!s || s.user_id !== userId) {
@@ -4695,18 +4548,9 @@ export async function currentReadImpl(
   }
 
   type SongRow = Record<string, unknown> & { title?: string; artist?: string };
-  type ChoiceRow = {
-    pairing_id: string | null;
-    pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
-    chosen: SongRow | null;
-    rejected: SongRow | null;
-  };
-  const choices = (choicesRes.data ?? []) as unknown as ChoiceRow[];
-  const answered = choices.length;
-  const num = (row: SongRow | null, dim: string) => {
-    const v = row?.[dim];
-    return typeof v === "number" ? v : 0;
-  };
+  const choices = evidence.choices;
+  const ledger = evidence.ledger;
+  const answered = ledger.answered;
   const label = (row: SongRow | null) =>
     row?.title ? `${row.title}${row.artist ? ` (${row.artist})` : ""}` : "that one";
 
@@ -4732,8 +4576,9 @@ export async function currentReadImpl(
       };
     }
     // Biggest gap in the choice they just made — that's the real tradeoff.
-    const gaps = (DIMS as readonly string[])
-      .map((d) => ({ d, delta: num(latest.chosen, d) - num(latest.rejected, d) }))
+    const gaps = ledger.entries
+      .filter((e) => e.choice_id === latest.choice_id)
+      .map((e) => ({ d: e.axis, delta: e.delta }))
       .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
     const g = gaps[0];
     const pole = g ? POLES[g.d]?.[g.delta >= 0 ? "hi" : "lo"] : undefined;
@@ -4783,16 +4628,6 @@ export async function currentReadImpl(
   }
 
   // ---- Evidence from the shared ledger (same builder as the final read). ----
-  const ledger = buildLedger(
-    choices.map((c) => ({
-      pairing_id: c.pairing_id ?? null,
-      tests: c.pairing?.tests ?? null,
-      diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
-      chosen: c.chosen as LedgerSong | null,
-      rejected: c.rejected as LedgerSong | null,
-    })),
-    DIMS as readonly string[],
-  );
   const lead = ledger.axes[0];
   if (!lead) {
     return {

@@ -5,20 +5,7 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { buildLedger, type LedgerSong } from "@/musicdna/engine/evidence";
-
-const DIMS = [
-  "movement",
-  "atmosphere",
-  "immersion",
-  "scale",
-  "community",
-  "perspective",
-  "confidence",
-  "tension",
-  "texture",
-  "transformation",
-] as const;
+import { loadChoiceEvidence } from "./choice-evidence";
 
 export type PublicDefiningChoice = {
   chosen_title: string;
@@ -32,31 +19,7 @@ export async function loadPublicDefiningChoices(
   sessionId: string,
   limit = 3,
 ): Promise<PublicDefiningChoice[]> {
-  const cols = `title,artist,${DIMS.join(",")}`;
-  const { data, error } = await client
-    .from("choices")
-    .select(
-      `pairing_id, created_at, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(${cols}), rejected:rejected_song_id(${cols})`,
-    )
-    .eq("session_id", sessionId)
-    .order("created_at", { ascending: true });
-  if (error) throw new Error(error.message);
-  type Row = {
-    pairing_id: string | null;
-    pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
-    chosen: LedgerSong | null;
-    rejected: LedgerSong | null;
-  };
-  const ledger = buildLedger(
-    ((data ?? []) as unknown as Row[]).map((c) => ({
-      pairing_id: c.pairing_id,
-      tests: c.pairing?.tests ?? null,
-      diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
-      chosen: c.chosen,
-      rejected: c.rejected,
-    })),
-    DIMS,
-  );
+  const { ledger } = await loadChoiceEvidence(client, sessionId);
   const out: PublicDefiningChoice[] = [];
   const seen = new Set<string>();
   for (const axis of ledger.axes.filter((a) => a.eligible)) {
