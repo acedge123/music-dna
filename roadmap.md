@@ -1,23 +1,20 @@
-# Roadmap — Product Requirements v1.0 parity
+# Roadmap
 
-- [x] Copy: six matchups on landing and share page
-- [x] D01 claim policy in final reasoning (engine/claims.ts); examples match claim direction
-- [x] Honest insufficiency (no "broad taste" fallback)
-- [x] D02 three consecutive skips stop
-- [x] Re-point round 8/10/12/14 metrics → 2/4/6
-- [x] Single versioned evidence ledger (engine/evidence.ts) for running read + final reasoning (chat reads its claims)
-- [x] Public share card reads ledger claims instead of its own choice list
-- [x] Reaction buttons use the matchup-based question
-- [x] Revisions record prior claim + the pick that changed it (read_shown events)
-- [x] Next prompt derived from the selected pairing (engine/prompts.ts)
-- [x] Versioned experience contract, react endpoint, contract doc, fixtures
-- [x] Mutation IDs + replay on choice/skip; full history on resume (REST v1)
-- [x] catalog_exhausted completion reason; atomic choice+vector write (record_choice_atomic)
-- [x] Web onboarding resume uses the full history
-- [x] Persisted result versions; D04 chat self-report stored separately
-- [ ] D03 explicit publish/revoke, token-only links, legacy inventory
-- [ ] Fixed-sequence challenge from shared pairing set
-- [ ] ACE web acceptance → Flutter parity
-- [x] QA fixes: curator notes locked from listeners; honest skip/thin endings; early observations saved
-- [x] D06 retention + linking policy recorded (docs/musicdna/data-retention-d06.md)
-- [ ] D06 implementation: activity clock, purge job, evidence vs debug events, deletion SLA, anonymous upgrade, existing-account transfer
+## Done
+- D06 retention: policy decided, implementation deferred until launch (docs/musicdna/data-retention-d06.md).
+- Live anonymous walkthrough: interview, pushback, resume, share, revoke.
+
+## Open — found by the live walkthrough
+- Resume drops the three opening songs. Picks, reads and the round counter come back; the ranked
+  #1/#2/#3 list does not. Fix in the web resume path (src/lib/resume.functions.ts + the resume
+  restore block in src/routes/onboarding.tsx) so the openers render after a refresh.
+- "Share this read" has no on-screen link. It publishes and copies to the clipboard; if the clipboard
+  is blocked, the listener gets nothing. Show the link (with a copy button) after publishing.
+- Share-card copy contradicts itself: names an archetype, then says "no specific claims cleared the
+  evidence threshold" and "Across the data provided". Rewrite so a thin reading says so in the
+  critic's voice without naming the machinery.
+
+## Open — blocked on others
+- Flutter parity: Codex is adopting the v1 contract.
+- Signed-in walkthrough: this project's Supabase is user-managed, so no account can be minted here.
+- D06 implementation: deferred until launch.
