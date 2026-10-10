@@ -57,7 +57,7 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
     client
       .from("choices")
       .select(
-        `id, session_id, pairing_id, chosen_song_id, rejected_song_id, created_at, evidence_snapshot, response, chosen:chosen_song_id(${songCols}), rejected:rejected_song_id(${songCols}), pairing:pairing_id(id, tests, diagnostic_weight, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols}))`,
+        `id, session_id, pairing_id, chosen_song_id, rejected_song_id, created_at, evidence, response, chosen:chosen_song_id(${songCols}), rejected:rejected_song_id(${songCols}), pairing:pairing_id(id, tests, diagnostic_weight, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols}))`,
       )
       .eq("session_id", sessionId)
       .order("created_at", { ascending: true }),
@@ -81,10 +81,10 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
   };
   for (const c of (choicesRes.data ?? []) as unknown as CRow[]) {
     const frozen = snapshotChoice(c);
-    const parsed = EvidenceSnapshot.safeParse(c.evidence_snapshot);
-    let chosen = c.evidence_snapshot == null ? c.chosen : null;
-    let rejected = c.evidence_snapshot == null ? c.rejected : null;
-    let pairing = c.evidence_snapshot == null ? c.pairing : null;
+    const parsed = EvidenceSnapshot.safeParse(c.evidence);
+    let chosen = c.evidence == null ? c.chosen : null;
+    let rejected = c.evidence == null ? c.rejected : null;
+    let pairing = c.evidence == null ? c.pairing : null;
     if (frozen.provenance === "pairing" && parsed.success) {
       const s = parsed.data;
       chosen = {

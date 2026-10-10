@@ -1754,25 +1754,6 @@ function round3(n: number): number {
 // that he is a music critic, not a therapist.
 // ============================================================
 
-const BANNED_WORDS = [
-  "dreamer",
-  "seeker",
-  "old soul",
-  "empath",
-  "creative spirit",
-  "destiny",
-  "wound",
-  "soul",
-  "trauma",
-  "secretly",
-  "you are the kind of person who",
-  "energy",
-  "aura",
-  "journey of self",
-  "authentic self",
-  "true self",
-];
-
 const CRITIC_VOICE = `${PERSONA}
 Mode: evidence-bounded critic selection. Select only eligible claims and frozen choice references provided by the caller. Return only the requested structured selection JSON, no prose. Editorial fit is not a calibrated probability.`;
 

@@ -22,7 +22,7 @@ function client(legacy = false, error: { message: string } | null = null) {
       song_a: rejected,
       song_b: chosen,
     },
-    evidence_snapshot: legacy
+    evidence: legacy
       ? null
       : {
           version: "choice-evidence-v1",

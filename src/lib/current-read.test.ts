@@ -26,7 +26,7 @@ function client(deltas: number[], owner = "user") {
     chosen_song_id: "a",
     rejected_song_id: "b",
     created_at: String(i),
-    evidence_snapshot: {
+    evidence: {
       version: "choice-evidence-v1",
       source: "pairing",
       choice_id: String(i),
