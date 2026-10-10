@@ -1,0 +1,105 @@
+{
+  "contract": 1,
+  "case": "mixed_2_2",
+  "description": "2–2 split: mixed, no directional claim.",
+  "input": {
+    "choices": [
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000009",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a9",
+          "title": "Wake Up",
+          "artist": "Arcade Fire",
+          "scale": 85
+        },
+        "rejected": {
+          "id": "b9",
+          "title": "Skinny Love",
+          "artist": "Bon Iver",
+          "scale": 20
+        }
+      },
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000010",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a10",
+          "title": "Hyperballad",
+          "artist": "Björk",
+          "scale": 85
+        },
+        "rejected": {
+          "id": "b10",
+          "title": "Holocene",
+          "artist": "Bon Iver",
+          "scale": 20
+        }
+      },
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000011",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a11",
+          "title": "Pink Moon",
+          "artist": "Nick Drake",
+          "scale": 20
+        },
+        "rejected": {
+          "id": "b11",
+          "title": "Where the Streets Have No Name",
+          "artist": "U2",
+          "scale": 85
+        }
+      },
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000012",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a12",
+          "title": "Fade Into You",
+          "artist": "Mazzy Star",
+          "scale": 20
+        },
+        "rejected": {
+          "id": "b12",
+          "title": "Glory Box",
+          "artist": "Portishead",
+          "scale": 85
+        }
+      }
+    ],
+    "skipped": 0,
+    "consecutive_skips": 0
+  },
+  "expected": {
+    "ledger_version": "ledger-v1",
+    "policy_version": "d01-v1",
+    "answered": 4,
+    "lead_axis": {
+      "axis": "scale",
+      "direction": "hi",
+      "supporting": 2,
+      "contradicting": 2,
+      "status": "mixed",
+      "eligible": false
+    },
+    "outcome": "insufficient_evidence",
+    "completion": {
+      "done": false,
+      "reason": null
+    }
+  }
+}

@@ -1,0 +1,86 @@
+{
+  "contract": 1,
+  "case": "artist_confounded",
+  "description": "Three supporting picks all by the same artist: claim allowed but artist loyalty is the leading counter-explanation.",
+  "input": {
+    "choices": [
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000015",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a15",
+          "title": "Wake Up",
+          "artist": "Arcade Fire",
+          "scale": 85
+        },
+        "rejected": {
+          "id": "b15",
+          "title": "Skinny Love",
+          "artist": "Bon Iver",
+          "scale": 20
+        }
+      },
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000016",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a16",
+          "title": "No Cars Go",
+          "artist": "Arcade Fire",
+          "scale": 85
+        },
+        "rejected": {
+          "id": "b16",
+          "title": "Holocene",
+          "artist": "Bon Iver",
+          "scale": 20
+        }
+      },
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000017",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a17",
+          "title": "Rebellion (Lies)",
+          "artist": "Arcade Fire",
+          "scale": 85
+        },
+        "rejected": {
+          "id": "b17",
+          "title": "Pink Moon",
+          "artist": "Nick Drake",
+          "scale": 20
+        }
+      }
+    ],
+    "skipped": 0,
+    "consecutive_skips": 0
+  },
+  "expected": {
+    "ledger_version": "ledger-v1",
+    "policy_version": "d01-v1",
+    "answered": 3,
+    "lead_axis": {
+      "axis": "scale",
+      "direction": "hi",
+      "supporting": 3,
+      "contradicting": 0,
+      "status": "supported",
+      "eligible": true
+    },
+    "outcome": "supported",
+    "completion": {
+      "done": false,
+      "reason": null
+    }
+  }
+}

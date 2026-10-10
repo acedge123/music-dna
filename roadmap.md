@@ -9,9 +9,11 @@
 - [ ] Public share card reads ledger claims instead of its own choice list
 - [x] Revisions record prior claim + the pick that changed it (read_shown events)
 - [x] Next prompt derived from the selected pairing (engine/prompts.ts)
-- [ ] Versioned experience contract, react endpoint, contract doc, fixtures
-- [ ] Mutation IDs + replay on choice/skip; full history on resume; catalog_exhausted reason
-- [ ] Persisted result versions; D04 chat self-report stored separately
+- [x] Versioned experience contract, react endpoint, contract doc, fixtures
+- [x] Mutation IDs + replay on choice/skip; full history on resume (REST v1)
+- [ ] catalog_exhausted completion reason; atomic choice+vector write (DB function)
+- [ ] Web onboarding resume uses the full history
+- [x] Persisted result versions; D04 chat self-report stored separately
 - [ ] D03 explicit publish/revoke, token-only links, legacy inventory
 - [ ] Fixed-sequence challenge from shared pairing set
 - [ ] ACE web acceptance → Flutter parity

@@ -136,8 +136,10 @@ export type Database = {
           created_at: string
           id: string
           ms_to_decide: number | null
+          mutation_id: string | null
           pairing_id: string
           rejected_song_id: string | null
+          response: Json | null
           session_id: string
         }
         Insert: {
@@ -145,8 +147,10 @@ export type Database = {
           created_at?: string
           id?: string
           ms_to_decide?: number | null
+          mutation_id?: string | null
           pairing_id: string
           rejected_song_id?: string | null
+          response?: Json | null
           session_id: string
         }
         Update: {
@@ -154,8 +158,10 @@ export type Database = {
           created_at?: string
           id?: string
           ms_to_decide?: number | null
+          mutation_id?: string | null
           pairing_id?: string
           rejected_song_id?: string | null
+          response?: Json | null
           session_id?: string
         }
         Relationships: [
@@ -737,6 +743,62 @@ export type Database = {
             foreignKeyName: "session_reasoning_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: true
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_results: {
+        Row: {
+          base_version: number | null
+          content: Json
+          created_at: string
+          engine_version: string
+          evidence: Json
+          id: string
+          ledger_version: string
+          policy_version: string
+          self_report: Json
+          session_id: string
+          source: string
+          user_id: string
+          version: number
+        }
+        Insert: {
+          base_version?: number | null
+          content?: Json
+          created_at?: string
+          engine_version: string
+          evidence?: Json
+          id?: string
+          ledger_version: string
+          policy_version: string
+          self_report?: Json
+          session_id: string
+          source?: string
+          user_id: string
+          version: number
+        }
+        Update: {
+          base_version?: number | null
+          content?: Json
+          created_at?: string
+          engine_version?: string
+          evidence?: Json
+          id?: string
+          ledger_version?: string
+          policy_version?: string
+          self_report?: Json
+          session_id?: string
+          source?: string
+          user_id?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_results_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },

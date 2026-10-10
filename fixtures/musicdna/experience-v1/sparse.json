@@ -1,0 +1,67 @@
+{
+  "contract": 1,
+  "case": "sparse",
+  "description": "Two answers only: provisional, insufficient for a claim.",
+  "input": {
+    "choices": [
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000013",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a13",
+          "title": "Wake Up",
+          "artist": "Arcade Fire",
+          "scale": 85
+        },
+        "rejected": {
+          "id": "b13",
+          "title": "Skinny Love",
+          "artist": "Bon Iver",
+          "scale": 20
+        }
+      },
+      {
+        "pairing_id": "00000000-0000-4000-8000-000000000014",
+        "tests": [
+          "scale"
+        ],
+        "diagnostic_weight": 60,
+        "chosen": {
+          "id": "a14",
+          "title": "Hyperballad",
+          "artist": "Björk",
+          "scale": 85
+        },
+        "rejected": {
+          "id": "b14",
+          "title": "Holocene",
+          "artist": "Bon Iver",
+          "scale": 20
+        }
+      }
+    ],
+    "skipped": 0,
+    "consecutive_skips": 0
+  },
+  "expected": {
+    "ledger_version": "ledger-v1",
+    "policy_version": "d01-v1",
+    "answered": 2,
+    "lead_axis": {
+      "axis": "scale",
+      "direction": "hi",
+      "supporting": 2,
+      "contradicting": 0,
+      "status": "provisional",
+      "eligible": false
+    },
+    "outcome": "insufficient_evidence",
+    "completion": {
+      "done": false,
+      "reason": null
+    }
+  }
+}

@@ -7,7 +7,7 @@
 export const V1_CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Accept, Origin",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-MusicDNA-Experience",
   "Access-Control-Max-Age": "86400",
 } as const;
 
@@ -23,7 +23,7 @@ export function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
 }
 
 export function errorResponse(
-  code: "NOT_FOUND" | "UNAUTHORIZED" | "FORBIDDEN" | "INVALID_INPUT" | "INTERNAL" | "UPSTREAM",
+  code: "NOT_FOUND" | "CONFLICT" | "UNAUTHORIZED" | "FORBIDDEN" | "INVALID_INPUT" | "INTERNAL" | "UPSTREAM",
   message: string,
   status: number,
 ): Response {
