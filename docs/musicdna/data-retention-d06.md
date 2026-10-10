@@ -27,7 +27,7 @@ Deferred on purpose: the tables are small, so the sweeps buy no meaningful stora
   - overwrite an existing reading;
   - publish anything as part of linking.
 
-## Implementation checklist (pending)
+## Implementation checklist (deferred until launch)
 
 - [ ] Track a `last_user_activity_at` timestamp per session, updated only by the owner's own requests.
 - [ ] Daily purge job, covering:
