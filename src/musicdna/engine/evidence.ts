@@ -70,7 +70,9 @@ export function buildLedger(choices: LedgerChoice[], allDims: readonly string[])
     const key = c.pairing_id ?? `idx-${index}`;
     if (seen.has(key)) return;
     seen.add(key);
-    const tests = c.tests && c.tests.length ? c.tests : allDims;
+    // Only DECLARED tested axes count (TGA-303). A pairing with no declared
+    // tests contributes no evidence; unknown axes are ignored.
+    const tests = (c.tests ?? []).filter((t) => allDims.includes(t));
     for (const axis of tests) {
       const a = val(c.chosen, axis);
       const b = val(c.rejected, axis);

@@ -12,12 +12,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
-import { nextPairingImpl } from "@/lib/musicdna.functions";
+import { recordReactionImpl } from "@/lib/musicdna.functions";
 import { nextV1 } from "./-experience";
 
 const BodySchema = z.object({
   kind: z.enum(["thats_me", "not_quite", "harder"]),
   pairing_id: z.string().uuid().optional(),
+  mutation_id: z.string().max(80).optional(),
 });
 const UUID = z.string().uuid();
 
@@ -39,54 +40,25 @@ export const Route = createFileRoute("/api/v1/session/$id/react")({
           if (!body.success) return errorResponse("INVALID_INPUT", body.error.message, 400);
           const { supabase, userId } = await verifyBearer(request);
 
-          const { data: session } = await supabase
-            .from("sessions")
-            .select("user_id, completed_at")
-            .eq("id", sid.data)
-            .maybeSingle();
-          if (!session || session.user_id !== userId)
-            return errorResponse("NOT_FOUND", "Session not found", 404);
-
-          await (
-            await (
-              await import("@/integrations/supabase/client.server")
-            ).supabaseAdmin.from("event_log")
-          ).insert({
-            user_id: userId,
-            session_id: sid.data,
-            pairing_id: body.data.pairing_id ?? null,
-            event_type: "reaction_submitted",
-            client: "rest",
-            props: { kind: body.data.kind } as never,
-          });
-
-          if (body.data.kind === "thats_me" || session.completed_at) {
-            return jsonResponse({
-              contract: 1,
-              effect: "pacing_only",
-              message:
-                body.data.kind === "thats_me"
-                  ? "Noted. Let's keep pushing on it."
-                  : "Session's done — push back on the reading instead.",
-              next: null,
+          let r;
+          try {
+            r = await recordReactionImpl(supabase, userId, {
+              sessionId: sid.data,
+              kind: body.data.kind,
+              pairingId: body.data.pairing_id ?? null,
+              mutationId: body.data.mutation_id ?? null,
+              client: "rest",
             });
+          } catch (e) {
+            const msg = e instanceof Error ? e.message : String(e);
+            if (msg === "Session not found") return errorResponse("NOT_FOUND", msg, 404);
+            throw e;
           }
-
-          const steer = body.data.kind === "harder" ? "harder" : "not_quite";
-          const r = await nextPairingImpl(supabase, { sessionId: sid.data, steer });
-          const next = nextV1(r as Parameters<typeof nextV1>[0]);
-          const replaced = !!next.pairing;
           return jsonResponse({
             contract: 1,
-            effect: replaced
-              ? steer === "harder"
-                ? "harder_pairing"
-                : "retest_pairing"
-              : "no_alternative",
-            message: replaced
-              ? `${steer === "harder" ? "Fine. Harder one." : "Alright, let's check that."} ${next.prompt ?? ""}`.trim()
-              : "Nothing in the catalog tests that differently right now. Your call on the next one stands.",
-            next,
+            effect: r.effect,
+            message: r.message,
+            next: r.next ? nextV1(r.next as Parameters<typeof nextV1>[0]) : null,
           });
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);

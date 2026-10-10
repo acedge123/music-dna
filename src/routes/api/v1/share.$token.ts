@@ -42,7 +42,7 @@ export const Route = createFileRoute("/api/v1/share/$token")({
 
         query = isUuid
           ? query.eq("id", token).eq("is_public", true)
-          : query.eq("share_token", token);
+          : query.eq("share_token", token).eq("is_public", true);
 
         const { data: session, error } = await query.maybeSingle();
         if (error) return errorResponse("UPSTREAM", error.message, 502);

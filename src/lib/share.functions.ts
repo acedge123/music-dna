@@ -6,7 +6,8 @@ import { buildPublicReveal, type PublicRevealInput } from "@/musicdna/engine/rev
 // Public read of a single completed session, addressed by an opaque share_token
 // (NOT by the internal session UUID). The token is generated server-side, has
 // no relationship to the auth user, and is only minted for completed readings
-// the user explicitly shared. No PII surfaced.
+// the user explicitly shared. Both lookup paths require is_public (D03):
+// holding a token is never consent. No PII surfaced.
 //
 // Thin wrapper: DB fetch here, DTO shaping in engine/reveal.ts. The REST
 // endpoint /api/v1/share/:token calls the exact same `buildPublicReveal`.
@@ -37,7 +38,7 @@ export const getPublicSession = createServerFn({ method: "GET" })
 
     query = isUuid
       ? query.eq("id", data.token).eq("is_public", true)
-      : query.eq("share_token", data.token);
+      : query.eq("share_token", data.token).eq("is_public", true);
 
     const { data: session, error } = await query.maybeSingle();
     if (error) throw new Error(error.message);

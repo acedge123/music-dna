@@ -1,3 +1,4 @@
+import { ledgerChoiceFromRow, snapshotEvidence } from "@/musicdna/adapters/choice-evidence";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -2062,6 +2063,12 @@ export async function recordChoiceImpl(
       p_prior_vector: session.vector ?? {},
       p_update: updatePayload,
       p_response: response,
+      p_evidence: snapshotEvidence({
+        tests: (pairing.tests as string[] | null) ?? [],
+        diagnostic_weight: pairing.diagnostic_weight,
+        chosen: winner as unknown as Record<string, unknown>,
+        rejected: loser as unknown as Record<string, unknown>,
+      }),
     } as never,
   );
   if (rpcErr) {
@@ -2405,6 +2412,7 @@ export async function finalizeSessionImpl(
         `
           ms_to_decide,
           pairing_id,
+          evidence,
           pairing:pairing_id(tests, diagnostic_weight),
           chosen:chosen_song_id(${songCols}),
           rejected:rejected_song_id(${songCols})
@@ -2443,13 +2451,7 @@ export async function finalizeSessionImpl(
 
   // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
   const ledger = buildLedger(
-    choices.map((c) => ({
-      pairing_id: c.pairing_id ?? null,
-      tests: c.pairing?.tests ?? null,
-      diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
-      chosen: c.chosen as unknown as LedgerSong,
-      rejected: c.rejected as unknown as LedgerSong,
-    })),
+    choices.map((c) => ledgerChoiceFromRow(c as never)),
     DIMS as readonly string[],
   );
   const patterns = ledger.axes.map((a) => {
@@ -2738,7 +2740,7 @@ export async function getMyResultImpl(supabase: AuthedSupabase, userId: string) 
     supabase
       .from("sessions")
       .select(
-        "id,share_token,started_at,completed_at,interpretation,vector,archetype:archetype_id(id,name,tagline,description)",
+        "id,share_token,is_public,started_at,completed_at,interpretation,vector,archetype:archetype_id(id,name,tagline,description)",
       )
       .eq("user_id", userId)
       .order("started_at", { ascending: false })
@@ -4675,7 +4677,7 @@ export async function currentReadImpl(
     supabase
       .from("choices")
       .select(
-        `created_at, pairing_id, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
+        `created_at, pairing_id, evidence, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
       )
       .eq("session_id", data.sessionId)
       .order("created_at", { ascending: true }),
@@ -4732,10 +4734,14 @@ export async function currentReadImpl(
       };
     }
     // Biggest gap in the choice they just made — that's the real tradeoff.
-    const gaps = (DIMS as readonly string[])
-      .map((d) => ({ d, delta: num(latest.chosen, d) - num(latest.rejected, d) }))
-      .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
-    const g = gaps[0];
+    // Same shared ledger, declared tests only, frozen snapshot (TGA-304).
+    const latestLedger = buildLedger(
+      [ledgerChoiceFromRow(latest as never)],
+      DIMS as readonly string[],
+    );
+    const g = latestLedger.entries
+      .map((e) => ({ d: e.axis, delta: e.delta }))
+      .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))[0];
     const pole = g ? POLES[g.d]?.[g.delta >= 0 ? "hi" : "lo"] : undefined;
     const line = pickByHash(pole?.observations, answered + dimSeed(g?.d ?? "x"));
     const obsThesis = `${label(latest.chosen)} over ${label(latest.rejected)}. ${line ?? "Noted."}`;
@@ -4784,13 +4790,7 @@ export async function currentReadImpl(
 
   // ---- Evidence from the shared ledger (same builder as the final read). ----
   const ledger = buildLedger(
-    choices.map((c) => ({
-      pairing_id: c.pairing_id ?? null,
-      tests: c.pairing?.tests ?? null,
-      diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
-      chosen: c.chosen as LedgerSong | null,
-      rejected: c.rejected as LedgerSong | null,
-    })),
+    choices.map((c) => ledgerChoiceFromRow(c as never)),
     DIMS as readonly string[],
   );
   const lead = ledger.axes[0];
@@ -4957,3 +4957,91 @@ async function trustedEventLog() {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   return supabaseAdmin.from("event_log");
 }
+
+// ---- Reactions (TGA-309): one shared, durable contract for web + REST ----
+export type ReactionKind = "thats_me" | "not_quite" | "harder";
+export type ReactionEffect = "pacing_only" | "harder_pairing" | "retest_pairing" | "no_alternative";
+
+export async function recordReactionImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: {
+    sessionId: string;
+    kind: ReactionKind;
+    pairingId?: string | null;
+    client: "web" | "rest";
+    mutationId?: string | null;
+  },
+) {
+  const { data: session } = await supabase
+    .from("sessions")
+    .select("user_id, completed_at")
+    .eq("id", data.sessionId)
+    .maybeSingle();
+  if (!session || session.user_id !== userId) throw new Error("Session not found");
+
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { error: rErr } = await supabaseAdmin.from("session_reactions" as never).insert({
+    session_id: data.sessionId,
+    user_id: userId,
+    pairing_id: data.pairingId ?? null,
+    kind: data.kind,
+    client: data.client,
+    mutation_id: data.mutationId ?? null,
+  } as never);
+  const duplicate = (rErr as { code?: string } | null)?.code === "23505";
+  if (rErr && !duplicate) throw new Error(`Couldn't save reaction: ${rErr.message}`);
+  if (!duplicate) {
+    const { error: eErr } = await (await trustedEventLog()).insert({
+      user_id: userId,
+      session_id: data.sessionId,
+      pairing_id: data.pairingId ?? null,
+      event_type: "reaction_submitted",
+      client: data.client,
+      props: { kind: data.kind } as never,
+    });
+    if (eErr) throw new Error(`Couldn't save reaction: ${eErr.message}`);
+  }
+
+  if (data.kind === "thats_me" || session.completed_at) {
+    return {
+      effect: "pacing_only" as ReactionEffect,
+      message:
+        data.kind === "thats_me"
+          ? "Noted. Let's keep pushing on it."
+          : "Session's done — push back on the reading instead.",
+      next: null,
+    };
+  }
+  const steer = data.kind === "harder" ? "harder" : "not_quite";
+  const next = await nextPairingImpl(supabase, { sessionId: data.sessionId, steer });
+  const replaced = !!(next as { pairing?: unknown }).pairing && !(next as { done?: boolean }).done;
+  const prompt = (next as { prompt?: string }).prompt ?? "";
+  return {
+    effect: (replaced
+      ? steer === "harder"
+        ? "harder_pairing"
+        : "retest_pairing"
+      : "no_alternative") as ReactionEffect,
+    message: replaced
+      ? `${steer === "harder" ? "Fine. Harder one." : "Alright, let's check that."} ${prompt}`.trim()
+      : "Nothing in the catalog tests that differently right now. Your call on the next one stands.",
+    next,
+  };
+}
+
+export const reactToRead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        sessionId: z.string().uuid(),
+        kind: z.enum(["thats_me", "not_quite", "harder"]),
+        pairingId: z.string().uuid().nullable().optional(),
+        mutationId: z.string().max(80).nullable().optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) =>
+    recordReactionImpl(context.supabase, context.userId, { ...data, client: "web" }),
+  );
