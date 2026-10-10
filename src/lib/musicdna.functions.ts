@@ -62,14 +62,13 @@ function seedFrom(sessionId: string, round: number): number {
 // the auth middleware so agents can drive end-to-end runs without auth.
 export type AuthedSupabase = SupabaseClient<Database>;
 
-type OpenerProfile = Pick<
-  Database["public"]["Tables"]["profiles"]["Row"],
-  | "opening_songs"
-  | "opening_hypothesis"
-  | "opening_lane"
-  | "opening_lane_confidence"
-  | "opening_analysis_json"
-> | null;
+type OpenerProfile = {
+  opening_songs: string[] | null;
+  opening_hypothesis: string | null;
+  opening_lane: string | null;
+  opening_lane_confidence: number | null;
+  opening_analysis_json: { candidate_dimensions?: Record<string, number> } | null;
+} | null;
 
 // Canonical 10 axes. Source of truth: public.axes (9 rows) + transformation.
 // Moods (nostalgic, dreamy, dark, hopeful, romantic, etc.) are DERIVED from
