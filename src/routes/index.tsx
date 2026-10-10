@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Twenty song matchups. Three minutes. Discover what your taste reveals about you.",
+          "Six song matchups. About three minutes. Discover what your taste reveals about you.",
       },
       { property: "og:title", content: "MusicDNA — Why do you love the songs you love?" },
       {

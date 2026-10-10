@@ -122,7 +122,7 @@ function SharePage() {
         <section className="mt-16 border-t hairline pt-10">
           <p className="eyebrow mb-3">Think you can be read this cleanly?</p>
           <h2 className="font-serif text-3xl leading-tight mb-6 max-w-xl">
-            Challenge a friend. Sixty matchups. No genre labels. No flattery.
+            Challenge a friend. Six matchups. No genre labels. No flattery.
           </h2>
           <div className="flex flex-wrap gap-3">
             <Link

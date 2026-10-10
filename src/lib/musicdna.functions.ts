@@ -381,6 +381,7 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
+import { evaluateClaim } from "@/musicdna/engine/claims";
 import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
@@ -1899,7 +1900,7 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
         acc[dim].magnitude += Math.abs(delta) * w;
         if (delta > 5) acc[dim].chosen_dir += 1;
         else if (delta < -5) acc[dim].rejected_dir += 1;
-        if (Math.abs(delta) > 15 && acc[dim].examples.length < 3) {
+        if (Math.abs(delta) > 15) {
           acc[dim].examples.push({ chosen: c.chosen!.title, rejected: c.rejected!.title, delta });
         }
       }
@@ -1910,7 +1911,9 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
       const supporting_choices = direction === "hi" ? p.chosen_dir : p.rejected_dir;
       const label = DIM_LABEL[dim];
       // confidence = directional consistency * magnitude factor
-      const consistency = p.supporting > 0 ? supporting_choices / p.supporting : 0;
+      const contradicting_choices = direction === "hi" ? p.rejected_dir : p.chosen_dir;
+      const claim = evaluateClaim(supporting_choices, contradicting_choices);
+      const consistency = claim.consistency;
       const magnitudeFactor = Math.min(1, p.magnitude / (p.supporting * 30 || 1));
       const confidence = Number((consistency * 0.7 + magnitudeFactor * 0.3).toFixed(3));
       return {
@@ -1920,7 +1923,13 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
         supporting_choices,
         tested_total: p.supporting,
         confidence,
-        examples: p.examples,
+        contradicting_choices,
+        claim_status: claim.status,
+        claim_eligible: claim.eligible,
+        // Only examples that point the same way as the claim (no opposing picks).
+        examples: p.examples
+          .filter((e) => (direction === "hi" ? e.delta > 0 : e.delta < 0))
+          .slice(0, 3),
         tradeoff: `${direction === "hi" ? label?.hi : label?.lo} over ${direction === "hi" ? label?.lo : label?.hi}`,
       };
     }).sort((x, y) => y.confidence - x.confidence);
@@ -1974,13 +1983,12 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
     // Tuned for 6-round adaptive test: 2 supporting choices on an axis is
     // enough to call a tendency, as long as direction is consistent and the
     // magnitude is real. 0.55 keeps out pure noise without demanding 12 rounds.
-    const MIN_SUPPORT = 2;
-    const MIN_CONFIDENCE = 0.55;
+    // D01 common claim policy (see engine/claims.ts).
     const allowed_claims = patterns
-      .filter((p) => p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE)
+      .filter((p) => p.claim_eligible)
       .slice(0, 5);
     const blocked_claims = patterns
-      .filter((p) => !(p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE))
+      .filter((p) => !p.claim_eligible)
       .slice(0, 5);
 
     // -------- Archetype (via engine.assignArchetype — one implementation of
@@ -3105,7 +3113,7 @@ You are given:
 
 Your job: write 2–4 sentences that connect 2–3 of the strongest patterns into ONE specific reading. NAME at least two of the songs from the evidence in the prose. Use contrast moves: "It's not X. It's Y." Be defensible.
 
-If NO patterns are provided, that is itself the finding. Write the "refused to collapse" read: this listener picked across too many directions for one thesis to hold, and that's a real signal — broad ear, not random. Reference the songs they chose.
+If NO patterns are provided, the evidence is insufficient. Say so plainly: not enough consistent choices to support a read yet. Do NOT call this broad taste, eclectic, inconsistent, or any identity. Reference only songs they actually chose, and invite them to keep going.
 
 Return STRICT JSON:
 {
