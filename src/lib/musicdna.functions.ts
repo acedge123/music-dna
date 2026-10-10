@@ -3232,10 +3232,10 @@ export async function latestResultVersion(supabase: AuthedSupabase, sessionId: s
 async function computeFinalSynthesis(supabase: AuthedSupabase, userId: string, data: { sessionId: string }): Promise<SynthPayload> {
     const sessionRes = await supabase
       .from("sessions")
-      .select("user_id, vector")
+      .select("user_id, vector, probe_state")
       .eq("id", data.sessionId)
       .single();
-    const session = sessionRes.data as { user_id: string; vector: Record<string, number> | null } | null;
+    const session = sessionRes.data as { user_id: string; vector: Record<string, number> | null; probe_state: { skipped_pairing_ids?: string[] } | null } | null;
     const empty: SynthPayload = { synthesis: "", kept_choosing: [], counter_reads: [] };
     if (!session || session.user_id !== userId) return empty;
     const derivedMoods = deriveDescriptors(session.vector ?? {});
@@ -3281,7 +3281,23 @@ async function computeFinalSynthesis(supabase: AuthedSupabase, userId: string, d
     const songsPicked = observations.slice(0, 12).map((o) => o.chosen).join(", ") || "—";
 
     let synthesis = "";
-    try {
+    // RES03: when nothing cleared the claim policy, the ending is written
+    // deterministically and says WHY — no model, so no trait guesses from
+    // one or two picks.
+    const answeredN = observations.length;
+    const skippedN = session.probe_state?.skipped_pairing_ids?.length ?? 0;
+    const named = observations.slice(0, 3).map((o) => `${o.chosen} over ${o.rejected}`).join("; ");
+    if (kept_choosing.length === 0) {
+      synthesis =
+        answeredN === 0
+          ? "No read yet. None of these matchups landed on songs you know — that's on the catalog, not you. Start over with different openers and we'll find your lane."
+          : skippedN >= 3
+            ? `These weren't your songs. You knew ${answeredN === 1 ? "one matchup" : `${answeredN} matchups`} (${named}) and skipped ${skippedN}. That's not enough to say anything true about how you listen — so I won't.`
+            : answeredN < 3
+              ? `${answeredN === 1 ? "One pick" : "Two picks"} isn't a pattern. ${named} — noted, not decoded. Give me a few more and I'll commit to something.`
+              : `Not enough consistent evidence for a read yet. ${named} pulled in different directions, and these matchups can't settle which one is you. Push back or keep going.`;
+    }
+    if (!synthesis) try {
       const txt = await ai([
         { role: "system", content: SYNTH_VOICE },
       { role: "user", content:
@@ -3899,8 +3915,23 @@ export async function currentReadImpl(supabase: AuthedSupabase, userId: string, 
       const g = gaps[0];
       const pole = g ? POLES[g.d]?.[g.delta >= 0 ? "hi" : "lo"] : undefined;
       const line = pickByHash(pole?.observations, answered + dimSeed(g?.d ?? "x"));
+      const obsThesis = `${label(latest.chosen)} over ${label(latest.rejected)}. ${line ?? "Noted."}`;
+      // Save early observations too, so a resumed session shows them (READ03).
+      {
+        const { data: prev } = await supabase.from("event_log").select("props")
+          .eq("session_id", data.sessionId).eq("event_type", "read_shown")
+          .order("created_at", { ascending: false }).limit(1);
+        const prevAnswered = (prev?.[0]?.props as { answered?: number } | null)?.answered;
+        if (prevAnswered !== answered) {
+          await supabase.from("event_log").insert({
+            user_id: userId, session_id: data.sessionId, event_type: "read_shown",
+            props: { axis: g?.d ?? null, direction: g && g.delta >= 0 ? "hi" : "lo", tier: "observation",
+              answered, thesis: obsThesis, revised: false } as never,
+          });
+        }
+      }
       return {
-        thesis: `${label(latest.chosen)} over ${label(latest.rejected)}. ${line ?? "Noted."}`,
+        thesis: obsThesis,
         hook: answered === 1 ? "One data point. Let's get another." : "Twice now. Could still be a coincidence.",
         topDim: g?.d ?? null,
         strength: g ? Math.abs(g.delta) : 0,
