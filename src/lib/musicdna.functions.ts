@@ -891,7 +891,7 @@ export async function nextPairingImpl(
         round,
         answered,
         max_rounds: stop.max_answered,
-        stop_reason: "budget" as const,
+        stop_reason: "catalog_exhausted" as const,
         confidence: stop.confidence,
         done: true as const,
       };
