@@ -2937,7 +2937,7 @@ export const submitFeedback = createServerFn({ method: "POST" })
 
 // Apply explicit thumb/accuracy/comment to the per-user critic_profile.
 async function nudgeCriticFromFeedback(
-  supabase: { from: (t: string) => any },
+  supabase: AuthedSupabase,
   userId: string,
   fb: {
     accuracy?: string | null;
@@ -4140,7 +4140,7 @@ type Outcome = "landed" | "ignored" | "pushed_back";
 const clampDial = (n: number) => Math.max(-DIAL_BOUND, Math.min(DIAL_BOUND, Math.round(n)));
 
 async function loadCriticProfile(
-  supabase: { from: (t: string) => any },
+  supabase: AuthedSupabase,
   userId: string,
 ): Promise<CriticProfileRow> {
   const { data } = await supabase
@@ -4208,7 +4208,7 @@ function buildVoiceModulation(p: CriticProfileRow): string | null {
 }
 
 async function persistCriticProfile(
-  supabase: { from: (t: string) => any },
+  supabase: AuthedSupabase,
   userId: string,
   next: CriticProfileRow,
 ): Promise<void> {
@@ -4302,7 +4302,7 @@ function applyToneSignals(p: CriticProfileRow, s: ToneSignals): CriticProfileRow
 type ChatRole = "user" | "assistant" | "system";
 
 async function ensureChatSessionForUser(
-  supabase: { from: (t: string) => any },
+  supabase: AuthedSupabase,
   userId: string,
 ): Promise<{ sessionId: string; profile: any } | null> {
   const { data: profile } = await supabase
