@@ -4,6 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureAnonSession } from "@/lib/anon-auth";
 import { chatTurn, listChat, getMyResult } from "@/lib/musicdna.functions";
+
+type ProfileShape = {
+  opening_songs: string[] | null;
+  opening_hypothesis: string | null;
+  opening_lane: string | null;
+  opening_lane_confidence: number | null;
+};
+type MyResult = {
+  profile: ProfileShape | null;
+} | null;
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/me")({
@@ -44,7 +54,7 @@ function Me() {
   const resultFn = useServerFn(getMyResult);
 
   const [bootError, setBootError] = useState<string | null>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<ProfileShape | null>(null);
   const [openingSongs, setOpeningSongs] = useState<string[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMsg[]>([]);
@@ -62,7 +72,7 @@ function Me() {
         const { data: u } = await supabase.auth.getUser();
         setIsAnon(Boolean(u.user?.is_anonymous));
         const [r, h] = await Promise.all([
-          resultFn() as Promise<any>,
+          resultFn() as Promise<MyResult>,
           listFn({ data: {} } as never) as Promise<{
             sessionId: string | null;
             messages: ChatMsg[];
@@ -212,7 +222,7 @@ function Me() {
           )}
 
           {/* Chat surface */}
-          {profile?.opening_songs?.length > 0 && (
+          {(profile?.opening_songs?.length ?? 0) > 0 && (
             <section className="flex-1 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <p className="eyebrow">talk to the critic</p>

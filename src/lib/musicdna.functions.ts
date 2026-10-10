@@ -62,6 +62,14 @@ function seedFrom(sessionId: string, round: number): number {
 // the auth middleware so agents can drive end-to-end runs without auth.
 export type AuthedSupabase = SupabaseClient<Database>;
 
+type OpenerProfile = {
+  opening_songs: string[] | null;
+  opening_hypothesis: string | null;
+  opening_lane: string | null;
+  opening_lane_confidence: number | null;
+  opening_analysis_json: { candidate_dimensions?: Record<string, number> } | null;
+} | null;
+
 // Canonical 10 axes. Source of truth: public.axes (9 rows) + transformation.
 // Moods (nostalgic, dreamy, dark, hopeful, romantic, etc.) are DERIVED from
 // combinations of these — see deriveDescriptors below. Never stored.
@@ -2937,7 +2945,7 @@ export const submitFeedback = createServerFn({ method: "POST" })
 
 // Apply explicit thumb/accuracy/comment to the per-user critic_profile.
 async function nudgeCriticFromFeedback(
-  supabase: { from: (t: string) => any },
+  supabase: AuthedSupabase,
   userId: string,
   fb: {
     accuracy?: string | null;
@@ -4140,7 +4148,7 @@ type Outcome = "landed" | "ignored" | "pushed_back";
 const clampDial = (n: number) => Math.max(-DIAL_BOUND, Math.min(DIAL_BOUND, Math.round(n)));
 
 async function loadCriticProfile(
-  supabase: { from: (t: string) => any },
+  supabase: AuthedSupabase,
   userId: string,
 ): Promise<CriticProfileRow> {
   const { data } = await supabase
@@ -4208,7 +4216,7 @@ function buildVoiceModulation(p: CriticProfileRow): string | null {
 }
 
 async function persistCriticProfile(
-  supabase: { from: (t: string) => any },
+  supabase: AuthedSupabase,
   userId: string,
   next: CriticProfileRow,
 ): Promise<void> {
@@ -4302,9 +4310,9 @@ function applyToneSignals(p: CriticProfileRow, s: ToneSignals): CriticProfileRow
 type ChatRole = "user" | "assistant" | "system";
 
 async function ensureChatSessionForUser(
-  supabase: { from: (t: string) => any },
+  supabase: AuthedSupabase,
   userId: string,
-): Promise<{ sessionId: string; profile: any } | null> {
+): Promise<{ sessionId: string; profile: OpenerProfile } | null> {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
@@ -4312,6 +4320,7 @@ async function ensureChatSessionForUser(
     )
     .eq("user_id", userId)
     .maybeSingle();
+  const openerProfile = profile as OpenerProfile;
 
   // Reuse the most recent session if one exists.
   const { data: existing } = await supabase
@@ -4320,16 +4329,13 @@ async function ensureChatSessionForUser(
     .eq("user_id", userId)
     .order("started_at", { ascending: false })
     .limit(1);
-  if (existing && existing.length) return { sessionId: existing[0].id, profile };
+  if (existing && existing.length) return { sessionId: existing[0].id, profile: openerProfile };
 
   // Create a session from the opener so chat has somewhere to live.
-  if (!profile?.opening_songs) return null;
-  const lane = (profile.opening_lane as string | null) ?? "general";
-  const conf = Number(profile.opening_lane_confidence ?? 0);
-  const dims = (profile.opening_analysis_json?.candidate_dimensions ?? {}) as Record<
-    string,
-    number
-  >;
+  if (!openerProfile?.opening_songs) return null;
+  const lane = openerProfile.opening_lane ?? "general";
+  const conf = Number(openerProfile.opening_lane_confidence ?? 0);
+  const dims = openerProfile.opening_analysis_json?.candidate_dimensions ?? {};
   const vector = seedVectorFromPriors(dims);
   const { data: created, error } = await supabase
     .from("sessions")
@@ -4344,7 +4350,7 @@ async function ensureChatSessionForUser(
     .select("id")
     .single();
   if (error || !created) return null;
-  return { sessionId: created.id, profile };
+  return { sessionId: created.id, profile: openerProfile };
 }
 
 export const chatTurn = createServerFn({ method: "POST" })
@@ -4361,7 +4367,7 @@ export const chatTurn = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
 
     let sessionId = data.sessionId ?? null;
-    let profile: any = null;
+    let profile: OpenerProfile = null;
     if (!sessionId) {
       const anchor = await ensureChatSessionForUser(supabase as never, userId);
       if (!anchor) {
@@ -4387,7 +4393,7 @@ export const chatTurn = createServerFn({ method: "POST" })
         .select("opening_songs, opening_hypothesis, opening_lane, opening_analysis_json")
         .eq("user_id", userId)
         .maybeSingle();
-      profile = p;
+      profile = p as OpenerProfile;
     }
 
     // Save the user turn first so it shows up even if AI fails.
@@ -4992,7 +4998,9 @@ export async function recordReactionImpl(
   const duplicate = (rErr as { code?: string } | null)?.code === "23505";
   if (rErr && !duplicate) throw new Error(`Couldn't save reaction: ${rErr.message}`);
   if (!duplicate) {
-    const { error: eErr } = await (await trustedEventLog()).insert({
+    const { error: eErr } = await (
+      await trustedEventLog()
+    ).insert({
       user_id: userId,
       session_id: data.sessionId,
       pairing_id: data.pairingId ?? null,
