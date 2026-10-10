@@ -49,10 +49,7 @@ export async function loadPublicDefiningChoices(
     chosen: LedgerSong | null;
     rejected: LedgerSong | null;
   };
-  const ledger = buildLedger(
-    ((data ?? []) as unknown as Row[]).map(ledgerChoiceFromRow),
-    DIMS,
-  );
+  const ledger = buildLedger(((data ?? []) as unknown as Row[]).map(ledgerChoiceFromRow), DIMS);
   const out: PublicDefiningChoice[] = [];
   const seen = new Set<string>();
   for (const axis of ledger.axes.filter((a) => a.eligible)) {

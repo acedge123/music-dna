@@ -4992,7 +4992,9 @@ export async function recordReactionImpl(
   const duplicate = (rErr as { code?: string } | null)?.code === "23505";
   if (rErr && !duplicate) throw new Error(`Couldn't save reaction: ${rErr.message}`);
   if (!duplicate) {
-    const { error: eErr } = await (await trustedEventLog()).insert({
+    const { error: eErr } = await (
+      await trustedEventLog()
+    ).insert({
       user_id: userId,
       session_id: data.sessionId,
       pairing_id: data.pairingId ?? null,

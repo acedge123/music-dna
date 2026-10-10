@@ -92,7 +92,14 @@ describe("declared tests only (TGA-303)", () => {
   });
   it("undeclared axes are ignored even when values differ", () => {
     const l = buildLedger(
-      [{ pairing_id: "p", tests: ["movement"], chosen: { movement: 90, tension: 90 }, rejected: { movement: 10, tension: 0 } }],
+      [
+        {
+          pairing_id: "p",
+          tests: ["movement"],
+          chosen: { movement: 90, tension: 90 },
+          rejected: { movement: 10, tension: 0 },
+        },
+      ],
       ["movement", "tension"],
     );
     expect(l.entries.map((e) => e.axis)).toEqual(["movement"]);
