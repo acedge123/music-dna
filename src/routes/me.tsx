@@ -4,6 +4,12 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureAnonSession } from "@/lib/anon-auth";
 import { chatTurn, listChat, getMyResult } from "@/lib/musicdna.functions";
+import type { Database } from "@/integrations/supabase/types";
+
+type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type MyResult = {
+  profile: Pick<ProfileRow, "opening_songs" | "opening_hypothesis"> | null;
+} | null;
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/me")({
@@ -44,7 +50,7 @@ function Me() {
   const resultFn = useServerFn(getMyResult);
 
   const [bootError, setBootError] = useState<string | null>(null);
-  const [profile, setProfile] = useState<any>(null);
+  const [profile, setProfile] = useState<ProfileRow | null>(null);
   const [openingSongs, setOpeningSongs] = useState<string[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMsg[]>([]);
@@ -62,7 +68,7 @@ function Me() {
         const { data: u } = await supabase.auth.getUser();
         setIsAnon(Boolean(u.user?.is_anonymous));
         const [r, h] = await Promise.all([
-          resultFn() as Promise<any>,
+          resultFn() as Promise<MyResult>,
           listFn({ data: {} } as never) as Promise<{
             sessionId: string | null;
             messages: ChatMsg[];
