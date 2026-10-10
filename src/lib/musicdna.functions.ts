@@ -4352,7 +4352,7 @@ async function ensureChatSessionForUser(
     .select("id")
     .single();
   if (error || !created) return null;
-  return { sessionId: created.id, profile };
+  return { sessionId: created.id, profile: openerProfile };
 }
 
 export const chatTurn = createServerFn({ method: "POST" })
@@ -4395,7 +4395,7 @@ export const chatTurn = createServerFn({ method: "POST" })
         .select("opening_songs, opening_hypothesis, opening_lane, opening_analysis_json")
         .eq("user_id", userId)
         .maybeSingle();
-      profile = p;
+      profile = p as OpenerProfile;
     }
 
     // Save the user turn first so it shows up even if AI fails.

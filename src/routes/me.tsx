@@ -4,11 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { ensureAnonSession } from "@/lib/anon-auth";
 import { chatTurn, listChat, getMyResult } from "@/lib/musicdna.functions";
-import type { Database } from "@/integrations/supabase/types";
 
-type ProfileRow = Database["public"]["Tables"]["profiles"]["Row"];
+type ProfileShape = {
+  opening_songs: string[] | null;
+  opening_hypothesis: string | null;
+  opening_lane: string | null;
+  opening_lane_confidence: number | null;
+};
 type MyResult = {
-  profile: Pick<ProfileRow, "opening_songs" | "opening_hypothesis"> | null;
+  profile: ProfileShape | null;
 } | null;
 import { toast } from "sonner";
 
@@ -50,7 +54,7 @@ function Me() {
   const resultFn = useServerFn(getMyResult);
 
   const [bootError, setBootError] = useState<string | null>(null);
-  const [profile, setProfile] = useState<ProfileRow | null>(null);
+  const [profile, setProfile] = useState<ProfileShape | null>(null);
   const [openingSongs, setOpeningSongs] = useState<string[]>([]);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMsg[]>([]);
