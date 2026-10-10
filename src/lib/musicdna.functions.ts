@@ -521,7 +521,7 @@ export async function nextPairingImpl(
 
 
     const pairingSelect = `
-      id, tests, hypothesis, why_good, diagnostic_weight, lane, is_bootstrap,
+      id, tests, diagnostic_weight, lane, is_bootstrap,
       song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane),
       song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane)
     `;
