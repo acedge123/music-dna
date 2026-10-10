@@ -472,15 +472,17 @@ function Onboarding() {
     }
     setBusy(true);
     try {
-      const { pairing: nxt, round: nr, done: isDone, max_rounds } = await nextFn({
+      const { pairing: nxt, round: nr, done: isDone, max_rounds, prompt } = await nextFn({
         data: { sessionId, steer: kind === "harder" ? "harder" : "not_quite" },
-      }) as { pairing: Pairing | null; round: number; done: boolean; max_rounds?: number };
+      }) as { pairing: Pairing | null; round: number; done: boolean; max_rounds?: number; prompt?: string };
       if (max_rounds) setMaxRounds(max_rounds);
       if (!isDone && nxt) {
         setPairing(nxt as unknown as Pairing);
         setRound(nr);
         startedAt.current = Date.now();
-        setNextPrompt(kind === "harder" ? "Fine. Try this one." : "Alright — other side of the same question.");
+        // Acknowledge the reaction, then ask the question this matchup actually tests.
+        const ack = kind === "harder" ? "Fine. Harder one." : "Alright, let's check that.";
+        setNextPrompt(prompt ? `${ack} ${prompt}` : ack);
       }
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Couldn't switch that up.");

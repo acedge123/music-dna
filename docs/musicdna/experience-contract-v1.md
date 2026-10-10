@@ -58,7 +58,7 @@ Body: `{ kind: "thats_me" | "not_quite" | "harder", pairing_id? }`
 
 ```json
 { "contract": 1, "effect": "pacing_only | retest_pairing | harder_pairing | no_alternative",
-  "message": "Alright — other side of the same question.",
+  "message": "Alright, let's check that. This one's about how big a song should feel.",
   "next": <same shape as /next v1> | null }
 ```
 - `retest_pairing` and `harder_pairing` replace the outstanding matchup with `next.pairing`.

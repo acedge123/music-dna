@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { buildPublicReveal, type PublicRevealInput } from "@/musicdna/engine/reveal";
 
 // Public read of a single completed session, addressed by an opaque share_token
@@ -38,27 +39,7 @@ export const getPublicSession = createServerFn({ method: "GET" })
     if (error) throw new Error(error.message);
     if (!session) throw new Error("Session not found");
 
-    const { data: choices } = await supabaseAdmin
-      .from("choices")
-      .select(
-        "ms_to_decide, chosen:chosen_song_id(title,artist), rejected:rejected_song_id(title,artist)",
-      )
-      .eq("session_id", session.id)
-      .order("ms_to_decide", { ascending: true, nullsFirst: false })
-      .limit(5);
-
-    type SongLite = { title: string; artist: string } | null;
-    const definingChoices = ((choices ?? []) as unknown as Array<{
-      chosen: SongLite;
-      rejected: SongLite;
-    }>)
-      .filter((c) => c.chosen && c.rejected)
-      .map((c) => ({
-        chosen_title: c.chosen!.title,
-        chosen_artist: c.chosen!.artist,
-        rejected_title: c.rejected!.title,
-        rejected_artist: c.rejected!.artist,
-      }));
+    const definingChoices = await loadPublicDefiningChoices(supabaseAdmin, session.id);
 
     const reveal = buildPublicReveal({
       session: session as PublicRevealInput["session"],

@@ -65,7 +65,7 @@ export const Route = createFileRoute("/api/v1/session/$id/react")({
             contract: 1,
             effect: replaced ? (steer === "harder" ? "harder_pairing" : "retest_pairing") : "no_alternative",
             message: replaced
-              ? steer === "harder" ? "Fine. Try this one." : "Alright — other side of the same question."
+              ? `${steer === "harder" ? "Fine. Harder one." : "Alright, let's check that."} ${next.prompt ?? ""}`.trim()
               : "Nothing in the catalog tests that differently right now. Your call on the next one stands.",
             next,
           });
