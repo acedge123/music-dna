@@ -13,7 +13,7 @@ import { useAuth } from "@/hooks/use-auth";
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({ meta: [{ title: "Your reading — MusicDNA" }] }),
   errorComponent: ({ error }) => (
-    <div className="px-6 py-20 text-muted-foreground">Couldn't load: {error.message}</div>
+    <div className="px-6 py-20 text-muted-foreground">Couldn't load: {error instanceof Error ? error.message : String(error)}</div>
   ),
   component: () => (
     <Suspense fallback={<div className="px-6 py-20 text-muted-foreground">Loading…</div>}>

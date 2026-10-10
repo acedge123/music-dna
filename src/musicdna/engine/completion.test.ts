@@ -53,3 +53,13 @@ describe("sessionCompletion", () => {
     expect(r.confidence).toBeCloseTo(0.4);
   });
 });
+
+import { sessionCompletion as sc2 } from "./pairing";
+describe("D02 consecutive skips", () => {
+  it("ends after 3 consecutive skips even with progress", () => {
+    expect(sc2({ answered: 4, skipped: 3, consecutive_skips: 3, vector: {}, dims: ["a"] }).reason).toBe("skip_bound");
+  });
+  it("non-consecutive skips do not end", () => {
+    expect(sc2({ answered: 4, skipped: 3, consecutive_skips: 1, vector: {}, dims: ["a"] }).done).toBe(false);
+  });
+});

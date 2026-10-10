@@ -381,6 +381,7 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
+import { evaluateClaim, CLAIM_POLICY_VERSION, CLAIM_MIN_SUPPORT, CLAIM_MIN_CONSISTENCY } from "@/musicdna/engine/claims";
 import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
@@ -531,9 +532,23 @@ export async function nextPairingImpl(
     // don't advance the budget — they only bound the session via skip_bound.
     const answered = new Set((usedRes.data ?? []).map((c) => c.pairing_id)).size;
     const skippedCount = (probeState.skipped_pairing_ids ?? []).length;
+    // D02: count skips since the most recent answered choice.
+    const { data: recentEvents } = await supabase
+      .from("event_log")
+      .select("event_type")
+      .eq("session_id", data.sessionId)
+      .in("event_type", ["choice_scored", "pairing_skipped"])
+      .order("created_at", { ascending: false })
+      .limit(3);
+    let consecutiveSkips = 0;
+    for (const ev of recentEvents ?? []) {
+      if (ev.event_type !== "pairing_skipped") break;
+      consecutiveSkips += 1;
+    }
     const stop = sessionCompletion({
       answered,
       skipped: skippedCount,
+      consecutive_skips: consecutiveSkips,
       vector,
       dims: DIMS as readonly string[],
     });
@@ -1899,7 +1914,7 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
         acc[dim].magnitude += Math.abs(delta) * w;
         if (delta > 5) acc[dim].chosen_dir += 1;
         else if (delta < -5) acc[dim].rejected_dir += 1;
-        if (Math.abs(delta) > 15 && acc[dim].examples.length < 3) {
+        if (Math.abs(delta) > 15) {
           acc[dim].examples.push({ chosen: c.chosen!.title, rejected: c.rejected!.title, delta });
         }
       }
@@ -1910,7 +1925,9 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
       const supporting_choices = direction === "hi" ? p.chosen_dir : p.rejected_dir;
       const label = DIM_LABEL[dim];
       // confidence = directional consistency * magnitude factor
-      const consistency = p.supporting > 0 ? supporting_choices / p.supporting : 0;
+      const contradicting_choices = direction === "hi" ? p.rejected_dir : p.chosen_dir;
+      const claim = evaluateClaim(supporting_choices, contradicting_choices);
+      const consistency = claim.consistency;
       const magnitudeFactor = Math.min(1, p.magnitude / (p.supporting * 30 || 1));
       const confidence = Number((consistency * 0.7 + magnitudeFactor * 0.3).toFixed(3));
       return {
@@ -1920,7 +1937,13 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
         supporting_choices,
         tested_total: p.supporting,
         confidence,
-        examples: p.examples,
+        contradicting_choices,
+        claim_status: claim.status,
+        claim_eligible: claim.eligible,
+        // Only examples that point the same way as the claim (no opposing picks).
+        examples: p.examples
+          .filter((e) => (direction === "hi" ? e.delta > 0 : e.delta < 0))
+          .slice(0, 3),
         tradeoff: `${direction === "hi" ? label?.hi : label?.lo} over ${direction === "hi" ? label?.lo : label?.hi}`,
       };
     }).sort((x, y) => y.confidence - x.confidence);
@@ -1974,13 +1997,12 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
     // Tuned for 6-round adaptive test: 2 supporting choices on an axis is
     // enough to call a tendency, as long as direction is consistent and the
     // magnitude is real. 0.55 keeps out pure noise without demanding 12 rounds.
-    const MIN_SUPPORT = 2;
-    const MIN_CONFIDENCE = 0.55;
+    // D01 common claim policy (see engine/claims.ts).
     const allowed_claims = patterns
-      .filter((p) => p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE)
+      .filter((p) => p.claim_eligible)
       .slice(0, 5);
     const blocked_claims = patterns
-      .filter((p) => !(p.supporting_choices >= MIN_SUPPORT && p.confidence >= MIN_CONFIDENCE))
+      .filter((p) => !p.claim_eligible)
       .slice(0, 5);
 
     // -------- Archetype (via engine.assignArchetype — one implementation of
@@ -2132,7 +2154,7 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
       counterarguments,
       allowed_claims,
       blocked_claims,
-      evidence_thresholds: { supporting_choices: MIN_SUPPORT, confidence_threshold: MIN_CONFIDENCE },
+      evidence_thresholds: { policy: CLAIM_POLICY_VERSION, supporting_choices: CLAIM_MIN_SUPPORT, consistency_threshold: CLAIM_MIN_CONSISTENCY },
       narrative,
     };
     await supabase.from("session_reasoning").upsert(reasoningRow, { onConflict: "session_id" });
@@ -3105,7 +3127,7 @@ You are given:
 
 Your job: write 2–4 sentences that connect 2–3 of the strongest patterns into ONE specific reading. NAME at least two of the songs from the evidence in the prose. Use contrast moves: "It's not X. It's Y." Be defensible.
 
-If NO patterns are provided, that is itself the finding. Write the "refused to collapse" read: this listener picked across too many directions for one thesis to hold, and that's a real signal — broad ear, not random. Reference the songs they chose.
+If NO patterns are provided, the evidence is insufficient. Say so plainly: not enough consistent choices to support a read yet. Do NOT call this broad taste, eclectic, inconsistent, or any identity. Reference only songs they actually chose, and invite them to keep going.
 
 Return STRICT JSON:
 {
@@ -3206,7 +3228,7 @@ Return the JSON now.` },
     if (!synthesis) {
       synthesis = kept_choosing.length
         ? `Across these matchups you kept choosing ${kept_choosing[0].tradeoff}. The shape's there — it's not loud yet, but it's consistent.`
-        : `You refused to collapse into a single pattern. Every time a clear read started to form — ${songsPicked.split(",").slice(0, 3).join(",")} — another choice complicated it. That's either inconsistency or unusually broad taste. Probably the second.`;
+        : `Not enough consistent evidence for a read yet. Your picks — ${songsPicked.split(",").slice(0, 3).join(",")} — pulled in different directions, and six matchups can't settle which one is you. Push back or keep going.`;
     }
 
     await supabase
