@@ -39,7 +39,7 @@ export const Route = createFileRoute("/api/v1/session/$id/react")({
             .from("sessions").select("user_id, completed_at").eq("id", sid.data).maybeSingle();
           if (!session || session.user_id !== userId) return errorResponse("NOT_FOUND", "Session not found", 404);
 
-          await supabase.from("event_log").insert({
+          await (await (await import("@/integrations/supabase/client.server")).supabaseAdmin.from("event_log")).insert({
             user_id: userId,
             session_id: sid.data,
             pairing_id: body.data.pairing_id ?? null,

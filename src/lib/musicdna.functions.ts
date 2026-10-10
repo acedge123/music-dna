@@ -652,7 +652,7 @@ export async function nextPairingImpl(
           routing_mode: routingMode,
           shadow_pick: ctx.shadow ?? null,
         };
-        await supabase.from("event_log").insert({
+        await (await trustedEventLog()).insert({
           user_id: sessionRes.data?.user_id ?? null,
           session_id: data.sessionId,
           pairing_id: pairingId,
@@ -1736,7 +1736,7 @@ export async function skipPairingImpl(
   if (uErr) throw new Error(uErr.message);
 
   try {
-    await supabase.from("event_log").insert({
+    await (await trustedEventLog()).insert({
       user_id: userId,
       session_id: data.sessionId,
       pairing_id: data.pairingId,
@@ -1815,7 +1815,7 @@ async function emitChoiceDiagnostics(
        ...assignment.runners_up.map((r) => ({ id: r.id, name: r.name, score: r.score }))]
     : [];
 
-  await supabase.from("event_log").insert({
+  await (await trustedEventLog()).insert({
     user_id: userId,
     session_id: args.sessionId,
     pairing_id: args.pairingId,
@@ -1852,7 +1852,7 @@ async function emitChoiceDiagnostics(
   const stop = sessionCompletion({ answered: args.round, vector: args.weightedVec, dims: DIMS as readonly string[] });
   const isFinal = stop.done;
   if (isCheckpoint || isFinal) {
-    await supabase.from("event_log").insert({
+    await (await trustedEventLog()).insert({
       user_id: userId,
       session_id: args.sessionId,
       event_type: "archetype_ranking_snapshot",
@@ -3658,7 +3658,7 @@ No prose, no markdown fences.`;
         // D04: chat is self-report, not pairing evidence. The session vector
         // and the original result stay frozen; the refinement is recorded
         // separately and produces a new result version with provenance.
-        await supabase.from("event_log").insert({
+        await (await trustedEventLog()).insert({
           user_id: userId,
           session_id: sessionId,
           event_type: "self_report",
@@ -3923,7 +3923,7 @@ export async function currentReadImpl(supabase: AuthedSupabase, userId: string, 
           .order("created_at", { ascending: false }).limit(1);
         const prevAnswered = (prev?.[0]?.props as { answered?: number } | null)?.answered;
         if (prevAnswered !== answered) {
-          await supabase.from("event_log").insert({
+          await (await trustedEventLog()).insert({
             user_id: userId, session_id: data.sessionId, event_type: "read_shown",
             props: { axis: g?.d ?? null, direction: g && g.delta >= 0 ? "hi" : "lo", tier: "observation",
               answered, thesis: obsThesis, revised: false } as never,
@@ -4045,7 +4045,7 @@ export async function currentReadImpl(supabase: AuthedSupabase, userId: string, 
 
     // Record what was shown so the next read can detect a real revision.
     if (priorProps?.answered !== answered) {
-      await supabase.from("event_log").insert({
+      await (await trustedEventLog()).insert({
         user_id: userId,
         session_id: data.sessionId,
         event_type: "read_shown",
@@ -4066,3 +4066,11 @@ export const currentRead = createServerFn({ method: "POST" })
     z.object({ sessionId: z.string().uuid() }).parse(d),
   )
   .handler(async ({ data, context }) => currentReadImpl(context.supabase, context.userId, data));
+
+// Trusted event_log writer. Event types that drive engine logic (skip stop
+// rule, revision detection, self-report, diagnostics) are rejected by RLS for
+// listener inserts; callers MUST have verified session ownership first.
+async function trustedEventLog() {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  return supabaseAdmin.from("event_log");
+}
