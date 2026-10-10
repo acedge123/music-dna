@@ -222,7 +222,7 @@ function Me() {
           )}
 
           {/* Chat surface */}
-          {profile?.opening_songs?.length > 0 && (
+          {(profile?.opening_songs?.length ?? 0) > 0 && (
             <section className="flex-1 flex flex-col gap-4">
               <div className="flex items-center justify-between">
                 <p className="eyebrow">talk to the critic</p>
