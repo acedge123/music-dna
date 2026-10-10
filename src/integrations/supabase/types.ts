@@ -134,6 +134,7 @@ export type Database = {
         Row: {
           chosen_song_id: string
           created_at: string
+          evidence: Json | null
           id: string
           ms_to_decide: number | null
           mutation_id: string | null
@@ -145,6 +146,7 @@ export type Database = {
         Insert: {
           chosen_song_id: string
           created_at?: string
+          evidence?: Json | null
           id?: string
           ms_to_decide?: number | null
           mutation_id?: string | null
@@ -156,6 +158,7 @@ export type Database = {
         Update: {
           chosen_song_id?: string
           created_at?: string
+          evidence?: Json | null
           id?: string
           ms_to_decide?: number | null
           mutation_id?: string | null
@@ -688,6 +691,68 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "result_feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      session_reactions: {
+        Row: {
+          client: string
+          created_at: string
+          id: string
+          kind: string
+          mutation_id: string | null
+          pairing_id: string | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          client: string
+          created_at?: string
+          id?: string
+          kind: string
+          mutation_id?: string | null
+          pairing_id?: string | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          client?: string
+          created_at?: string
+          id?: string
+          kind?: string
+          mutation_id?: string | null
+          pairing_id?: string | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_reactions_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["pairing_id"]
+          },
+          {
+            foreignKeyName: "session_reactions_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_reactions_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings_with_songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_reactions_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
             referencedRelation: "sessions"
@@ -1382,6 +1447,7 @@ export type Database = {
       record_choice_atomic: {
         Args: {
           p_chosen_song_id: string
+          p_evidence?: Json
           p_ms_to_decide: number
           p_mutation_id: string
           p_pairing_id: string
