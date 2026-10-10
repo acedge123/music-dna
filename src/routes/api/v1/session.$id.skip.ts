@@ -14,6 +14,7 @@ import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 const BodySchema = z.object({
   pairing_id: z.string().uuid(),
   ms_to_decide: z.number().int().nonnegative().max(600_000).optional(),
+  reason: z.enum(["unknown_one", "unknown_both", "cant_choose"]).optional(),
 });
 
 const UUID = z.string().uuid();
@@ -46,6 +47,7 @@ export const Route = createFileRoute("/api/v1/session/$id/skip")({
             sessionId: sid.data,
             pairingId: body.data.pairing_id,
             msToDecide: body.data.ms_to_decide,
+            reason: body.data.reason,
           });
           return jsonResponse(result);
         } catch (e) {

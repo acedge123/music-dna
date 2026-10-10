@@ -7,7 +7,8 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
-import { finalizeSessionImpl } from "@/lib/musicdna.functions";
+import { finalSynthesisImpl, finalizeSessionImpl } from "@/lib/musicdna.functions";
+import { experienceVersion } from "./-experience";
 
 const UUID = z.string().uuid();
 
@@ -21,7 +22,19 @@ export const Route = createFileRoute("/api/v1/session/$id/reveal")({
           if (!sid.success) return errorResponse("INVALID_INPUT", "Invalid session id", 400);
           const { supabase, userId } = await verifyBearer(request);
           const result = await finalizeSessionImpl(supabase, userId, { sessionId: sid.data });
-          return jsonResponse(result);
+          if (experienceVersion(request) !== 1) return jsonResponse(result);
+          const synth = await finalSynthesisImpl(supabase, userId, { sessionId: sid.data });
+          const allowed = (result as { allowed_claims?: unknown[] }).allowed_claims ?? [];
+          return jsonResponse({
+            contract: 1,
+            result_version: synth.result_version ?? null,
+            outcome: allowed.length > 0 ? "supported" : "insufficient_evidence",
+            headline: synth.synthesis,
+            supporting_choices: synth.kept_choosing,
+            tension: synth.counter_reads[0] ?? null,
+            full: result,
+            share_token: (result as { share_token?: string }).share_token ?? null,
+          });
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);

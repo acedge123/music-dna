@@ -1,0 +1,21 @@
+{
+  "contract": 1,
+  "case": "zero_answer_skip_bound",
+  "description": "Three skips, no answers: honest skip-bound ending.",
+  "input": {
+    "choices": [],
+    "skipped": 3,
+    "consecutive_skips": 3
+  },
+  "expected": {
+    "ledger_version": "ledger-v1",
+    "policy_version": "d01-v1",
+    "answered": 0,
+    "lead_axis": null,
+    "outcome": "insufficient_evidence",
+    "completion": {
+      "done": true,
+      "reason": "skip_bound"
+    }
+  }
+}

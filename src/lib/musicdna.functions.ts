@@ -382,6 +382,7 @@ export const startSession = createServerFn({ method: "POST" })
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
 import { buildLedger, detectRevision, LEDGER_VERSION, type LedgerSong, type PriorRead } from "@/musicdna/engine/evidence";
+import { ENGINE_VERSION } from "@/musicdna/engine/versions";
 import { nextPromptFor } from "@/musicdna/engine/prompts";
 import { evaluateClaim, CLAIM_POLICY_VERSION, CLAIM_MIN_SUPPORT, CLAIM_MIN_CONSISTENCY } from "@/musicdna/engine/claims";
 import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
@@ -1421,7 +1422,31 @@ export const recordChoice = createServerFn({ method: "POST" })
   )
   .handler(async ({ data, context }) => recordChoiceImpl(context.supabase, context.userId, data));
 
-export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string; pairingId: string; chosenSongId: string; msToDecide?: number }) {
+// Replay (DUE07): a pick for a pairing that's already recorded returns the
+// committed response instead of counting twice. A different song for the same
+// pairing is a conflict, never a second vote.
+export class ChoiceConflictError extends Error {
+  constructor() { super("this pairing was already answered with a different song"); this.name = "ChoiceConflictError"; }
+}
+async function replayChoice(supabase: AuthedSupabase, sessionId: string, pairingId: string, chosenSongId: string) {
+  const { data: existing } = await supabase
+    .from("choices")
+    .select("chosen_song_id, response")
+    .eq("session_id", sessionId)
+    .eq("pairing_id", pairingId)
+    .maybeSingle();
+  if (!existing) return null;
+  if (existing.chosen_song_id !== chosenSongId) throw new ChoiceConflictError();
+  if (existing.response) return { ...(existing.response as Record<string, unknown>), replayed: true as const };
+  const { data: sess } = await supabase.from("sessions").select("vector").eq("id", sessionId).single();
+  return { vector: (sess?.vector ?? {}) as Record<string, number>, verdict: "Already counted.", why: "", hesitation: null, dim: "", delta: 0, replayed: true as const };
+}
+
+export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string; pairingId: string; chosenSongId: string; msToDecide?: number; mutationId?: string }) {
+    {
+      const replay = await replayChoice(supabase, data.sessionId, data.pairingId, data.chosenSongId);
+      if (replay) return replay as unknown as { vector: Record<string, number>; verdict: string; why: string; hesitation: string | null; dim: string; delta: number; replayed?: true };
+    }
     const songCols = "id,title,artist,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
     const [pairingRes, sessionRes] = await Promise.all([
       supabase
@@ -1538,11 +1563,14 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
       chosen_song_id: data.chosenSongId,
       rejected_song_id: rejectedSongId,
       ms_to_decide: data.msToDecide ?? null,
+      mutation_id: data.mutationId ?? null,
     });
     if (cErr) {
-      // 23505 = unique_violation — same pairing already recorded for this session.
-      // Surface a clean error instead of letting a replay distort the vector.
+      // 23505 = unique_violation — a concurrent request already recorded this
+      // pairing. Return its committed result rather than distort the vector.
       if ((cErr as { code?: string }).code === "23505") {
+        const replay = await replayChoice(supabase, data.sessionId, data.pairingId, data.chosenSongId);
+        if (replay) return replay as unknown as { vector: Record<string, number>; verdict: string; why: string; hesitation: string | null; dim: string; delta: number; replayed?: true };
         throw new Error("this pairing has already been answered for this session");
       }
       throw new Error(cErr.message);
@@ -1649,7 +1677,11 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
       console.warn("[musicdna] emitChoiceDiagnostics failed:", e instanceof Error ? e.message : e);
     }
 
-    return { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
+    const response = { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
+    // Store the exact feedback so a retry replays it verbatim.
+    await supabase.from("choices").update({ response: response as never })
+      .eq("session_id", data.sessionId).eq("pairing_id", data.pairingId);
+    return response as typeof response & { replayed?: true };
 }
 
 // ============ Skip pairing ============
@@ -1673,7 +1705,7 @@ export const skipPairing = createServerFn({ method: "POST" })
 export async function skipPairingImpl(
   supabase: AuthedSupabase,
   userId: string,
-  data: { sessionId: string; pairingId: string; msToDecide?: number },
+  data: { sessionId: string; pairingId: string; msToDecide?: number; reason?: string },
 ) {
   const sessionRes = await supabase
     .from("sessions")
@@ -1690,6 +1722,8 @@ export async function skipPairingImpl(
   probeState.lane_alignment = probeState.lane_alignment ?? {};
   probeState.flips = probeState.flips ?? [];
   const skipped = new Set(probeState.skipped_pairing_ids ?? []);
+  // Replay: a repeated skip is a no-op (and must not inflate consecutive skips).
+  if (skipped.has(data.pairingId)) return { ok: true as const, replayed: true as const };
   skipped.add(data.pairingId);
   probeState.skipped_pairing_ids = Array.from(skipped);
   probeState.wants_wider_probe = true;
@@ -1707,14 +1741,14 @@ export async function skipPairingImpl(
       pairing_id: data.pairingId,
       event_type: "pairing_skipped",
       client: "server",
-      props: { ms_to_decide: data.msToDecide ?? null },
+      props: { ms_to_decide: data.msToDecide ?? null, reason: data.reason ?? null },
     } as never);
   } catch (e) {
     // eslint-disable-next-line no-console
     console.warn("[musicdna] pairing_skipped event log failed:", e instanceof Error ? e.message : e);
   }
 
-  return { ok: true as const };
+  return { ok: true as const, replayed: false as const };
 }
 
 
@@ -3136,6 +3170,8 @@ type SynthPayload = {
   synthesis: string;
   kept_choosing: SynthEvidence[];
   counter_reads: SynthCounter[];
+  /** Saved result version this payload was rendered from (RES04). */
+  result_version?: number | null;
 };
 
 export const finalSynthesis = createServerFn({ method: "POST" })
@@ -3143,7 +3179,56 @@ export const finalSynthesis = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }): Promise<SynthPayload> => finalSynthesisImpl(context.supabase, context.userId, data));
 
+// RES04: the first pairing-based result is saved once and replayed verbatim
+// afterwards, so reopening or sharing the same version renders the same read.
 export async function finalSynthesisImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string }): Promise<SynthPayload> {
+  const { data: saved } = await supabase
+    .from("session_results")
+    .select("version, content")
+    .eq("session_id", data.sessionId)
+    .eq("source", "pairings")
+    .order("version", { ascending: true })
+    .limit(1)
+    .maybeSingle();
+  if (saved?.content && (saved.content as SynthPayload).synthesis) {
+    return { ...(saved.content as SynthPayload), result_version: saved.version };
+  }
+  const fresh = await computeFinalSynthesis(supabase, userId, data);
+  if (!fresh.synthesis) return fresh;
+  const { data: reasoning } = await supabase
+    .from("session_reasoning")
+    .select("allowed_claims, counterarguments")
+    .eq("session_id", data.sessionId)
+    .maybeSingle();
+  const { error } = await supabase.from("session_results").insert({
+    session_id: data.sessionId,
+    user_id: userId,
+    version: 1,
+    source: "pairings",
+    content: fresh as never,
+    evidence: { allowed_claims: reasoning?.allowed_claims ?? [], counterarguments: reasoning?.counterarguments ?? [] } as never,
+    ledger_version: LEDGER_VERSION,
+    policy_version: CLAIM_POLICY_VERSION,
+    engine_version: ENGINE_VERSION,
+  });
+  if (error && (error as { code?: string }).code === "23505") {
+    // A concurrent request saved it first — return that one.
+    const { data: winner } = await supabase.from("session_results").select("version, content")
+      .eq("session_id", data.sessionId).eq("version", 1).maybeSingle();
+    if (winner?.content) return { ...(winner.content as SynthPayload), result_version: 1 };
+  }
+  return { ...fresh, result_version: error ? null : 1 };
+}
+
+/** Latest saved version for a session (any source), for refinements. */
+export async function latestResultVersion(supabase: AuthedSupabase, sessionId: string) {
+  const { data } = await supabase.from("session_results")
+    .select("version, content, self_report, source")
+    .eq("session_id", sessionId).order("version", { ascending: false }).limit(1).maybeSingle();
+  return data;
+}
+
+async function computeFinalSynthesis(supabase: AuthedSupabase, userId: string, data: { sessionId: string }): Promise<SynthPayload> {
     const sessionRes = await supabase
       .from("sessions")
       .select("user_id, vector")
@@ -3553,15 +3638,36 @@ No prose, no markdown fences.`;
         vector[dim] = next;
       }
       if (Object.keys(applied).length) {
-        await supabase.from("sessions").update({ vector }).eq("id", sessionId);
-        // Fire-and-forget event log; never block the reply.
-        supabase.from("event_log").insert({
+        // D04: chat is self-report, not pairing evidence. The session vector
+        // and the original result stay frozen; the refinement is recorded
+        // separately and produces a new result version with provenance.
+        await supabase.from("event_log").insert({
           user_id: userId,
           session_id: sessionId,
-          event_type: "chat_vector_update",
-          props: { deltas: applied } as never,
+          event_type: "self_report",
+          props: { deltas: applied, message_chars: trimmedMsg.length } as never,
           client: "server",
-        }).then(() => undefined, () => undefined);
+        });
+        const latest = await latestResultVersion(supabase, sessionId);
+        if (latest) {
+          const prior = (latest.self_report ?? {}) as { deltas?: Record<string, number>; turns?: number };
+          const cum: Record<string, number> = { ...(prior.deltas ?? {}) };
+          for (const [d, v] of Object.entries(applied)) cum[d] = (cum[d] ?? 0) + v;
+          const base = await supabase.from("session_results").select("version, content")
+            .eq("session_id", sessionId).eq("source", "pairings").order("version").limit(1).maybeSingle();
+          await supabase.from("session_results").insert({
+            session_id: sessionId,
+            user_id: userId,
+            version: latest.version + 1,
+            source: "chat_self_report",
+            base_version: base.data?.version ?? null,
+            content: (base.data?.content ?? {}) as never,
+            self_report: { deltas: cum, turns: (prior.turns ?? 0) + 1 } as never,
+            ledger_version: LEDGER_VERSION,
+            policy_version: CLAIM_POLICY_VERSION,
+            engine_version: ENGINE_VERSION,
+          });
+        }
       }
     } catch {
       // Extraction is best-effort; chat continues with the prior vector.
@@ -3721,13 +3827,7 @@ export type CurrentReadResult = {
   } | null;
 };
 
-export const currentRead = createServerFn({ method: "POST" })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ sessionId: z.string().uuid() }).parse(d),
-  )
-  .handler(async ({ data, context }): Promise<CurrentReadResult> => {
-    const { supabase, userId } = context;
+export async function currentReadImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string }): Promise<CurrentReadResult> {
     const emptyEvidence: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
     const axisCols = (DIMS as readonly string[]).join(",");
     const [sessionRes, choicesRes] = await Promise.all([
@@ -3926,4 +4026,11 @@ export const currentRead = createServerFn({ method: "POST" })
       });
     }
     return result;
-  });
+}
+
+export const currentRead = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ sessionId: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data, context }) => currentReadImpl(context.supabase, context.userId, data));

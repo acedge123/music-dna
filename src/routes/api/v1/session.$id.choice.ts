@@ -7,12 +7,15 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
-import { recordChoiceImpl } from "@/lib/musicdna.functions";
+import { ChoiceConflictError, currentReadImpl, recordChoiceImpl } from "@/lib/musicdna.functions";
+import { experienceVersion } from "./-experience";
 
 const BodySchema = z.object({
   pairing_id: z.string().uuid(),
   chosen_song_id: z.string().uuid(),
   ms_to_decide: z.number().int().nonnegative().max(600_000).optional(),
+  // Client-generated retry key. Same key or same pairing → same committed result.
+  mutation_id: z.string().min(8).max(64).optional(),
 });
 
 const UUID = z.string().uuid();
@@ -41,10 +44,30 @@ export const Route = createFileRoute("/api/v1/session/$id/choice")({
             pairingId: body.data.pairing_id,
             chosenSongId: body.data.chosen_song_id,
             msToDecide: body.data.ms_to_decide,
+            mutationId: body.data.mutation_id,
           });
-          return jsonResponse(result);
+          if (experienceVersion(request) !== 1) {
+            const { vector, verdict, why, hesitation, dim, delta } = result;
+            return jsonResponse({ vector, verdict, why, hesitation, dim, delta });
+          }
+          const read = await currentReadImpl(supabase, userId, { sessionId: sid.data });
+          return jsonResponse({
+            contract: 1,
+            replayed: result.replayed === true,
+            feedback: { verdict: result.verdict, why: result.why },
+            read: {
+              tier: read.tier,
+              direction: read.direction,
+              thesis: read.thesis,
+              hook: read.hook,
+              question: read.question,
+              evidence: read.evidence,
+              revision: read.revision ?? null,
+            },
+          });
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
+          if (e instanceof ChoiceConflictError) return errorResponse("CONFLICT", e.message, 409);
           const msg = e instanceof Error ? e.message : String(e);
           return errorResponse("INTERNAL", msg, 500);
         }
