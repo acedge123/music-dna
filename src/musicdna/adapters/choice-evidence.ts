@@ -2,10 +2,22 @@
 // the pick was judged on — declared tests, weight, and both songs' values —
 // onto `choices.evidence`. Every ledger reader prefers that snapshot, so a
 // later catalog edit can never change an existing reading's evidence.
-import { DIMS } from "@/musicdna/engine/dims";
 import type { LedgerChoice, LedgerSong } from "@/musicdna/engine/evidence";
 
 export const EVIDENCE_SNAPSHOT_VERSION = 1;
+
+export const EVIDENCE_DIMS = [
+  "movement",
+  "atmosphere",
+  "immersion",
+  "scale",
+  "community",
+  "perspective",
+  "confidence",
+  "tension",
+  "texture",
+  "transformation",
+] as const;
 
 type SongLike = Record<string, unknown> | null | undefined;
 
@@ -16,7 +28,7 @@ function pickSong(s: SongLike): LedgerSong | null {
     title: typeof s.title === "string" ? s.title : undefined,
     artist: typeof s.artist === "string" ? s.artist : undefined,
   };
-  for (const d of DIMS as readonly string[]) {
+  for (const d of EVIDENCE_DIMS) {
     const v = s[d];
     out[d] = typeof v === "number" && Number.isFinite(v) ? v : null;
   }

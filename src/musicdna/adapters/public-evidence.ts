@@ -1,3 +1,4 @@
+import { ledgerChoiceFromRow } from "./choice-evidence";
 // Public share-card evidence (SHR02 / DIA01). The share page and
 // /api/v1/share/:token both pick their "defining choices" here, from the same
 // ledger + claim policy as the private reading — never by fastest picks.
@@ -36,25 +37,20 @@ export async function loadPublicDefiningChoices(
   const { data, error } = await client
     .from("choices")
     .select(
-      `pairing_id, created_at, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(${cols}), rejected:rejected_song_id(${cols})`,
+      `pairing_id, created_at, evidence, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(${cols}), rejected:rejected_song_id(${cols})`,
     )
     .eq("session_id", sessionId)
     .order("created_at", { ascending: true });
   if (error) throw new Error(error.message);
   type Row = {
     pairing_id: string | null;
+    evidence: unknown;
     pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
     chosen: LedgerSong | null;
     rejected: LedgerSong | null;
   };
   const ledger = buildLedger(
-    ((data ?? []) as unknown as Row[]).map((c) => ({
-      pairing_id: c.pairing_id,
-      tests: c.pairing?.tests ?? null,
-      diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
-      chosen: c.chosen,
-      rejected: c.rejected,
-    })),
+    ((data ?? []) as unknown as Row[]).map(ledgerChoiceFromRow),
     DIMS,
   );
   const out: PublicDefiningChoice[] = [];
