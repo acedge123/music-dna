@@ -9,52 +9,33 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as MeRouteImport } from './routes/me'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
-import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as TermsRouteImport } from './routes/terms'
-import { Route as Authenticated1980RouteImport } from './routes/_authenticated/1980'
-import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
+import { Route as MeRouteImport } from './routes/me'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as IndexRouteImport } from './routes/index'
 import { Route as SSessionIdRouteImport } from './routes/s.$sessionId'
-import { Route as ApiV1AccountRouteImport } from './routes/api/v1/account'
-import { Route as ApiV1SessionRouteImport } from './routes/api/v1/session'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as Authenticated1980RouteImport } from './routes/_authenticated/1980'
 import { Route as ApiV1SessionsRouteImport } from './routes/api/v1/sessions'
-import { Route as ApiPublicTestActionRouteImport } from './routes/api/public/test/$action'
-import { Route as ApiV1OnboardingOpenerRouteImport } from './routes/api/v1/onboarding.opener'
-import { Route as ApiV1OnboardingReactRouteImport } from './routes/api/v1/onboarding.react'
-import { Route as ApiV1SessionIdRouteImport } from './routes/api/v1/session.$id'
+import { Route as ApiV1SessionRouteImport } from './routes/api/v1/session'
+import { Route as ApiV1AccountRouteImport } from './routes/api/v1/account'
 import { Route as ApiV1ShareTokenRouteImport } from './routes/api/v1/share.$token'
-import { Route as ApiV1SessionIdChoiceRouteImport } from './routes/api/v1/session.$id.choice'
-import { Route as ApiV1SessionIdNextRouteImport } from './routes/api/v1/session.$id.next'
-import { Route as ApiV1SessionIdRevealRouteImport } from './routes/api/v1/session.$id.reveal'
+import { Route as ApiV1SessionIdRouteImport } from './routes/api/v1/session.$id'
+import { Route as ApiV1OnboardingReactRouteImport } from './routes/api/v1/onboarding.react'
+import { Route as ApiV1OnboardingOpenerRouteImport } from './routes/api/v1/onboarding.opener'
+import { Route as ApiPublicTestActionRouteImport } from './routes/api/public/test/$action'
 import { Route as ApiV1SessionIdSkipRouteImport } from './routes/api/v1/session.$id.skip'
+import { Route as ApiV1SessionIdRevealRouteImport } from './routes/api/v1/session.$id.reveal'
+import { Route as ApiV1SessionIdNextRouteImport } from './routes/api/v1/session.$id.next'
+import { Route as ApiV1SessionIdChoiceRouteImport } from './routes/api/v1/session.$id.choice'
 
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MeRoute = MeRouteImport.update({
-  id: '/me',
-  path: '/me',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrivacyRoute = PrivacyRouteImport.update({
@@ -62,14 +43,38 @@ const PrivacyRoute = PrivacyRouteImport.update({
   path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TermsRoute = TermsRouteImport.update({
-  id: '/terms',
-  path: '/terms',
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
-const Authenticated1980Route = Authenticated1980RouteImport.update({
-  id: '/1980',
-  path: '/1980',
+const MeRoute = MeRouteImport.update({
+  id: '/me',
+  path: '/me',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SSessionIdRoute = SSessionIdRouteImport.update({
+  id: '/s/$sessionId',
+  path: '/s/$sessionId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
@@ -77,19 +82,14 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
+const Authenticated1980Route = Authenticated1980RouteImport.update({
+  id: '/1980',
+  path: '/1980',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
-const SSessionIdRoute = SSessionIdRouteImport.update({
-  id: '/s/$sessionId',
-  path: '/s/$sessionId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1AccountRoute = ApiV1AccountRouteImport.update({
-  id: '/api/v1/account',
-  path: '/api/v1/account',
+const ApiV1SessionsRoute = ApiV1SessionsRouteImport.update({
+  id: '/api/v1/sessions',
+  path: '/api/v1/sessions',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1SessionRoute = ApiV1SessionRouteImport.update({
@@ -97,24 +97,14 @@ const ApiV1SessionRoute = ApiV1SessionRouteImport.update({
   path: '/api/v1/session',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiV1SessionsRoute = ApiV1SessionsRouteImport.update({
-  id: '/api/v1/sessions',
-  path: '/api/v1/sessions',
+const ApiV1AccountRoute = ApiV1AccountRouteImport.update({
+  id: '/api/v1/account',
+  path: '/api/v1/account',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicTestActionRoute = ApiPublicTestActionRouteImport.update({
-  id: '/api/public/test/$action',
-  path: '/api/public/test/$action',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1OnboardingOpenerRoute = ApiV1OnboardingOpenerRouteImport.update({
-  id: '/api/v1/onboarding/opener',
-  path: '/api/v1/onboarding/opener',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiV1OnboardingReactRoute = ApiV1OnboardingReactRouteImport.update({
-  id: '/api/v1/onboarding/react',
-  path: '/api/v1/onboarding/react',
+const ApiV1ShareTokenRoute = ApiV1ShareTokenRouteImport.update({
+  id: '/api/v1/share/$token',
+  path: '/api/v1/share/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1SessionIdRoute = ApiV1SessionIdRouteImport.update({
@@ -122,19 +112,24 @@ const ApiV1SessionIdRoute = ApiV1SessionIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => ApiV1SessionRoute,
 } as any)
-const ApiV1ShareTokenRoute = ApiV1ShareTokenRouteImport.update({
-  id: '/api/v1/share/$token',
-  path: '/api/v1/share/$token',
+const ApiV1OnboardingReactRoute = ApiV1OnboardingReactRouteImport.update({
+  id: '/api/v1/onboarding/react',
+  path: '/api/v1/onboarding/react',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiV1SessionIdChoiceRoute = ApiV1SessionIdChoiceRouteImport.update({
-  id: '/choice',
-  path: '/choice',
-  getParentRoute: () => ApiV1SessionIdRoute,
+const ApiV1OnboardingOpenerRoute = ApiV1OnboardingOpenerRouteImport.update({
+  id: '/api/v1/onboarding/opener',
+  path: '/api/v1/onboarding/opener',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const ApiV1SessionIdNextRoute = ApiV1SessionIdNextRouteImport.update({
-  id: '/next',
-  path: '/next',
+const ApiPublicTestActionRoute = ApiPublicTestActionRouteImport.update({
+  id: '/api/public/test/$action',
+  path: '/api/public/test/$action',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1SessionIdSkipRoute = ApiV1SessionIdSkipRouteImport.update({
+  id: '/skip',
+  path: '/skip',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
 const ApiV1SessionIdRevealRoute = ApiV1SessionIdRevealRouteImport.update({
@@ -142,9 +137,14 @@ const ApiV1SessionIdRevealRoute = ApiV1SessionIdRevealRouteImport.update({
   path: '/reveal',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
-const ApiV1SessionIdSkipRoute = ApiV1SessionIdSkipRouteImport.update({
-  id: '/skip',
-  path: '/skip',
+const ApiV1SessionIdNextRoute = ApiV1SessionIdNextRouteImport.update({
+  id: '/next',
+  path: '/next',
+  getParentRoute: () => ApiV1SessionIdRoute,
+} as any)
+const ApiV1SessionIdChoiceRoute = ApiV1SessionIdChoiceRouteImport.update({
+  id: '/choice',
+  path: '/choice',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
 
@@ -318,39 +318,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/_authenticated': {
-      id: '/_authenticated'
-      path: ''
-      fullPath: '/'
-      preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/me': {
-      id: '/me'
-      path: '/me'
-      fullPath: '/me'
-      preLoaderRoute: typeof MeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/privacy': {
@@ -360,18 +332,53 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/terms': {
-      id: '/terms'
-      path: '/terms'
-      fullPath: '/terms'
-      preLoaderRoute: typeof TermsRouteImport
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/1980': {
-      id: '/_authenticated/1980'
-      path: '/1980'
-      fullPath: '/1980'
-      preLoaderRoute: typeof Authenticated1980RouteImport
+    '/me': {
+      id: '/me'
+      path: '/me'
+      fullPath: '/me'
+      preLoaderRoute: typeof MeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/s/$sessionId': {
+      id: '/s/$sessionId'
+      path: '/s/$sessionId'
+      fullPath: '/s/$sessionId'
+      preLoaderRoute: typeof SSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/admin': {
@@ -381,25 +388,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+    '/_authenticated/1980': {
+      id: '/_authenticated/1980'
+      path: '/1980'
+      fullPath: '/1980'
+      preLoaderRoute: typeof Authenticated1980RouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
-    '/s/$sessionId': {
-      id: '/s/$sessionId'
-      path: '/s/$sessionId'
-      fullPath: '/s/$sessionId'
-      preLoaderRoute: typeof SSessionIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/account': {
-      id: '/api/v1/account'
-      path: '/api/v1/account'
-      fullPath: '/api/v1/account'
-      preLoaderRoute: typeof ApiV1AccountRouteImport
+    '/api/v1/sessions': {
+      id: '/api/v1/sessions'
+      path: '/api/v1/sessions'
+      fullPath: '/api/v1/sessions'
+      preLoaderRoute: typeof ApiV1SessionsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/session': {
@@ -409,32 +409,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/v1/sessions': {
-      id: '/api/v1/sessions'
-      path: '/api/v1/sessions'
-      fullPath: '/api/v1/sessions'
-      preLoaderRoute: typeof ApiV1SessionsRouteImport
+    '/api/v1/account': {
+      id: '/api/v1/account'
+      path: '/api/v1/account'
+      fullPath: '/api/v1/account'
+      preLoaderRoute: typeof ApiV1AccountRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/test/$action': {
-      id: '/api/public/test/$action'
-      path: '/api/public/test/$action'
-      fullPath: '/api/public/test/$action'
-      preLoaderRoute: typeof ApiPublicTestActionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/onboarding/opener': {
-      id: '/api/v1/onboarding/opener'
-      path: '/api/v1/onboarding/opener'
-      fullPath: '/api/v1/onboarding/opener'
-      preLoaderRoute: typeof ApiV1OnboardingOpenerRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/v1/onboarding/react': {
-      id: '/api/v1/onboarding/react'
-      path: '/api/v1/onboarding/react'
-      fullPath: '/api/v1/onboarding/react'
-      preLoaderRoute: typeof ApiV1OnboardingReactRouteImport
+    '/api/v1/share/$token': {
+      id: '/api/v1/share/$token'
+      path: '/api/v1/share/$token'
+      fullPath: '/api/v1/share/$token'
+      preLoaderRoute: typeof ApiV1ShareTokenRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/session/$id': {
@@ -444,25 +430,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionIdRouteImport
       parentRoute: typeof ApiV1SessionRoute
     }
-    '/api/v1/share/$token': {
-      id: '/api/v1/share/$token'
-      path: '/api/v1/share/$token'
-      fullPath: '/api/v1/share/$token'
-      preLoaderRoute: typeof ApiV1ShareTokenRouteImport
+    '/api/v1/onboarding/react': {
+      id: '/api/v1/onboarding/react'
+      path: '/api/v1/onboarding/react'
+      fullPath: '/api/v1/onboarding/react'
+      preLoaderRoute: typeof ApiV1OnboardingReactRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/v1/session/$id/choice': {
-      id: '/api/v1/session/$id/choice'
-      path: '/choice'
-      fullPath: '/api/v1/session/$id/choice'
-      preLoaderRoute: typeof ApiV1SessionIdChoiceRouteImport
-      parentRoute: typeof ApiV1SessionIdRoute
+    '/api/v1/onboarding/opener': {
+      id: '/api/v1/onboarding/opener'
+      path: '/api/v1/onboarding/opener'
+      fullPath: '/api/v1/onboarding/opener'
+      preLoaderRoute: typeof ApiV1OnboardingOpenerRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/api/v1/session/$id/next': {
-      id: '/api/v1/session/$id/next'
-      path: '/next'
-      fullPath: '/api/v1/session/$id/next'
-      preLoaderRoute: typeof ApiV1SessionIdNextRouteImport
+    '/api/public/test/$action': {
+      id: '/api/public/test/$action'
+      path: '/api/public/test/$action'
+      fullPath: '/api/public/test/$action'
+      preLoaderRoute: typeof ApiPublicTestActionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/session/$id/skip': {
+      id: '/api/v1/session/$id/skip'
+      path: '/skip'
+      fullPath: '/api/v1/session/$id/skip'
+      preLoaderRoute: typeof ApiV1SessionIdSkipRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
     '/api/v1/session/$id/reveal': {
@@ -472,11 +465,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionIdRevealRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
-    '/api/v1/session/$id/skip': {
-      id: '/api/v1/session/$id/skip'
-      path: '/skip'
-      fullPath: '/api/v1/session/$id/skip'
-      preLoaderRoute: typeof ApiV1SessionIdSkipRouteImport
+    '/api/v1/session/$id/next': {
+      id: '/api/v1/session/$id/next'
+      path: '/next'
+      fullPath: '/api/v1/session/$id/next'
+      preLoaderRoute: typeof ApiV1SessionIdNextRouteImport
+      parentRoute: typeof ApiV1SessionIdRoute
+    }
+    '/api/v1/session/$id/choice': {
+      id: '/api/v1/session/$id/choice'
+      path: '/choice'
+      fullPath: '/api/v1/session/$id/choice'
+      preLoaderRoute: typeof ApiV1SessionIdChoiceRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
   }
