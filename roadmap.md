@@ -18,3 +18,6 @@
 - [ ] D03 explicit publish/revoke, token-only links, legacy inventory
 - [ ] Fixed-sequence challenge from shared pairing set
 - [ ] ACE web acceptance → Flutter parity
+- [x] QA fixes: curator notes locked from listeners; honest skip/thin endings; early observations saved
+- [x] D06 retention + linking policy recorded (docs/musicdna/data-retention-d06.md)
+- [ ] D06 implementation: activity clock, purge job, evidence vs debug events, deletion SLA, anonymous upgrade, existing-account transfer
