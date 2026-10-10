@@ -1,3 +1,4 @@
+import { resumeLatestSession } from "@/lib/resume.functions";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useRef, useState } from "react";
@@ -153,6 +154,7 @@ function Onboarding() {
   const getOpenerFn = useServerFn(getOnboardingOpener);
   const startFn = useServerFn(startSession);
   const nextFn = useServerFn(nextPairing);
+  const resumeFn = useServerFn(resumeLatestSession);
   const chooseFn = useServerFn(recordChoice);
   const skipFn = useServerFn(skipPairing);
   const finalizeFn = useServerFn(finalizeSession);
@@ -226,7 +228,6 @@ function Onboarding() {
         const restored: Entry[] = [];
         ex.forEach((e, i) => {
           if (e.type !== "choice" || !e.pairing || !e.chosen) return;
-          let read: Extract<typeof e, { type: "choice" }> | null = null; void read;
           const after = ex.slice(i + 1);
           const nextChoice = after.findIndex((x) => x.type === "choice");
           const r = (nextChoice === -1 ? after : after.slice(0, nextChoice)).find((x) => x.type === "read");
@@ -260,6 +261,12 @@ function Onboarding() {
         if (cancelled) return;
         if (nx.max_rounds) setMaxRounds(nx.max_rounds);
         if (nx.prompt) setNextPrompt(nx.prompt);
+        if (nx.done || !nx.pairing) {
+          try { await finalizeFn({ data: { sessionId: resumed.sessionId } }); } catch { /* shown on result */ }
+          await loadFinalRead(resumed.sessionId);
+          setPhase("done");
+          return;
+        }
         setPairing(nx.pairing);
         setRound(nx.round);
         startedAt.current = Date.now();
