@@ -51,14 +51,20 @@ Short answer: **the web interview experience is close (roughly 60–70% of the P
 ### Not yet assessed
 - DIA06 confounds (artist, era, repeated song), VOI04 checking that the AI's copy only cites real songs and choices, UX03 accessibility (keyboard, announcements), MET01 event vocabulary, ACC02 checks that deleted data can't still be read with an old login.
 
-## Recommended sequence (if you want to proceed)
+## Decisions (ratified by ACE)
 
-1. **Evidence repair:** one ledger, the D01 claim policy, honest insufficiency outcomes, examples that match their claim, and chat kept off the vector (D04). Add regression fixtures for each session type.
-2. **Reliability:** mutation IDs on choice and skip, atomic writes, full history on resume, D02 skip bound, catalog-exhausted reason.
-3. **Sharing:** explicit publish and revoke, token-only links, saved pairing set, fixed-sequence challenge, versioned snapshot.
-4. **Copy and metrics:** fix "Twenty" and "Sixty", and re-point the old round-number metrics.
-5. **Contract:** versioned endpoints, react endpoint, contract doc, fixtures.
-6. **ACE web approval gate**, then Flutter parity.
+- **D01 claim policy:** at least 3 distinct supporting pairings, at least 0.65 directional consistency, and more support than contradiction. A 3–1 pattern supports a qualified claim. A 2–2 split cannot. These are editorial thresholds, not validated probabilities, and the copy must never present them as probabilities.
+- **D02 skips:** 3 consecutive skips end the session at any stage. The existing early-skip rule stays. The result says plainly whether the session ended because songs weren't recognized or because the catalog ran out.
+- **D03 links:** new shares require explicit publish and allow revocation. Legacy links get inventoried first. A token existing does not make a reading public.
+- **D04 chat:** the original pairing evidence and result are frozen. Chat refines the interpretation through separately recorded self-report, which produces a new result version.
 
-## Decisions needed from ACE before steps 1–3
-- D01 thresholds (0.65 consistency), D02 (3 consecutive skips), D03 (what to do with previously issued links), D04 (stop chat from changing scores).
+Guiding principle: the critic should get more interesting as evidence accumulates, and more thoughtful when challenged.
+
+## Sequence
+
+0. **Immediately:** fix the "Twenty" and "Sixty" copy and re-point the round-number metrics.
+1. **Evidence and contract:** build one versioned ledger and apply the D01 policy everywhere (running read, final result, chat context, public card). Add honest insufficiency outcomes and examples that match their claim. Add hooks that match what the next pairing tests, and revisions that record the prior claim and the new evidence. Then build the versioned experience contract, the react endpoint, the contract doc, and fixtures (stable, 3–1 qualified, 2–2 mixed, sparse, zero-answer, artist-confounded, catalog-exhausted).
+2. **Reliability and persisted results:** mutation IDs on choice and skip with replay, atomic writes, full history on resume, the D02 skip rule, and a catalog-exhausted reason. Save each result with its result, policy, and engine versions. D04 chat self-report gets recorded separately and produces new versions.
+3. **Sharing and challenges:** D03 explicit publish and revoke, token-only links, legacy link inventory, a saved pairing set, a fixed-sequence challenge with a label, and a neutral "unavailable" state.
+4. **Web acceptance:** ACE reviews on a small phone, with reduced motion and large text.
+5. **Flutter parity.**
