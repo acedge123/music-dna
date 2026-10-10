@@ -174,7 +174,7 @@ export function shouldStop(input: {
 //      (they don't know the catalog; give an honest short result instead of
 //       hunting for confidence forever)
 // ---------------------------------------------------------------------------
-export type StopReason = "confident" | "budget" | "skip_bound" | null;
+export type StopReason = "confident" | "budget" | "skip_bound" | "catalog_exhausted" | null;
 
 export function sessionCompletion(input: {
   answered: number;
@@ -186,6 +186,8 @@ export function sessionCompletion(input: {
   confidence_threshold?: number;
   axis_confidence_threshold?: number;
   skip_bound?: number;
+  /** Skips since the last answered pairing (D02). */
+  consecutive_skips?: number;
 }): { done: boolean; reason: StopReason; confidence: number; confident_axes: number; max_answered: number } {
   const maxAnswered = input.max_answered ?? 6;
   const earlyMin = input.early_min_answered ?? 4;
@@ -203,6 +205,8 @@ export function sessionCompletion(input: {
   if (input.answered >= maxAnswered) reason = "budget";
   else if (input.answered >= earlyMin && confidence >= confThresh) reason = "confident";
   else if (skipped >= skipBound && input.answered <= 2) reason = "skip_bound";
+  // D02: three consecutive skips end the session at any stage.
+  else if ((input.consecutive_skips ?? 0) >= skipBound) reason = "skip_bound";
 
   return { done: reason !== null, reason, confidence, confident_axes, max_answered: maxAnswered };
 }

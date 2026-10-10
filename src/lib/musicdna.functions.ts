@@ -532,9 +532,23 @@ export async function nextPairingImpl(
     // don't advance the budget — they only bound the session via skip_bound.
     const answered = new Set((usedRes.data ?? []).map((c) => c.pairing_id)).size;
     const skippedCount = (probeState.skipped_pairing_ids ?? []).length;
+    // D02: count skips since the most recent answered choice.
+    const { data: recentEvents } = await supabase
+      .from("event_log")
+      .select("event_type")
+      .eq("session_id", data.sessionId)
+      .in("event_type", ["choice_scored", "pairing_skipped"])
+      .order("created_at", { ascending: false })
+      .limit(3);
+    let consecutiveSkips = 0;
+    for (const ev of recentEvents ?? []) {
+      if (ev.event_type !== "pairing_skipped") break;
+      consecutiveSkips += 1;
+    }
     const stop = sessionCompletion({
       answered,
       skipped: skippedCount,
+      consecutive_skips: consecutiveSkips,
       vector,
       dims: DIMS as readonly string[],
     });
