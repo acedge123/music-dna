@@ -6,7 +6,8 @@
 - [x] D02 three consecutive skips stop
 - [x] Re-point round 8/10/12/14 metrics → 2/4/6
 - [x] Single versioned evidence ledger (engine/evidence.ts) for running read + final reasoning (chat reads its claims)
-- [ ] Public share card reads ledger claims instead of its own choice list
+- [x] Public share card reads ledger claims instead of its own choice list
+- [x] Reaction buttons use the matchup-based question
 - [x] Revisions record prior claim + the pick that changed it (read_shown events)
 - [x] Next prompt derived from the selected pairing (engine/prompts.ts)
 - [x] Versioned experience contract, react endpoint, contract doc, fixtures
