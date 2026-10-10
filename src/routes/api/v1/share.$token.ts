@@ -8,6 +8,7 @@
 // Backwards compatible with old links: a token that looks like a UUID is
 // treated as a session id and only honored when the session is is_public.
 
+import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import {
