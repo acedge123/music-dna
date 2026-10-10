@@ -218,6 +218,52 @@ function Onboarding() {
         if (cancelled) return;
         setOpener(o);
         track({ event_type: "onboarding_viewed", variant: o.variant_key });
+
+        // Resume an unfinished interview with its full conversation.
+        const resumed = await resumeFn().catch(() => null);
+        if (cancelled || !resumed) return;
+        const ex = resumed.exchanges;
+        const restored: Entry[] = [];
+        ex.forEach((e, i) => {
+          if (e.type !== "choice" || !e.pairing || !e.chosen) return;
+          let read: Extract<typeof e, { type: "choice" }> | null = null; void read;
+          const after = ex.slice(i + 1);
+          const nextChoice = after.findIndex((x) => x.type === "choice");
+          const r = (nextChoice === -1 ? after : after.slice(0, nextChoice)).find((x) => x.type === "read");
+          const rr = r && r.type === "read" ? r : null;
+          restored.push({
+            round: restored.length + 1,
+            pairing: { ...e.pairing, hypothesis: null, why_good: null,
+              song_a: { ...e.pairing.song_a, lane: e.pairing.song_a.lane ?? "" },
+              song_b: { ...e.pairing.song_b, lane: e.pairing.song_b.lane ?? "" } } as Pairing,
+            chosenSongId: e.chosen.id,
+            reaction: e.feedback ? (e.feedback.why ? `${e.feedback.verdict}\n${e.feedback.why}` : e.feedback.verdict) : `${e.chosen.title}.`,
+            thesis: rr?.thesis ?? "",
+            hook: "",
+            direction: rr?.revised ? "revising" : "forming",
+            topDim: null,
+            tier: (rr?.tier as Entry["tier"]) ?? "observation",
+            question: "",
+          });
+        });
+        if (restored.length === 0) return;
+        playStartedRef.current = true;
+        setSessionId(resumed.sessionId);
+        setEntries(restored);
+        if (resumed.opener?.hypothesis) {
+          setRefined({ hypothesis: resumed.opener.hypothesis, lane: resumed.opener.lane, confidence: 0 });
+        }
+        setPhase("playing");
+        const nx = await nextFn({ data: { sessionId: resumed.sessionId } }) as {
+          pairing: Pairing | null; round: number; done: boolean; max_rounds?: number; prompt?: string;
+        };
+        if (cancelled) return;
+        if (nx.max_rounds) setMaxRounds(nx.max_rounds);
+        if (nx.prompt) setNextPrompt(nx.prompt);
+        setPairing(nx.pairing);
+        setRound(nx.round);
+        startedAt.current = Date.now();
+        toast("Picked up where you left off.");
       } catch (e) {
         setBootError(e instanceof Error ? e.message : String(e));
       }
