@@ -4320,6 +4320,7 @@ async function ensureChatSessionForUser(
     )
     .eq("user_id", userId)
     .maybeSingle();
+  const openerProfile = profile as OpenerProfile;
 
   // Reuse the most recent session if one exists.
   const { data: existing } = await supabase
@@ -4328,14 +4329,13 @@ async function ensureChatSessionForUser(
     .eq("user_id", userId)
     .order("started_at", { ascending: false })
     .limit(1);
-  if (existing && existing.length) return { sessionId: existing[0].id, profile };
+  if (existing && existing.length) return { sessionId: existing[0].id, profile: openerProfile };
 
   // Create a session from the opener so chat has somewhere to live.
-  if (!profile?.opening_songs) return null;
-  const lane = (profile.opening_lane as string | null) ?? "general";
-  const conf = Number(profile.opening_lane_confidence ?? 0);
-  const dims = (profile.opening_analysis_json?.candidate_dimensions ?? {}) as Record<
-    string,
+  if (!openerProfile?.opening_songs) return null;
+  const lane = openerProfile.opening_lane ?? "general";
+  const conf = Number(openerProfile.opening_lane_confidence ?? 0);
+  const dims = openerProfile.opening_analysis_json?.candidate_dimensions ?? {};
     number
   >;
   const vector = seedVectorFromPriors(dims);
