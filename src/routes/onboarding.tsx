@@ -496,10 +496,11 @@ function Onboarding() {
 
   // Pulling the closing read is shared by the choice path and the
   // repeated-skip path — a skipped-out session still gets an honest result.
-  async function loadFinalRead() {
-    if (!sessionId) return;
+  async function loadFinalRead(sidOverride?: string) {
+    const sid = sidOverride ?? sessionId;
+    if (!sid) return;
     try {
-      const r = await synthFn({ data: { sessionId } }) as {
+      const r = await synthFn({ data: { sessionId: sid } }) as {
         synthesis: string;
         kept_choosing: Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>;
         counter_reads: Array<{ claim: string; notes: string }>;
