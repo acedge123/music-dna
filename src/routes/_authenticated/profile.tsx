@@ -72,6 +72,12 @@ function ProfilePage() {
   );
   const [copied, setCopied] = useState(false);
   const latest = data.sessions[0];
+  const shareFn = useServerFn(setShared);
+  const latestMeta = latest as { is_public?: boolean; share_token?: string } | undefined;
+  const [isPublic, setIsPublic] = useState<boolean>(!!latestMeta?.is_public);
+  const [shareToken, setShareToken] = useState<string | null>(
+    latestMeta?.is_public ? (latestMeta.share_token ?? null) : null,
+  );
   const reasoning = data.reasoning as Reasoning | null;
   const vector = (latest?.vector ?? {}) as Record<string, number>;
 

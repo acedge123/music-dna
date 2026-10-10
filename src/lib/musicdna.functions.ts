@@ -2740,7 +2740,7 @@ export async function getMyResultImpl(supabase: AuthedSupabase, userId: string) 
     supabase
       .from("sessions")
       .select(
-        "id,share_token,started_at,completed_at,interpretation,vector,archetype:archetype_id(id,name,tagline,description)",
+        "id,share_token,is_public,started_at,completed_at,interpretation,vector,archetype:archetype_id(id,name,tagline,description)",
       )
       .eq("user_id", userId)
       .order("started_at", { ascending: false })
