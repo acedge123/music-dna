@@ -627,36 +627,33 @@ function Onboarding() {
       session_id: sessionId,
       props: { kind, round: currentRound },
     });
-    if (kind === "thats_me") {
-      setNextPrompt("Good. Then let's push on it.");
-      return;
-    }
     setBusy(true);
     try {
-      const {
-        pairing: nxt,
-        round: nr,
-        done: isDone,
-        max_rounds,
-        prompt,
-      } = (await nextFn({
-        data: { sessionId, steer: kind === "harder" ? "harder" : "not_quite" },
+      const r = (await reactFn({
+        data: {
+          sessionId,
+          kind,
+          pairingId: pairing?.id ?? null,
+          mutationId: `${sessionId}:${currentRound}:${kind}`,
+        },
       })) as {
-        pairing: Pairing | null;
-        round: number;
-        done: boolean;
-        max_rounds?: number;
-        prompt?: string;
+        effect: string;
+        message: string;
+        next: {
+          pairing: Pairing | null;
+          round: number;
+          done: boolean;
+          max_rounds?: number;
+        } | null;
       };
-      if (max_rounds) setMaxRounds(max_rounds);
-      if (!isDone && nxt) {
-        setPairing(nxt as unknown as Pairing);
-        setRound(nr);
+      const nx = r.next;
+      if (nx?.max_rounds) setMaxRounds(nx.max_rounds);
+      if (nx && !nx.done && nx.pairing) {
+        setPairing(nx.pairing as unknown as Pairing);
+        setRound(nx.round);
         startedAt.current = Date.now();
-        // Acknowledge the reaction, then ask the question this matchup actually tests.
-        const ack = kind === "harder" ? "Fine. Harder one." : "Alright, let's check that.";
-        setNextPrompt(prompt ? `${ack} ${prompt}` : ack);
       }
+      setNextPrompt(kind === "thats_me" ? "Good. Then let's push on it." : r.message);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Couldn't switch that up.");
     } finally {
