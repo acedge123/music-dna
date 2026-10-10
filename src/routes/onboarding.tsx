@@ -13,7 +13,9 @@ import {
   finalizeSession,
   finalSynthesis,
   currentRead,
+  reactToRead as reactToReadFn,
 } from "@/lib/musicdna.functions";
+import { setShared } from "@/lib/share-publish.functions";
 import { getOnboardingOpener, type OnboardingOpener } from "@/lib/onboarding-openers.functions";
 import { ensureAnonSession } from "@/lib/anon-auth";
 import { toast } from "sonner";
@@ -170,6 +172,8 @@ function Onboarding() {
   const getOpenerFn = useServerFn(getOnboardingOpener);
   const startFn = useServerFn(startSession);
   const nextFn = useServerFn(nextPairing);
+  const reactFn = useServerFn(reactToReadFn);
+  const shareFn = useServerFn(setShared);
   const resumeFn = useServerFn(resumeLatestSession);
   const chooseFn = useServerFn(recordChoice);
   const skipFn = useServerFn(skipPairing);
@@ -665,7 +669,16 @@ function Onboarding() {
   // invites the recipient to run the same short challenge.
   async function shareRead() {
     if (!sessionId) return;
-    const url = `${window.location.origin}/s/${sessionId}`;
+    // Explicit publication (D03): sharing publishes; revoke lives on the profile.
+    let token: string | null = null;
+    try {
+      token = (await shareFn({ data: { sessionId, publish: true } })).share_token;
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Couldn't publish that reading.");
+      return;
+    }
+    if (!token) return;
+    const url = `${window.location.origin}/s/${token}`;
     track({ event_type: "result_shared", session_id: sessionId });
     try {
       if (navigator.share) {
