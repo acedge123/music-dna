@@ -101,3 +101,12 @@ v1 adds:
 
 ## Fixtures
 `fixtures/musicdna/experience-v1/*.json`: stable, qualified_3_1, mixed_2_2, sparse, zero_answer_skip_bound, artist_confounded. Each holds the input choices plus the expected ledger outcome and completion. `src/musicdna/engine/experience-fixtures.test.ts` keeps them in sync with the engine.
+
+## Sharing (D03)
+
+`POST /api/v1/session/:id/share` with `{ "publish": true | false }` → `{ contract: 1, is_public, share_token }`.
+Public lookups (`/api/v1/share/:token`, `/s/:token`) return 404 unless the reading is published. Revoking rotates the token.
+
+## Reactions
+
+`POST /api/v1/session/:id/react` accepts an optional `mutation_id`; retries with the same id are recorded once. A failed write returns an error. The server never acknowledges a reaction it hasn't saved. Web uses the same server logic.

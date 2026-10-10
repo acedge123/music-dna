@@ -39,11 +39,11 @@ export type EvidenceRow = {
   created_at: string;
   chosen_song_id: string;
   rejected_song_id: string | null;
-  evidence_snapshot: unknown;
+  evidence: unknown;
 };
 
 export function snapshotChoice(row: EvidenceRow): LedgerChoice {
-  const parsed = EvidenceSnapshot.safeParse(row.evidence_snapshot);
+  const parsed = EvidenceSnapshot.safeParse(row.evidence);
   const base = { choice_id: row.id, pairing_id: row.pairing_id, created_at: row.created_at };
   if (
     !parsed.success ||
@@ -58,7 +58,7 @@ export function snapshotChoice(row: EvidenceRow): LedgerChoice {
       chosen: null,
       rejected: null,
       tests: [],
-      provenance: row.evidence_snapshot == null ? "legacy_unavailable" : "invalid_snapshot",
+      provenance: row.evidence == null ? "legacy_unavailable" : "invalid_snapshot",
     };
   }
   const s = parsed.data;

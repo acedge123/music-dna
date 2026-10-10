@@ -6,16 +6,16 @@ BEGIN
   PERFORM public.record_choice_atomic('00000000-0000-0000-0000-000000000004',
     '00000000-0000-0000-0000-000000000003','00000000-0000-0000-0000-000000000001',
     '00000000-0000-0000-0000-000000000002',100,'mutation-1','{}','{"vector":{"scale":80}}','{"verdict":"A over B"}');
-  SELECT evidence_snapshot INTO s FROM choices WHERE mutation_id = 'mutation-1';
+  SELECT evidence INTO s FROM choices WHERE mutation_id = 'mutation-1';
   ASSERT s->>'version' = 'choice-evidence-v1', 'snapshot version';
   ASSERT s->'catalog'->'tests' = '["scale","tension"]'::jsonb, 'normalized declared axes';
   ASSERT s->'contrasts' = '{"scale":80}'::jsonb, 'missing values excluded';
   ASSERT NOT (s::text LIKE '%private%'), 'curator notes excluded';
-  ASSERT (SELECT evidence_snapshot IS NULL FROM choices WHERE pairing_id = '00000000-0000-0000-0000-000000000006'), 'legacy not backfilled';
+  ASSERT (SELECT evidence IS NULL FROM choices WHERE pairing_id = '00000000-0000-0000-0000-000000000006'), 'legacy not backfilled';
   UPDATE songs SET title = 'Changed', scale = 0 WHERE title = 'A';
-  ASSERT (SELECT evidence_snapshot = s FROM choices WHERE mutation_id = 'mutation-1'), 'catalog cannot rewrite vote';
+  ASSERT (SELECT evidence = s FROM choices WHERE mutation_id = 'mutation-1'), 'catalog cannot rewrite vote';
   BEGIN
-    UPDATE choices SET evidence_snapshot = '{}' WHERE mutation_id = 'mutation-1';
+    UPDATE choices SET evidence = '{}' WHERE mutation_id = 'mutation-1';
     RAISE EXCEPTION 'immutability failed';
   EXCEPTION WHEN check_violation THEN NULL; END;
   BEGIN

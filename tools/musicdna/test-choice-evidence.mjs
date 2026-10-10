@@ -7,7 +7,8 @@ try {
   for (const path of [
     "../../tools/musicdna/test-choice-evidence.sql",
     "../../supabase/migrations/20261010222931_3204fcfc-abc2-466d-8f67-5604a6a0fffc.sql",
-    "../../supabase/migrations/20261010230313_immutable_choice_evidence.sql",
+    "../../supabase/migrations/20261010230343_550c1bac-d6cc-412d-a07e-366aaa2c58f8.sql",
+    "../../supabase/migrations/20261010232545_harden_choice_evidence.sql",
     "../../tools/musicdna/assert-choice-evidence.sql",
   ]) {
     await db.exec(await readFile(new URL(path, import.meta.url), "utf8"));

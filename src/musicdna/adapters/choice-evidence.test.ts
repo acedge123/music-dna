@@ -11,7 +11,7 @@ function client(error: { message: string } | null = null) {
     chosen_song_id: "a",
     rejected_song_id: "b",
     created_at: String(id),
-    evidence_snapshot: {
+    evidence: {
       version: "choice-evidence-v1",
       source: "pairing",
       choice_id: String(id),

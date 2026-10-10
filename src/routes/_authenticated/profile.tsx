@@ -12,6 +12,7 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import { toast } from "sonner";
+import { setShared } from "@/lib/share-publish.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
@@ -71,6 +72,12 @@ function ProfilePage() {
   );
   const [copied, setCopied] = useState(false);
   const latest = data.sessions[0];
+  const shareFn = useServerFn(setShared);
+  const latestMeta = latest as { is_public?: boolean; share_token?: string } | undefined;
+  const [isPublic, setIsPublic] = useState<boolean>(!!latestMeta?.is_public);
+  const [shareToken, setShareToken] = useState<string | null>(
+    latestMeta?.is_public ? (latestMeta.share_token ?? null) : null,
+  );
   const reasoning = data.reasoning as Reasoning | null;
   const vector = (latest?.vector ?? {}) as Record<string, number>;
 
@@ -149,9 +156,31 @@ function ProfilePage() {
     }
   }
 
+  async function revokeShare() {
+    if (!latest) return;
+    try {
+      await shareFn({ data: { sessionId: latest.id, publish: false } });
+      setIsPublic(false);
+      setShareToken(null);
+      toast.success("Link revoked. Anyone holding it now gets nothing.");
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Couldn't revoke that link.");
+    }
+  }
+
   async function share() {
     if (!latest) return;
-    const slug = (latest as { share_token?: string }).share_token ?? latest.id;
+    let slug: string | null = null;
+    try {
+      const r = await shareFn({ data: { sessionId: latest.id, publish: true } });
+      slug = r.share_token;
+      setIsPublic(true);
+      setShareToken(r.share_token);
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Couldn't publish that reading.");
+      return;
+    }
+    if (!slug) return;
     const url = `${window.location.origin}/s/${slug}`;
     const title = `MusicDNA: ${latest.archetype?.name ?? "A reading"}`;
     const text = latest.archetype?.tagline ? `${title} — ${latest.archetype.tagline}` : title;
@@ -213,14 +242,28 @@ function ProfilePage() {
               >
                 {copied ? "Copied" : "Share / challenge a friend"}
               </button>
-              <a
-                href={`/s/${(latest as { share_token?: string }).share_token ?? latest.id}`}
-                target="_blank"
-                rel="noreferrer"
-                className="text-[10px] font-mono uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
-              >
-                Preview share card →
-              </a>
+              {isPublic && shareToken ? (
+                <>
+                  <a
+                    href={`/s/${shareToken}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[10px] font-mono uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground"
+                  >
+                    View public card →
+                  </a>
+                  <button
+                    onClick={revokeShare}
+                    className="text-[10px] font-mono uppercase tracking-[0.18em] text-muted-foreground hover:text-destructive"
+                  >
+                    Stop sharing
+                  </button>
+                </>
+              ) : (
+                <span className="text-[10px] font-mono uppercase tracking-[0.18em] text-muted-foreground">
+                  Private until you share it
+                </span>
+              )}
             </div>
           </div>
 

@@ -1,10 +1,10 @@
 # Immutable Choice Evidence
 
-TGA-303. Source baseline: `1030fbd`. Migration and deployed acceptance are pending.
+TGA-303. Reconciled with Lovable main `0025cf2`. Migration and deployed acceptance are pending.
 
 ## Contract
 
-`choices.evidence_snapshot` is populated by an invoker-rights trigger inside the existing
+`choices.evidence` is populated by an invoker-rights trigger inside the existing
 atomic vote transaction. The database captures choice/session/pairing/song IDs, vote ordering
 and timestamp, mutation ID, timing, pairing revision, whitelisted song metadata and ten-axis
 values, normalized declared axes, signed contrasts, weight and a content revision.
@@ -25,6 +25,10 @@ missing values; historical vectors and the legacy pure-math default are not reca
 
 - Old votes remain NULL snapshots: historical evidence unavailable, not reconstructed
   from a mutable catalog. They count as answered but cannot corroborate a new claim.
+- Lovable's older application-supplied `v: 1` captures are retained untouched, but are
+  not promoted to verified database snapshots implicitly. They lack the full revision,
+  provenance and metadata contract; they remain unavailable for new supported claims
+  until an explicitly approved, verifiable conversion. Existing saved results replay.
 - Existing saved results replay verbatim. No rewriting of vectors/results or automatic
   historical backfill. Any explicit historical reconstruction needs separate approval.
 - Vote identity, snapshot and committed response are immutable. Direct individual-vote

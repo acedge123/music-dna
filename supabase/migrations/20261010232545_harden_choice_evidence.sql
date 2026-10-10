@@ -1,5 +1,7 @@
 -- No backfill from mutable catalog data: NULL means historical evidence unavailable.
-ALTER TABLE public.choices ADD COLUMN evidence_snapshot jsonb;
+ALTER TABLE public.choices ADD COLUMN IF NOT EXISTS evidence jsonb;
+REVOKE ALL ON FUNCTION public.record_choice_atomic(uuid, uuid, uuid, uuid, integer, text, jsonb, jsonb, jsonb, jsonb) FROM PUBLIC, anon;
+GRANT EXECUTE ON FUNCTION public.record_choice_atomic(uuid, uuid, uuid, uuid, integer, text, jsonb, jsonb, jsonb, jsonb) TO authenticated, service_role;
 -- Individual votes cannot be removed and recast. Reading/account deletion
 -- remains possible through the sessions cascade or the trusted deletion service.
 REVOKE DELETE ON public.choices FROM authenticated;
@@ -17,9 +19,9 @@ DECLARE
 BEGIN
   IF TG_OP = 'UPDATE' THEN
     IF ROW(NEW.id, NEW.session_id, NEW.pairing_id, NEW.chosen_song_id,
-      NEW.rejected_song_id, NEW.created_at, NEW.ms_to_decide, NEW.mutation_id, NEW.evidence_snapshot, NEW.response)
+      NEW.rejected_song_id, NEW.created_at, NEW.ms_to_decide, NEW.mutation_id, NEW.evidence, NEW.response)
       IS DISTINCT FROM ROW(OLD.id, OLD.session_id, OLD.pairing_id, OLD.chosen_song_id,
-      OLD.rejected_song_id, OLD.created_at, OLD.ms_to_decide, OLD.mutation_id, OLD.evidence_snapshot, OLD.response) THEN
+      OLD.rejected_song_id, OLD.created_at, OLD.ms_to_decide, OLD.mutation_id, OLD.evidence, OLD.response) THEN
       RAISE EXCEPTION 'choice_evidence_is_immutable' USING ERRCODE = '23514';
     END IF;
     RETURN NEW;
@@ -63,7 +65,7 @@ BEGIN
     FROM jsonb_array_elements_text(catalog->'tests') d
     WHERE jsonb_typeof(chosen->'values'->d) = 'number'
       AND jsonb_typeof(rejected->'values'->d) = 'number';
-  NEW.evidence_snapshot := jsonb_build_object('version', 'choice-evidence-v1',
+  NEW.evidence := jsonb_build_object('version', 'choice-evidence-v1',
     'source', 'pairing', 'choice_id', NEW.id, 'session_id', NEW.session_id,
     'pairing_id', NEW.pairing_id, 'created_at', NEW.created_at,
     'ms_to_decide', NEW.ms_to_decide, 'mutation_id', NEW.mutation_id,

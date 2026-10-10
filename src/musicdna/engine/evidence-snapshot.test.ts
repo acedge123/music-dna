@@ -17,7 +17,7 @@ function row(id = "1", delta = 40): EvidenceRow {
     chosen_song_id: "a",
     rejected_song_id: "b",
     created_at: "2026-10-10T00:00:00Z",
-    evidence_snapshot: {
+    evidence: {
       version: "choice-evidence-v1",
       source: "pairing",
       choice_id: id,
@@ -50,7 +50,7 @@ describe("frozen choice evidence", () => {
     expect(copy).toEqual(original);
   });
   it("does not invent evidence for pre-migration votes", () => {
-    const legacy = { ...row(), evidence_snapshot: null };
+    const legacy = { ...row(), evidence: null };
     expect(snapshotChoice(legacy).provenance).toBe("legacy_unavailable");
     expect(buildLedger([snapshotChoice(legacy)], DIMS)).toMatchObject({
       answered: 1,
@@ -59,7 +59,7 @@ describe("frozen choice evidence", () => {
     });
   });
   it("rejects corrupt snapshots and mismatched vote identity", () => {
-    expect(snapshotChoice({ ...row(), evidence_snapshot: {} }).provenance).toBe("invalid_snapshot");
+    expect(snapshotChoice({ ...row(), evidence: {} }).provenance).toBe("invalid_snapshot");
     expect(snapshotChoice({ ...row(), chosen_song_id: "other" }).chosen).toBeNull();
   });
   it("normalizes declared axes, never falls back to all dimensions", () => {
