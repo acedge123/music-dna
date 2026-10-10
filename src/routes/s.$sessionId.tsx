@@ -43,7 +43,7 @@ export const Route = createFileRoute("/s/$sessionId")({
   ),
   errorComponent: ({ error }) => (
     <main className="mx-auto max-w-2xl px-6 py-24">
-      <p className="text-muted-foreground">Couldn't load: {error.message}</p>
+      <p className="text-muted-foreground">Couldn't load: {error instanceof Error ? error.message : String(error)}</p>
     </main>
   ),
   component: SharePage,
