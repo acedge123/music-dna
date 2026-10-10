@@ -15,6 +15,8 @@ const Song = z.object({
 export const EvidenceSnapshot = z.object({
   version: z.literal(EVIDENCE_SNAPSHOT_VERSION),
   source: z.literal("pairing"),
+  song_a_id: z.string().optional(),
+  song_b_id: z.string().optional(),
   choice_id: z.string(),
   pairing_id: z.string(),
   session_id: z.string(),

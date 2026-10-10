@@ -5,6 +5,11 @@
 
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import {
+  EvidenceSnapshot,
+  snapshotChoice,
+  type EvidenceRow,
+} from "@/musicdna/engine/evidence-snapshot";
 
 type Client = SupabaseClient<Database>;
 export type HistSong = {
@@ -31,6 +36,7 @@ export type Exchange =
       chosen: HistSong | null;
       rejected: HistSong | null;
       feedback: { verdict: string; why: string } | null;
+      evidence_source?: "pairing" | "legacy_unavailable" | "invalid_snapshot";
     }
   | {
       type: "read";
@@ -51,7 +57,7 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
     client
       .from("choices")
       .select(
-        `pairing_id, created_at, response, chosen:chosen_song_id(${songCols}), rejected:rejected_song_id(${songCols}), pairing:pairing_id(id, tests, diagnostic_weight, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols}))`,
+        `id, session_id, pairing_id, chosen_song_id, rejected_song_id, created_at, evidence_snapshot, response, chosen:chosen_song_id(${songCols}), rejected:rejected_song_id(${songCols}), pairing:pairing_id(id, tests, diagnostic_weight, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols}))`,
       )
       .eq("session_id", sessionId)
       .order("created_at", { ascending: true }),
@@ -62,8 +68,10 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
       .in("event_type", ["read_shown", "pairing_skipped", "reaction_submitted"])
       .order("created_at", { ascending: true }),
   ]);
+  if (choicesRes.error) throw new Error(choicesRes.error.message);
+  if (eventsRes.error) throw new Error(eventsRes.error.message);
   const out: Exchange[] = [];
-  type CRow = {
+  type CRow = EvidenceRow & {
     pairing_id: string;
     created_at: string;
     response: { verdict?: string; why?: string } | null;
@@ -72,13 +80,43 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
     pairing: HistPairing | null;
   };
   for (const c of (choicesRes.data ?? []) as unknown as CRow[]) {
+    const frozen = snapshotChoice(c);
+    const parsed = EvidenceSnapshot.safeParse(c.evidence_snapshot);
+    let chosen = c.evidence_snapshot == null ? c.chosen : null;
+    let rejected = c.evidence_snapshot == null ? c.rejected : null;
+    let pairing = c.evidence_snapshot == null ? c.pairing : null;
+    if (frozen.provenance === "pairing" && parsed.success) {
+      const s = parsed.data;
+      chosen = {
+        id: s.catalog.chosen.id,
+        title: s.catalog.chosen.title,
+        artist: s.catalog.chosen.artist,
+        year: s.catalog.chosen.year,
+        lane: s.catalog.chosen.lane,
+      };
+      rejected = {
+        id: s.catalog.rejected.id,
+        title: s.catalog.rejected.title,
+        artist: s.catalog.rejected.artist,
+        year: s.catalog.rejected.year,
+        lane: s.catalog.rejected.lane,
+      };
+      pairing = {
+        id: c.pairing_id,
+        tests: s.catalog.tests,
+        diagnostic_weight: s.catalog.diagnostic_weight ?? 50,
+        song_a: s.song_a_id === rejected.id ? rejected : chosen,
+        song_b: s.song_a_id === rejected.id ? chosen : rejected,
+      };
+    }
     out.push({
       type: "choice",
       at: c.created_at,
       pairing_id: c.pairing_id,
-      pairing: c.pairing,
-      chosen: c.chosen,
-      rejected: c.rejected,
+      pairing,
+      chosen,
+      rejected,
+      evidence_source: frozen.provenance,
       feedback: c.response
         ? { verdict: c.response.verdict ?? "", why: c.response.why ?? "" }
         : null,

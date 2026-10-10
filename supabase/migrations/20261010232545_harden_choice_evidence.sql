@@ -67,7 +67,7 @@ BEGIN
       AND jsonb_typeof(rejected->'values'->d) = 'number';
   NEW.evidence := jsonb_build_object('version', 'choice-evidence-v1',
     'source', 'pairing', 'choice_id', NEW.id, 'session_id', NEW.session_id,
-    'pairing_id', NEW.pairing_id, 'created_at', NEW.created_at,
+    'pairing_id', NEW.pairing_id, 'song_a_id', p.song_a_id, 'song_b_id', p.song_b_id, 'created_at', NEW.created_at,
     'ms_to_decide', NEW.ms_to_decide, 'mutation_id', NEW.mutation_id,
     'catalog_revision', md5(catalog::text), 'catalog', catalog, 'contrasts', contrasts);
   RETURN NEW;

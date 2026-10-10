@@ -178,7 +178,7 @@ function Me() {
                 )}
                 {confidence > 0 && (
                   <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                    {Math.round(confidence * 100)}% confidence
+                    Opener lane estimate
                   </span>
                 )}
                 <Link
