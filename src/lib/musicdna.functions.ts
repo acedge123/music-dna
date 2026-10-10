@@ -1442,7 +1442,7 @@ async function replayChoice(supabase: AuthedSupabase, sessionId: string, pairing
   return { vector: (sess?.vector ?? {}) as Record<string, number>, verdict: "Already counted.", why: "", hesitation: null, dim: "", delta: 0, replayed: true as const };
 }
 
-export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string; pairingId: string; chosenSongId: string; msToDecide?: number; mutationId?: string }) {
+export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string; pairingId: string; chosenSongId: string; msToDecide?: number; mutationId?: string; _retried?: boolean }): Promise<{ vector: Record<string, number>; verdict: string; why: string; hesitation: string | null; dim: string; delta: number; replayed?: true }> {
     {
       const replay = await replayChoice(supabase, data.sessionId, data.pairingId, data.chosenSongId);
       if (replay) return replay as unknown as { vector: Record<string, number>; verdict: string; why: string; hesitation: string | null; dim: string; delta: number; replayed?: true };
@@ -1557,25 +1557,6 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
     // Kept for back-compat with older UI paths that read `hesitation`.
     const hesitation = speedBeat || null;
 
-    const { error: cErr } = await supabase.from("choices").insert({
-      session_id: data.sessionId,
-      pairing_id: data.pairingId,
-      chosen_song_id: data.chosenSongId,
-      rejected_song_id: rejectedSongId,
-      ms_to_decide: data.msToDecide ?? null,
-      mutation_id: data.mutationId ?? null,
-    });
-    if (cErr) {
-      // 23505 = unique_violation — a concurrent request already recorded this
-      // pairing. Return its committed result rather than distort the vector.
-      if ((cErr as { code?: string }).code === "23505") {
-        const replay = await replayChoice(supabase, data.sessionId, data.pairingId, data.chosenSongId);
-        if (replay) return replay as unknown as { vector: Record<string, number>; verdict: string; why: string; hesitation: string | null; dim: string; delta: number; replayed?: true };
-        throw new Error("this pairing has already been answered for this session");
-      }
-      throw new Error(cErr.message);
-    }
-
     // Cross-lane probe flipping is quarantined. See
     // src/musicdna/engine/experiments/cross-lane-probes.ts and
     // mem://product/within-lane-only.md. The nextPairing invariant guarantees
@@ -1629,11 +1610,35 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
       bootstrap_choices_json: bootstrapChoices,
     };
     if (nextLaneConfidence !== null) updatePayload.lane_confidence = nextLaneConfidence;
-    const { error: uErr } = await supabase
-      .from("sessions")
-      .update(updatePayload as never)
-      .eq("id", data.sessionId);
-    if (uErr) throw new Error(uErr.message);
+
+    // ARC03: vote + feedback + score update commit together in one
+    // transaction, guarded by the vector we read (no lost updates).
+    const response = { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
+    const { error: rpcErr } = await supabase.rpc("record_choice_atomic" as never, {
+      p_session_id: data.sessionId,
+      p_pairing_id: data.pairingId,
+      p_chosen_song_id: data.chosenSongId,
+      p_rejected_song_id: rejectedSongId,
+      p_ms_to_decide: data.msToDecide ?? null,
+      p_mutation_id: data.mutationId ?? null,
+      p_prior_vector: session.vector ?? {},
+      p_update: updatePayload,
+      p_response: response,
+    } as never);
+    if (rpcErr) {
+      const code = (rpcErr as { code?: string }).code;
+      if (code === "23505") {
+        // A concurrent request already committed this pairing — replay it.
+        const replay = await replayChoice(supabase, data.sessionId, data.pairingId, data.chosenSongId);
+        if (replay) return replay as unknown as typeof response & { replayed?: true };
+        throw new Error("this pairing has already been answered for this session");
+      }
+      if (code === "40001" && !data._retried) {
+        // Another pick changed the scores underneath us. Recompute once.
+        return recordChoiceImpl(supabase, userId, { ...data, _retried: true });
+      }
+      throw new Error(rpcErr.message);
+    }
 
     // Fire-and-forget promotion event. Diagnostics only.
     if (bootstrapEvent) {
@@ -1677,10 +1682,6 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
       console.warn("[musicdna] emitChoiceDiagnostics failed:", e instanceof Error ? e.message : e);
     }
 
-    const response = { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
-    // Store the exact feedback so a retry replays it verbatim.
-    await supabase.from("choices").update({ response: response as never })
-      .eq("session_id", data.sessionId).eq("pairing_id", data.pairingId);
     return response as typeof response & { replayed?: true };
 }
 
