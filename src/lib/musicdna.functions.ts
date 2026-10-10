@@ -4336,8 +4336,6 @@ async function ensureChatSessionForUser(
   const lane = openerProfile.opening_lane ?? "general";
   const conf = Number(openerProfile.opening_lane_confidence ?? 0);
   const dims = openerProfile.opening_analysis_json?.candidate_dimensions ?? {};
-    number
-  >;
   const vector = seedVectorFromPriors(dims);
   const { data: created, error } = await supabase
     .from("sessions")
