@@ -1,0 +1,1391 @@
+{
+  "version": "musicdna-requirement-trace-v1",
+  "prd_version": "1.1",
+  "source_web_sha": "8352e32",
+  "requirements": [
+    {
+      "id": "ENT01",
+      "priority": "P0",
+      "title": "Anonymous start.",
+      "criteria": "Provide a clear start action that establishes an anonymous authenticated session behind the scenes. Preserve existing anonymous entry on both clients. Explain recoverability when the listener chooses to save across devices; do not require an account before the first read.",
+      "tickets": [
+        "TGA-279",
+        "TGA-281"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ENT01 (Anonymous start.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ENT02",
+      "priority": "P0",
+      "title": "Accurate positioning.",
+      "criteria": "Align landing-page, metadata, public-card, and app copy with the actual first-session budget and evidence boundaries. Lovable corrected the web landing metadata and public card from twenty/sixty to six in the October 10 source update. Preserve the real maximum of six answered matchups, while allowing an earlier honest ending. Describe self-discovery through musical choices without implying a validated personality test.",
+      "tickets": [
+        "TGA-314"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ENT02 (Accurate positioning.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ONB01",
+      "priority": "P0",
+      "title": "Three ordered songs.",
+      "criteria": "Collect exactly three opening entries in sequence, preserving their ranking and submitted wording. Accept title and artist text without requiring an exact catalog match. Blank input and over-limit text receive actionable validation. A failed request retains the unsaved entry for retry.",
+      "tickets": [
+        "TGA-277",
+        "TGA-281"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ONB01 (Three ordered songs.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ONB02",
+      "priority": "P0",
+      "title": "Conversational reactions.",
+      "criteria": "React to each of the first two songs with concise, relevant commentary and a next prompt. A reaction may describe the song but should point toward a question about the listener's choices. Avoid claiming an established personal pattern from one song.",
+      "tickets": [
+        "TGA-314",
+        "TGA-277",
+        "TGA-281"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ONB02 (Conversational reactions.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ONB03",
+      "priority": "P0",
+      "title": "Tentative opening.",
+      "criteria": "After the third entry, show a tentative hypothesis, then start pairings automatically. The user must not be stranded on an intermediate success screen. Keep the opener transcript accessible within the same experience.",
+      "tickets": [
+        "TGA-314",
+        "TGA-277",
+        "TGA-281"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ONB03 (Tentative opening.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ONB04",
+      "priority": "P0",
+      "title": "Routing integrity.",
+      "criteria": "Persist lane analysis and priors through the shared service. Distinguish catalog matches from model classification. Unknown or ambiguous entries may lead to general routing; do not silently substitute a different song and treat it as confirmed input.",
+      "tickets": [
+        "TGA-314",
+        "TGA-277"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ONB04 (Routing integrity.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DUE01",
+      "priority": "P0",
+      "title": "Clear forced choice.",
+      "criteria": "Each pairing shows two identifiable songs with artist and available year metadata. Use neutral pre-choice copy. Curator rationale, tested axes, hypothesis, expected answer, and scoring weights must not be shown to the listener before the vote.",
+      "tickets": [
+        "TGA-306",
+        "TGA-315",
+        "TGA-278"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DUE01 (Clear forced choice.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DUE02",
+      "priority": "P0",
+      "title": "Immediate response.",
+      "criteria": "Mark the selected song and dim the rejected song immediately, then render server-confirmed feedback. Disable duplicate submissions while a request is pending. A network failure preserves the visible choice and offers recovery without implying that the vote was lost.",
+      "tickets": [
+        "TGA-315",
+        "TGA-278"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DUE02 (Immediate response.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DUE03",
+      "priority": "P0",
+      "title": "Choice-specific observation.",
+      "criteria": "Feedback names the chosen and rejected songs and may describe an observed tradeoff. Repeated-pattern language such as always, again, or every time requires matching evidence. Response speed must not be treated as proof of confidence or emotional struggle.",
+      "tickets": [
+        "TGA-304"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DUE03 (Choice-specific observation.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DUE04",
+      "priority": "P0",
+      "title": "Session progress.",
+      "criteria": "Display answered count against the server's maximum. Skipped and replaced pairings must not produce a misleading Round 8 of 6 label. Both clients use the server's completion status and reason.",
+      "tickets": [
+        "TGA-308",
+        "TGA-278"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DUE04 (Session progress.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DUE05",
+      "priority": "P0",
+      "title": "Unknown-song skip.",
+      "criteria": "Permit a skip when one or both songs are unfamiliar or the user cannot make a meaningful choice. Preserve an optional skip reason for product analysis. Skips never change preference vectors, support counts, or archetype fit.",
+      "tickets": [
+        "TGA-308",
+        "TGA-278"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DUE05 (Unknown-song skip.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DUE06",
+      "priority": "P0",
+      "title": "Completion.",
+      "criteria": "Retain the six-answer hard cap and minimum four answers for early completion while the evidence-aware early-stop refinement is decided. Retain the existing low-recognition rule of three skips when answers are two or fewer. Under accepted D02, three consecutive skips also end a session at any answer count. Lovable added that rule and tests; verify persisted event order and both-client behavior. Catalog exhaustion must be emitted as a distinct completion reason, not merely declared as a possible type.",
+      "tickets": [
+        "TGA-308",
+        "TGA-278"
+      ],
+      "fixtures": [
+        "F04",
+        "F12",
+        "F13"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DUE06 (Completion.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DUE07",
+      "priority": "P0",
+      "title": "Reliable replay.",
+      "criteria": "A repeated request with the same mutation ID returns the already committed result. Double taps, timeouts, retries, and multi-device requests must not duplicate choices or lose a vector update.",
+      "tickets": [
+        "TGA-305",
+        "TGA-278"
+      ],
+      "fixtures": [
+        "F06"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DUE07 (Reliable replay.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "READ01",
+      "priority": "P0",
+      "title": "Visible theory.",
+      "criteria": "Show observations in the first two choices, then a tentative thread when justified. Show a supported interpretation only when the common evidence policy permits it. Display readable states such as theory forming, the thread holds, and one choice challenges this.",
+      "tickets": [
+        "TGA-314",
+        "TGA-315"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute READ01 (Visible theory.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "READ02",
+      "priority": "P0",
+      "title": "Real revisions.",
+      "criteria": "A revision records the previous claim, new evidence, and changed interpretation. Merely changing the top axis or rotating a template is not a revision. Refer to the actual contradictory decision where practical.",
+      "tickets": [
+        "TGA-314",
+        "TGA-315"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute READ02 (Real revisions.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "READ03",
+      "priority": "P0",
+      "title": "Conversation history.",
+      "criteria": "Retain opening reactions and pairing exchanges in chronological order. Keep the latest exchange prominent, with older rounds compact or expandable. Resume restores this history rather than only the last line.",
+      "tickets": [
+        "TGA-314",
+        "TGA-315"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute READ03 (Conversation history.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "READ04",
+      "priority": "P0",
+      "title": "Next question.",
+      "criteria": "The critic's follow-up hook must correspond to the next selected pairing's diagnostic purpose. It cannot promise a test that the next question does not perform.",
+      "tickets": [
+        "TGA-309",
+        "TGA-314",
+        "TGA-315"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute READ04 (Next question.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "REA01",
+      "priority": "P0",
+      "title": "Reactions.",
+      "criteria": "Offer That's me, Not quite, and Give me a harder one from an appropriate earned point, normally after the second answer. The server records the reaction and responds with its effect. Not quite selects a useful retest or counterexample when available. Harder increases the relevant difficulty without simply making the songs obscure. Neither reaction changes recorded song choices or scores.",
+      "tickets": [
+        "TGA-309"
+      ],
+      "fixtures": [
+        "F01",
+        "F02",
+        "F10",
+        "F11",
+        "F16"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute REA01 (Reactions.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "RES01",
+      "priority": "P0",
+      "title": "Automatic reveal.",
+      "criteria": "Finalize and display the result automatically after server completion. No mandatory Generate my reading action. A failed generation has a retry state; accepted choices remain safe.",
+      "tickets": [
+        "TGA-314",
+        "TGA-276"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute RES01 (Automatic reveal.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "RES02",
+      "priority": "P0",
+      "title": "Result hierarchy.",
+      "criteria": "Lead with one distinctive sentence, followed by up to two actual supporting choices and one unresolved tension or alternative explanation when warranted. Put longer prose, archetype detail, and technical explanation behind a secondary disclosure. If fewer than two examples qualify, show fewer and explain the limit.",
+      "tickets": [
+        "TGA-314",
+        "TGA-276"
+      ],
+      "fixtures": [
+        "F01"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute RES02 (Result hierarchy.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "RES03",
+      "priority": "P0",
+      "title": "Honest insufficiency.",
+      "criteria": "Zero answers, too few relevant choices, conflicting evidence, missing catalog data, and generation failure have different meanings. None automatically implies broad taste, inconsistency, an eclectic identity, or a strong archetype.",
+      "tickets": [
+        "TGA-307"
+      ],
+      "fixtures": [
+        "F04",
+        "F05"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute RES03 (Honest insufficiency.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "RES04",
+      "priority": "P0",
+      "title": "Stable result.",
+      "criteria": "Persist the exact result content, evidence references, policy version, and result version. Reopening or sharing the same version renders the same read. A later conversation does not silently replace an already shared snapshot.",
+      "tickets": [
+        "TGA-307"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute RES04 (Stable result.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "RES05",
+      "priority": "P0",
+      "title": "Useful actions.",
+      "criteria": "Provide Push back, Share this read, and access to the full reading. Public results offer Try these choices. These actions must lead to functioning destinations on both platforms.",
+      "tickets": [
+        "TGA-314",
+        "TGA-316",
+        "TGA-276"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute RES05 (Useful actions.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "RES06",
+      "priority": "P0",
+      "title": "Result feedback.",
+      "criteria": "Preserve the web feedback concepts of accurate, partly accurate, and missed, plus an optional useful sentence, inaccurate sentence, and comment. Make equivalent lightweight feedback available in Flutter and attach it to the exact result version. Feedback is separate from the in-interview reactions and does not automatically change song scores.",
+      "tickets": [
+        "TGA-313"
+      ],
+      "fixtures": [
+        "F25"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute RES06 (Result feedback.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CHAT01",
+      "priority": "P0",
+      "title": "Continued interview.",
+      "criteria": "Provide a native Flutter continuation equivalent to web's living read. Load the completed session's choices, allowed claims, counterevidence, and recent messages. Responses remain short and address the user's actual challenge.",
+      "tickets": [
+        "TGA-310",
+        "TGA-316"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CHAT01 (Continued interview.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CHAT02",
+      "priority": "P0",
+      "title": "Evidence provenance.",
+      "criteria": "Keep pairing observations, opener priors, and conversational self-report separately identifiable. Reaction clicks never mutate the diagnostic vector. Current web chat can change that vector from model-extracted text; D04 defines the target handling and is not a reason to replicate the mutation silently.",
+      "tickets": [
+        "TGA-310"
+      ],
+      "fixtures": [
+        "F21"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CHAT02 (Evidence provenance.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "HIS01",
+      "priority": "P1",
+      "title": "History.",
+      "criteria": "Let registered listeners reopen saved readings and distinguish an in-progress interview from a completed result. Cross-device restoration uses server ownership and state. Anonymous restoration works only while the anonymous identity remains available; explain that limitation before claiming durable account recovery.",
+      "tickets": [
+        "TGA-323"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute HIS01 (History.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "LEG01",
+      "priority": "P1",
+      "title": "Existing decade experience.",
+      "criteria": "Preserve the web 1980s route, which asks five songs against curator-managed decade prompts, forms an initial hypothesis after three, and refines after two more. It is a separate exploration mode with different evidence provenance from forced-choice pairings. Do not represent its five submitted songs as five pairing votes. Its mobile port is deferred; shared-service changes must not break the existing route or decade-prompt administration.",
+      "tickets": [
+        "TGA-322"
+      ],
+      "fixtures": [
+        "F26"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute LEG01 (Existing decade experience.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "SHR01",
+      "priority": "P0",
+      "title": "Deliberate publication.",
+      "criteria": "Create or activate a share only from an explicit share action. Return a canonical URL and an opaque token. Make the private/public distinction visible to the owner. Opening a private result is not consent to publish it.",
+      "tickets": [
+        "TGA-311"
+      ],
+      "fixtures": [
+        "F18",
+        "F19"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute SHR01 (Deliberate publication.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "SHR02",
+      "priority": "P0",
+      "title": "Public snapshot.",
+      "criteria": "Return only the approved result snapshot and selected public evidence. Do not include private chat, raw model prompts, email, profile records, raw vectors, or unrelated sessions. Token and legacy-ID access must follow one documented visibility policy.",
+      "tickets": [
+        "TGA-311"
+      ],
+      "fixtures": [
+        "F19"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute SHR02 (Public snapshot.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "SHR03",
+      "priority": "P0",
+      "title": "Share interaction.",
+      "criteria": "Use the native share sheet on iOS and available web sharing, with clipboard fallback. Show an actionable error when a link cannot be created. Do not report success merely because text was copied if the URL is invalid.",
+      "tickets": [
+        "TGA-276"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute SHR03 (Share interaction.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "SHR04",
+      "priority": "P0",
+      "title": "Same-choice challenge.",
+      "criteria": "Persist the pairing set associated with a share. Create an independent recipient session that replays it without exposing the sender's choices before voting. Handle unavailable pairings explicitly; do not silently claim an identical challenge after substitution.",
+      "tickets": [
+        "TGA-312"
+      ],
+      "fixtures": [
+        "F20"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute SHR04 (Same-choice challenge.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "SHR05",
+      "priority": "P0",
+      "title": "Revocation.",
+      "criteria": "The owner can stop sharing. Revoked or deleted snapshots return a neutral unavailable state and do not disclose whether a private account exists. D03 governs migration of existing links.",
+      "tickets": [
+        "TGA-311"
+      ],
+      "fixtures": [
+        "F18",
+        "F19"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute SHR05 (Revocation.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ACC01",
+      "priority": "P0",
+      "title": "Account lifecycle.",
+      "criteria": "Preserve sign in, sign up, email-confirmation handling, sign out, and deletion. Saving an anonymous reading into an account must preserve ownership or clearly explain when transfer is unsupported; do not promise automatic transfer without a tested flow.",
+      "tickets": [
+        "TGA-317",
+        "TGA-279"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ACC01 (Account lifecycle.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ACC02",
+      "priority": "P0",
+      "title": "Deletion and isolation.",
+      "criteria": "Account deletion removes or invalidates owned readings, private messages, and public links according to the approved retention policy. Clear local caches. Verify old access tokens cannot continue retrieving deleted data. Every private resource requires ownership checks; admin status is checked server-side.",
+      "tickets": [
+        "TGA-317",
+        "TGA-279"
+      ],
+      "fixtures": [
+        "F19"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ACC02 (Deletion and isolation.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DIA01",
+      "priority": "P0",
+      "title": "Single evidence builder.",
+      "criteria": "Running read, final result, follow-up context, and public evidence must derive from the same versioned ledger. Each contribution identifies session, pairing, chosen and rejected songs, tested axis, direction, magnitude, timestamp, and applicable catalog version or captured values.",
+      "tickets": [
+        "TGA-303"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DIA01 (Single evidence builder.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DIA02",
+      "priority": "P0",
+      "title": "Relevant evidence only.",
+      "criteria": "Count only declared, valid tests with usable axis values. Missing metadata is unknown rather than a neutral preference. A distinct pairing is counted once; repeated songs and artists are tracked as limits on independence. Rejected choices remain available for counterevidence.",
+      "tickets": [
+        "TGA-303"
+      ],
+      "fixtures": [
+        "F05",
+        "F07",
+        "F08"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DIA02 (Relevant evidence only.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DIA03",
+      "priority": "P0",
+      "title": "Claim eligibility.",
+      "criteria": "Separate contrast magnitude from directional consistency. A two-to-two split is mixed evidence and cannot earn a directional claim because the songs are strongly different. Evidence examples attached as support must agree with the claim's direction. Opposing examples are labeled separately.",
+      "tickets": [
+        "TGA-304"
+      ],
+      "fixtures": [
+        "F01",
+        "F03"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DIA03 (Claim eligibility.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DIA04",
+      "priority": "P0",
+      "title": "Graded language.",
+      "criteria": "Preserve observation, tentative theory, supported tendency, contested tendency, and insufficient-evidence states. Accepted D01 requires at least three distinct supporting pairings, directional consistency of at least 0.65, and more support than contradiction. A 3-to-1 pattern needs qualification; a 2-to-2 split does not support a directional claim. The system may still make a useful observation before that threshold; it must not promote it by prose alone.",
+      "tickets": [
+        "TGA-304"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DIA04 (Graded language.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DIA05",
+      "priority": "P0",
+      "title": "Higher-order interpretation.",
+      "criteria": "The final reading may connect supported tradeoffs into one interpretation, but every clause must have a defensible evidence path. Do not infer introversion from solitary music, trauma from sad songs, or a life value from an aesthetic dimension. The model may acknowledge uncertainty and propose a next question.",
+      "tickets": [
+        "TGA-304"
+      ],
+      "fixtures": [
+        "F03"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DIA05 (Higher-order interpretation.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DIA06",
+      "priority": "P0",
+      "title": "Confounds.",
+      "criteria": "Track concentration by artist, era, lane, and repeated song, and preserve the strongest relevant alternative explanation. Timing is contextual telemetry, not proof of decisiveness. Backgrounding, reading speed, disability, or network delay may affect response time.",
+      "tickets": [
+        "TGA-303"
+      ],
+      "fixtures": [
+        "F09"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DIA06 (Confounds.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DIA07",
+      "priority": "P0",
+      "title": "Reproducibility.",
+      "criteria": "Persist selected pairing order, raw choices, evidence policy, engine version, catalog values or revision, narrative version, and result version. A replay must distinguish deterministic engine output from cached generated language.",
+      "tickets": [
+        "TGA-300",
+        "TGA-302",
+        "TGA-303"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DIA07 (Reproducibility.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CAT01",
+      "priority": "P0",
+      "title": "Routing.",
+      "criteria": "Preserve lane-native selection and the existing prohibition on cross-lane probes for a confidently routed session. Test alternative explanations across artists and suitable subcultures within the allowed territory. General-lane bootstrap and documented fallback are distinct from re-enabling experimental lane flipping.",
+      "tickets": [
+        "TGA-308"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CAT01 (Routing.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CAT02",
+      "priority": "P0",
+      "title": "Pair quality.",
+      "criteria": "An active pairing must identify two different songs, a clear tradeoff, declared axes, diagnostic weight, routing lane, and editorial rationale. Validate song metadata and sufficient axis contrast. Exclude same-artist comparisons from the standard selector as current code does; any future exception is an explicit product decision.",
+      "tickets": [
+        "TGA-308",
+        "TGA-318"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CAT02 (Pair quality.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CAT03",
+      "priority": "P0",
+      "title": "Recognition.",
+      "criteria": "Balance diagnostic value against likely familiarity using the existing recognition inputs. Catalog scarcity must be surfaced to operators. A skip must not be interpreted as taste against the songs or their genre.",
+      "tickets": [
+        "TGA-308"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CAT03 (Recognition.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CAT04",
+      "priority": "P0",
+      "title": "Adaptive purpose.",
+      "criteria": "Selection should resolve a specific uncertainty or retest a proposed pattern. The server returns a safe user-facing prompt while keeping diagnostic notes private. A counterexample must meaningfully distinguish the primary interpretation from its alternative, not merely repeat the same axis label.",
+      "tickets": [
+        "TGA-308"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CAT04 (Adaptive purpose.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CAT05",
+      "priority": "P1",
+      "title": "Coverage audit.",
+      "criteria": "Report active songs and pairings by lane, axis, recognition level, artist concentration, missing values, and skip rate. Do not publish a fixed catalog count in the product without checking the live catalog. Controlled fixture catalogs remain stable even as the production catalog grows.",
+      "tickets": [
+        "TGA-324"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CAT05 (Coverage audit.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "VOI01",
+      "priority": "P0",
+      "title": "Evidence constrains expression.",
+      "criteria": "The narrator receives explicit allowed observations and claims, counterevidence, and a language ceiling. It may paraphrase or connect approved claims; it may not invent a new dimension, song selection, or confidence level.",
+      "tickets": [
+        "TGA-304"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute VOI01 (Evidence constrains expression.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "VOI02",
+      "priority": "P0",
+      "title": "Brevity with specificity.",
+      "criteria": "A normal exchange uses a short observation and a follow-up hook. A result uses a sharp headline with optional supporting prose. Repeated filler, identical templates, and unexplained jargon are defects even when the API succeeds.",
+      "tickets": [
+        "TGA-304"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute VOI02 (Brevity with specificity.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "VOI03",
+      "priority": "P0",
+      "title": "Honest fallbacks.",
+      "criteria": "If model generation fails, render deterministic copy from the same evidence. If evidence is insufficient, state the limit. Generation failure and insufficient evidence are separate statuses so the product does not misdescribe a network problem as a listener trait.",
+      "tickets": [
+        "TGA-304"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute VOI03 (Honest fallbacks.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "VOI04",
+      "priority": "P0",
+      "title": "Narrative validation.",
+      "criteria": "Validate cited song and choice IDs against the session. Block unsupported certainty, diagnostic labels, and evidence-free repetition claims. Invalid generated output falls back safely and is logged for review. Wording variation must not change the underlying claim.",
+      "tickets": [
+        "TGA-304"
+      ],
+      "fixtures": [
+        "F15"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute VOI04 (Narrative validation.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "UX01",
+      "priority": "P0",
+      "title": "Responsive geometry.",
+      "criteria": "Use stacked song cards at narrow widths where the approved web layout stacks them. Support long titles, larger text, keyboard presentation, and safe areas. Current Flutter's rounded side-by-side cards are a baseline difference to resolve, not a new design requirement.",
+      "tickets": [
+        "TGA-315",
+        "TGA-321",
+        "TGA-281"
+      ],
+      "fixtures": [
+        "F22"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute UX01 (Responsive geometry.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "UX02",
+      "priority": "P0",
+      "title": "Reading rhythm.",
+      "criteria": "Selected-state feedback appears immediately. Text can arrive in short staged lines, but users can skip decorative delay. Respect reduced motion. A new pairing must not pull focus away before the preceding observation can be read.",
+      "tickets": [
+        "TGA-315",
+        "TGA-321"
+      ],
+      "fixtures": [
+        "F22"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute UX02 (Reading rhythm.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "UX03",
+      "priority": "P0",
+      "title": "Accessibility.",
+      "criteria": "Provide semantic song buttons, announced selected/busy/error states, visible keyboard focus, sufficient contrast, and meaning beyond color. Verify at 200 percent web text zoom and large native text. Use at least 44 logical pixels for key touch targets and test with screen readers on representative flows.",
+      "tickets": [
+        "TGA-321"
+      ],
+      "fixtures": [
+        "F22"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute UX03 (Accessibility.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "UX04",
+      "priority": "P0",
+      "title": "Honest waiting.",
+      "criteria": "Preserve context during loading, retry, and backgrounding. Distinguish a pending vote from a pending narrative. Avoid two spinning song cards that hide which choice was made.",
+      "tickets": [
+        "TGA-315",
+        "TGA-320",
+        "TGA-321"
+      ],
+      "fixtures": [
+        "F22"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute UX04 (Honest waiting.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DAT01",
+      "priority": "P0",
+      "title": "Private by default.",
+      "criteria": "Enforce ownership in private reads and writes. Never ship privileged database credentials to web or Flutter. A public route exposes only its dedicated projection, not a general session query.",
+      "tickets": [
+        "TGA-317"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DAT01 (Private by default.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DAT02",
+      "priority": "P0",
+      "title": "Minimize telemetry.",
+      "criteria": "Use pseudonymous session IDs in ordinary analytics. Avoid raw free-text chat, email, tokens, and complete model prompts in general logs. Restrict richer diagnostic records to authorized operational review with a defined retention period.",
+      "tickets": [
+        "TGA-319"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DAT02 (Minimize telemetry.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DAT03",
+      "priority": "P0",
+      "title": "Retention and consent.",
+      "criteria": "Explain what is stored, how AI services process submitted content, how sharing works, and how deletion is requested or performed. Product behavior and privacy text must agree. Retention durations and treatment of abandoned anonymous sessions are explicit decisions, not invented defaults.",
+      "tickets": [
+        "TGA-317"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DAT03 (Retention and consent.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "DAT04",
+      "priority": "P0",
+      "title": "Public link lifecycle.",
+      "criteria": "Deletion and revocation invalidate future public reads. Existing token behavior must be inventoried before migration so no private result is accidentally published and no preservation promise is made without evidence.",
+      "tickets": [
+        "TGA-311",
+        "TGA-317"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute DAT04 (Public link lifecycle.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ADM01",
+      "priority": "P0",
+      "title": "Safe catalog edits.",
+      "criteria": "Validate critical song and pairing fields server-side. Audit edits that affect diagnostics. Existing sessions and shared results must remain interpretable after catalog changes through a revision or captured values. Prefer deactivation over destructive removal of referenced content.",
+      "tickets": [
+        "TGA-318"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ADM01 (Safe catalog edits.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ADM02",
+      "priority": "P0",
+      "title": "Diagnostic inspection.",
+      "criteria": "Operators can inspect why a pairing was selected, what was scored, what evidence was allowed or blocked, whether a model fallback occurred, and why a session ended. Internal labels stay out of listener-facing copy.",
+      "tickets": [
+        "TGA-318",
+        "TGA-319"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ADM02 (Diagnostic inspection.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ADM03",
+      "priority": "P1",
+      "title": "Editorial workflow.",
+      "criteria": "A curator authors a tradeoff, checks song values and lane eligibility, previews neutral pre-choice copy and possible post-choice interpretations, and verifies balanced evidence before activation. Changes receive a review record and rollback path.",
+      "tickets": [
+        "TGA-324"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ADM03 (Editorial workflow.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ADM04",
+      "priority": "P1",
+      "title": "Residual learning.",
+      "criteria": "Review weak and ambiguous archetype matches, repeated unknown-song skips, and rejected interpretations. These records inform catalog quality and future policy experiments. They do not automatically create new archetypes.",
+      "tickets": [
+        "TGA-324"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ADM04 (Residual learning.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ARC01",
+      "priority": "P0",
+      "title": "One domain implementation.",
+      "criteria": "Share the application services behind web server functions and REST endpoints. Flutter must not reproduce scoring, claim eligibility, completion, selection, or critic copy in Dart. A web UI may retain server functions provided both transports use the same application service and DTOs.",
+      "tickets": [
+        "TGA-306",
+        "TGA-274"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ARC01 (One domain implementation.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ARC02",
+      "priority": "P0",
+      "title": "Versioned experience contract.",
+      "criteria": "Expose progress, pairing presentation, ordered exchanges, current theory, evidence, reaction effects, completion, final result, and sharing through a documented contract. Preserve released-client compatibility during rollout.",
+      "tickets": [
+        "TGA-306",
+        "TGA-322",
+        "TGA-274"
+      ],
+      "fixtures": [
+        "F23",
+        "F24"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ARC02 (Versioned experience contract.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ARC03",
+      "priority": "P0",
+      "title": "Transactional mutation.",
+      "criteria": "Accept choice, vector update, progress, and revision changes atomically or with an equivalent recoverable protocol. Idempotency applies to choices, skips, reactions, reveal requests, chat submissions, and share creation.",
+      "tickets": [
+        "TGA-305"
+      ],
+      "fixtures": [
+        "F06"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ARC03 (Transactional mutation.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ARC04",
+      "priority": "P0",
+      "title": "Model boundary.",
+      "criteria": "Deterministic code owns the evidence and permitted claims. The model provides language within those bounds. Cache generated content by the relevant session/result revision; retries must not reroll the read or repeatedly charge for identical work.",
+      "tickets": [
+        "TGA-307",
+        "TGA-320"
+      ],
+      "fixtures": [
+        "F14"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ARC04 (Model boundary.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ARC05",
+      "priority": "P0",
+      "title": "Environment discipline.",
+      "criteria": "Keep dev, staging, and production configuration explicit. Preserve existing mobile bundle identity and signing workflow. Confirm API and public-share origins independently. No credential belongs in the PRD, logs, fixtures, or a distributed build.",
+      "tickets": [
+        "TGA-300",
+        "TGA-326",
+        "TGA-280"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ARC05 (Environment discipline.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "ARC06",
+      "priority": "P0",
+      "title": "Routing integration boundary.",
+      "criteria": "Preserve the Agent Brain integration as a server-side pairing-selection capability. Regime recommendations may influence selection knobs; they do not establish listening claims, change choice math or the six-answer/skip stopping policy, write critic copy, or revise completed results. Keep router confidence distinct from evidence consistency and archetype fit. Pin reference/runtime revisions and controlled fixtures when routing changes. Flutter consumes the chosen pairing through the MusicDNA experience API.",
+      "tickets": [
+        "TGA-302",
+        "TGA-306",
+        "TGA-326"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute ARC06 (Routing integration boundary.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "NFR01",
+      "priority": "P0",
+      "title": "Recoverable state.",
+      "criteria": "An accepted vote remains accepted after timeout, refresh, backgrounding, or app termination. Resume reconciles with server revision and restores the current exchange. A stale client cannot overwrite newer state.",
+      "tickets": [
+        "TGA-305",
+        "TGA-326",
+        "TGA-278"
+      ],
+      "fixtures": [
+        "F06",
+        "F16"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute NFR01 (Recoverable state.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "NFR02",
+      "priority": "P0",
+      "title": "Graceful service failure.",
+      "criteria": "Catalog failure, authentication expiry, model failure, and offline state have distinct recovery actions. A narrator outage does not erase scored choices. Do not continue an endless spinner after a terminal failure.",
+      "tickets": [
+        "TGA-320",
+        "TGA-326"
+      ],
+      "fixtures": [
+        "F13",
+        "F14",
+        "F24"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute NFR02 (Graceful service failure.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "NFR03",
+      "priority": "P0",
+      "title": "Safe observability.",
+      "criteria": "Record request IDs, revisions, typed failures, duration, and fallback reason without leaking secrets. Track model calls, latency, and cost per completed session so UX experiments have an operational budget.",
+      "tickets": [
+        "TGA-319",
+        "TGA-320"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute NFR03 (Safe observability.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "NFR04",
+      "priority": "P0",
+      "title": "Concurrency.",
+      "criteria": "Two devices answering the same outstanding pairing yield one accepted mutation and one replay or conflict response. Two different concurrent mutations cannot lose a vector update. Test this against the persistence layer, not only a mocked Cubit.",
+      "tickets": [
+        "TGA-305",
+        "TGA-326",
+        "TGA-278"
+      ],
+      "fixtures": [
+        "F17"
+      ],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute NFR04 (Concurrency.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "MET01",
+      "priority": "P0",
+      "title": "Event vocabulary.",
+      "criteria": "Track opener start/submit, pairing shown, choice accepted, skip accepted, read shown, reaction submitted/applied, session completed with reason, result viewed, pushback submitted, share created/opened/revoked, challenge started/completed, and recovery outcomes. Include client, app build, contract, policy, and catalog versions.",
+      "tickets": [
+        "TGA-319"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute MET01 (Event vocabulary.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "MET02",
+      "priority": "P0",
+      "title": "Six-round instrumentation.",
+      "criteria": "Reconcile existing analytics that expect rounds 8, 10, 12, or 14. A metric that never receives data in the shipping flow cannot substantiate stability. Compare clients using the same definitions and denominators.",
+      "tickets": [
+        "TGA-319"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute MET02 (Six-round instrumentation.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "MET03",
+      "priority": "P1",
+      "title": "Pilot research.",
+      "criteria": "Run a proposed 8 to 12 moderated first-session studies across several lanes and knowledge levels. Ask where the critic noticed something specific, where it overreached, and what participants wanted to challenge or share. Treat two memorable moments per session as a research aspiration, not a generation requirement or proven metric.",
+      "tickets": [
+        "TGA-325"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute MET03 (Pilot research.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    }
+  ],
+  "gaps": [
+    {
+      "id": "GAP01",
+      "tickets": [
+        "TGA-315"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP02",
+      "tickets": [
+        "TGA-306"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP03",
+      "tickets": [
+        "TGA-276"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP04",
+      "tickets": [
+        "TGA-304"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP05",
+      "tickets": [
+        "TGA-303",
+        "TGA-304"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP06",
+      "tickets": [
+        "TGA-304",
+        "TGA-307"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP07",
+      "tickets": [
+        "TGA-308",
+        "TGA-309"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP08",
+      "tickets": [
+        "TGA-311",
+        "TGA-314"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP09",
+      "tickets": [
+        "TGA-306",
+        "TGA-276"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP10",
+      "tickets": [
+        "TGA-311",
+        "TGA-314"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP11",
+      "tickets": [
+        "TGA-310",
+        "TGA-316"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP12",
+      "tickets": [
+        "TGA-312"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP13",
+      "tickets": [
+        "TGA-303"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP14",
+      "tickets": [
+        "TGA-308",
+        "TGA-278"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP15",
+      "tickets": [
+        "TGA-310"
+      ],
+      "status": "pending_acceptance"
+    },
+    {
+      "id": "GAP16",
+      "tickets": [
+        "TGA-319"
+      ],
+      "status": "pending_acceptance"
+    }
+  ]
+}

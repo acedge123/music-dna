@@ -1,0 +1,3659 @@
+{
+  "version": "musicdna-product-parity-fixtures-v1",
+  "source": {
+    "web_sha": "8352e32",
+    "mobile_release_sha": "9d533b3",
+    "mobile_baseline_pr": 8,
+    "prd_version": "1.1",
+    "scope": "Synthetic cached acceptance targets. Not captured HTTP responses or proof of deployment."
+  },
+  "catalog_revision": "synthetic-catalog-v1",
+  "ledger_version": "ledger-v1",
+  "policy_version": "d01-v1",
+  "engine_version": "engine-2026-10",
+  "dims": [
+    "movement",
+    "atmosphere",
+    "immersion",
+    "scale",
+    "community",
+    "perspective",
+    "confidence",
+    "tension",
+    "texture",
+    "transformation"
+  ],
+  "catalog": [
+    {
+      "id": "00000000-0000-4000-8000-000000000001",
+      "revision": "synthetic-catalog-v1",
+      "lane": "alternative",
+      "tests": [
+        "scale"
+      ],
+      "diagnostic_weight": 100,
+      "song_a": {
+        "id": "00000000-0000-4000-8000-000000000101",
+        "title": "Synthetic Song 1 A",
+        "artist": "Synthetic Artist 1 A",
+        "year": 2000,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 70,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      },
+      "song_b": {
+        "id": "00000000-0000-4000-8000-000000000102",
+        "title": "Synthetic Song 1 B",
+        "artist": "Synthetic Artist 1 B",
+        "year": 2000,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 30,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000002",
+      "revision": "synthetic-catalog-v1",
+      "lane": "alternative",
+      "tests": [
+        "scale"
+      ],
+      "diagnostic_weight": 100,
+      "song_a": {
+        "id": "00000000-0000-4000-8000-000000000103",
+        "title": "Synthetic Song 2 A",
+        "artist": "Synthetic Artist 2 A",
+        "year": 2001,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 70,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      },
+      "song_b": {
+        "id": "00000000-0000-4000-8000-000000000104",
+        "title": "Synthetic Song 2 B",
+        "artist": "Synthetic Artist 2 B",
+        "year": 2001,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 30,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000003",
+      "revision": "synthetic-catalog-v1",
+      "lane": "alternative",
+      "tests": [
+        "scale"
+      ],
+      "diagnostic_weight": 100,
+      "song_a": {
+        "id": "00000000-0000-4000-8000-000000000105",
+        "title": "Synthetic Song 3 A",
+        "artist": "Synthetic Artist 3 A",
+        "year": 2002,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 70,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      },
+      "song_b": {
+        "id": "00000000-0000-4000-8000-000000000106",
+        "title": "Synthetic Song 3 B",
+        "artist": "Synthetic Artist 3 B",
+        "year": 2002,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 30,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000004",
+      "revision": "synthetic-catalog-v1",
+      "lane": "alternative",
+      "tests": [
+        "scale"
+      ],
+      "diagnostic_weight": 100,
+      "song_a": {
+        "id": "00000000-0000-4000-8000-000000000107",
+        "title": "Synthetic Song 4 A",
+        "artist": "Synthetic Artist 4 A",
+        "year": 2003,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 70,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      },
+      "song_b": {
+        "id": "00000000-0000-4000-8000-000000000108",
+        "title": "Synthetic Song 4 B",
+        "artist": "Synthetic Artist 4 B",
+        "year": 2003,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 30,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000005",
+      "revision": "synthetic-catalog-v1",
+      "lane": "alternative",
+      "tests": [
+        "scale"
+      ],
+      "diagnostic_weight": 100,
+      "song_a": {
+        "id": "00000000-0000-4000-8000-000000000109",
+        "title": "Synthetic Song 5 A",
+        "artist": "Synthetic Artist 5 A",
+        "year": 2004,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 70,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      },
+      "song_b": {
+        "id": "00000000-0000-4000-8000-000000000110",
+        "title": "Synthetic Song 5 B",
+        "artist": "Synthetic Artist 5 B",
+        "year": 2004,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 30,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000006",
+      "revision": "synthetic-catalog-v1",
+      "lane": "alternative",
+      "tests": [
+        "scale"
+      ],
+      "diagnostic_weight": 100,
+      "song_a": {
+        "id": "00000000-0000-4000-8000-000000000111",
+        "title": "Synthetic Song 6 A",
+        "artist": "Synthetic Artist 6 A",
+        "year": 2005,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 70,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      },
+      "song_b": {
+        "id": "00000000-0000-4000-8000-000000000112",
+        "title": "Synthetic Song 6 B",
+        "artist": "Synthetic Artist 6 B",
+        "year": 2005,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 30,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      }
+    },
+    {
+      "id": "00000000-0000-4000-8000-000000000007",
+      "revision": "synthetic-catalog-v1",
+      "lane": "alternative",
+      "tests": [
+        "scale"
+      ],
+      "diagnostic_weight": 100,
+      "song_a": {
+        "id": "00000000-0000-4000-8000-000000000113",
+        "title": "Synthetic Song 7 A",
+        "artist": "Synthetic Artist 7 A",
+        "year": 2006,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 70,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      },
+      "song_b": {
+        "id": "00000000-0000-4000-8000-000000000114",
+        "title": "Synthetic Song 7 B",
+        "artist": "Synthetic Artist 7 B",
+        "year": 2006,
+        "lane": "alternative",
+        "movement": 50,
+        "atmosphere": 50,
+        "immersion": 50,
+        "scale": 30,
+        "community": 50,
+        "perspective": 50,
+        "confidence": 50,
+        "tension": 50,
+        "texture": 50,
+        "transformation": 50
+      }
+    }
+  ],
+  "sessions": {
+    "stable": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "qualified": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000304",
+          "pairing_id": "00000000-0000-4000-8000-000000000004",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000108",
+            "title": "Synthetic Song 4 B",
+            "artist": "Synthetic Artist 4 B",
+            "year": 2003,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000107",
+            "title": "Synthetic Song 4 A",
+            "artist": "Synthetic Artist 4 A",
+            "year": 2003,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:04Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "reversal": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0,
+      "prior_read": {
+        "axis": "scale",
+        "direction": "hi",
+        "tier": "theory"
+      }
+    },
+    "balanced": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000304",
+          "pairing_id": "00000000-0000-4000-8000-000000000004",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000108",
+            "title": "Synthetic Song 4 B",
+            "artist": "Synthetic Artist 4 B",
+            "year": 2003,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000107",
+            "title": "Synthetic Song 4 A",
+            "artist": "Synthetic Artist 4 A",
+            "year": 2003,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:04Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "zero": {
+      "choices": [],
+      "vector": {},
+      "skipped": 3,
+      "consecutive_skips": 3
+    },
+    "prior": {
+      "choices": [],
+      "vector": {
+        "movement": 40,
+        "atmosphere": 40,
+        "immersion": 40,
+        "scale": 40,
+        "community": 40,
+        "perspective": 40,
+        "confidence": 40,
+        "tension": 40,
+        "texture": 40,
+        "transformation": 40
+      },
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "duplicate": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "untested": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "tension"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "tension"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "tension"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "missing": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": null,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": null,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": null,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "artist": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Repeated Synthetic Artist",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Repeated Synthetic Artist",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Repeated Synthetic Artist",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "late_skips": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 3,
+      "consecutive_skips": 3
+    },
+    "long_titles": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "A Deliberately Long Synthetic Song Title For Small Screen And Large Text Acceptance",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "A Deliberately Long Synthetic Song Title For Small Screen And Large Text Acceptance",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "A Deliberately Long Synthetic Song Title For Small Screen And Large Text Acceptance",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    },
+    "full": {
+      "choices": [
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000301",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000101",
+            "title": "Synthetic Song 1 A",
+            "artist": "Synthetic Artist 1 A",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000102",
+            "title": "Synthetic Song 1 B",
+            "artist": "Synthetic Artist 1 B",
+            "year": 2000,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:01Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000302",
+          "pairing_id": "00000000-0000-4000-8000-000000000002",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000103",
+            "title": "Synthetic Song 2 A",
+            "artist": "Synthetic Artist 2 A",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000104",
+            "title": "Synthetic Song 2 B",
+            "artist": "Synthetic Artist 2 B",
+            "year": 2001,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:02Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000303",
+          "pairing_id": "00000000-0000-4000-8000-000000000003",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000105",
+            "title": "Synthetic Song 3 A",
+            "artist": "Synthetic Artist 3 A",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000106",
+            "title": "Synthetic Song 3 B",
+            "artist": "Synthetic Artist 3 B",
+            "year": 2002,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:03Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000304",
+          "pairing_id": "00000000-0000-4000-8000-000000000004",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000107",
+            "title": "Synthetic Song 4 A",
+            "artist": "Synthetic Artist 4 A",
+            "year": 2003,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000108",
+            "title": "Synthetic Song 4 B",
+            "artist": "Synthetic Artist 4 B",
+            "year": 2003,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:04Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000305",
+          "pairing_id": "00000000-0000-4000-8000-000000000005",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000109",
+            "title": "Synthetic Song 5 A",
+            "artist": "Synthetic Artist 5 A",
+            "year": 2004,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000110",
+            "title": "Synthetic Song 5 B",
+            "artist": "Synthetic Artist 5 B",
+            "year": 2004,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:05Z"
+        },
+        {
+          "choice_id": "00000000-0000-4000-8000-000000000306",
+          "pairing_id": "00000000-0000-4000-8000-000000000006",
+          "catalog_revision": "synthetic-catalog-v1",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "chosen": {
+            "id": "00000000-0000-4000-8000-000000000111",
+            "title": "Synthetic Song 6 A",
+            "artist": "Synthetic Artist 6 A",
+            "year": 2005,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "rejected": {
+            "id": "00000000-0000-4000-8000-000000000112",
+            "title": "Synthetic Song 6 B",
+            "artist": "Synthetic Artist 6 B",
+            "year": 2005,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "created_at": "2026-10-10T12:00:06Z"
+        }
+      ],
+      "vector": {},
+      "skipped": 0,
+      "consecutive_skips": 0
+    }
+  },
+  "expected": {
+    "stable": {
+      "answered": 3,
+      "lead": {
+        "axis": "scale",
+        "direction": "hi",
+        "status": "supported",
+        "eligible": true,
+        "supporting": 3,
+        "contradicting": 0
+      }
+    },
+    "qualified": {
+      "answered": 4,
+      "lead": {
+        "axis": "scale",
+        "direction": "hi",
+        "status": "qualified",
+        "eligible": true,
+        "supporting": 3,
+        "contradicting": 1
+      }
+    },
+    "reversal": {
+      "answered": 3,
+      "lead": {
+        "axis": "scale",
+        "direction": "lo",
+        "status": "provisional",
+        "eligible": false,
+        "supporting": 2,
+        "contradicting": 1
+      }
+    },
+    "balanced": {
+      "answered": 4,
+      "lead": {
+        "axis": "scale",
+        "direction": "hi",
+        "status": "mixed",
+        "eligible": false,
+        "supporting": 2,
+        "contradicting": 2
+      }
+    },
+    "zero": {
+      "answered": 0,
+      "lead": null
+    },
+    "prior": {
+      "answered": 0,
+      "lead": null
+    },
+    "duplicate": {
+      "answered": 1,
+      "lead": {
+        "axis": "scale",
+        "direction": "hi",
+        "status": "provisional",
+        "eligible": false,
+        "supporting": 1,
+        "contradicting": 0
+      }
+    },
+    "untested": {
+      "answered": 3,
+      "lead": {
+        "axis": "tension",
+        "direction": "hi",
+        "status": "insufficient",
+        "eligible": false,
+        "supporting": 0,
+        "contradicting": 0
+      }
+    },
+    "missing": {
+      "answered": 3,
+      "lead": null
+    },
+    "artist": {
+      "answered": 3,
+      "lead": {
+        "axis": "scale",
+        "direction": "hi",
+        "status": "supported",
+        "eligible": true,
+        "supporting": 3,
+        "contradicting": 0
+      }
+    },
+    "late_skips": {
+      "answered": 3,
+      "lead": {
+        "axis": "scale",
+        "direction": "hi",
+        "status": "supported",
+        "eligible": true,
+        "supporting": 3,
+        "contradicting": 0
+      }
+    },
+    "long_titles": {
+      "answered": 3,
+      "lead": {
+        "axis": "scale",
+        "direction": "hi",
+        "status": "supported",
+        "eligible": true,
+        "supporting": 3,
+        "contradicting": 0
+      }
+    },
+    "full": {
+      "answered": 6,
+      "lead": {
+        "axis": "scale",
+        "direction": "hi",
+        "status": "supported",
+        "eligible": true,
+        "supporting": 6,
+        "contradicting": 0
+      }
+    }
+  },
+  "responses": {
+    "stable": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 3,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "supported",
+        "headline": "Across three distinct choices, you favored larger-scale arrangements. This is a qualified reading of these choices, not a personality verdict.",
+        "supporting_choices": [
+          {
+            "tradeoff": "larger-scale over smaller-scale arrangements",
+            "examples": [
+              "Synthetic Song 1 A over Synthetic Song 1 B",
+              "Synthetic Song 2 A over Synthetic Song 2 B"
+            ],
+            "supporting": 3,
+            "tested": 3
+          }
+        ],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "qualified": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 4,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "supported",
+        "headline": "Across three distinct choices, you favored larger-scale arrangements. This is a qualified reading of these choices, not a personality verdict.",
+        "supporting_choices": [
+          {
+            "tradeoff": "larger-scale over smaller-scale arrangements",
+            "examples": [
+              "Synthetic Song 1 A over Synthetic Song 1 B",
+              "Synthetic Song 2 A over Synthetic Song 2 B"
+            ],
+            "supporting": 3,
+            "tested": 4
+          }
+        ],
+        "tension": {
+          "claim": "One choice went the other way.",
+          "notes": "Keep the exception visible."
+        },
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "reversal": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 3,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "insufficient_evidence",
+        "headline": "There is not enough pairing evidence for a supported read yet.",
+        "supporting_choices": [],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "balanced": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 4,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "insufficient_evidence",
+        "headline": "These choices do not support one directional read. More consistent evidence is needed.",
+        "supporting_choices": [],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "zero": {
+      "next": {
+        "contract": 1,
+        "pairing": null,
+        "prompt": null,
+        "progress": {
+          "answered": 0,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": true,
+          "reason": "skip_bound"
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "insufficient_evidence",
+        "headline": "There is not enough pairing evidence for a supported read yet.",
+        "supporting_choices": [],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "prior": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 0,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "insufficient_evidence",
+        "headline": "There is not enough pairing evidence for a supported read yet.",
+        "supporting_choices": [],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "duplicate": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 1,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "insufficient_evidence",
+        "headline": "There is not enough pairing evidence for a supported read yet.",
+        "supporting_choices": [],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "untested": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 3,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "insufficient_evidence",
+        "headline": "There is not enough pairing evidence for a supported read yet.",
+        "supporting_choices": [],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "missing": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 3,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "insufficient_evidence",
+        "headline": "There is not enough pairing evidence for a supported read yet.",
+        "supporting_choices": [],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "artist": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 3,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "supported",
+        "headline": "Across three distinct choices, you favored larger-scale arrangements. This is a qualified reading of these choices, not a personality verdict. The shared artist is an alternative explanation.",
+        "supporting_choices": [
+          {
+            "tradeoff": "larger-scale over smaller-scale arrangements",
+            "examples": [
+              "Synthetic Song 1 A over Synthetic Song 1 B",
+              "Synthetic Song 2 A over Synthetic Song 2 B"
+            ],
+            "supporting": 3,
+            "tested": 3
+          }
+        ],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "late_skips": {
+      "next": {
+        "contract": 1,
+        "pairing": null,
+        "prompt": null,
+        "progress": {
+          "answered": 3,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": true,
+          "reason": "skip_bound"
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "supported",
+        "headline": "Across three distinct choices, you favored larger-scale arrangements. This is a qualified reading of these choices, not a personality verdict.",
+        "supporting_choices": [
+          {
+            "tradeoff": "larger-scale over smaller-scale arrangements",
+            "examples": [
+              "Synthetic Song 1 A over Synthetic Song 1 B",
+              "Synthetic Song 2 A over Synthetic Song 2 B"
+            ],
+            "supporting": 3,
+            "tested": 3
+          }
+        ],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "long_titles": {
+      "next": {
+        "contract": 1,
+        "pairing": {
+          "id": "00000000-0000-4000-8000-000000000007",
+          "revision": "synthetic-catalog-v1",
+          "lane": "alternative",
+          "tests": [
+            "scale"
+          ],
+          "diagnostic_weight": 100,
+          "song_a": {
+            "id": "00000000-0000-4000-8000-000000000113",
+            "title": "Synthetic Song 7 A",
+            "artist": "Synthetic Artist 7 A",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 70,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          },
+          "song_b": {
+            "id": "00000000-0000-4000-8000-000000000114",
+            "title": "Synthetic Song 7 B",
+            "artist": "Synthetic Artist 7 B",
+            "year": 2006,
+            "lane": "alternative",
+            "movement": 50,
+            "atmosphere": 50,
+            "immersion": 50,
+            "scale": 30,
+            "community": 50,
+            "perspective": 50,
+            "confidence": 50,
+            "tension": 50,
+            "texture": 50,
+            "transformation": 50
+          }
+        },
+        "prompt": "This one's about how big a song should feel.",
+        "progress": {
+          "answered": 3,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": false,
+          "reason": null
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "supported",
+        "headline": "Across three distinct choices, you favored larger-scale arrangements. This is a qualified reading of these choices, not a personality verdict.",
+        "supporting_choices": [
+          {
+            "tradeoff": "larger-scale over smaller-scale arrangements",
+            "examples": [
+              "A Deliberately Long Synthetic Song Title For Small Screen And Large Text Acceptance over Synthetic Song 1 B",
+              "A Deliberately Long Synthetic Song Title For Small Screen And Large Text Acceptance over Synthetic Song 2 B"
+            ],
+            "supporting": 3,
+            "tested": 3
+          }
+        ],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      }
+    },
+    "full": {
+      "next": {
+        "contract": 1,
+        "pairing": null,
+        "prompt": null,
+        "progress": {
+          "answered": 6,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": true,
+          "reason": "budget"
+        }
+      },
+      "result": {
+        "contract": 1,
+        "result_version": 1,
+        "outcome": "supported",
+        "headline": "Across three distinct choices, you favored larger-scale arrangements. This is a qualified reading of these choices, not a personality verdict.",
+        "supporting_choices": [
+          {
+            "tradeoff": "larger-scale over smaller-scale arrangements",
+            "examples": [
+              "Synthetic Song 1 A over Synthetic Song 1 B",
+              "Synthetic Song 2 A over Synthetic Song 2 B"
+            ],
+            "supporting": 6,
+            "tested": 6
+          }
+        ],
+        "tension": null,
+        "share_token": null,
+        "full": {}
+      },
+      "legacy_next": {
+        "done": true,
+        "round": 6,
+        "confidence": 0,
+        "pairing": null
+      }
+    }
+  },
+  "cases": [
+    {
+      "id": "F01",
+      "name": "Stable",
+      "session": "stable",
+      "requirements": [
+        "DIA03",
+        "REA01",
+        "RES02"
+      ],
+      "tickets": [
+        "TGA-303",
+        "TGA-304",
+        "TGA-314",
+        "TGA-315"
+      ],
+      "automated_check": "engine",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Supported claim cites distinct valid choices.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "stable"
+    },
+    {
+      "id": "F02",
+      "name": "Reversal",
+      "session": "reversal",
+      "requirements": [
+        "REA01"
+      ],
+      "tickets": [
+        "TGA-303",
+        "TGA-314",
+        "TGA-315"
+      ],
+      "automated_check": "revision",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Revision names the new contradicting choice, preserves prior claim, and changes interpretation.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "reversal"
+    },
+    {
+      "id": "F03",
+      "name": "Balanced exact regression",
+      "session": "balanced",
+      "requirements": [
+        "DIA03",
+        "DIA05"
+      ],
+      "tickets": [
+        "TGA-304"
+      ],
+      "automated_check": "engine",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Contrasts +40/-40/+40/-40 at weight 100 never qualify; no opposing example is support.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "balanced"
+    },
+    {
+      "id": "F04",
+      "name": "Zero answers",
+      "session": "zero",
+      "requirements": [
+        "DUE06",
+        "RES03"
+      ],
+      "tickets": [
+        "TGA-308",
+        "TGA-307"
+      ],
+      "automated_check": "completion",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Three unfamiliar-song skips yield skip_bound and honest insufficient evidence, not broad taste.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "zero"
+    },
+    {
+      "id": "F05",
+      "name": "Prior only",
+      "session": "prior",
+      "requirements": [
+        "DIA02",
+        "RES03"
+      ],
+      "tickets": [
+        "TGA-303",
+        "TGA-304"
+      ],
+      "automated_check": "engine",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Strong priors with zero observed choices cannot supply supporting evidence.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "prior"
+    },
+    {
+      "id": "F06",
+      "name": "Duplicate retry",
+      "session": "duplicate",
+      "requirements": [
+        "ARC03",
+        "DUE07",
+        "NFR01"
+      ],
+      "tickets": [
+        "TGA-305",
+        "TGA-278"
+      ],
+      "automated_check": "engine",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Repeat same mutation after timeout: one committed vote/vector change and identical feedback; conflicting content returns 409.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "duplicate",
+      "actions": [
+        {
+          "operation": "choose",
+          "mutation_id": "fixture-retry-0001",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "chosen_song_id": "00000000-0000-4000-8000-000000000101"
+        },
+        {
+          "operation": "retry_identical",
+          "mutation_id": "fixture-retry-0001"
+        },
+        {
+          "operation": "retry_different_song",
+          "mutation_id": "fixture-retry-0001",
+          "chosen_song_id": "00000000-0000-4000-8000-000000000102"
+        }
+      ]
+    },
+    {
+      "id": "F07",
+      "name": "Untested axis",
+      "session": "untested",
+      "requirements": [
+        "DIA02"
+      ],
+      "tickets": [
+        "TGA-303"
+      ],
+      "automated_check": "engine",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Large scale contrast is excluded when only tension is declared.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "untested"
+    },
+    {
+      "id": "F08",
+      "name": "Missing values",
+      "session": "missing",
+      "requirements": [
+        "DIA02"
+      ],
+      "tickets": [
+        "TGA-303"
+      ],
+      "automated_check": "engine",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Missing declared values stay unknown, not zero/50; no supporting claim.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "missing"
+    },
+    {
+      "id": "F09",
+      "name": "Artist confound",
+      "session": "artist",
+      "requirements": [
+        "DIA06"
+      ],
+      "tickets": [
+        "TGA-303",
+        "TGA-304"
+      ],
+      "automated_check": "engine",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Preserve repeated-artist alternative explanation; helper eligibility alone is not confound acceptance.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "artist"
+    },
+    {
+      "id": "F10",
+      "name": "Harder reaction",
+      "session": "stable",
+      "requirements": [
+        "REA01"
+      ],
+      "tickets": [
+        "TGA-308",
+        "TGA-309"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Harder changes effective selection inputs at low lane confidence without mutating vector.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "actions": [
+        {
+          "operation": "react",
+          "kind": "harder",
+          "lane_confidence": 0.2
+        }
+      ]
+    },
+    {
+      "id": "F11",
+      "name": "No retest",
+      "session": "stable",
+      "requirements": [
+        "REA01"
+      ],
+      "tickets": [
+        "TGA-309"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "No eligible replacement yields no_alternative, retains presentation and scores.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "actions": [
+        {
+          "operation": "react",
+          "kind": "not_quite",
+          "eligible_replacements": []
+        }
+      ]
+    },
+    {
+      "id": "F12",
+      "name": "Late skips and reset",
+      "session": "late_skips",
+      "requirements": [
+        "DUE06"
+      ],
+      "tickets": [
+        "TGA-308",
+        "TGA-278"
+      ],
+      "automated_check": "completion",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Three skips after three answers stop; an intervening answer resets the streak across resume.",
+        "layer": "service-route-device"
+      },
+      "cached_response": "late_skips",
+      "actions": [
+        "choose",
+        "choose",
+        "choose",
+        "skip",
+        "skip",
+        "skip",
+        "resume"
+      ]
+    },
+    {
+      "id": "F13",
+      "name": "Empty catalog",
+      "session": "stable",
+      "requirements": [
+        "DUE06",
+        "NFR02"
+      ],
+      "tickets": [
+        "TGA-308",
+        "TGA-320"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Empty eligible pool returns catalog_exhausted, not budget/confident; both clients frame it honestly.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "expected_next": {
+        "contract": 1,
+        "pairing": null,
+        "prompt": null,
+        "progress": {
+          "answered": 3,
+          "max_answered": 6
+        },
+        "completion": {
+          "done": true,
+          "reason": "catalog_exhausted"
+        }
+      }
+    },
+    {
+      "id": "F14",
+      "name": "Narrator outage",
+      "session": "stable",
+      "requirements": [
+        "ARC04",
+        "NFR02"
+      ],
+      "tickets": [
+        "TGA-307",
+        "TGA-320"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Generator failure returns deterministic evidence-bounded fallback without losing votes or rerolling saved results.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable"
+    },
+    {
+      "id": "F15",
+      "name": "Invalid narrative",
+      "session": "stable",
+      "requirements": [
+        "VOI04"
+      ],
+      "tickets": [
+        "TGA-304"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Reject invented songs and disallowed claims and return cached deterministic fallback.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable"
+    },
+    {
+      "id": "F16",
+      "name": "Resume after commit",
+      "session": "stable",
+      "requirements": [
+        "REA01",
+        "NFR01"
+      ],
+      "tickets": [
+        "TGA-305",
+        "TGA-278",
+        "TGA-315"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Terminate after server commit; restore same revision, presentation, chronological exchanges and pending mutation result.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "actions": [
+        "choose",
+        "server_commit",
+        "lose_response",
+        "terminate_client",
+        "restore_identity",
+        "resume",
+        "reconcile_pending_mutation"
+      ]
+    },
+    {
+      "id": "F17",
+      "name": "Concurrent devices",
+      "session": "stable",
+      "requirements": [
+        "NFR04"
+      ],
+      "tickets": [
+        "TGA-305"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Same presentation yields one accepted mutation and replay/conflict; different concurrent choices cannot lose updates.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "actions": [
+        {
+          "operation": "concurrent_choices",
+          "pairing_id": "00000000-0000-4000-8000-000000000001",
+          "songs": [
+            "00000000-0000-4000-8000-000000000101",
+            "00000000-0000-4000-8000-000000000102"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "F18",
+      "name": "Private share",
+      "session": "stable",
+      "requirements": [
+        "SHR01",
+        "SHR05"
+      ],
+      "tickets": [
+        "TGA-311"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Unpublished token is unavailable and reveals no private/session/vector/chat data.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable"
+    },
+    {
+      "id": "F19",
+      "name": "Share lifecycle",
+      "session": "stable",
+      "requirements": [
+        "SHR01",
+        "SHR02",
+        "SHR05",
+        "ACC02"
+      ],
+      "tickets": [
+        "TGA-311",
+        "TGA-317"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Publish explicitly, open frozen result, revoke, delete; old links become neutrally unavailable with coherent caches.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "actions": [
+        "private",
+        "explicit_publish",
+        "public_view",
+        "revoke",
+        "public_view",
+        "delete",
+        "retry_public_view"
+      ]
+    },
+    {
+      "id": "F20",
+      "name": "Fixed challenge",
+      "session": "stable",
+      "requirements": [
+        "SHR04"
+      ],
+      "tickets": [
+        "TGA-312"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Recipient gets same IDs/order/revisions, independent ownership/evidence and no sender choices before voting.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "actions": [
+        "publish_fixed_set",
+        "new_recipient_identity",
+        "replay_same_ids_in_order",
+        "complete_independently"
+      ]
+    },
+    {
+      "id": "F21",
+      "name": "Chat disagreement",
+      "session": "stable",
+      "requirements": [
+        "CHAT02"
+      ],
+      "tickets": [
+        "TGA-310",
+        "TGA-316"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Self-report creates a new version; pairing vector and original/public result remain unchanged.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "actions": [
+        {
+          "operation": "chat",
+          "text": "I picked those songs because they remind me of my old home.",
+          "source": "self_report",
+          "base_result_version": 1
+        }
+      ]
+    },
+    {
+      "id": "F22",
+      "name": "Presentation",
+      "session": "long_titles",
+      "requirements": [
+        "UX01",
+        "UX02",
+        "UX03",
+        "UX04"
+      ],
+      "tickets": [
+        "TGA-321"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Equal phone viewports, long titles, large text, reduced motion, screen reader and keyboard show no clipped/lost actions.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "long_titles"
+    },
+    {
+      "id": "F23",
+      "name": "Legacy client",
+      "session": "full",
+      "requirements": [
+        "ARC02"
+      ],
+      "tickets": [
+        "TGA-322",
+        "TGA-274"
+      ],
+      "automated_check": "projection",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Without capability header old client receives original next/choice/reveal contract throughout session.",
+        "layer": "route-device"
+      },
+      "cached_response": "full"
+    },
+    {
+      "id": "F24",
+      "name": "Schema mismatch",
+      "session": "stable",
+      "requirements": [
+        "ARC02",
+        "NFR02"
+      ],
+      "tickets": [
+        "TGA-306",
+        "TGA-322"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Incomplete enriched response produces recoverable capability/version error, not silent empty success.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "malformed_response": {
+        "contract": 1,
+        "pairing": null
+      }
+    },
+    {
+      "id": "F25",
+      "name": "Result feedback",
+      "session": "stable",
+      "requirements": [
+        "RES06"
+      ],
+      "tickets": [
+        "TGA-313"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Reopened version shows its stored feedback; retry cannot duplicate or change diagnostic scores.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "actions": [
+        {
+          "operation": "feedback",
+          "result_version": 1,
+          "rating": "partly"
+        },
+        {
+          "operation": "retry_feedback",
+          "result_version": 1
+        },
+        {
+          "operation": "reopen",
+          "result_version": 1
+        }
+      ]
+    },
+    {
+      "id": "F26",
+      "name": "Decade regression",
+      "session": "stable",
+      "requirements": [
+        "LEG01"
+      ],
+      "tickets": [
+        "TGA-322"
+      ],
+      "automated_check": "scenario",
+      "acceptance": {
+        "status": "pending",
+        "procedure": "Five-song decade flow remains functional and cannot fabricate pairing evidence.",
+        "layer": "route-persistence-device"
+      },
+      "cached_response": "stable",
+      "decade_opener": [
+        "Synthetic 1980s Song 1",
+        "Synthetic 1980s Song 2",
+        "Synthetic 1980s Song 3",
+        "Synthetic 1980s Song 4",
+        "Synthetic 1980s Song 5"
+      ]
+    }
+  ],
+  "retention_policy": {
+    "version": "d06-v1",
+    "adopted_on": "2026-10-10",
+    "reading_evidence_follows_reading": true,
+    "registered_keep_until_deleted": true,
+    "anonymous_abandoned_days": 30,
+    "anonymous_completed_days": 90,
+    "debug_log_days": 30,
+    "operational_metadata_days": 90,
+    "clock_reset_sources": [
+      "owner_activity"
+    ],
+    "clock_non_reset_sources": [
+      "public_link_view",
+      "background_job"
+    ],
+    "access_revocation": "immediate",
+    "active_system_purge_max_days": 7,
+    "backup_expiration": "pending_operator_inventory",
+    "linking": {
+      "new_account": "upgrade_verified_existing_identity",
+      "existing_account": "authenticated_explicit_retry_safe_transfer",
+      "merge_by_email": false,
+      "overwrite_reading": false,
+      "publish_on_link": false
+    }
+  }
+}
