@@ -48,7 +48,6 @@ export type ArchetypeAssignment = {
   runners_up: { id: string | null; name: string; score: number }[];
 };
 
-
 export type Reveal = {
   archetype: ArchetypeAssignment;
   tagline: string | null;

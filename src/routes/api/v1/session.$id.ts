@@ -61,13 +61,21 @@ export const Route = createFileRoute("/api/v1/session/$id")({
           const [exchanges, openerRes, resultRes] = await Promise.all([
             loadSessionHistory(supabase, parsed.data),
             supabase.from("profiles").select("opening_songs, opening_hypothesis").maybeSingle(),
-            supabase.from("session_results").select("version, source, created_at")
-              .eq("session_id", parsed.data).order("version", { ascending: true }),
+            supabase
+              .from("session_results")
+              .select("version, source, created_at")
+              .eq("session_id", parsed.data)
+              .order("version", { ascending: true }),
           ]);
           return jsonResponse({
             ...base,
             contract: 1,
-            opener: openerRes.data ? { songs: openerRes.data.opening_songs, hypothesis: openerRes.data.opening_hypothesis } : null,
+            opener: openerRes.data
+              ? {
+                  songs: openerRes.data.opening_songs,
+                  hypothesis: openerRes.data.opening_hypothesis,
+                }
+              : null,
             exchanges,
             result_versions: resultRes.data ?? [],
           });

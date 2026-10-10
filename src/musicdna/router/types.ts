@@ -13,10 +13,7 @@ export const MUSICDNA_DIMS = [
 
 export type MusicDNADim = (typeof MUSICDNA_DIMS)[number];
 
-export type SelectionMode =
-  | "diagnostic_first"
-  | "recognition_boost"
-  | "recognition_first";
+export type SelectionMode = "diagnostic_first" | "recognition_boost" | "recognition_first";
 
 export const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
   diagnostic_first: 0,
@@ -28,13 +25,7 @@ export const SEARCH_REGIMES = ["prune", "explore", "compound", "coordinate"] as 
 
 export type Regime = (typeof SEARCH_REGIMES)[number];
 
-export type ModePressure =
-  | "explore"
-  | "prune"
-  | "compound"
-  | "escape"
-  | "coordinate"
-  | "create";
+export type ModePressure = "explore" | "prune" | "compound" | "escape" | "coordinate" | "create";
 
 export type TrinaryLow = "low" | "medium" | "high";
 

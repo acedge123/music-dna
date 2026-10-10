@@ -17,9 +17,13 @@
 // This test does NOT change scoring weights.
 
 import { describe, expect, it } from "vitest";
-import { enumerateMusicDNATerrains, mapTerrain, type ChoiceEventRow, type TerrainFeatures } from "./terrain";
+import {
+  enumerateMusicDNATerrains,
+  mapTerrain,
+  type ChoiceEventRow,
+  type TerrainFeatures,
+} from "./terrain";
 import { recommendRegime, type Regime } from "./scoring";
-
 
 // Sweep grid — kept small but covers the levers that actually move terrain
 // outputs today: lane/vector confidence, round position, skip pressure, delta
@@ -49,7 +53,12 @@ function buildChoices(
   snapProfile: (typeof SNAP_PROFILES)[number],
   round: number,
 ): ChoiceEventRow[] {
-  const n = Math.max(deltaProfile.deltas.length, artistProfile.artists.length, snapProfile.ms.length, round);
+  const n = Math.max(
+    deltaProfile.deltas.length,
+    artistProfile.artists.length,
+    snapProfile.ms.length,
+    round,
+  );
   const rows: ChoiceEventRow[] = [];
   for (let i = 0; i < n; i++) {
     rows.push({

@@ -17,9 +17,7 @@ export type LovableGatewayOptions = {
   fetchImpl?: typeof fetch; // injectable for tests
 };
 
-export function createLovableLlmGateway(
-  opts: LovableGatewayOptions = {},
-): LLMGateway {
+export function createLovableLlmGateway(opts: LovableGatewayOptions = {}): LLMGateway {
   const apiKey = opts.apiKey ?? process.env.LOVABLE_API_KEY;
   const defaultModel = opts.defaultModel ?? DEFAULT_MODEL;
   const doFetch = opts.fetchImpl ?? fetch;

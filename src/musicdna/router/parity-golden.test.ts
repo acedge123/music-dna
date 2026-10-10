@@ -36,9 +36,9 @@ describe("MusicDNA x Agent Brain golden parity", () => {
       expect(rec.transition_candidate).toBe(testCase.expected.transition_candidate);
       expect(rec.selection_mode).toBe(testCase.expected.selection_mode);
       expect(rec.pairing_knobs).toEqual(testCase.expected.pairing_knobs);
-      expect(Object.fromEntries(rec.scoring.breakdown.map((row) => [row.regime, row.score]))).toEqual(
-        testCase.expected.scores,
-      );
+      expect(
+        Object.fromEntries(rec.scoring.breakdown.map((row) => [row.regime, row.score])),
+      ).toEqual(testCase.expected.scores);
     });
   }
 });

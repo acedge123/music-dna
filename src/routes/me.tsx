@@ -11,7 +11,10 @@ export const Route = createFileRoute("/me")({
   head: () => ({
     meta: [
       { title: "MusicDNA — Your read" },
-      { name: "description", content: "Your MusicDNA read: the critic's interpretation of the choices you made." },
+      {
+        name: "description",
+        content: "Your MusicDNA read: the critic's interpretation of the choices you made.",
+      },
       { property: "og:title", content: "MusicDNA — Your read" },
       { property: "og:description", content: "The critic's interpretation of your choices." },
       { property: "og:type", content: "website" },
@@ -24,8 +27,14 @@ export const Route = createFileRoute("/me")({
 type ChatMsg = { role: "user" | "assistant" | "system"; content: string; created_at?: string };
 
 const LANE_LABEL: Record<string, string> = {
-  alternative: "Alternative", pop: "Pop", hip_hop: "Hip-Hop",
-  electronic: "Electronic", classic_rock: "Classic Rock", metal: "Metal", r_and_b: "R&B / Soul", general: "General",
+  alternative: "Alternative",
+  pop: "Pop",
+  hip_hop: "Hip-Hop",
+  electronic: "Electronic",
+  classic_rock: "Classic Rock",
+  metal: "Metal",
+  r_and_b: "R&B / Soul",
+  general: "General",
 };
 
 function Me() {
@@ -54,7 +63,10 @@ function Me() {
         setIsAnon(Boolean(u.user?.is_anonymous));
         const [r, h] = await Promise.all([
           resultFn() as Promise<any>,
-          listFn({ data: {} } as never) as Promise<{ sessionId: string | null; messages: ChatMsg[] }>,
+          listFn({ data: {} } as never) as Promise<{
+            sessionId: string | null;
+            messages: ChatMsg[];
+          }>,
         ]);
         setProfile(r?.profile ?? null);
         setOpeningSongs((r?.profile?.opening_songs as string[] | null) ?? []);
@@ -62,15 +74,19 @@ function Me() {
         setMessages(h.messages);
         // If no chat yet, seed the opener with a hello from the critic.
         if (!h.messages.length && r?.profile?.opening_hypothesis) {
-          setMessages([{
-            role: "assistant",
-            content: `${r.profile.opening_hypothesis}\n\nAsk me anything — or push back.`,
-          }]);
+          setMessages([
+            {
+              role: "assistant",
+              content: `${r.profile.opening_hypothesis}\n\nAsk me anything — or push back.`,
+            },
+          ]);
         } else if (!h.messages.length && !r?.profile?.opening_songs) {
-          setMessages([{
-            role: "assistant",
-            content: "We haven't started yet. Name three songs first — then we'll talk.",
-          }]);
+          setMessages([
+            {
+              role: "assistant",
+              content: "We haven't started yet. Name three songs first — then we'll talk.",
+            },
+          ]);
         }
       } catch (e) {
         setBootError(e instanceof Error ? e.message : String(e));
@@ -96,12 +112,17 @@ function Me() {
     setMessages((m) => [...m, { role: "user", content: text }]);
     setInput("");
     try {
-      const res = (await chatFn({ data: { message: text, sessionId: sessionId ?? undefined } } as never)) as { reply: string; sessionId: string };
+      const res = (await chatFn({
+        data: { message: text, sessionId: sessionId ?? undefined },
+      } as never)) as { reply: string; sessionId: string };
       setSessionId(res.sessionId || sessionId);
       setMessages((m) => [...m, { role: "assistant", content: res.reply }]);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Lost the thread.");
-      setMessages((m) => [...m, { role: "assistant", content: "I lost the thread. Say that again?" }]);
+      setMessages((m) => [
+        ...m,
+        { role: "assistant", content: "I lost the thread. Say that again?" },
+      ]);
     } finally {
       setBusy(false);
     }
@@ -210,7 +231,10 @@ function Me() {
                 className="flex-1 min-h-[280px] max-h-[55vh] overflow-y-auto border hairline rounded-sm p-5 space-y-5 bg-background"
               >
                 {messages.map((m, i) => (
-                  <div key={i} className={m.role === "user" ? "flex justify-end" : "flex justify-start"}>
+                  <div
+                    key={i}
+                    className={m.role === "user" ? "flex justify-end" : "flex justify-start"}
+                  >
                     <div
                       className={
                         m.role === "user"
@@ -254,7 +278,11 @@ function Me() {
               {isAnon && messages.length >= 6 && (
                 <div className="border hairline rounded-sm p-4 bg-muted/40">
                   <p className="font-serif italic text-base">
-                    This read is yours. <Link to="/auth" className="text-primary underline-offset-4 hover:underline">Save it</Link> so we can pick this back up — and surface new side-by-sides later.
+                    This read is yours.{" "}
+                    <Link to="/auth" className="text-primary underline-offset-4 hover:underline">
+                      Save it
+                    </Link>{" "}
+                    so we can pick this back up — and surface new side-by-sides later.
                   </p>
                 </div>
               )}

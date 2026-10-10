@@ -106,7 +106,6 @@ function AdminPage() {
     );
   }
 
-
   return (
     <main className="mx-auto max-w-6xl px-6 py-12">
       <div className="flex items-end justify-between mb-8 gap-6 flex-wrap">
@@ -117,14 +116,18 @@ function AdminPage() {
             Edit songs, pairings, and archetypes. Changes go live immediately.
           </p>
         </div>
-        {tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && tab !== "shadow" && (
-          <button
-            onClick={() => setEditing({ row: null })}
-            className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
-          >
-            + New {tab.replace(/s$/, "")}
-          </button>
-        )}
+        {tab !== "decade_prompts" &&
+          tab !== "residuals" &&
+          tab !== "ontology" &&
+          tab !== "diagnostics" &&
+          tab !== "shadow" && (
+            <button
+              onClick={() => setEditing({ row: null })}
+              className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
+            >
+              + New {tab.replace(/s$/, "")}
+            </button>
+          )}
       </div>
 
       <nav className="flex gap-1 border-b hairline mb-6 flex-wrap">
@@ -161,13 +164,18 @@ function AdminPage() {
         />
       )}
 
-      {editing && tab !== "decade_prompts" && tab !== "residuals" && tab !== "ontology" && tab !== "diagnostics" && tab !== "shadow" && (
-        <EditDrawer
-          entity={tab as Exclude<Entity, "decade_prompts">}
-          row={editing.row}
-          onClose={() => setEditing(null)}
-        />
-      )}
+      {editing &&
+        tab !== "decade_prompts" &&
+        tab !== "residuals" &&
+        tab !== "ontology" &&
+        tab !== "diagnostics" &&
+        tab !== "shadow" && (
+          <EditDrawer
+            entity={tab as Exclude<Entity, "decade_prompts">}
+            row={editing.row}
+            onClose={() => setEditing(null)}
+          />
+        )}
     </main>
   );
 }
@@ -182,7 +190,8 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
 
   const query = useQuery({
     queryKey: ["admin", entity, search, lane],
-    queryFn: () => list({ data: { table: entity, search: search || undefined, lane: lane || undefined } }),
+    queryFn: () =>
+      list({ data: { table: entity, search: search || undefined, lane: lane || undefined } }),
   });
 
   const columns = useMemo(() => columnsFor(entity), [entity]);
@@ -205,8 +214,20 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
             className="border hairline rounded-sm bg-background px-3 py-1.5 text-sm"
           >
             <option value="">All lanes</option>
-            {["alternative", "pop", "hip_hop", "electronic", "classic_rock", "metal", "country", "r_and_b", "general"].map((l) => (
-              <option key={l} value={l}>{l}</option>
+            {[
+              "alternative",
+              "pop",
+              "hip_hop",
+              "electronic",
+              "classic_rock",
+              "metal",
+              "country",
+              "r_and_b",
+              "general",
+            ].map((l) => (
+              <option key={l} value={l}>
+                {l}
+              </option>
             ))}
           </select>
         )}
@@ -220,7 +241,10 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
           <thead className="bg-background/50">
             <tr>
               {columns.map((c) => (
-                <th key={c} className="text-left font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground px-3 py-2">
+                <th
+                  key={c}
+                  className="text-left font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground px-3 py-2"
+                >
                   {c}
                 </th>
               ))}
@@ -257,7 +281,13 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
                         defaultChecked={!!r[c]}
                         onChange={async (e) => {
                           try {
-                            await setWeight({ data: { id: r.id, diagnostic_weight: Number(r.diagnostic_weight ?? 0), active: e.target.checked } });
+                            await setWeight({
+                              data: {
+                                id: r.id,
+                                diagnostic_weight: Number(r.diagnostic_weight ?? 0),
+                                active: e.target.checked,
+                              },
+                            });
                             qc.invalidateQueries({ queryKey: ["admin", entity] });
                           } catch (err) {
                             toast.error((err as Error).message);
@@ -271,7 +301,13 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
                         title="Serve in the first 2 rounds of a general-lane session to promote the session to a real lane."
                         onChange={async (e) => {
                           try {
-                            await setWeight({ data: { id: r.id, diagnostic_weight: Number(r.diagnostic_weight ?? 0), is_bootstrap: e.target.checked } });
+                            await setWeight({
+                              data: {
+                                id: r.id,
+                                diagnostic_weight: Number(r.diagnostic_weight ?? 0),
+                                is_bootstrap: e.target.checked,
+                              },
+                            });
                             toast.success(e.target.checked ? "Marked bootstrap" : "Unmarked");
                             qc.invalidateQueries({ queryKey: ["admin", entity] });
                           } catch (err) {
@@ -280,16 +316,12 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
                         }}
                       />
                     ) : (
-
                       formatCell(r[c])
                     )}
                   </td>
                 ))}
                 <td className="px-3 py-2 text-right whitespace-nowrap">
-                  <button
-                    onClick={() => onEdit(r)}
-                    className="text-xs underline mr-3"
-                  >
+                  <button onClick={() => onEdit(r)} className="text-xs underline mr-3">
                     Edit
                   </button>
                   <button
@@ -312,7 +344,10 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
             ))}
             {!query.isLoading && (query.data?.rows.length ?? 0) === 0 && (
               <tr>
-                <td colSpan={columns.length + 1} className="px-3 py-8 text-center text-muted-foreground">
+                <td
+                  colSpan={columns.length + 1}
+                  className="px-3 py-8 text-center text-muted-foreground"
+                >
                   Nothing here yet.
                 </td>
               </tr>
@@ -325,8 +360,30 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
 }
 
 function columnsFor(e: Entity): string[] {
-  if (e === "songs") return ["title", "artist", "year", "primary_lane", "diagnostic_power", "canon_score", "curator_count"];
-  if (e === "pairings") return ["user_facing_tradeoff", "song_a_id", "song_b_id", "lane", "diagnostic_weight", "recognition_score", "min_canon", "era_bucket", "cross_subculture", "is_bootstrap", "active"];
+  if (e === "songs")
+    return [
+      "title",
+      "artist",
+      "year",
+      "primary_lane",
+      "diagnostic_power",
+      "canon_score",
+      "curator_count",
+    ];
+  if (e === "pairings")
+    return [
+      "user_facing_tradeoff",
+      "song_a_id",
+      "song_b_id",
+      "lane",
+      "diagnostic_weight",
+      "recognition_score",
+      "min_canon",
+      "era_bucket",
+      "cross_subculture",
+      "is_bootstrap",
+      "active",
+    ];
   return ["name", "tagline", "description"];
 }
 
@@ -411,13 +468,16 @@ function EditDrawer({
             <p className="eyebrow">{row ? "Edit" : "New"}</p>
             <h2 className="font-serif text-2xl mt-1">{entity.replace(/s$/, "")}</h2>
           </div>
-          <button onClick={onClose} className="text-sm text-muted-foreground hover:text-foreground">Close</button>
+          <button onClick={onClose} className="text-sm text-muted-foreground hover:text-foreground">
+            Close
+          </button>
         </div>
         <div className="p-6 space-y-4">
           {fields.map((f) => (
             <label key={f.key} className="block">
               <span className="block text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground mb-1">
-                {f.key}{f.optional ? "" : " *"}
+                {f.key}
+                {f.optional ? "" : " *"}
               </span>
               {f.type === "json" || f.long ? (
                 <textarea
@@ -438,7 +498,9 @@ function EditDrawer({
           ))}
         </div>
         <div className="p-6 border-t hairline flex justify-end gap-2 sticky bottom-0 bg-background">
-          <button onClick={onClose} className="text-sm px-4 py-2 border hairline-strong rounded-sm">Cancel</button>
+          <button onClick={onClose} className="text-sm px-4 py-2 border hairline-strong rounded-sm">
+            Cancel
+          </button>
           <button
             onClick={save}
             disabled={saving}
@@ -452,31 +514,98 @@ function EditDrawer({
   );
 }
 
-type Field = { key: string; type: "text" | "number" | "boolean" | "json"; optional?: boolean; long?: boolean; hint?: string };
+type Field = {
+  key: string;
+  type: "text" | "number" | "boolean" | "json";
+  optional?: boolean;
+  long?: boolean;
+  hint?: string;
+};
 
 function fieldsFor(e: Entity): Field[] {
   if (e === "songs") {
     const dims = [
-      "movement","atmosphere","groove","darkness","hope","nostalgia","transformation",
-      "complexity","melody","verbal_cleverness","authenticity","romanticism","energy",
-      "dreaminess","community",
+      "movement",
+      "atmosphere",
+      "groove",
+      "darkness",
+      "hope",
+      "nostalgia",
+      "transformation",
+      "complexity",
+      "melody",
+      "verbal_cleverness",
+      "authenticity",
+      "romanticism",
+      "energy",
+      "dreaminess",
+      "community",
     ];
     return [
       { key: "title", type: "text" },
       { key: "artist", type: "text" },
       { key: "year", type: "number", optional: true },
-      { key: "primary_lane", type: "text", hint: "alternative · pop · hip_hop · electronic · classic_rock · metal · country · r_and_b · general" },
+      {
+        key: "primary_lane",
+        type: "text",
+        hint: "alternative · pop · hip_hop · electronic · classic_rock · metal · country · r_and_b · general",
+      },
       { key: "lane", type: "text", hint: "granular sub-lane, e.g. post_punk_new_wave" },
       // --- Diagnostic Power Score (DPS): six components, sum = diagnostic_power ---
-      { key: "polarization", type: "number", optional: true, hint: "0–25 — splits the room. 0=everyone agrees · 25=fistfight in the comments" },
-      { key: "tradeoff_richness", type: "number", optional: true, hint: "0–20 — how many real tradeoffs this song surfaces" },
-      { key: "pairing_density", type: "number", optional: true, hint: "0–15 — how many sharp same-lane opponents exist" },
-      { key: "identity_signaling", type: "number", optional: true, hint: "0–15 — picking this says something about you" },
-      { key: "longevity", type: "number", optional: true, hint: "0–10 — still revealing five years from now?" },
-      { key: "cross_genre_mapping", type: "number", optional: true, hint: "0–15 — maps cleanly to opponents in other lanes" },
-      { key: "canon_score", type: "number", optional: true, hint: "0–100 — cultural weight. Billie Jean=99, deep cut=20" },
-      { key: "curator_count", type: "number", optional: true, hint: "how many curators have scored this (drives confidence)" },
-      { key: "diagnostic_power_confidence", type: "number", optional: true, hint: "0.00–1.00 — how much we trust the score" },
+      {
+        key: "polarization",
+        type: "number",
+        optional: true,
+        hint: "0–25 — splits the room. 0=everyone agrees · 25=fistfight in the comments",
+      },
+      {
+        key: "tradeoff_richness",
+        type: "number",
+        optional: true,
+        hint: "0–20 — how many real tradeoffs this song surfaces",
+      },
+      {
+        key: "pairing_density",
+        type: "number",
+        optional: true,
+        hint: "0–15 — how many sharp same-lane opponents exist",
+      },
+      {
+        key: "identity_signaling",
+        type: "number",
+        optional: true,
+        hint: "0–15 — picking this says something about you",
+      },
+      {
+        key: "longevity",
+        type: "number",
+        optional: true,
+        hint: "0–10 — still revealing five years from now?",
+      },
+      {
+        key: "cross_genre_mapping",
+        type: "number",
+        optional: true,
+        hint: "0–15 — maps cleanly to opponents in other lanes",
+      },
+      {
+        key: "canon_score",
+        type: "number",
+        optional: true,
+        hint: "0–100 — cultural weight. Billie Jean=99, deep cut=20",
+      },
+      {
+        key: "curator_count",
+        type: "number",
+        optional: true,
+        hint: "how many curators have scored this (drives confidence)",
+      },
+      {
+        key: "diagnostic_power_confidence",
+        type: "number",
+        optional: true,
+        hint: "0.00–1.00 — how much we trust the score",
+      },
       ...dims.map((d) => ({ key: d, type: "number" as const, optional: true, hint: "-10 to +10" })),
     ];
   }
@@ -484,12 +613,28 @@ function fieldsFor(e: Entity): Field[] {
     return [
       { key: "song_a_id", type: "text", hint: "uuid of song A" },
       { key: "song_b_id", type: "text", hint: "uuid of song B" },
-      { key: "user_facing_tradeoff", type: "text", long: true, optional: true, hint: 'Plain-language tradeoff. Must pass the Friend Test, e.g. "Do you disappear into a song, or bring it into the room with you?"' },
-      { key: "hypothesis", type: "text", long: true, hint: "internal critic-speak — what dimensions this tests" },
+      {
+        key: "user_facing_tradeoff",
+        type: "text",
+        long: true,
+        optional: true,
+        hint: 'Plain-language tradeoff. Must pass the Friend Test, e.g. "Do you disappear into a song, or bring it into the room with you?"',
+      },
+      {
+        key: "hypothesis",
+        type: "text",
+        long: true,
+        hint: "internal critic-speak — what dimensions this tests",
+      },
       { key: "why_good", type: "text", long: true, optional: true },
       { key: "tests", type: "json", optional: true, hint: '["movement","darkness"]' },
       { key: "lane", type: "text", optional: true, hint: "default: alternative" },
-      { key: "difficulty", type: "number", optional: true, hint: "1=obvious · 2=moderate · 3=painful" },
+      {
+        key: "difficulty",
+        type: "number",
+        optional: true,
+        hint: "1=obvious · 2=moderate · 3=painful",
+      },
       { key: "diagnostic_weight", type: "number", hint: "0–100" },
       { key: "active", type: "boolean", hint: "true / false" },
     ];
@@ -519,7 +664,11 @@ function DecadePromptsEditor() {
 
   const grouped = useMemo(() => {
     const map: Record<Decade, DecadePrompt[]> = {
-      "70s": [], "80s": [], "90s": [], "00s": [], "10s": [],
+      "70s": [],
+      "80s": [],
+      "90s": [],
+      "00s": [],
+      "10s": [],
     };
     for (const r of query.data?.rows ?? []) map[r.decade]?.push(r);
     return map;
@@ -532,7 +681,10 @@ function DecadePromptsEditor() {
   return (
     <div className="space-y-10">
       <p className="text-sm text-muted-foreground max-w-2xl">
-        The opening question shown as song #1 on each decade's onboarding page. One per decade is marked <span className="text-foreground font-medium">active</span> — that's the one users see. Edit text inline (press Enter or blur to save). Promote a different option by clicking its radio.
+        The opening question shown as song #1 on each decade's onboarding page. One per decade is
+        marked <span className="text-foreground font-medium">active</span> — that's the one users
+        see. Edit text inline (press Enter or blur to save). Promote a different option by clicking
+        its radio.
       </p>
 
       {DECADES.map((decade) => (
@@ -678,7 +830,10 @@ function NewPromptInline({ onCreate }: { onCreate: (text: string) => Promise<voi
         Add
       </button>
       <button
-        onClick={() => { setText(""); setOpen(false); }}
+        onClick={() => {
+          setText("");
+          setOpen(false);
+        }}
         className="text-xs text-muted-foreground"
       >
         Cancel
@@ -738,8 +893,20 @@ function ResidualsPanel() {
           className="border hairline rounded-sm bg-background px-3 py-1.5 text-sm"
         >
           <option value="">All lanes</option>
-          {["alternative", "pop", "hip_hop", "electronic", "classic_rock", "metal", "country", "r_and_b", "general"].map((l) => (
-            <option key={l} value={l}>{l}</option>
+          {[
+            "alternative",
+            "pop",
+            "hip_hop",
+            "electronic",
+            "classic_rock",
+            "metal",
+            "country",
+            "r_and_b",
+            "general",
+          ].map((l) => (
+            <option key={l} value={l}>
+              {l}
+            </option>
           ))}
         </select>
         <span className="text-xs text-muted-foreground ml-auto">
@@ -769,7 +936,8 @@ function ResidualsPanel() {
           <tbody>
             {(q.data?.rows ?? []).map((row) => {
               const r = row as Record<string, unknown>;
-              const top3 = (r.archetype_top3 as Array<{ name: string; score: number }> | null) ?? [];
+              const top3 =
+                (r.archetype_top3 as Array<{ name: string; score: number }> | null) ?? [];
               const share = r.share_token as string | null;
               const completed = r.completed_at as string | null;
               return (
@@ -783,8 +951,12 @@ function ResidualsPanel() {
                       {r.archetype_flag_reason as string}
                     </span>
                   </td>
-                  <td className="px-3 py-2 font-mono text-xs">{(r.archetype_score as number | null)?.toFixed(3) ?? "—"}</td>
-                  <td className="px-3 py-2 font-mono text-xs">{(r.archetype_margin as number | null)?.toFixed(3) ?? "—"}</td>
+                  <td className="px-3 py-2 font-mono text-xs">
+                    {(r.archetype_score as number | null)?.toFixed(3) ?? "—"}
+                  </td>
+                  <td className="px-3 py-2 font-mono text-xs">
+                    {(r.archetype_margin as number | null)?.toFixed(3) ?? "—"}
+                  </td>
                   <td className="px-3 py-2 text-xs">
                     {top3.length
                       ? top3.map((t) => `${t.name} (${t.score.toFixed(2)})`).join(" · ")
@@ -792,7 +964,11 @@ function ResidualsPanel() {
                   </td>
                   <td className="px-3 py-2">
                     {share ? (
-                      <Link to="/s/$sessionId" params={{ sessionId: share }} className="underline text-xs">
+                      <Link
+                        to="/s/$sessionId"
+                        params={{ sessionId: share }}
+                        className="underline text-xs"
+                      >
                         view
                       </Link>
                     ) : (
@@ -805,7 +981,8 @@ function ResidualsPanel() {
             {!q.isLoading && (q.data?.rows.length ?? 0) === 0 && (
               <tr>
                 <td colSpan={7} className="px-3 py-8 text-center text-sm text-muted-foreground">
-                  Nothing flagged. Either every listener fit an archetype, or nobody's finished a session yet.
+                  Nothing flagged. Either every listener fit an archetype, or nobody's finished a
+                  session yet.
                 </td>
               </tr>
             )}
@@ -865,7 +1042,11 @@ function OntologyPanel() {
           <Stat label="Archetypes" value={d.totals.archetypes.toLocaleString()} />
           <Stat label="Sessions" value={d.totals.sessions_sampled.toLocaleString()} />
           <Stat label="Choices" value={d.totals.choices_sampled.toLocaleString()} />
-          <Stat label="Unassigned" value={d.unassigned_sessions.toLocaleString()} tone={d.unassigned_sessions > 0 ? "warn" : undefined} />
+          <Stat
+            label="Unassigned"
+            value={d.unassigned_sessions.toLocaleString()}
+            tone={d.unassigned_sessions > 0 ? "warn" : undefined}
+          />
         </div>
       </div>
 
@@ -875,7 +1056,9 @@ function OntologyPanel() {
             key={s}
             onClick={() => setSection(s)}
             className={`px-3 py-1.5 text-xs font-mono uppercase tracking-[0.18em] border-b-2 -mb-px ${
-              section === s ? "border-primary text-foreground" : "border-transparent text-muted-foreground hover:text-foreground"
+              section === s
+                ? "border-primary text-foreground"
+                : "border-transparent text-muted-foreground hover:text-foreground"
             }`}
           >
             {s}
@@ -888,7 +1071,11 @@ function OntologyPanel() {
             className="border hairline rounded-sm bg-background px-3 py-1.5 text-xs"
           >
             <option value="">All lanes</option>
-            {d.lanes.map((l) => <option key={l} value={l}>{l}</option>)}
+            {d.lanes.map((l) => (
+              <option key={l} value={l}>
+                {l}
+              </option>
+            ))}
           </select>
         </div>
       </div>
@@ -911,25 +1098,32 @@ function CoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: string }
       <div>
         <p className="eyebrow mb-3">Songs per lane</p>
         <div className="space-y-1.5">
-          {d.lanes.slice().sort((a, b) => (d.lane_song_count[b] ?? 0) - (d.lane_song_count[a] ?? 0)).map((lane) => {
-            const n = d.lane_song_count[lane] ?? 0;
-            return (
-              <div key={lane} className="flex items-center gap-3 text-xs">
-                <div className="w-32 font-mono text-muted-foreground">{lane}</div>
-                <div className="flex-1 bg-muted/30 rounded-sm h-4 overflow-hidden">
-                  <div className="h-full bg-primary" style={{ width: `${(n / maxLaneSongs) * 100}%` }} />
+          {d.lanes
+            .slice()
+            .sort((a, b) => (d.lane_song_count[b] ?? 0) - (d.lane_song_count[a] ?? 0))
+            .map((lane) => {
+              const n = d.lane_song_count[lane] ?? 0;
+              return (
+                <div key={lane} className="flex items-center gap-3 text-xs">
+                  <div className="w-32 font-mono text-muted-foreground">{lane}</div>
+                  <div className="flex-1 bg-muted/30 rounded-sm h-4 overflow-hidden">
+                    <div
+                      className="h-full bg-primary"
+                      style={{ width: `${(n / maxLaneSongs) * 100}%` }}
+                    />
+                  </div>
+                  <div className="w-12 text-right font-mono">{n}</div>
                 </div>
-                <div className="w-12 text-right font-mono">{n}</div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </div>
 
       <div>
         <p className="eyebrow mb-3">Coverage by archetype signal (per lane)</p>
         <p className="text-xs text-muted-foreground mb-3">
-          Counts songs whose <code>archetype_signals</code> tag each archetype. Empty rows show where the catalog is thin.
+          Counts songs whose <code>archetype_signals</code> tag each archetype. Empty rows show
+          where the catalog is thin.
         </p>
         <div className="space-y-6">
           {lanes.map((lane) => {
@@ -938,16 +1132,26 @@ function CoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: string }
             const max = Math.max(1, ...entries.map(([, n]) => n));
             return (
               <div key={lane}>
-                <p className="text-sm font-mono uppercase tracking-wider mb-2">{lane} <span className="text-muted-foreground">· {d.lane_song_count[lane] ?? 0} songs</span></p>
+                <p className="text-sm font-mono uppercase tracking-wider mb-2">
+                  {lane}{" "}
+                  <span className="text-muted-foreground">
+                    · {d.lane_song_count[lane] ?? 0} songs
+                  </span>
+                </p>
                 {entries.length === 0 ? (
-                  <p className="text-xs text-muted-foreground italic">No archetype signals tagged in this lane.</p>
+                  <p className="text-xs text-muted-foreground italic">
+                    No archetype signals tagged in this lane.
+                  </p>
                 ) : (
                   <div className="space-y-1">
                     {entries.map(([name, n]) => (
                       <div key={name} className="flex items-center gap-3 text-xs">
                         <div className="w-40 text-muted-foreground truncate">{name}</div>
                         <div className="flex-1 bg-muted/30 rounded-sm h-3 overflow-hidden">
-                          <div className="h-full bg-primary" style={{ width: `${(n / max) * 100}%` }} />
+                          <div
+                            className="h-full bg-primary"
+                            style={{ width: `${(n / max) * 100}%` }}
+                          />
                         </div>
                         <div className="w-10 text-right font-mono">{n}</div>
                       </div>
@@ -968,25 +1172,35 @@ function HeatmapView({ d, laneFilter }: { d: OntologyData; laneFilter: string })
   const archetypeCols = d.archetype_names;
   // Global max for consistent shading across the table.
   let globalMax = 1;
-  for (const l of lanes) for (const a of archetypeCols) globalMax = Math.max(globalMax, d.heatmap[l]?.[a] ?? 0);
+  for (const l of lanes)
+    for (const a of archetypeCols) globalMax = Math.max(globalMax, d.heatmap[l]?.[a] ?? 0);
 
   if (lanes.length === 0) {
-    return <p className="text-sm text-muted-foreground">No completed sessions yet in {laneFilter || "any lane"}.</p>;
+    return (
+      <p className="text-sm text-muted-foreground">
+        No completed sessions yet in {laneFilter || "any lane"}.
+      </p>
+    );
   }
 
   return (
     <div>
       <p className="eyebrow mb-2">Lane × winning archetype (real sessions)</p>
       <p className="text-xs text-muted-foreground mb-3">
-        Where listeners actually land. Sparse columns are archetypes nobody's earning; dense off-lane cells hint at cross-lane taste.
+        Where listeners actually land. Sparse columns are archetypes nobody's earning; dense
+        off-lane cells hint at cross-lane taste.
       </p>
       <div className="overflow-x-auto border hairline rounded-sm">
         <table className="w-full text-xs">
           <thead className="bg-muted/30 text-muted-foreground">
             <tr>
-              <th className="text-left px-2 py-1.5 font-mono uppercase tracking-wider sticky left-0 bg-muted/30">Lane</th>
+              <th className="text-left px-2 py-1.5 font-mono uppercase tracking-wider sticky left-0 bg-muted/30">
+                Lane
+              </th>
               {archetypeCols.map((a) => (
-                <th key={a} className="text-left px-2 py-1.5 font-mono uppercase tracking-wider">{a}</th>
+                <th key={a} className="text-left px-2 py-1.5 font-mono uppercase tracking-wider">
+                  {a}
+                </th>
               ))}
               <th className="text-right px-2 py-1.5 font-mono uppercase tracking-wider">Σ</th>
             </tr>
@@ -1002,12 +1216,20 @@ function HeatmapView({ d, laneFilter }: { d: OntologyData; laneFilter: string })
                     const n = row[a] ?? 0;
                     const intensity = n === 0 ? 0 : 0.15 + (n / globalMax) * 0.65;
                     return (
-                      <td key={a} className="px-2 py-1.5 font-mono" style={{ backgroundColor: n ? `rgba(99, 102, 241, ${intensity})` : undefined }}>
+                      <td
+                        key={a}
+                        className="px-2 py-1.5 font-mono"
+                        style={{
+                          backgroundColor: n ? `rgba(99, 102, 241, ${intensity})` : undefined,
+                        }}
+                      >
                         {n || "·"}
                       </td>
                     );
                   })}
-                  <td className="px-2 py-1.5 text-right font-mono text-muted-foreground">{total}</td>
+                  <td className="px-2 py-1.5 text-right font-mono text-muted-foreground">
+                    {total}
+                  </td>
                 </tr>
               );
             })}
@@ -1032,21 +1254,35 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
 
   const [copied, setCopied] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
-  const toggle = (id: string) => setExpanded((s) => {
-    const n = new Set(s);
-    if (n.has(id)) n.delete(id); else n.add(id);
-    return n;
-  });
+  const toggle = (id: string) =>
+    setExpanded((s) => {
+      const n = new Set(s);
+      if (n.has(id)) n.delete(id);
+      else n.add(id);
+      return n;
+    });
 
-  const exportRows = d.pairing_health
-    .filter((p) => !laneFilter || p.lane === laneFilter);
+  const exportRows = d.pairing_health.filter((p) => !laneFilter || p.lane === laneFilter);
 
   const buildJson = () => JSON.stringify(exportRows, null, 2);
   const buildCsv = () => {
     const cols = [
-      "id", "lane", "difficulty", "user_facing_tradeoff", "hypothesis",
-      "a_title", "b_title", "picks_a", "picks_b", "total", "split_a_pct",
-      "avg_ms", "info_gain", "diagnostic_weight", "expected_split", "active",
+      "id",
+      "lane",
+      "difficulty",
+      "user_facing_tradeoff",
+      "hypothesis",
+      "a_title",
+      "b_title",
+      "picks_a",
+      "picks_b",
+      "total",
+      "split_a_pct",
+      "avg_ms",
+      "info_gain",
+      "diagnostic_weight",
+      "expected_split",
+      "active",
     ] as const;
     const esc = (v: unknown) => {
       if (v == null) return "";
@@ -1054,7 +1290,9 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
       return /[",\n]/.test(s) ? `"${s}"` : s;
     };
     const header = cols.join(",");
-    const body = exportRows.map((r) => cols.map((c) => esc((r as Record<string, unknown>)[c])).join(",")).join("\n");
+    const body = exportRows
+      .map((r) => cols.map((c) => esc((r as Record<string, unknown>)[c])).join(","))
+      .join("\n");
     return `${header}\n${body}`;
   };
 
@@ -1076,7 +1314,9 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
   return (
     <div>
       <div className="flex items-center justify-between mb-3 gap-2 flex-wrap">
-        <p className="eyebrow">Pairing health · {exportRows.length} pairings{laneFilter ? ` in ${laneFilter}` : ""}</p>
+        <p className="eyebrow">
+          Pairing health · {exportRows.length} pairings{laneFilter ? ` in ${laneFilter}` : ""}
+        </p>
         <div className="flex items-center gap-2">
           <button
             onClick={copyJson}
@@ -1102,7 +1342,9 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
         </div>
       </div>
       <p className="text-xs text-muted-foreground mb-3">
-        Info gain rewards balanced splits (a 96/4 blowout teaches you nothing). Retire low info gain + low hesitation pairings. Export includes tradeoff copy, hypothesis, and difficulty for every pairing (respects lane filter).
+        Info gain rewards balanced splits (a 96/4 blowout teaches you nothing). Retire low info gain
+        + low hesitation pairings. Export includes tradeoff copy, hypothesis, and difficulty for
+        every pairing (respects lane filter).
       </p>
       <div className="border hairline rounded-sm overflow-x-auto">
         <table className="w-full text-xs">
@@ -1128,23 +1370,40 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
                     className="border-t hairline cursor-pointer hover:bg-muted/20"
                     onClick={() => toggle(p.id)}
                   >
-                    <td className="px-2 py-1.5 text-muted-foreground font-mono">{isOpen ? "▾" : "▸"}</td>
+                    <td className="px-2 py-1.5 text-muted-foreground font-mono">
+                      {isOpen ? "▾" : "▸"}
+                    </td>
                     <td className="px-2 py-1.5">
-                      <div className="truncate max-w-md">{p.a_title} <span className="text-muted-foreground">vs</span> {p.b_title}</div>
+                      <div className="truncate max-w-md">
+                        {p.a_title} <span className="text-muted-foreground">vs</span> {p.b_title}
+                      </div>
                     </td>
                     <td className="px-2 py-1.5 max-w-sm">
-                      <div className="truncate italic text-foreground/90" title={p.user_facing_tradeoff ?? ""}>
-                        {p.user_facing_tradeoff || <span className="text-muted-foreground not-italic">— no tradeoff written</span>}
+                      <div
+                        className="truncate italic text-foreground/90"
+                        title={p.user_facing_tradeoff ?? ""}
+                      >
+                        {p.user_facing_tradeoff || (
+                          <span className="text-muted-foreground not-italic">
+                            — no tradeoff written
+                          </span>
+                        )}
                       </div>
                     </td>
                     <td className="px-2 py-1.5 font-mono text-muted-foreground">{p.lane}</td>
-                    <td className="px-2 py-1.5 text-right font-mono">{p.split_a_pct != null ? `${p.split_a_pct}/${100 - p.split_a_pct}` : "—"}</td>
+                    <td className="px-2 py-1.5 text-right font-mono">
+                      {p.split_a_pct != null ? `${p.split_a_pct}/${100 - p.split_a_pct}` : "—"}
+                    </td>
                     <td className="px-2 py-1.5 text-right font-mono">{p.total}</td>
                     <td className="px-2 py-1.5 text-right font-mono">{p.avg_ms ?? "—"}</td>
-                    <td className={`px-2 py-1.5 text-right font-mono ${p.info_gain != null && p.info_gain < 30 ? "text-amber-500" : ""}`}>
+                    <td
+                      className={`px-2 py-1.5 text-right font-mono ${p.info_gain != null && p.info_gain < 30 ? "text-amber-500" : ""}`}
+                    >
                       {p.info_gain ?? "—"}
                     </td>
-                    <td className="px-2 py-1.5 text-right font-mono text-muted-foreground">{p.diagnostic_weight ?? "—"}</td>
+                    <td className="px-2 py-1.5 text-right font-mono text-muted-foreground">
+                      {p.diagnostic_weight ?? "—"}
+                    </td>
                   </tr>
                   {isOpen && (
                     <tr className="border-t hairline bg-muted/10">
@@ -1153,13 +1412,17 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
                         <div>
                           <p className="eyebrow mb-1">User-facing tradeoff</p>
                           <p className="font-serif italic text-sm">
-                            {p.user_facing_tradeoff || <span className="text-muted-foreground">Not written yet.</span>}
+                            {p.user_facing_tradeoff || (
+                              <span className="text-muted-foreground">Not written yet.</span>
+                            )}
                           </p>
                         </div>
                         <div>
                           <p className="eyebrow mb-1">Internal hypothesis — what we're testing</p>
                           <p className="text-sm text-foreground/90">
-                            {p.hypothesis || <span className="text-muted-foreground">Not written yet.</span>}
+                            {p.hypothesis || (
+                              <span className="text-muted-foreground">Not written yet.</span>
+                            )}
                           </p>
                         </div>
                         {p.difficulty != null && (
@@ -1175,7 +1438,11 @@ function PairingHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: str
               );
             })}
             {rows.length === 0 && (
-              <tr><td colSpan={9} className="px-3 py-6 text-center text-muted-foreground">No pairings match.</td></tr>
+              <tr>
+                <td colSpan={9} className="px-3 py-6 text-center text-muted-foreground">
+                  No pairings match.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -1190,7 +1457,8 @@ function SongHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: string
     .filter((s) => !laneFilter || s.lane === laneFilter)
     .slice()
     .sort((a, b) => {
-      if (sort === "info_contribution") return (b.info_contribution ?? -1) - (a.info_contribution ?? -1);
+      if (sort === "info_contribution")
+        return (b.info_contribution ?? -1) - (a.info_contribution ?? -1);
       if (sort === "avg_ms") return (b.avg_ms ?? 0) - (a.avg_ms ?? 0);
       return b.appearances - a.appearances;
     })
@@ -1228,7 +1496,10 @@ function SongHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: string
           <tbody>
             {rows.map((s) => (
               <tr key={s.id} className="border-t hairline">
-                <td className="px-2 py-1.5"><span className="font-medium">{s.title}</span> <span className="text-muted-foreground">— {s.artist}</span></td>
+                <td className="px-2 py-1.5">
+                  <span className="font-medium">{s.title}</span>{" "}
+                  <span className="text-muted-foreground">— {s.artist}</span>
+                </td>
                 <td className="px-2 py-1.5 font-mono text-muted-foreground">{s.lane}</td>
                 <td className="px-2 py-1.5 text-right font-mono">{s.appearances}</td>
                 <td className="px-2 py-1.5 text-right font-mono">{s.chosen_pct}%</td>
@@ -1237,7 +1508,11 @@ function SongHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: string
               </tr>
             ))}
             {rows.length === 0 && (
-              <tr><td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">No songs match.</td></tr>
+              <tr>
+                <td colSpan={6} className="px-3 py-6 text-center text-muted-foreground">
+                  No songs match.
+                </td>
+              </tr>
             )}
           </tbody>
         </table>
@@ -1245,7 +1520,6 @@ function SongHealthView({ d, laneFilter }: { d: OntologyData; laneFilter: string
     </div>
   );
 }
-
 
 // ============ Diagnostics panel ============
 // Reads the read-only diagnostic views (see docs/musicdna/instrumentation.md).
@@ -1263,22 +1537,36 @@ function DiagnosticsPanel() {
     return <p className="text-sm text-muted-foreground">Loading diagnostics…</p>;
   }
   if (q.isError) {
-    return <p className="text-sm text-red-600">Failed to load diagnostics: {(q.error as Error).message}</p>;
+    return (
+      <p className="text-sm text-red-600">
+        Failed to load diagnostics: {(q.error as Error).message}
+      </p>
+    );
   }
   const d = q.data!;
 
   const Card = ({ label, value }: { label: string; value: ReactNode }) => (
     <div className="border hairline rounded-sm px-4 py-3 bg-surface">
-      <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">{label}</p>
+      <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">
+        {label}
+      </p>
       <p className="font-serif text-2xl mt-1">{value}</p>
     </div>
   );
 
-  const Table = ({ title, block }: { title: string; block: { rows: Record<string, unknown>[]; error: string | null } }) => (
+  const Table = ({
+    title,
+    block,
+  }: {
+    title: string;
+    block: { rows: Record<string, unknown>[]; error: string | null };
+  }) => (
     <section className="mt-8">
       <div className="flex items-baseline justify-between mb-2">
         <h2 className="eyebrow">{title}</h2>
-        <span className="text-[10px] font-mono text-muted-foreground">{block.rows.length} rows</span>
+        <span className="text-[10px] font-mono text-muted-foreground">
+          {block.rows.length} rows
+        </span>
       </div>
       {block.error ? (
         <p className="text-xs font-mono text-amber-600 bg-amber-50 border hairline rounded-sm px-3 py-2">
@@ -1292,7 +1580,12 @@ function DiagnosticsPanel() {
             <thead className="bg-surface">
               <tr>
                 {Object.keys(block.rows[0]).map((k) => (
-                  <th key={k} className="text-left px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{k}</th>
+                  <th
+                    key={k}
+                    className="text-left px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+                  >
+                    {k}
+                  </th>
                 ))}
               </tr>
             </thead>
@@ -1301,8 +1594,13 @@ function DiagnosticsPanel() {
                 <tr key={i} className="border-t hairline">
                   {Object.keys(block.rows[0]).map((k) => {
                     const v = r[k];
-                    const s = v == null ? "—" : typeof v === "object" ? JSON.stringify(v) : String(v);
-                    return <td key={k} className="px-2 py-1.5 max-w-[24ch] truncate" title={s}>{s}</td>;
+                    const s =
+                      v == null ? "—" : typeof v === "object" ? JSON.stringify(v) : String(v);
+                    return (
+                      <td key={k} className="px-2 py-1.5 max-w-[24ch] truncate" title={s}>
+                        {s}
+                      </td>
+                    );
                   })}
                 </tr>
               ))}
@@ -1318,14 +1616,14 @@ function DiagnosticsPanel() {
     </section>
   );
 
-  const pct = (n: number | null) => n == null ? "—" : `${Math.round(n * 100)}%`;
+  const pct = (n: number | null) => (n == null ? "—" : `${Math.round(n * 100)}%`);
 
   return (
     <div>
       <p className="text-xs text-muted-foreground mb-4 max-w-2xl">
         Read-only diagnostic views over the instrumentation event log. See{" "}
-        <code className="font-mono">docs/musicdna/instrumentation.md</code> for
-        each field's contract and the derived-measure definitions.
+        <code className="font-mono">docs/musicdna/instrumentation.md</code> for each field's
+        contract and the derived-measure definitions.
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
@@ -1336,8 +1634,14 @@ function DiagnosticsPanel() {
       </div>
 
       <Table title="Session stability (winner by round)" block={d.session_stability} />
-      <Table title="Axis independence (distinct supporting axes per session)" block={d.axis_independence} />
-      <Table title="Contradiction load (evidence pushing against the winner)" block={d.contradiction_load} />
+      <Table
+        title="Axis independence (distinct supporting axes per session)"
+        block={d.axis_independence}
+      />
+      <Table
+        title="Contradiction load (evidence pushing against the winner)"
+        block={d.contradiction_load}
+      />
       <Table title="Residual rate (sessions where nobody fit cleanly)" block={d.residual_rate} />
       <Table title="Human agreement (fit tier vs. listener feedback)" block={d.human_agreement} />
     </div>
@@ -1360,15 +1664,19 @@ function ShadowRouterPanel() {
     staleTime: 30_000,
   });
 
-  if (q.isLoading) return <p className="text-sm text-muted-foreground">Loading shadow telemetry…</p>;
-  if (q.isError) return <p className="text-sm text-red-600">Failed: {(q.error as Error).message}</p>;
+  if (q.isLoading)
+    return <p className="text-sm text-muted-foreground">Loading shadow telemetry…</p>;
+  if (q.isError)
+    return <p className="text-sm text-red-600">Failed: {(q.error as Error).message}</p>;
   const d = q.data!;
 
   const total = d.totals.regime_events || 1;
   const regimes = Object.entries(d.regime_distribution).sort((a, b) => b[1] - a[1]);
   const Card = ({ label, value, sub }: { label: string; value: ReactNode; sub?: string }) => (
     <div className="border hairline rounded-sm px-4 py-3 bg-surface">
-      <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">{label}</p>
+      <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground">
+        {label}
+      </p>
       <p className="font-serif text-2xl mt-1">{value}</p>
       {sub && <p className="text-[10px] font-mono text-muted-foreground mt-0.5">{sub}</p>}
     </div>
@@ -1378,16 +1686,22 @@ function ShadowRouterPanel() {
     const pct = denom > 0 ? Math.round((count / denom) * 1000) / 10 : 0;
     return (
       <div className="flex items-center gap-3">
-        <span className="text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground w-32 shrink-0">{label}</span>
+        <span className="text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground w-32 shrink-0">
+          {label}
+        </span>
         <div className="flex-1 h-2 bg-muted rounded-sm overflow-hidden">
           <div className="h-full bg-primary" style={{ width: `${Math.min(100, pct)}%` }} />
         </div>
-        <span className="text-xs font-mono tabular-nums w-24 text-right">{count} · {pct}%</span>
+        <span className="text-xs font-mono tabular-nums w-24 text-right">
+          {count} · {pct}%
+        </span>
       </div>
     );
   };
 
-  const perRoundKeys = Object.keys(d.per_round).map(Number).sort((a, b) => a - b);
+  const perRoundKeys = Object.keys(d.per_round)
+    .map(Number)
+    .sort((a, b) => a - b);
   const regimeNames = ["explore", "prune", "compound", "coordinate"] as const;
 
   const axisEntries = Object.entries(d.axis_coverage).sort((a, b) => b[1] - a[1]);
@@ -1398,8 +1712,8 @@ function ShadowRouterPanel() {
       <div className="flex items-baseline justify-between mb-4 flex-wrap gap-3">
         <p className="text-xs text-muted-foreground max-w-2xl">
           Shadow-mode telemetry from <code className="font-mono">regime_recommended</code> events.
-          The selector is untouched — this is what Agent Brain <em>would</em> recommend.
-          See <code className="font-mono">docs/musicdna/agent-brain-integration-plan.md</code>.
+          The selector is untouched — this is what Agent Brain <em>would</em> recommend. See{" "}
+          <code className="font-mono">docs/musicdna/agent-brain-integration-plan.md</code>.
         </p>
         <label className="text-xs font-mono uppercase tracking-[0.18em] text-muted-foreground flex items-center gap-2">
           Window
@@ -1417,23 +1731,41 @@ function ShadowRouterPanel() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
-        <Card label="Regime events" value={d.totals.regime_events} sub={`${d.totals.unique_sessions} sessions`} />
-        <Card label="Choice events" value={d.totals.choice_events} sub={`${d.totals.skip_events} skips`} />
-        <Card label="Sessions in window" value={d.totals.sessions_in_window} sub={`${d.totals.sessions_completed} completed`} />
-        <Card label="Avg confidence" value={d.avg_confidence ?? "—"} sub="margin ÷ 6, clipped 0..1" />
+        <Card
+          label="Regime events"
+          value={d.totals.regime_events}
+          sub={`${d.totals.unique_sessions} sessions`}
+        />
+        <Card
+          label="Choice events"
+          value={d.totals.choice_events}
+          sub={`${d.totals.skip_events} skips`}
+        />
+        <Card
+          label="Sessions in window"
+          value={d.totals.sessions_in_window}
+          sub={`${d.totals.sessions_completed} completed`}
+        />
+        <Card
+          label="Avg confidence"
+          value={d.avg_confidence ?? "—"}
+          sub="margin ÷ 6, clipped 0..1"
+        />
       </div>
 
       {d.totals.regime_events === 0 ? (
         <p className="text-xs font-mono text-amber-600 bg-amber-50 border hairline rounded-sm px-3 py-2">
-          No <code>regime_recommended</code> events in this window yet. Play a session or two
-          (or seed synthetic volume) and refresh.
+          No <code>regime_recommended</code> events in this window yet. Play a session or two (or
+          seed synthetic volume) and refresh.
         </p>
       ) : (
         <>
           <section className="mt-4">
             <h2 className="eyebrow mb-3">Regime distribution</h2>
             <div className="space-y-2">
-              {regimes.map(([r, n]) => <Bar key={r} label={r} count={n} denom={total} />)}
+              {regimes.map(([r, n]) => (
+                <Bar key={r} label={r} count={n} denom={total} />
+              ))}
             </div>
           </section>
 
@@ -1443,11 +1775,20 @@ function ShadowRouterPanel() {
               <table className="w-full text-xs font-mono">
                 <thead className="bg-surface">
                   <tr>
-                    <th className="text-left px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">round</th>
+                    <th className="text-left px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      round
+                    </th>
                     {regimeNames.map((r) => (
-                      <th key={r} className="text-right px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">{r}</th>
+                      <th
+                        key={r}
+                        className="text-right px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground"
+                      >
+                        {r}
+                      </th>
                     ))}
-                    <th className="text-right px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">total</th>
+                    <th className="text-right px-2 py-1.5 text-[10px] uppercase tracking-[0.18em] text-muted-foreground">
+                      total
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -1460,7 +1801,11 @@ function ShadowRouterPanel() {
                         {regimeNames.map((r) => {
                           const n = row[r] ?? 0;
                           const pct = tot > 0 ? Math.round((n / tot) * 100) : 0;
-                          return <td key={r} className="px-2 py-1.5 text-right tabular-nums">{n} <span className="text-muted-foreground">({pct}%)</span></td>;
+                          return (
+                            <td key={r} className="px-2 py-1.5 text-right tabular-nums">
+                              {n} <span className="text-muted-foreground">({pct}%)</span>
+                            </td>
+                          );
                         })}
                         <td className="px-2 py-1.5 text-right tabular-nums">{tot}</td>
                       </tr>
@@ -1479,9 +1824,13 @@ function ShadowRouterPanel() {
                 const denom = entries.reduce((s, [, n]) => s + n, 0);
                 return (
                   <div key={feat}>
-                    <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground mb-2">{feat}</p>
+                    <p className="text-[10px] font-mono uppercase tracking-[0.22em] text-muted-foreground mb-2">
+                      {feat}
+                    </p>
                     <div className="space-y-1.5">
-                      {entries.map(([k, n]) => <Bar key={k} label={k} count={n} denom={denom} />)}
+                      {entries.map(([k, n]) => (
+                        <Bar key={k} label={k} count={n} denom={denom} />
+                      ))}
                     </div>
                   </div>
                 );
@@ -1495,41 +1844,55 @@ function ShadowRouterPanel() {
         <div className="flex items-baseline justify-between mb-2">
           <h2 className="eyebrow">Compound reachability (D1)</h2>
           <span className="text-[10px] font-mono text-muted-foreground">
-            axes with |vector − 50| ≥ {d.compound_reachability.threshold} · {d.compound_reachability.sessions_measured} sessions
+            axes with |vector − 50| ≥ {d.compound_reachability.threshold} ·{" "}
+            {d.compound_reachability.sessions_measured} sessions
           </span>
         </div>
         <p className="text-xs text-muted-foreground mb-3 max-w-2xl">
           Peak count of confident axes reached per session. With a 6-round budget,
-          <code className="font-mono"> compound</code> is only reachable when this
-          distribution has meaningful mass at ≥3.
+          <code className="font-mono"> compound</code> is only reachable when this distribution has
+          meaningful mass at ≥3.
         </p>
         <div className="space-y-2">
           {Object.entries(d.compound_reachability.buckets).map(([k, n]) => (
-            <Bar key={k} label={`${k} axes`} count={n} denom={d.compound_reachability.sessions_measured || 1} />
+            <Bar
+              key={k}
+              label={`${k} axes`}
+              count={n}
+              denom={d.compound_reachability.sessions_measured || 1}
+            />
           ))}
         </div>
       </section>
 
       <section className="mt-8">
-        <h2 className="eyebrow mb-3">Axis coverage (from <code className="font-mono text-[11px]">choice_scored.axes_tested</code>)</h2>
+        <h2 className="eyebrow mb-3">
+          Axis coverage (from{" "}
+          <code className="font-mono text-[11px]">choice_scored.axes_tested</code>)
+        </h2>
         <div className="space-y-1.5">
           {axisEntries.slice(0, 20).map(([axis, n]) => (
             <Bar key={axis} label={axis} count={n} denom={axisMax} />
           ))}
-          {axisEntries.length === 0 && <p className="text-xs text-muted-foreground">No axes tested in window.</p>}
+          {axisEntries.length === 0 && (
+            <p className="text-xs text-muted-foreground">No axes tested in window.</p>
+          )}
         </div>
       </section>
 
       <section className="mt-8">
         <h2 className="eyebrow mb-3">Empty-reveal rate</h2>
         <p className="text-xs text-muted-foreground mb-2 max-w-2xl">
-          Completed sessions whose vector never moved off 50 on any axis. High
-          values here mean the pipeline is delivering revelations without evidence.
+          Completed sessions whose vector never moved off 50 on any axis. High values here mean the
+          pipeline is delivering revelations without evidence.
         </p>
         <div className="grid grid-cols-3 gap-3">
           <Card label="Completed" value={d.empty_reveal.completed} />
           <Card label="Flat" value={d.empty_reveal.flat} />
-          <Card label="Rate" value={d.empty_reveal.rate == null ? "—" : `${Math.round(d.empty_reveal.rate * 100)}%`} />
+          <Card
+            label="Rate"
+            value={d.empty_reveal.rate == null ? "—" : `${Math.round(d.empty_reveal.rate * 100)}%`}
+          />
         </div>
       </section>
     </div>

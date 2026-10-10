@@ -1,7 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 
-
-
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -14,8 +12,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "MusicDNA — Why do you love the songs you love?" },
       {
         property: "og:description",
-        content:
-          "Choose between songs. Discover the hidden patterns in your taste.",
+        content: "Choose between songs. Discover the hidden patterns in your taste.",
       },
       { property: "og:image", content: "/og-image.jpg" },
       { property: "og:image:width", content: "1216" },
@@ -23,7 +20,10 @@ export const Route = createFileRoute("/")({
       { property: "og:url", content: "/" },
       { name: "twitter:image", content: "/og-image.jpg" },
       { name: "twitter:title", content: "MusicDNA — Why do you love the songs you love?" },
-      { name: "twitter:description", content: "Choose between songs. Discover the hidden patterns in your taste." },
+      {
+        name: "twitter:description",
+        content: "Choose between songs. Discover the hidden patterns in your taste.",
+      },
     ],
     links: [{ rel: "canonical", href: "/" }],
   }),
@@ -127,22 +127,18 @@ function Reveal() {
               className="grid grid-cols-1 gap-2 bg-surface px-6 py-8 md:grid-cols-12 md:gap-8"
             >
               <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-muted-foreground md:col-span-4 md:pt-1">
-                {ex.a} <span className="text-muted-foreground/50">vs</span>{" "}
-                {ex.b}
+                {ex.a} <span className="text-muted-foreground/50">vs</span> {ex.b}
               </p>
               <p className="md:col-span-8 font-serif text-2xl leading-snug md:text-3xl text-foreground">
-                People who choose{" "}
-                <span className="italic text-muted-foreground">{ex.a}</span>{" "}
-                often value{" "}
-                <span className="text-primary">{ex.insight}</span>.
+                People who choose <span className="italic text-muted-foreground">{ex.a}</span> often
+                value <span className="text-primary">{ex.insight}</span>.
               </p>
             </div>
           ))}
         </div>
         <p className="mt-10 max-w-2xl text-sm text-muted-foreground">
-          Every matchup is designed to probe a hidden dimension of your taste.
-          Not genres. Not playlists. Just choices — and what they say about
-          who you are.
+          Every matchup is designed to probe a hidden dimension of your taste. Not genres. Not
+          playlists. Just choices — and what they say about who you are.
         </p>
       </div>
     </section>
@@ -173,19 +169,10 @@ function HowItWorks() {
         <p className="eyebrow mb-10">How it works</p>
         <div className="grid grid-cols-1 gap-px overflow-hidden rounded-sm border hairline md:grid-cols-3">
           {steps.map((s) => (
-            <article
-              key={s.n}
-              className="flex flex-col gap-6 bg-surface p-8 md:p-10"
-            >
-              <span className="font-mono text-xs text-muted-foreground">
-                {s.n}
-              </span>
-              <h3 className="display text-2xl text-foreground md:text-[1.75rem]">
-                {s.title}
-              </h3>
-              <p className="text-sm leading-relaxed text-muted-foreground">
-                {s.body}
-              </p>
+            <article key={s.n} className="flex flex-col gap-6 bg-surface p-8 md:p-10">
+              <span className="font-mono text-xs text-muted-foreground">{s.n}</span>
+              <h3 className="display text-2xl text-foreground md:text-[1.75rem]">{s.title}</h3>
+              <p className="text-sm leading-relaxed text-muted-foreground">{s.body}</p>
             </article>
           ))}
         </div>
@@ -207,10 +194,9 @@ function Proof() {
           </div>
           <div className="md:col-span-6 md:col-start-7 flex flex-col gap-6">
             <p className="text-lg leading-relaxed text-muted-foreground">
-              That's the magic. Not "you listened to this 72 times." Instead:
-              you consistently choose songs that transform rather than console.
-              You value movement over grandeur. Atmosphere over verbal
-              cleverness.
+              That's the magic. Not "you listened to this 72 times." Instead: you consistently
+              choose songs that transform rather than console. You value movement over grandeur.
+              Atmosphere over verbal cleverness.
             </p>
             <p className="text-lg leading-relaxed text-muted-foreground">
               This thing understands you.
@@ -232,9 +218,7 @@ function CTA() {
             <h2 className="display text-4xl text-foreground md:text-5xl">
               Not a playlist generator.
               <br />
-              <span className="italic text-muted-foreground">
-                A mirror for your taste.
-              </span>
+              <span className="italic text-muted-foreground">A mirror for your taste.</span>
             </h2>
           </div>
           <div className="md:col-span-4 md:text-right">
@@ -284,34 +268,17 @@ function Footer() {
 function Mark({ small = false }: { small?: boolean }) {
   const size = small ? 14 : 18;
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 20 20"
-      fill="none"
-      aria-hidden="true"
-    >
+    <svg width={size} height={size} viewBox="0 0 20 20" fill="none" aria-hidden="true">
       <circle cx="6" cy="10" r="2" fill="currentColor" />
       <circle cx="14" cy="10" r="2" fill="currentColor" />
-      <path
-        d="M6 10c4-6 4 12 8 0"
-        stroke="currentColor"
-        strokeWidth="1.25"
-        strokeLinecap="round"
-      />
+      <path d="M6 10c4-6 4 12 8 0" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" />
     </svg>
   );
 }
 
 function ArrowRight() {
   return (
-    <svg
-      width="14"
-      height="14"
-      viewBox="0 0 14 14"
-      fill="none"
-      aria-hidden="true"
-    >
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true">
       <path
         d="M2 7h10m0 0L7.5 2.5M12 7l-4.5 4.5"
         stroke="currentColor"

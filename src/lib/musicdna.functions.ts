@@ -4,7 +4,10 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { assignArchetype } from "@/musicdna/engine/archetypes";
-import { CRITIC_PERSONA as PERSONA, CRITIC_VOICE_EDITORIAL as VOICE } from "@/musicdna/engine/critic";
+import {
+  CRITIC_PERSONA as PERSONA,
+  CRITIC_VOICE_EDITORIAL as VOICE,
+} from "@/musicdna/engine/critic";
 import { callLovableAi, DEFAULT_MODEL as MODEL } from "@/musicdna/adapters/llm-gateway";
 import { recommendForSession, type Regime } from "@/musicdna/router";
 import { toEnginePairingKnobs } from "@/musicdna/router/knobs";
@@ -52,21 +55,26 @@ function seedFrom(sessionId: string, round: number): number {
   return h >>> 0;
 }
 
-
 // Shared Supabase client type used by the *Impl exports below. The test
 // harness (src/routes/api/public/test/$action.ts) calls these Impl variants
 // directly with a service-role admin client + synthetic userId, bypassing
 // the auth middleware so agents can drive end-to-end runs without auth.
 export type AuthedSupabase = SupabaseClient<Database>;
 
-
-
 // Canonical 10 axes. Source of truth: public.axes (9 rows) + transformation.
 // Moods (nostalgic, dreamy, dark, hopeful, romantic, etc.) are DERIVED from
 // combinations of these — see deriveDescriptors below. Never stored.
 const DIMS = [
-  "movement","atmosphere","immersion","scale","community",
-  "perspective","confidence","tension","texture","transformation",
+  "movement",
+  "atmosphere",
+  "immersion",
+  "scale",
+  "community",
+  "perspective",
+  "confidence",
+  "tension",
+  "texture",
+  "transformation",
 ] as const;
 
 // Pole labels match the public.axes table verbatim so the LLM, the DB, and the
@@ -84,7 +92,6 @@ const DIM_LABEL: Record<string, { hi: string; lo: string }> = {
   transformation: { hi: "takes you somewhere", lo: "holds its shape" },
 };
 
-
 // PERSONA + VOICE (imported above) live in @/musicdna/engine/critic so the
 // exact same critic voice ships to any client. `ai()` delegates to the
 // LLMGateway adapter — one place owns transport + auth.
@@ -92,9 +99,18 @@ async function ai(messages: Array<{ role: string; content: string }>) {
   return callLovableAi(messages, { model: MODEL });
 }
 
-
 // ============ Lane classifier ============
-const LANES = ["alternative", "pop", "hip_hop", "electronic", "classic_rock", "metal", "country", "r_and_b", "general"] as const;
+const LANES = [
+  "alternative",
+  "pop",
+  "hip_hop",
+  "electronic",
+  "classic_rock",
+  "metal",
+  "country",
+  "r_and_b",
+  "general",
+] as const;
 type Lane = (typeof LANES)[number];
 
 // Shared lane rules — classic_rock keeps hard rock/prog; metal now routes to its
@@ -116,40 +132,93 @@ function catalogLaneToTopLane(sub: string | null | undefined): Lane | null {
   const s = sub.toLowerCase();
   if ((LANES as readonly string[]).includes(s)) return s as Lane;
   if (
-    s.includes("post_punk") || s.includes("post-punk") ||
-    s.includes("shoegaze") || s.includes("dreampop") || s.includes("britpop") ||
-    s.includes("indie") || s.includes("madchester") || s.includes("manchester") ||
-    s.includes("grunge") || s.includes("alt-rock") || s.includes("altrock") ||
-    s.includes("goth") || s.includes("darkwave") || s.includes("noise") ||
-    s.includes("artrock") || s.includes("punk") || s.includes("sophistipop") ||
-    s.includes("emo") || s.includes("post_rock") || s.includes("post-rock")
-  ) return "alternative";
+    s.includes("post_punk") ||
+    s.includes("post-punk") ||
+    s.includes("shoegaze") ||
+    s.includes("dreampop") ||
+    s.includes("britpop") ||
+    s.includes("indie") ||
+    s.includes("madchester") ||
+    s.includes("manchester") ||
+    s.includes("grunge") ||
+    s.includes("alt-rock") ||
+    s.includes("altrock") ||
+    s.includes("goth") ||
+    s.includes("darkwave") ||
+    s.includes("noise") ||
+    s.includes("artrock") ||
+    s.includes("punk") ||
+    s.includes("sophistipop") ||
+    s.includes("emo") ||
+    s.includes("post_rock") ||
+    s.includes("post-rock")
+  )
+    return "alternative";
   if (
-    s.includes("metal") || s.includes("heavy metal") || s.includes("thrash") ||
-    s.includes("death metal") || s.includes("black metal") || s.includes("doom metal") ||
-    s.includes("groove metal") || s.includes("nu metal") || s.includes("metalcore") ||
-    s.includes("prog metal") || s.includes("progressive metal")
-  ) return "metal";
+    s.includes("metal") ||
+    s.includes("heavy metal") ||
+    s.includes("thrash") ||
+    s.includes("death metal") ||
+    s.includes("black metal") ||
+    s.includes("doom metal") ||
+    s.includes("groove metal") ||
+    s.includes("nu metal") ||
+    s.includes("metalcore") ||
+    s.includes("prog metal") ||
+    s.includes("progressive metal")
+  )
+    return "metal";
   if (
-    s.includes("country") || s.includes("americana") || s.includes("outlaw") ||
-    s.includes("bluegrass") || s.includes("alt_country") || s.includes("alt-country") ||
+    s.includes("country") ||
+    s.includes("americana") ||
+    s.includes("outlaw") ||
+    s.includes("bluegrass") ||
+    s.includes("alt_country") ||
+    s.includes("alt-country") ||
     s.includes("nashville")
-  ) return "country";
+  )
+    return "country";
   if (
-    s.includes("r_and_b") || s.includes("rnb") || s === "r&b" || s.includes("r-and-b") ||
-    s.includes("soul") || s.includes("neo_soul") || s.includes("neo-soul") ||
-    s.includes("quiet_storm") || s.includes("quiet-storm") || s.includes("pbr&b") ||
-    s.includes("contemporary_r") || s.includes("motown") || s.includes("funk_soul")
-  ) return "r_and_b";
+    s.includes("r_and_b") ||
+    s.includes("rnb") ||
+    s === "r&b" ||
+    s.includes("r-and-b") ||
+    s.includes("soul") ||
+    s.includes("neo_soul") ||
+    s.includes("neo-soul") ||
+    s.includes("quiet_storm") ||
+    s.includes("quiet-storm") ||
+    s.includes("pbr&b") ||
+    s.includes("contemporary_r") ||
+    s.includes("motown") ||
+    s.includes("funk_soul")
+  )
+    return "r_and_b";
   if (s.includes("electronic")) return "electronic";
-  if (s.includes("r&b") || s.includes("r_and_b") || s.includes("neo-soul") || s.includes("neosoul") || s.includes("soul") || s.includes("quiet storm") || s.includes("contemporary soul")) return "r_and_b";
+  if (
+    s.includes("r&b") ||
+    s.includes("r_and_b") ||
+    s.includes("neo-soul") ||
+    s.includes("neosoul") ||
+    s.includes("soul") ||
+    s.includes("quiet storm") ||
+    s.includes("contemporary soul")
+  )
+    return "r_and_b";
   // Hard rock / prog funnel into classic_rock. Metal has its own lane.
   if (
-    s.includes("hard_rock") || s.includes("hard-rock") ||
-    s.includes("hardrock") || s.includes("prog") || s.includes("arena_rock") ||
-    s.includes("arena-rock") || s.includes("glam") || s.includes("classic_rock") ||
-    s.includes("classic-rock") || s === "rock"
-  ) return "classic_rock";
+    s.includes("hard_rock") ||
+    s.includes("hard-rock") ||
+    s.includes("hardrock") ||
+    s.includes("prog") ||
+    s.includes("arena_rock") ||
+    s.includes("arena-rock") ||
+    s.includes("glam") ||
+    s.includes("classic_rock") ||
+    s.includes("classic-rock") ||
+    s === "rock"
+  )
+    return "classic_rock";
   return null;
 }
 
@@ -160,7 +229,6 @@ function catalogLaneToTopLane(sub: string | null | undefined): Lane | null {
 // reference the same scheme.
 export const OPENER_SLOT_WEIGHTS = [3, 2, 1] as const;
 export const OPENER_WEIGHT_TOTAL = OPENER_SLOT_WEIGHTS.reduce((s, n) => s + n, 0); // 6
-
 
 // Best-guess lane when the model is unsure (confidence < 0.4).
 // Weighted vote — slot 1 is worth 3× slot 5. Ties still return null so a
@@ -228,7 +296,6 @@ Voice for hypothesis: specific, restrained, slightly uncomfortable. No platitude
 
 Respond ONLY with valid JSON. No prose, no markdown fences.`;
 
-
 type LlmDimensions = Partial<Record<(typeof DIMS)[number], number>>;
 
 type OpeningAnalysis = {
@@ -238,8 +305,19 @@ type OpeningAnalysis = {
   reasoning: string[];
   hypothesis: string;
   candidate_dimensions: LlmDimensions;
-  per_song: Array<{ input: string; lane: Lane | "unknown"; source: "llm" | "catalog"; canon_id?: string }>;
-  canon_matches: Array<{ input: string; song_id: string; title: string; artist: string; primary_lane: string }>;
+  per_song: Array<{
+    input: string;
+    lane: Lane | "unknown";
+    source: "llm" | "catalog";
+    canon_id?: string;
+  }>;
+  canon_matches: Array<{
+    input: string;
+    song_id: string;
+    title: string;
+    artist: string;
+    primary_lane: string;
+  }>;
 };
 
 const FALLBACK: OpeningAnalysis = {
@@ -255,32 +333,68 @@ const FALLBACK: OpeningAnalysis = {
 
 async function classifyLane(
   songs: string[],
-  supabase: { from: (t: string) => { select: (c: string) => { ilike: (col: string, v: string) => { limit: (n: number) => Promise<{ data: Array<{ id: string; primary_lane?: string | null; lane: string; title: string; artist: string }> | null }> } } } },
+  supabase: {
+    from: (t: string) => {
+      select: (c: string) => {
+        ilike: (
+          col: string,
+          v: string,
+        ) => {
+          limit: (n: number) => Promise<{
+            data: Array<{
+              id: string;
+              primary_lane?: string | null;
+              lane: string;
+              title: string;
+              artist: string;
+            }> | null;
+          }>;
+        };
+      };
+    };
+  },
 ): Promise<OpeningAnalysis> {
   // Step 1: LLM reads all five at once — lane, confidence, dimensions, hypothesis.
-  let llm: OpeningAnalysis = { ...FALLBACK, per_song: songs.map((s) => ({ input: s, lane: "unknown", source: "llm" })) };
+  let llm: OpeningAnalysis = {
+    ...FALLBACK,
+    per_song: songs.map((s) => ({ input: s, lane: "unknown", source: "llm" })),
+  };
   try {
     const txt = await ai([
       { role: "system", content: CLASSIFIER_VOICE },
-      { role: "user", content: `The user named these three songs as ones they love (ranked top to bottom):\n${songs.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nReturn the JSON object now.` },
+      {
+        role: "user",
+        content: `The user named these three songs as ones they love (ranked top to bottom):\n${songs.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nReturn the JSON object now.`,
+      },
     ]);
     const cleaned = txt.replace(/```json\s*|```/g, "").trim();
     const parsed = JSON.parse(cleaned) as Partial<OpeningAnalysis>;
-    const lane = (LANES as readonly string[]).includes(parsed.lane as string) ? (parsed.lane as Lane) : "general";
+    const lane = (LANES as readonly string[]).includes(parsed.lane as string)
+      ? (parsed.lane as Lane)
+      : "general";
     const confidence = Math.max(0, Math.min(1, Number(parsed.confidence ?? 0)));
     const secondary = Array.isArray(parsed.secondary_lanes)
-      ? parsed.secondary_lanes.filter((l): l is Lane => (LANES as readonly string[]).includes(l as string) && l !== lane && l !== "general")
+      ? parsed.secondary_lanes.filter(
+          (l): l is Lane =>
+            (LANES as readonly string[]).includes(l as string) && l !== lane && l !== "general",
+        )
       : [];
     const dims: LlmDimensions = {};
     if (parsed.candidate_dimensions && typeof parsed.candidate_dimensions === "object") {
       for (const d of DIMS) {
         const v = (parsed.candidate_dimensions as Record<string, unknown>)[d];
-        if (typeof v === "number" && Number.isFinite(v)) dims[d] = Math.max(-100, Math.min(100, Math.round(v)));
+        if (typeof v === "number" && Number.isFinite(v))
+          dims[d] = Math.max(-100, Math.min(100, Math.round(v)));
       }
     }
     const perSong = songs.map((input) => {
-      const match = Array.isArray(parsed.per_song) ? parsed.per_song.find((p) => p?.input === input) : null;
-      const songLane = match && (LANES as readonly string[]).includes(match.lane as string) ? (match.lane as Lane) : "unknown";
+      const match = Array.isArray(parsed.per_song)
+        ? parsed.per_song.find((p) => p?.input === input)
+        : null;
+      const songLane =
+        match && (LANES as readonly string[]).includes(match.lane as string)
+          ? (match.lane as Lane)
+          : "unknown";
       return { input, lane: songLane as Lane | "unknown", source: "llm" as const };
     });
     llm = {
@@ -288,12 +402,17 @@ async function classifyLane(
       confidence,
       secondary_lanes: secondary,
       reasoning: Array.isArray(parsed.reasoning) ? parsed.reasoning.slice(0, 4).map(String) : [],
-      hypothesis: typeof parsed.hypothesis === "string" && parsed.hypothesis.trim() ? parsed.hypothesis.trim() : FALLBACK.hypothesis,
+      hypothesis:
+        typeof parsed.hypothesis === "string" && parsed.hypothesis.trim()
+          ? parsed.hypothesis.trim()
+          : FALLBACK.hypothesis,
       candidate_dimensions: dims,
       per_song: perSong,
       canon_matches: [],
     };
-  } catch { /* keep FALLBACK */ }
+  } catch {
+    /* keep FALLBACK */
+  }
 
   // Step 2: Hidden canon enrichment — try to map each entry to a catalog song.
   // This is a free signal, never shown to the user. Failures are silent.
@@ -303,10 +422,14 @@ async function classifyLane(
     const title = titlePart || raw;
     if (!title) continue;
     try {
-      const { data } = await supabase.from("songs").select("id,primary_lane,lane,title,artist").ilike("title", title).limit(5);
+      const { data } = await supabase
+        .from("songs")
+        .select("id,primary_lane,lane,title,artist")
+        .ilike("title", title)
+        .limit(5);
       if (!data?.length) continue;
       const best = artistPart
-        ? data.find((r) => r.artist?.toLowerCase().includes(artistPart.toLowerCase())) ?? data[0]
+        ? (data.find((r) => r.artist?.toLowerCase().includes(artistPart.toLowerCase())) ?? data[0])
         : data[0];
       const topLane = catalogLaneToTopLane(best.primary_lane ?? best.lane);
       llm.canon_matches.push({
@@ -317,9 +440,16 @@ async function classifyLane(
         primary_lane: best.primary_lane ?? best.lane,
       });
       if (llm.per_song[i]) {
-        llm.per_song[i] = { ...llm.per_song[i], source: "catalog", canon_id: best.id, lane: topLane ?? llm.per_song[i].lane };
+        llm.per_song[i] = {
+          ...llm.per_song[i],
+          source: "catalog",
+          canon_id: best.id,
+          lane: topLane ?? llm.per_song[i].lane,
+        };
       }
-    } catch { /* swallow */ }
+    } catch {
+      /* swallow */
+    }
   }
 
   // Weighted-slot confidence floor: after canon enrichment, tally per_song by
@@ -330,7 +460,12 @@ async function classifyLane(
   // scattered picks" from ending up as general.
   const share = weightedLaneShare(llm.per_song);
   const weighting = share
-    ? { scheme: "3-2-1" as const, top_lane: share.lane, top_lane_share: Math.round(share.share * 100) / 100, tied: share.tied }
+    ? {
+        scheme: "3-2-1" as const,
+        top_lane: share.lane,
+        top_lane_share: Math.round(share.share * 100) / 100,
+        tied: share.tied,
+      }
     : { scheme: "3-2-1" as const, top_lane: null, top_lane_share: 0, tied: false };
   if (share && !share.tied && share.share >= 0.5 && llm.confidence < 0.6) {
     llm.lane = share.lane;
@@ -341,7 +476,6 @@ async function classifyLane(
     ].slice(0, 4);
   }
   (llm as OpeningAnalysis & { weighting?: unknown }).weighting = weighting;
-
 
   return llm;
 }
@@ -371,7 +505,16 @@ export const analyzeOpeningSongs = createServerFn({ method: "POST" })
 export const generateOpeningHypothesis = analyzeOpeningSongs;
 
 // ============ Start session ============
-const ALL_LANES: Lane[] = ["alternative", "pop", "hip_hop", "electronic", "classic_rock", "metal", "country", "r_and_b"];
+const ALL_LANES: Lane[] = [
+  "alternative",
+  "pop",
+  "hip_hop",
+  "electronic",
+  "classic_rock",
+  "metal",
+  "country",
+  "r_and_b",
+];
 
 export const startSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -381,44 +524,59 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
-import { buildLedger, detectRevision, LEDGER_VERSION, type LedgerSong, type PriorRead } from "@/musicdna/engine/evidence";
+import {
+  buildLedger,
+  detectRevision,
+  LEDGER_VERSION,
+  type LedgerSong,
+  type PriorRead,
+} from "@/musicdna/engine/evidence";
 import { ENGINE_VERSION } from "@/musicdna/engine/versions";
 import { nextPromptFor } from "@/musicdna/engine/prompts";
-import { evaluateClaim, CLAIM_POLICY_VERSION, CLAIM_MIN_SUPPORT, CLAIM_MIN_CONSISTENCY } from "@/musicdna/engine/claims";
-import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
+import {
+  evaluateClaim,
+  CLAIM_POLICY_VERSION,
+  CLAIM_MIN_SUPPORT,
+  CLAIM_MIN_CONSISTENCY,
+} from "@/musicdna/engine/claims";
+import {
+  selectPairing,
+  shouldStop,
+  sessionCompletion,
+  assertWithinLane,
+  type PairingCandidate,
+} from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
 
-
-
 export async function startSessionImpl(supabase: AuthedSupabase, userId: string) {
-    const { data: profile } = await supabase
-      .from("profiles")
-      .select("opening_lane, opening_lane_confidence, opening_analysis_json")
-      .eq("user_id", userId)
-      .maybeSingle();
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("opening_lane, opening_lane_confidence, opening_analysis_json")
+    .eq("user_id", userId)
+    .maybeSingle();
 
-    // Pure: lane + confidence + probe candidates + seed vector.
-    const seed = buildStartSessionSeed({
-      profile: profile as never,
-      all_lanes: ALL_LANES,
-      rng: { next: () => Math.random() },
-    });
+  // Pure: lane + confidence + probe candidates + seed vector.
+  const seed = buildStartSessionSeed({
+    profile: profile as never,
+    all_lanes: ALL_LANES,
+    rng: { next: () => Math.random() },
+  });
 
-    const { data, error } = await supabase
-      .from("sessions")
-      .insert({
-        user_id: userId,
-        vector: seed.seed_vector,
-        lane: seed.lane,
-        lane_confidence: seed.lane_confidence,
-        probe_candidate_lanes: seed.probe_candidate_lanes,
-        probe_state: { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] },
-      })
-      .select("id")
-      .single();
-    if (error) throw new Error(error.message);
-    return { sessionId: data.id, lane: seed.lane, lane_confidence: seed.lane_confidence };
+  const { data, error } = await supabase
+    .from("sessions")
+    .insert({
+      user_id: userId,
+      vector: seed.seed_vector,
+      lane: seed.lane,
+      lane_confidence: seed.lane_confidence,
+      probe_candidate_lanes: seed.probe_candidate_lanes,
+      probe_state: { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] },
+    })
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+  return { sessionId: data.id, lane: seed.lane, lane_confidence: seed.lane_confidence };
 }
 
 // ============ Next pairing ============
@@ -429,7 +587,10 @@ const PROBE_ROUNDS = new Set([4, 9, 14]);
 type ProbeState = {
   probes_shown: Array<{ round: number; pairing_id: string; lane: Lane }>;
   pending: Record<string, Lane>; // pairing_id → probe lane (not yet recorded)
-  lane_alignment: Record<string, { wins: number; total: number; magnitude: number; cosine_sum: number }>;
+  lane_alignment: Record<
+    string,
+    { wins: number; total: number; magnitude: number; cosine_sum: number }
+  >;
   flips: Array<{ round: number; from: Lane; to: Lane; reason: string }>;
   // Pairings the user explicitly skipped ("I don't know either of these").
   // Excluded from every future selection in this session. Never scored.
@@ -478,160 +639,165 @@ export async function nextPairingImpl(
   supabase: AuthedSupabase,
   data: { sessionId: string; steer?: "not_quite" | "harder" },
 ) {
-    const [usedRes, sessionRes, profileRes] = await Promise.all([
-      supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
-      supabase
-        .from("sessions")
-        .select("vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json, user_id")
-        .eq("id", data.sessionId)
-        .single(),
-      supabase
-        .from("sessions")
-        .select("user_id, profiles!inner(opening_analysis_json)")
-        .eq("id", data.sessionId)
-        .maybeSingle(),
-    ]);
-    const sessionLane = (sessionRes.data?.lane as Lane | null) ?? "general";
-    const laneConfidence = Number(sessionRes.data?.lane_confidence ?? 0);
-    const probeCandidates = (sessionRes.data?.probe_candidate_lanes as Lane[] | null) ?? [];
-    const probeState = (sessionRes.data?.probe_state ?? {}) as ProbeState;
-    probeState.probes_shown = probeState.probes_shown ?? [];
-    probeState.pending = probeState.pending ?? {};
-    probeState.lane_alignment = probeState.lane_alignment ?? {};
-    probeState.flips = probeState.flips ?? [];
-    const bootstrapChoices = ((sessionRes.data as { bootstrap_choices_json?: unknown } | null)
-      ?.bootstrap_choices_json as BootstrapChoiceEntry[] | null) ?? [];
+  const [usedRes, sessionRes, profileRes] = await Promise.all([
+    supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
+    supabase
+      .from("sessions")
+      .select(
+        "vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json, user_id",
+      )
+      .eq("id", data.sessionId)
+      .single(),
+    supabase
+      .from("sessions")
+      .select("user_id, profiles!inner(opening_analysis_json)")
+      .eq("id", data.sessionId)
+      .maybeSingle(),
+  ]);
+  const sessionLane = (sessionRes.data?.lane as Lane | null) ?? "general";
+  const laneConfidence = Number(sessionRes.data?.lane_confidence ?? 0);
+  const probeCandidates = (sessionRes.data?.probe_candidate_lanes as Lane[] | null) ?? [];
+  const probeState = (sessionRes.data?.probe_state ?? {}) as ProbeState;
+  probeState.probes_shown = probeState.probes_shown ?? [];
+  probeState.pending = probeState.pending ?? {};
+  probeState.lane_alignment = probeState.lane_alignment ?? {};
+  probeState.flips = probeState.flips ?? [];
+  const bootstrapChoices =
+    ((sessionRes.data as { bootstrap_choices_json?: unknown } | null)?.bootstrap_choices_json as
+      | BootstrapChoiceEntry[]
+      | null) ?? [];
 
-    // Extract the set of lanes the opener songs actually landed in. Used by
-    // the bootstrap phase to keep probe pairings inside the user's stated
-    // taste territory (rock/pop/alt if that's what they named) instead of
-    // reaching for R&B or country cold. Empty = fall back to any bootstrap.
-    const openingAnalysis = (profileRes.data as { profiles?: { opening_analysis_json?: unknown } } | null)
-      ?.profiles?.opening_analysis_json as
-        | { per_song?: Array<{ lane?: string | null }>; secondary_lanes?: string[] | null }
-        | null
-        | undefined;
-    const openerLanes = new Set<string>();
-    for (const p of openingAnalysis?.per_song ?? []) {
-      if (p?.lane && p.lane !== "unknown" && p.lane !== "general") openerLanes.add(p.lane);
-    }
-    for (const l of openingAnalysis?.secondary_lanes ?? []) {
-      if (l && l !== "general") openerLanes.add(l);
-    }
+  // Extract the set of lanes the opener songs actually landed in. Used by
+  // the bootstrap phase to keep probe pairings inside the user's stated
+  // taste territory (rock/pop/alt if that's what they named) instead of
+  // reaching for R&B or country cold. Empty = fall back to any bootstrap.
+  const openingAnalysis = (
+    profileRes.data as { profiles?: { opening_analysis_json?: unknown } } | null
+  )?.profiles?.opening_analysis_json as
+    | { per_song?: Array<{ lane?: string | null }>; secondary_lanes?: string[] | null }
+    | null
+    | undefined;
+  const openerLanes = new Set<string>();
+  for (const p of openingAnalysis?.per_song ?? []) {
+    if (p?.lane && p.lane !== "unknown" && p.lane !== "general") openerLanes.add(p.lane);
+  }
+  for (const l of openingAnalysis?.secondary_lanes ?? []) {
+    if (l && l !== "general") openerLanes.add(l);
+  }
 
-
-    const pairingSelect = `
+  const pairingSelect = `
       id, tests, diagnostic_weight, lane, is_bootstrap,
       song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane),
       song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane)
     `;
 
-    const usedIds = new Set((usedRes.data ?? []).map((c) => c.pairing_id));
-    // Skipped pairings are excluded from every future selection in this session.
-    for (const pid of probeState.skipped_pairing_ids ?? []) usedIds.add(pid);
-    const round = usedIds.size;
-    const vector = (sessionRes.data?.vector ?? {}) as Record<string, number>;
-    // Answered rounds are choices only. Skips are never preferences, so they
-    // don't advance the budget — they only bound the session via skip_bound.
-    const answered = new Set((usedRes.data ?? []).map((c) => c.pairing_id)).size;
-    const skippedCount = (probeState.skipped_pairing_ids ?? []).length;
-    // D02: count skips since the most recent answered choice.
-    const { data: recentEvents } = await supabase
-      .from("event_log")
-      .select("event_type")
-      .eq("session_id", data.sessionId)
-      .in("event_type", ["choice_scored", "pairing_skipped"])
-      .order("created_at", { ascending: false })
-      .limit(3);
-    let consecutiveSkips = 0;
-    for (const ev of recentEvents ?? []) {
-      if (ev.event_type !== "pairing_skipped") break;
-      consecutiveSkips += 1;
-    }
-    const stop = sessionCompletion({
+  const usedIds = new Set((usedRes.data ?? []).map((c) => c.pairing_id));
+  // Skipped pairings are excluded from every future selection in this session.
+  for (const pid of probeState.skipped_pairing_ids ?? []) usedIds.add(pid);
+  const round = usedIds.size;
+  const vector = (sessionRes.data?.vector ?? {}) as Record<string, number>;
+  // Answered rounds are choices only. Skips are never preferences, so they
+  // don't advance the budget — they only bound the session via skip_bound.
+  const answered = new Set((usedRes.data ?? []).map((c) => c.pairing_id)).size;
+  const skippedCount = (probeState.skipped_pairing_ids ?? []).length;
+  // D02: count skips since the most recent answered choice.
+  const { data: recentEvents } = await supabase
+    .from("event_log")
+    .select("event_type")
+    .eq("session_id", data.sessionId)
+    .in("event_type", ["choice_scored", "pairing_skipped"])
+    .order("created_at", { ascending: false })
+    .limit(3);
+  let consecutiveSkips = 0;
+  for (const ev of recentEvents ?? []) {
+    if (ev.event_type !== "pairing_skipped") break;
+    consecutiveSkips += 1;
+  }
+  const stop = sessionCompletion({
+    answered,
+    skipped: skippedCount,
+    consecutive_skips: consecutiveSkips,
+    vector,
+    dims: DIMS as readonly string[],
+  });
+  if (stop.done) {
+    return {
+      pairing: null,
+      round,
       answered,
-      skipped: skippedCount,
-      consecutive_skips: consecutiveSkips,
-      vector,
-      dims: DIMS as readonly string[],
-    });
-    if (stop.done) {
-      return {
-        pairing: null,
-        round,
-        answered,
-        max_rounds: stop.max_answered,
-        stop_reason: stop.reason,
-        confidence: stop.confidence,
-        done: true as const,
-      };
-    }
-
-    // ---- Shadow router (Step 0 of Agent Brain integration) -----------------
-    // Emit a `regime_recommended` event WITHOUT touching selection. Awaited so
-    // the write actually lands in serverless runtimes (Cursor telemetry fix).
-    // Also logs the legacy selector's decision (selected_mode, selection_reason)
-    // and whether the regime agrees — that's the metric Step 4 rollout gates on.
-    //
-    // Cursor #3 (Phase 3.5 corrected): vectors accumulate around 0 in
-    // choice.ts (`vec[d] = (vec[d] ?? 0) + delta * w`), not around 50. The
-    // old |v-50|/50 formula was mis-centered — a neutral session read as
-    // fully confident. Use the same test shouldStop() applies: count axes
-    // whose |v| has crossed the 30-point confidence threshold, divided by
-    // the total dimension count. Matches Cursor review #3.
-    const dimsRef = DIMS as readonly string[];
-    const AXIS_CONF_THRESHOLD = 30;
-    const confidentAxes = dimsRef.filter(
-      (d) => Math.abs(Number(vector[d] ?? 0)) >= AXIS_CONF_THRESHOLD,
-    ).length;
-    const vectorConfidence = dimsRef.length > 0 ? confidentAxes / dimsRef.length : 0;
-
-    // Cursor #5: legacy selector → regime mapping so we can compute `scoring_agrees`.
-    //   bootstrap             → explore (probing lane boundaries)
-    //   recognition_first     → explore (widening / general lane)
-    //   recognition_boost     → prune   (narrowing within a leaning lane)
-    //   diagnostic_first      → compound (confident lane, exploiting signal)
-    const legacyToRegime = (mode: string, isBootstrap: boolean): Regime => {
-      if (isBootstrap) return "explore";
-      if (mode === "recognition_first") return "explore";
-      if (mode === "recognition_boost") return "prune";
-      if (mode === "diagnostic_first") return "compound";
-      return "explore";
+      max_rounds: stop.max_answered,
+      stop_reason: stop.reason,
+      confidence: stop.confidence,
+      done: true as const,
     };
+  }
 
-    // Phase 3.5 note on completion: `emitShadowRecommendation` is `await`ed
-    // BEFORE nextPairingImpl returns (see the two call sites below). On
-    // Cloudflare Workers / workerd, promises awaited inside a request
-    // handler complete synchronously with the response — no waitUntil()
-    // needed. The fire-and-forget hazard the earlier review flagged would
-    // only apply if we removed the await. If a future change makes this
-    // truly fire-and-forget, switch to `event.waitUntil(promise)` from the
-    // server route's ctx instead of dropping the await.
-    const routingMode: RoutingMode = readRoutingMode();
-    const emitShadowRecommendation = async (
-      pairingId: string | null,
-      ctx: {
-        selected_mode: string;
+  // ---- Shadow router (Step 0 of Agent Brain integration) -----------------
+  // Emit a `regime_recommended` event WITHOUT touching selection. Awaited so
+  // the write actually lands in serverless runtimes (Cursor telemetry fix).
+  // Also logs the legacy selector's decision (selected_mode, selection_reason)
+  // and whether the regime agrees — that's the metric Step 4 rollout gates on.
+  //
+  // Cursor #3 (Phase 3.5 corrected): vectors accumulate around 0 in
+  // choice.ts (`vec[d] = (vec[d] ?? 0) + delta * w`), not around 50. The
+  // old |v-50|/50 formula was mis-centered — a neutral session read as
+  // fully confident. Use the same test shouldStop() applies: count axes
+  // whose |v| has crossed the 30-point confidence threshold, divided by
+  // the total dimension count. Matches Cursor review #3.
+  const dimsRef = DIMS as readonly string[];
+  const AXIS_CONF_THRESHOLD = 30;
+  const confidentAxes = dimsRef.filter(
+    (d) => Math.abs(Number(vector[d] ?? 0)) >= AXIS_CONF_THRESHOLD,
+  ).length;
+  const vectorConfidence = dimsRef.length > 0 ? confidentAxes / dimsRef.length : 0;
+
+  // Cursor #5: legacy selector → regime mapping so we can compute `scoring_agrees`.
+  //   bootstrap             → explore (probing lane boundaries)
+  //   recognition_first     → explore (widening / general lane)
+  //   recognition_boost     → prune   (narrowing within a leaning lane)
+  //   diagnostic_first      → compound (confident lane, exploiting signal)
+  const legacyToRegime = (mode: string, isBootstrap: boolean): Regime => {
+    if (isBootstrap) return "explore";
+    if (mode === "recognition_first") return "explore";
+    if (mode === "recognition_boost") return "prune";
+    if (mode === "diagnostic_first") return "compound";
+    return "explore";
+  };
+
+  // Phase 3.5 note on completion: `emitShadowRecommendation` is `await`ed
+  // BEFORE nextPairingImpl returns (see the two call sites below). On
+  // Cloudflare Workers / workerd, promises awaited inside a request
+  // handler complete synchronously with the response — no waitUntil()
+  // needed. The fire-and-forget hazard the earlier review flagged would
+  // only apply if we removed the await. If a future change makes this
+  // truly fire-and-forget, switch to `event.waitUntil(promise)` from the
+  // server route's ctx instead of dropping the await.
+  const routingMode: RoutingMode = readRoutingMode();
+  const emitShadowRecommendation = async (
+    pairingId: string | null,
+    ctx: {
+      selected_mode: string;
+      selection_reason: Record<string, unknown> | null;
+      is_bootstrap: boolean;
+      // Phase 4: shadow-pick diff. Optional so bootstrap callers (which
+      // don't run selectPairing) can omit it.
+      shadow?: {
+        pick_id: string | null;
+        agrees: boolean;
+        knobs: Record<string, unknown>;
         selection_reason: Record<string, unknown> | null;
-        is_bootstrap: boolean;
-        // Phase 4: shadow-pick diff. Optional so bootstrap callers (which
-        // don't run selectPairing) can omit it.
-        shadow?: {
-          pick_id: string | null;
-          agrees: boolean;
-          knobs: Record<string, unknown>;
-          selection_reason: Record<string, unknown> | null;
-          knobs_differ?: boolean;
-          pick_differs?: boolean;
-        } | null;
-        // Cursor #1 fix: caller may pass a cached router recommendation so
-        // we don't run recommendForSession twice per pick. Bootstrap
-        // callers omit it and we fall back to computing here.
-        cachedRec?: Awaited<ReturnType<typeof recommendForSession>> | null;
-      },
-    ): Promise<void> => {
-      try {
-        const rec = ctx.cachedRec !== undefined
+        knobs_differ?: boolean;
+        pick_differs?: boolean;
+      } | null;
+      // Cursor #1 fix: caller may pass a cached router recommendation so
+      // we don't run recommendForSession twice per pick. Bootstrap
+      // callers omit it and we fall back to computing here.
+      cachedRec?: Awaited<ReturnType<typeof recommendForSession>> | null;
+    },
+  ): Promise<void> => {
+    try {
+      const rec =
+        ctx.cachedRec !== undefined
           ? ctx.cachedRec
           : await recommendForSession(supabase, data.sessionId, {
               laneConfidence,
@@ -641,92 +807,133 @@ export async function nextPairingImpl(
               round,
               maxRounds: 6,
             });
-        if (!rec) return;
-        const legacyRegime = legacyToRegime(ctx.selected_mode, ctx.is_bootstrap);
-        const props = {
-          ...rec,
-          selected_mode: ctx.selected_mode,
-          legacy_regime: legacyRegime,
-          scoring_agrees: rec.regime === legacyRegime,
-          selection_reason: ctx.selection_reason,
-          routing_mode: routingMode,
-          shadow_pick: ctx.shadow ?? null,
-        };
-        await (await trustedEventLog()).insert({
-          user_id: sessionRes.data?.user_id ?? null,
-          session_id: data.sessionId,
-          pairing_id: pairingId,
-          event_type: "regime_recommended",
-          client: "server",
-          props: props as never,
-        } as never);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.warn("[musicdna] regime_recommended emit failed:", e instanceof Error ? e.message : e);
-      }
-    };
-
-
-    // Cross-lane probes intentionally disabled — see mem://product/within-lane-only.md.
-    void probeCandidates; void PROBE_ROUNDS;
-    if (Object.keys(probeState.pending).length > 0) {
-      throw new Error(
-        `within-lane invariant violated: probe_state.pending is non-empty (${JSON.stringify(probeState.pending)}). ` +
-          `Cross-lane probes are disabled — see mem://product/within-lane-only.md.`,
+      if (!rec) return;
+      const legacyRegime = legacyToRegime(ctx.selected_mode, ctx.is_bootstrap);
+      const props = {
+        ...rec,
+        selected_mode: ctx.selected_mode,
+        legacy_regime: legacyRegime,
+        scoring_agrees: rec.regime === legacyRegime,
+        selection_reason: ctx.selection_reason,
+        routing_mode: routingMode,
+        shadow_pick: ctx.shadow ?? null,
+      };
+      await (
+        await trustedEventLog()
+      ).insert({
+        user_id: sessionRes.data?.user_id ?? null,
+        session_id: data.sessionId,
+        pairing_id: pairingId,
+        event_type: "regime_recommended",
+        client: "server",
+        props: props as never,
+      } as never);
+    } catch (e) {
+      console.warn(
+        "[musicdna] regime_recommended emit failed:",
+        e instanceof Error ? e.message : e,
       );
     }
+  };
 
-    // -------- Bootstrap phase --------
-    // If the session opened as `general` (opener didn't produce a confident
-    // lane call) and we haven't yet shown 2 bootstrap pairings, prefer a
-    // marked bootstrap pairing so we can promote the session to a real lane
-    // from the first 2 winners.
-    //
-    // Constraint: the bootstrap pairing must sit inside the lanes the user's
-    // opener songs actually landed in (openerLanes). We won't cold-serve an
-    // R&B / country / hip-hop probe to someone who named three rock/pop
-    // songs — that reads as "the app isn't listening". Fall through to the
-    // normal general-pool selection (recognition-first) when no bootstrap
-    // pairing matches the opener territory; a future "skip" affordance can
-    // opt the user into wider probes.
-    if (sessionLane === "general" && bootstrapChoices.length < 2) {
-      const bootRes = await supabase
-        .from("pairings")
-        .select(pairingSelect)
-        .eq("active", true)
-        .eq("is_bootstrap", true);
-      const rawBootPool = ((bootRes.data ?? []) as unknown as Array<PairingCandidate & { is_bootstrap?: boolean; song_a?: { primary_lane?: string | null } | null; song_b?: { primary_lane?: string | null } | null }>)
-        .filter((p) => !usedIds.has(p.id));
-      // Keep only pairings that intersect the user's opener lanes. If the
-      // opener produced no usable lanes (should be rare — total scatter),
-      // fall back to the full bootstrap pool so we still probe.
-      // Keep only pairings that intersect the user's opener lanes. If the
-      // opener produced no usable lanes, OR the user has already hit "skip"
-      // (wants_wider_probe), fall back to the full bootstrap pool so we can
-      // reach adjacent territory (rap/R&B/country/etc).
-      const widenProbe = probeState.wants_wider_probe === true;
-      const bootPool = openerLanes.size > 0 && !widenProbe
+  // Cross-lane probes intentionally disabled — see mem://product/within-lane-only.md.
+  void probeCandidates;
+  void PROBE_ROUNDS;
+  if (Object.keys(probeState.pending).length > 0) {
+    throw new Error(
+      `within-lane invariant violated: probe_state.pending is non-empty (${JSON.stringify(probeState.pending)}). ` +
+        `Cross-lane probes are disabled — see mem://product/within-lane-only.md.`,
+    );
+  }
+
+  // -------- Bootstrap phase --------
+  // If the session opened as `general` (opener didn't produce a confident
+  // lane call) and we haven't yet shown 2 bootstrap pairings, prefer a
+  // marked bootstrap pairing so we can promote the session to a real lane
+  // from the first 2 winners.
+  //
+  // Constraint: the bootstrap pairing must sit inside the lanes the user's
+  // opener songs actually landed in (openerLanes). We won't cold-serve an
+  // R&B / country / hip-hop probe to someone who named three rock/pop
+  // songs — that reads as "the app isn't listening". Fall through to the
+  // normal general-pool selection (recognition-first) when no bootstrap
+  // pairing matches the opener territory; a future "skip" affordance can
+  // opt the user into wider probes.
+  if (sessionLane === "general" && bootstrapChoices.length < 2) {
+    const bootRes = await supabase
+      .from("pairings")
+      .select(pairingSelect)
+      .eq("active", true)
+      .eq("is_bootstrap", true);
+    const rawBootPool = (
+      (bootRes.data ?? []) as unknown as Array<
+        PairingCandidate & {
+          is_bootstrap?: boolean;
+          song_a?: { primary_lane?: string | null } | null;
+          song_b?: { primary_lane?: string | null } | null;
+        }
+      >
+    ).filter((p) => !usedIds.has(p.id));
+    // Keep only pairings that intersect the user's opener lanes. If the
+    // opener produced no usable lanes (should be rare — total scatter),
+    // fall back to the full bootstrap pool so we still probe.
+    // Keep only pairings that intersect the user's opener lanes. If the
+    // opener produced no usable lanes, OR the user has already hit "skip"
+    // (wants_wider_probe), fall back to the full bootstrap pool so we can
+    // reach adjacent territory (rap/R&B/country/etc).
+    const widenProbe = probeState.wants_wider_probe === true;
+    const bootPool =
+      openerLanes.size > 0 && !widenProbe
         ? rawBootPool.filter((p) => {
             const pairingLane = (p.lane ?? null) as string | null;
             const aLane = p.song_a?.primary_lane ?? null;
             const bLane = p.song_b?.primary_lane ?? null;
-            return (pairingLane && openerLanes.has(pairingLane))
-              || (aLane && openerLanes.has(aLane))
-              || (bLane && openerLanes.has(bLane));
+            return (
+              (pairingLane && openerLanes.has(pairingLane)) ||
+              (aLane && openerLanes.has(aLane)) ||
+              (bLane && openerLanes.has(bLane))
+            );
           })
         : rawBootPool;
-      if (bootPool.length > 0) {
-        // Prefer pairings whose two songs have different primary_lane so the
-        // winner is diagnostic. Fall back to any lane-scoped bootstrap.
-        const differing = bootPool.filter((p) => {
-          const a = p.song_a?.primary_lane ?? null;
-          const b = p.song_b?.primary_lane ?? null;
-          return a && b && a !== b;
-        });
-        const finalPool = differing.length > 0 ? differing : bootPool;
-        const pickIdx = Math.floor(Math.random() * finalPool.length);
-        const bootPicked = finalPool[pickIdx];
-        const bootReason = {
+    if (bootPool.length > 0) {
+      // Prefer pairings whose two songs have different primary_lane so the
+      // winner is diagnostic. Fall back to any lane-scoped bootstrap.
+      const differing = bootPool.filter((p) => {
+        const a = p.song_a?.primary_lane ?? null;
+        const b = p.song_b?.primary_lane ?? null;
+        return a && b && a !== b;
+      });
+      const finalPool = differing.length > 0 ? differing : bootPool;
+      const pickIdx = Math.floor(Math.random() * finalPool.length);
+      const bootPicked = finalPool[pickIdx];
+      const bootReason = {
+        leaning_axes: [],
+        fork_matched: false,
+        tests: (bootPicked.tests ?? []) as string[],
+        axes_needed: [],
+        axis_need_score: 0,
+        challenge_boost: false,
+        diagnostic_weight: bootPicked.diagnostic_weight ?? 50,
+        pool_size: finalPool.length,
+        weight: 0,
+        bootstrap: true,
+        opener_lanes: Array.from(openerLanes),
+      } as Record<string, unknown>;
+      await emitShadowRecommendation(bootPicked.id, {
+        selected_mode: "bootstrap",
+        selection_reason: bootReason,
+        is_bootstrap: true,
+      });
+      return {
+        pairing: stripPrivatePairingFields(bootPicked),
+        prompt: nextPromptFor((bootPicked.tests ?? []) as string[]),
+        round: round + 1,
+        answered,
+        max_rounds: stop.max_answered,
+        stop_reason: null,
+        confidence: stop.confidence,
+        done: false as const,
+        selection_reason: {
           leaning_axes: [],
           fork_matched: false,
           tests: (bootPicked.tests ?? []) as string[],
@@ -738,249 +945,253 @@ export async function nextPairingImpl(
           weight: 0,
           bootstrap: true,
           opener_lanes: Array.from(openerLanes),
-        } as Record<string, unknown>;
-        await emitShadowRecommendation(bootPicked.id, {
-          selected_mode: "bootstrap",
-          selection_reason: bootReason,
-          is_bootstrap: true,
-        });
-        return {
-          pairing: stripPrivatePairingFields(bootPicked),
-          prompt: nextPromptFor((bootPicked.tests ?? []) as string[]),
-          round: round + 1,
-          answered,
-          max_rounds: stop.max_answered,
-          stop_reason: null,
-          confidence: stop.confidence,
-          done: false as const,
-          selection_reason: {
-            leaning_axes: [],
-            fork_matched: false,
-            tests: (bootPicked.tests ?? []) as string[],
-            axes_needed: [],
-            axis_need_score: 0,
-            challenge_boost: false,
-            diagnostic_weight: bootPicked.diagnostic_weight ?? 50,
-            pool_size: finalPool.length,
-            weight: 0,
-            bootstrap: true,
-            opener_lanes: Array.from(openerLanes),
-          } as never,
-        };
-      }
-      // No opener-lane bootstrap available → fall through to normal general
-      // selection below (recognition-first, high canon).
-
+        } as never,
+      };
     }
+    // No opener-lane bootstrap available → fall through to normal general
+    // selection below (recognition-first, high canon).
+  }
 
-    // -------- Fetch lane-scoped pool, fall back to general when empty --------
-    let pairingsRes = sessionLane === "general"
+  // -------- Fetch lane-scoped pool, fall back to general when empty --------
+  let pairingsRes =
+    sessionLane === "general"
       ? await supabase.from("pairings").select(pairingSelect).eq("active", true)
-      : await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", sessionLane);
-    if (pairingsRes.error) throw new Error(pairingsRes.error.message);
+      : await supabase
+          .from("pairings")
+          .select(pairingSelect)
+          .eq("active", true)
+          .eq("lane", sessionLane);
+  if (pairingsRes.error) throw new Error(pairingsRes.error.message);
 
-    // -------- Hydrate recognition data for the current pool --------
-    // View mirrors pairings visibility; a failed read isn't fatal — selector
-    // gracefully degrades to diagnostic-weight-only scoring.
-    const poolIds = (pairingsRes.data ?? []).map((p: { id: string }) => p.id);
-    const recognition = new Map<string, { min_canon: number; avg_canon: number; recognition_score: number }>();
-    if (poolIds.length > 0) {
-      const recRes = await supabase
-        .from("pairing_recognition")
-        .select("pairing_id, min_canon, avg_canon, recognition_score")
-        .in("pairing_id", poolIds);
-      for (const row of (recRes.data ?? []) as Array<{ pairing_id: string; min_canon: number | null; avg_canon: number | null; recognition_score: number | null }>) {
-        recognition.set(row.pairing_id, {
-          min_canon: Number(row.min_canon ?? 0),
-          avg_canon: Number(row.avg_canon ?? 0),
-          recognition_score: Number(row.recognition_score ?? 0),
-        });
+  // -------- Hydrate recognition data for the current pool --------
+  // View mirrors pairings visibility; a failed read isn't fatal — selector
+  // gracefully degrades to diagnostic-weight-only scoring.
+  const poolIds = (pairingsRes.data ?? []).map((p: { id: string }) => p.id);
+  const recognition = new Map<
+    string,
+    { min_canon: number; avg_canon: number; recognition_score: number }
+  >();
+  if (poolIds.length > 0) {
+    const recRes = await supabase
+      .from("pairing_recognition")
+      .select("pairing_id, min_canon, avg_canon, recognition_score")
+      .in("pairing_id", poolIds);
+    for (const row of (recRes.data ?? []) as Array<{
+      pairing_id: string;
+      min_canon: number | null;
+      avg_canon: number | null;
+      recognition_score: number | null;
+    }>) {
+      recognition.set(row.pairing_id, {
+        min_canon: Number(row.min_canon ?? 0),
+        avg_canon: Number(row.avg_canon ?? 0),
+        recognition_score: Number(row.recognition_score ?? 0),
+      });
+    }
+  }
+
+  // Pick mode from lane_confidence. General/low-confidence sessions after
+  // the bootstrap phase get recognition-forward selection so users see
+  // pairings they can actually engage with.
+  const mode: "diagnostic_first" | "recognition_boost" | "recognition_first" =
+    sessionLane === "general"
+      ? "recognition_first"
+      : laneConfidence < 0.6
+        ? "recognition_boost"
+        : "diagnostic_first";
+
+  const finalPool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
+
+  // Phase 4 (cursor #1 fix): consult the shadow router ONCE per pick and
+  // reuse the result for both knob derivation and the event emitter.
+  // Previously we called recommendForSession twice, doubling router work
+  // and letting the two calls disagree if any input drifted.
+  let regimeKnobs: ReturnType<typeof toEnginePairingKnobs> | null = null;
+  let regimeForShadow: Regime | null = null;
+  let cachedRec: Awaited<ReturnType<typeof recommendForSession>> | null = null;
+  if (routingMode !== "legacy") {
+    try {
+      cachedRec = await recommendForSession(supabase, data.sessionId, {
+        laneConfidence,
+        lane: sessionLane,
+        vector,
+        skippedPairingIds: probeState.skipped_pairing_ids ?? [],
+        round,
+        maxRounds: 6,
+      });
+      if (cachedRec) {
+        regimeForShadow = cachedRec.regime;
+        regimeKnobs = toEnginePairingKnobs(cachedRec.pairing_knobs);
       }
+    } catch {
+      /* shadow only — never fail the user */
     }
+  }
 
-    // Pick mode from lane_confidence. General/low-confidence sessions after
-    // the bootstrap phase get recognition-forward selection so users see
-    // pairings they can actually engage with.
-    const mode: "diagnostic_first" | "recognition_boost" | "recognition_first" =
-      sessionLane === "general"
-        ? "recognition_first"
-        : laneConfidence < 0.6
-          ? "recognition_boost"
-          : "diagnostic_first";
+  // Cursor #1 blocker fix: share a seeded RNG between the live and shadow
+  // picks so both consume the same draw sequence. Divergence between the
+  // two picks then reflects knob differences only, not Math.random() luck.
+  const rngSeed = seedFrom(data.sessionId, round);
+  const rng = mulberry32(rngSeed);
+  let liveKnobs = routingMode === "live" && regimeKnobs ? regimeKnobs : undefined;
+  // Reaction steering. "Not quite" = the read isn't landing, so stop
+  // filtering to pairings that confirm the leaning axes and let the
+  // opposite side of the same axis through. "Harder" = drop the
+  // recognition floor and lean on diagnostic weight.
+  if (data.steer === "not_quite") {
+    liveKnobs = {
+      ...(liveKnobs ?? {}),
+      fork_filter: "soft",
+      challenge_boost: 2.2,
+    } as typeof liveKnobs;
+  } else if (data.steer === "harder") {
+    liveKnobs = {
+      ...(liveKnobs ?? {}),
+      mode: "diagnostic_first",
+      canon_floor: 0,
+    } as typeof liveKnobs;
+  }
+  let picked = selectPairing({
+    pool: finalPool,
+    vector,
+    used_ids: usedIds,
+    session_lane: sessionLane,
+    dims: DIMS as readonly string[],
+    rng,
+    mode,
+    recognition,
+    knobs: liveKnobs,
+  });
 
-    const finalPool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
-
-    // Phase 4 (cursor #1 fix): consult the shadow router ONCE per pick and
-    // reuse the result for both knob derivation and the event emitter.
-    // Previously we called recommendForSession twice, doubling router work
-    // and letting the two calls disagree if any input drifted.
-    let regimeKnobs: ReturnType<typeof toEnginePairingKnobs> | null = null;
-    let regimeForShadow: Regime | null = null;
-    let cachedRec: Awaited<ReturnType<typeof recommendForSession>> | null = null;
-    if (routingMode !== "legacy") {
-      try {
-        cachedRec = await recommendForSession(supabase, data.sessionId, {
-          laneConfidence,
-          lane: sessionLane,
-          vector,
-          skippedPairingIds: probeState.skipped_pairing_ids ?? [],
-          round,
-          maxRounds: 6,
-        });
-        if (cachedRec) {
-          regimeForShadow = cachedRec.regime;
-          regimeKnobs = toEnginePairingKnobs(cachedRec.pairing_knobs);
-        }
-      } catch { /* shadow only — never fail the user */ }
-    }
-
-    // Cursor #1 blocker fix: share a seeded RNG between the live and shadow
-    // picks so both consume the same draw sequence. Divergence between the
-    // two picks then reflects knob differences only, not Math.random() luck.
-    const rngSeed = seedFrom(data.sessionId, round);
-    const rng = mulberry32(rngSeed);
-    let liveKnobs = routingMode === "live" && regimeKnobs ? regimeKnobs : undefined;
-    // Reaction steering. "Not quite" = the read isn't landing, so stop
-    // filtering to pairings that confirm the leaning axes and let the
-    // opposite side of the same axis through. "Harder" = drop the
-    // recognition floor and lean on diagnostic weight.
-    if (data.steer === "not_quite") {
-      liveKnobs = { ...(liveKnobs ?? {}), fork_filter: "soft", challenge_boost: 2.2 } as typeof liveKnobs;
-    } else if (data.steer === "harder") {
-      liveKnobs = { ...(liveKnobs ?? {}), mode: "diagnostic_first", canon_floor: 0 } as typeof liveKnobs;
-    }
-    let picked = selectPairing({
-      pool: finalPool,
+  // Track the actual pool + mode the live selector used (post-fallback) so
+  // the shadow pick scores the same universe. Cursor: "General-lane
+  // fallback under-counts real diverge cases" — fixed here.
+  let livePool = finalPool;
+  let liveMode = mode;
+  if (picked.kind === "empty" && sessionLane !== "general") {
+    pairingsRes = await supabase
+      .from("pairings")
+      .select(pairingSelect)
+      .eq("active", true)
+      .eq("lane", "general");
+    if (pairingsRes.error) throw new Error(pairingsRes.error.message);
+    livePool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
+    liveMode = "recognition_first";
+    // Reseed for the fallback attempt so shadow can reproduce it exactly.
+    const fbRng = mulberry32(rngSeed ^ 0x9e3779b9);
+    picked = selectPairing({
+      pool: livePool,
       vector,
       used_ids: usedIds,
       session_lane: sessionLane,
       dims: DIMS as readonly string[],
-      rng,
-      mode,
+      rng: fbRng,
+      mode: liveMode,
       recognition,
       knobs: liveKnobs,
     });
+  }
+  if (picked.kind === "empty") {
+    return {
+      pairing: null,
+      round,
+      answered,
+      max_rounds: stop.max_answered,
+      stop_reason: "catalog_exhausted" as const,
+      confidence: stop.confidence,
+      done: true as const,
+    };
+  }
+  assertWithinLane((picked.pairing as { lane?: string | null }).lane ?? null, sessionLane);
 
-    // Track the actual pool + mode the live selector used (post-fallback) so
-    // the shadow pick scores the same universe. Cursor: "General-lane
-    // fallback under-counts real diverge cases" — fixed here.
-    let livePool = finalPool;
-    let liveMode = mode;
-    if (picked.kind === "empty" && sessionLane !== "general") {
-      pairingsRes = await supabase.from("pairings").select(pairingSelect).eq("active", true).eq("lane", "general");
-      if (pairingsRes.error) throw new Error(pairingsRes.error.message);
-      livePool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
-      liveMode = "recognition_first";
-      // Reseed for the fallback attempt so shadow can reproduce it exactly.
-      const fbRng = mulberry32(rngSeed ^ 0x9e3779b9);
-      picked = selectPairing({
+  // Shadow-only: run a parallel pick with regime knobs against the SAME
+  // pool + mode + seed the live selector actually used. Any divergence is
+  // now attributable to knob differences.
+  let shadowInfo: {
+    pick_id: string | null;
+    agrees: boolean;
+    knobs: Record<string, unknown>;
+    selection_reason: Record<string, unknown> | null;
+    knobs_differ: boolean;
+    pick_differs: boolean;
+  } | null = null;
+  if (routingMode === "shadow" && regimeKnobs) {
+    try {
+      // Reseed to the exact seed used for the live pick that produced
+      // `picked` (fallback path used a xor'd seed).
+      const shadowSeed = livePool === finalPool ? rngSeed : rngSeed ^ 0x9e3779b9;
+      const shadowRng = mulberry32(shadowSeed);
+      const shadowPick = selectPairing({
         pool: livePool,
         vector,
         used_ids: usedIds,
         session_lane: sessionLane,
         dims: DIMS as readonly string[],
-        rng: fbRng,
+        rng: shadowRng,
         mode: liveMode,
         recognition,
-        knobs: liveKnobs,
+        knobs: regimeKnobs,
       });
-    }
-    if (picked.kind === "empty") {
-      return {
-        pairing: null,
-        round,
-        answered,
-        max_rounds: stop.max_answered,
-        stop_reason: "catalog_exhausted" as const,
-        confidence: stop.confidence,
-        done: true as const,
-      };
-    }
-    assertWithinLane((picked.pairing as { lane?: string | null }).lane ?? null, sessionLane);
-
-    // Shadow-only: run a parallel pick with regime knobs against the SAME
-    // pool + mode + seed the live selector actually used. Any divergence is
-    // now attributable to knob differences.
-    let shadowInfo: {
-      pick_id: string | null;
-      agrees: boolean;
-      knobs: Record<string, unknown>;
-      selection_reason: Record<string, unknown> | null;
-      knobs_differ: boolean;
-      pick_differs: boolean;
-    } | null = null;
-    if (routingMode === "shadow" && regimeKnobs) {
-      try {
-        // Reseed to the exact seed used for the live pick that produced
-        // `picked` (fallback path used a xor'd seed).
-        const shadowSeed = livePool === finalPool ? rngSeed : (rngSeed ^ 0x9e3779b9);
-        const shadowRng = mulberry32(shadowSeed);
-        const shadowPick = selectPairing({
-          pool: livePool,
-          vector,
-          used_ids: usedIds,
-          session_lane: sessionLane,
-          dims: DIMS as readonly string[],
-          rng: shadowRng,
-          mode: liveMode,
-          recognition,
-          knobs: regimeKnobs,
-        });
-        if (shadowPick.kind === "picked") {
-          const shadowId = (shadowPick.pairing as { id: string }).id;
-          const liveId = (picked.pairing as { id: string }).id;
-          // knobs_differ: legacy runs with knobs=undefined (defaults).
-          // Any regimeKnobs value at all counts as a knob difference for
-          // shadow-mode diagnostics.
-          const knobsDiffer = liveKnobs === undefined
+      if (shadowPick.kind === "picked") {
+        const shadowId = (shadowPick.pairing as { id: string }).id;
+        const liveId = (picked.pairing as { id: string }).id;
+        // knobs_differ: legacy runs with knobs=undefined (defaults).
+        // Any regimeKnobs value at all counts as a knob difference for
+        // shadow-mode diagnostics.
+        const knobsDiffer =
+          liveKnobs === undefined
             ? true
             : JSON.stringify(liveKnobs) !== JSON.stringify(regimeKnobs);
-          shadowInfo = {
-            pick_id: shadowId,
-            agrees: shadowId === liveId,
-            knobs: regimeKnobs as Record<string, unknown>,
-            selection_reason: shadowPick.selection_reason as unknown as Record<string, unknown>,
-            knobs_differ: knobsDiffer,
-            pick_differs: shadowId !== liveId,
-          };
-        }
-      } catch { /* shadow only */ }
+        shadowInfo = {
+          pick_id: shadowId,
+          agrees: shadowId === liveId,
+          knobs: regimeKnobs as Record<string, unknown>,
+          selection_reason: shadowPick.selection_reason as unknown as Record<string, unknown>,
+          knobs_differ: knobsDiffer,
+          pick_differs: shadowId !== liveId,
+        };
+      }
+    } catch {
+      /* shadow only */
     }
+  }
 
-    await emitShadowRecommendation((picked.pairing as { id: string }).id, {
-      selected_mode: routingMode === "live" && regimeForShadow ? `live:${regimeForShadow}` : liveMode,
-      selection_reason: (picked.selection_reason ?? null) as Record<string, unknown> | null,
-      is_bootstrap: false,
-      shadow: shadowInfo,
-      cachedRec,
-    });
-    return {
-      // why_good / hypothesis are the critic's private notes — never ship them
-      // to a client before the choice is made.
-      pairing: stripPrivatePairingFields(picked.pairing),
-      prompt: nextPromptFor(
-        ((picked.pairing as { tests?: string[] | null }).tests ?? []) as string[],
-        topLeadAxis(vector),
-      ),
-      round: round + 1,
-      answered,
-      max_rounds: stop.max_answered,
-      stop_reason: null,
-      confidence: stop.confidence,
-      done: false as const,
-      // Instrumentation: client echoes this back in the `pairing_shown` event so
-      // downstream analysis can join "why we picked it" to "what the user did".
-      selection_reason: picked.selection_reason,
-    };
+  await emitShadowRecommendation((picked.pairing as { id: string }).id, {
+    selected_mode: routingMode === "live" && regimeForShadow ? `live:${regimeForShadow}` : liveMode,
+    selection_reason: (picked.selection_reason ?? null) as Record<string, unknown> | null,
+    is_bootstrap: false,
+    shadow: shadowInfo,
+    cachedRec,
+  });
+  return {
+    // why_good / hypothesis are the critic's private notes — never ship them
+    // to a client before the choice is made.
+    pairing: stripPrivatePairingFields(picked.pairing),
+    prompt: nextPromptFor(
+      ((picked.pairing as { tests?: string[] | null }).tests ?? []) as string[],
+      topLeadAxis(vector),
+    ),
+    round: round + 1,
+    answered,
+    max_rounds: stop.max_answered,
+    stop_reason: null,
+    confidence: stop.confidence,
+    done: false as const,
+    // Instrumentation: client echoes this back in the `pairing_shown` event so
+    // downstream analysis can join "why we picked it" to "what the user did".
+    selection_reason: picked.selection_reason,
+  };
 }
 
-
-
 function topLeadAxis(vector: Record<string, number>): string | null {
-  let best: string | null = null, bv = 0;
+  let best: string | null = null,
+    bv = 0;
   for (const d of DIMS as readonly string[]) {
     const v = Math.abs(vector[d] ?? 0);
-    if (v > bv) { bv = v; best = d; }
+    if (v > bv) {
+      bv = v;
+      best = d;
+    }
   }
   return bv >= 12 ? best : null;
 }
@@ -1291,108 +1502,240 @@ import {
   pickByHash,
 } from "@/musicdna/engine/voice";
 
-
 // Fragmented beats for the running thesis — short lines plus a hook
 // question/half-promise that pulls the next pick. Hedged on purpose.
 const BEAT: Record<string, { hi: BeatVariant[]; lo: BeatVariant[] }> = {
   movement: {
     hi: [
-      { thesis: "You keep choosing songs that move.\nNot fast.\nJust forward.", hook: "What happens if I throw you something that stands still?" },
-      { thesis: "Forward motion, again.\nThat's a pattern, not an accident.\nProbably.", hook: "Want to test it with a song that refuses to move?" },
+      {
+        thesis: "You keep choosing songs that move.\nNot fast.\nJust forward.",
+        hook: "What happens if I throw you something that stands still?",
+      },
+      {
+        thesis: "Forward motion, again.\nThat's a pattern, not an accident.\nProbably.",
+        hook: "Want to test it with a song that refuses to move?",
+      },
     ],
     lo: [
-      { thesis: "Stillness keeps winning.\nThe ones that sit you down.\nNo rush.", hook: "Curious if a propulsive one breaks that." },
-      { thesis: "You're drawn to the songs that wait.\nNot lazy — patient.\nDifferent thing.", hook: "What if I throw you one with somewhere to be?" },
+      {
+        thesis: "Stillness keeps winning.\nThe ones that sit you down.\nNo rush.",
+        hook: "Curious if a propulsive one breaks that.",
+      },
+      {
+        thesis: "You're drawn to the songs that wait.\nNot lazy — patient.\nDifferent thing.",
+        hook: "What if I throw you one with somewhere to be?",
+      },
     ],
   },
   atmosphere: {
     hi: [
-      { thesis: "You trust the room more than the lyric.\nThe air around the song is the song.\nReverb as meaning.", hook: "Wonder if a flat-out statement song changes your mind." },
-      { thesis: "Mood keeps beating message.\nYou'd rather feel it than be told.\nMostly.", hook: "Let me try one that says it out loud." },
+      {
+        thesis:
+          "You trust the room more than the lyric.\nThe air around the song is the song.\nReverb as meaning.",
+        hook: "Wonder if a flat-out statement song changes your mind.",
+      },
+      {
+        thesis: "Mood keeps beating message.\nYou'd rather feel it than be told.\nMostly.",
+        hook: "Let me try one that says it out loud.",
+      },
     ],
     lo: [
-      { thesis: "You want the song to say it.\nOut loud.\nNo hiding behind reverb.", hook: "Let's see if a haze-bomb still gets through." },
-      { thesis: "Clarity keeps winning.\nDirect over dreamy.\nNoted.", hook: "What does a real atmosphere piece do to that?" },
+      {
+        thesis: "You want the song to say it.\nOut loud.\nNo hiding behind reverb.",
+        hook: "Let's see if a haze-bomb still gets through.",
+      },
+      {
+        thesis: "Clarity keeps winning.\nDirect over dreamy.\nNoted.",
+        hook: "What does a real atmosphere piece do to that?",
+      },
     ],
   },
   immersion: {
     hi: [
-      { thesis: "You don't need the hook on contact.\nThird listen, real estate opens up.\nYou wait the song out.", hook: "What does a song that grabs you in eight bars do for you?" },
-      { thesis: "Slow burns keep winning.\nYou give songs the benefit of the doubt.\nThat's rarer than you think.", hook: "Curious if a fast-hooker still pulls you." },
+      {
+        thesis:
+          "You don't need the hook on contact.\nThird listen, real estate opens up.\nYou wait the song out.",
+        hook: "What does a song that grabs you in eight bars do for you?",
+      },
+      {
+        thesis:
+          "Slow burns keep winning.\nYou give songs the benefit of the doubt.\nThat's rarer than you think.",
+        hook: "Curious if a fast-hooker still pulls you.",
+      },
     ],
     lo: [
-      { thesis: "If it doesn't hook you fast, it doesn't hook you.\nEight bars or out.\nNo slow reveals.", hook: "Wonder if a sleeper still wins you over." },
-      { thesis: "You vote on first impression.\nAnd you're not changing your mind.\nProbably.", hook: "Let me try a real grower on you." },
+      {
+        thesis:
+          "If it doesn't hook you fast, it doesn't hook you.\nEight bars or out.\nNo slow reveals.",
+        hook: "Wonder if a sleeper still wins you over.",
+      },
+      {
+        thesis: "You vote on first impression.\nAnd you're not changing your mind.\nProbably.",
+        hook: "Let me try a real grower on you.",
+      },
     ],
   },
   scale: {
     hi: [
-      { thesis: "You want the song bigger than the room.\nCathedral over kitchen.\nMore air.", hook: "What about a song built for one set of headphones?" },
-      { thesis: "Wide keeps winning.\nYou want space in the song.\nNot crowding.", hook: "Curious how a close-up one lands." },
+      {
+        thesis: "You want the song bigger than the room.\nCathedral over kitchen.\nMore air.",
+        hook: "What about a song built for one set of headphones?",
+      },
+      {
+        thesis: "Wide keeps winning.\nYou want space in the song.\nNot crowding.",
+        hook: "Curious how a close-up one lands.",
+      },
     ],
     lo: [
-      { thesis: "Up close.\nIn your ear.\nNo stadiums.", hook: "Let's see if a wall-of-sound moment still pulls you." },
-      { thesis: "You want the song one inch away.\nNot one mile.\nIntimate by design.", hook: "What does a vast one do to that?" },
+      {
+        thesis: "Up close.\nIn your ear.\nNo stadiums.",
+        hook: "Let's see if a wall-of-sound moment still pulls you.",
+      },
+      {
+        thesis: "You want the song one inch away.\nNot one mile.\nIntimate by design.",
+        hook: "What does a vast one do to that?",
+      },
     ],
   },
   community: {
     hi: [
-      { thesis: "Songs heard in rooms full of people.\nThe singalong is the meaning.\nMusic as gathering.", hook: "What about a song built for one set of headphones?" },
-      { thesis: "Communal keeps winning.\nYou hear the crowd in the song.\nAnd you like it there.", hook: "Curious if a solo-listener piece still gets you." },
+      {
+        thesis:
+          "Songs heard in rooms full of people.\nThe singalong is the meaning.\nMusic as gathering.",
+        hook: "What about a song built for one set of headphones?",
+      },
+      {
+        thesis: "Communal keeps winning.\nYou hear the crowd in the song.\nAnd you like it there.",
+        hook: "Curious if a solo-listener piece still gets you.",
+      },
     ],
     lo: [
-      { thesis: "Headphones. Alone. On purpose.\nCrowds dilute the signal.\nThe song is between you and it.", hook: "Curious if a singalong still moves you." },
-      { thesis: "You keep it private.\nNo group hugs in the music.\nJust you.", hook: "Let me try one built for the room." },
+      {
+        thesis:
+          "Headphones. Alone. On purpose.\nCrowds dilute the signal.\nThe song is between you and it.",
+        hook: "Curious if a singalong still moves you.",
+      },
+      {
+        thesis: "You keep it private.\nNo group hugs in the music.\nJust you.",
+        hook: "Let me try one built for the room.",
+      },
     ],
   },
   perspective: {
     hi: [
-      { thesis: "You want the song to show you something.\nNot become you.\nNarrator over screamer.", hook: "What happens with a song that wants you inside it?" },
-      { thesis: "Distance keeps winning.\nYou like the camera, not the mirror.\nStorytellers over bleeders.", hook: "Wonder if a first-person one cracks that." },
+      {
+        thesis:
+          "You want the song to show you something.\nNot become you.\nNarrator over screamer.",
+        hook: "What happens with a song that wants you inside it?",
+      },
+      {
+        thesis:
+          "Distance keeps winning.\nYou like the camera, not the mirror.\nStorytellers over bleeders.",
+        hook: "Wonder if a first-person one cracks that.",
+      },
     ],
     lo: [
-      { thesis: "You don't want a report from the scene.\nYou want to be in it.\nFirst person, no distance.", hook: "Let's see if a great storyteller still gets through." },
-      { thesis: "Inside the song, every time.\nNo glass.\nYou want the heat.", hook: "What does a great narrator do to that?" },
+      {
+        thesis:
+          "You don't want a report from the scene.\nYou want to be in it.\nFirst person, no distance.",
+        hook: "Let's see if a great storyteller still gets through.",
+      },
+      {
+        thesis: "Inside the song, every time.\nNo glass.\nYou want the heat.",
+        hook: "What does a great narrator do to that?",
+      },
     ],
   },
   confidence: {
     hi: [
-      { thesis: "You like a singer who isn't asking.\nPosture as music.\nNo flinching.", hook: "Wonder what a vulnerable one does to you." },
-      { thesis: "Swagger keeps winning.\nYou want the song sure of itself.\nNo apologies.", hook: "Curious if a cracked voice still gets through." },
+      {
+        thesis: "You like a singer who isn't asking.\nPosture as music.\nNo flinching.",
+        hook: "Wonder what a vulnerable one does to you.",
+      },
+      {
+        thesis: "Swagger keeps winning.\nYou want the song sure of itself.\nNo apologies.",
+        hook: "Curious if a cracked voice still gets through.",
+      },
     ],
     lo: [
-      { thesis: "The cracked admission over the swagger.\nThe flinch is the point.\nNo armor.", hook: "Curious if a power move still pulls you in." },
-      { thesis: "You want the singer admitting something.\nNot performing.\nMostly.", hook: "Let me throw a confident one at you." },
+      {
+        thesis: "The cracked admission over the swagger.\nThe flinch is the point.\nNo armor.",
+        hook: "Curious if a power move still pulls you in.",
+      },
+      {
+        thesis: "You want the singer admitting something.\nNot performing.\nMostly.",
+        hook: "Let me throw a confident one at you.",
+      },
     ],
   },
   tension: {
     hi: [
-      { thesis: "You don't want the song to let you off.\nPressure all the way.\nNo exhale.", hook: "What does a real release do for you?" },
-      { thesis: "Tension keeps winning.\nYou trust the squeeze.\nResolution can wait.", hook: "Curious if a real exhale changes that." },
+      {
+        thesis: "You don't want the song to let you off.\nPressure all the way.\nNo exhale.",
+        hook: "What does a real release do for you?",
+      },
+      {
+        thesis: "Tension keeps winning.\nYou trust the squeeze.\nResolution can wait.",
+        hook: "Curious if a real exhale changes that.",
+      },
     ],
     lo: [
-      { thesis: "You want the song to let you breathe.\nExhale is the payoff.\nRoom to move.", hook: "Let's see if a real squeeze still gets through." },
-      { thesis: "Release over pressure.\nYou want the door open.\nNot locked.", hook: "What does a song that won't resolve do to that?" },
+      {
+        thesis: "You want the song to let you breathe.\nExhale is the payoff.\nRoom to move.",
+        hook: "Let's see if a real squeeze still gets through.",
+      },
+      {
+        thesis: "Release over pressure.\nYou want the door open.\nNot locked.",
+        hook: "What does a song that won't resolve do to that?",
+      },
     ],
   },
   texture: {
     hi: [
-      { thesis: "Craft, not mess.\nPolish is the delivery system.\nThe seams should be invisible.", hook: "Wonder if a raw nerve still gets through." },
-      { thesis: "Refinement keeps winning.\nYou hear the work.\nAnd you reward it.", hook: "Curious how a cracked take lands on you." },
+      {
+        thesis: "Craft, not mess.\nPolish is the delivery system.\nThe seams should be invisible.",
+        hook: "Wonder if a raw nerve still gets through.",
+      },
+      {
+        thesis: "Refinement keeps winning.\nYou hear the work.\nAnd you reward it.",
+        hook: "Curious how a cracked take lands on you.",
+      },
     ],
     lo: [
-      { thesis: "Cracked voice over the perfect take.\nEvery time.\nYou want it bleeding, not fixed.", hook: "What does a flawlessly produced one do for you?" },
-      { thesis: "Grit keeps winning.\nYou trust the mess.\nPolish reads suspicious.", hook: "Let me try a clean one and see." },
+      {
+        thesis:
+          "Cracked voice over the perfect take.\nEvery time.\nYou want it bleeding, not fixed.",
+        hook: "What does a flawlessly produced one do for you?",
+      },
+      {
+        thesis: "Grit keeps winning.\nYou trust the mess.\nPolish reads suspicious.",
+        hook: "Let me try a clean one and see.",
+      },
     ],
   },
   transformation: {
     hi: [
-      { thesis: "You want the song to become something.\nNot be something.\nBecoming is the whole bet.", hook: "What about a song that arrives fully formed?" },
-      { thesis: "Evolution keeps winning.\nYou want the surprise inside the song.\nNot just at the start.", hook: "Curious if a song that holds its shape still pulls you." },
+      {
+        thesis:
+          "You want the song to become something.\nNot be something.\nBecoming is the whole bet.",
+        hook: "What about a song that arrives fully formed?",
+      },
+      {
+        thesis:
+          "Evolution keeps winning.\nYou want the surprise inside the song.\nNot just at the start.",
+        hook: "Curious if a song that holds its shape still pulls you.",
+      },
     ],
     lo: [
-      { thesis: "You want the song to know what it is.\nFrom the first bar.\nNo identity crisis.", hook: "Let's try one that morphs on you." },
-      { thesis: "Conviction keeps winning.\nThe song doesn't need to change to mean something.\nIt already does.", hook: "What does a real shape-shifter do to that?" },
+      {
+        thesis: "You want the song to know what it is.\nFrom the first bar.\nNo identity crisis.",
+        hook: "Let's try one that morphs on you.",
+      },
+      {
+        thesis:
+          "Conviction keeps winning.\nThe song doesn't need to change to mean something.\nIt already does.",
+        hook: "What does a real shape-shifter do to that?",
+      },
     ],
   },
 };
@@ -1406,19 +1749,17 @@ const pickVariant = pickByHash;
 import { deriveDescriptors } from "@/musicdna/engine/descriptors";
 export { deriveDescriptors };
 
-
-
-
-
 export const recordChoice = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      sessionId: z.string().uuid(),
-      pairingId: z.string().uuid(),
-      chosenSongId: z.string().uuid(),
-      msToDecide: z.number().int().nonnegative().max(600000).optional(),
-    }).parse(d),
+    z
+      .object({
+        sessionId: z.string().uuid(),
+        pairingId: z.string().uuid(),
+        chosenSongId: z.string().uuid(),
+        msToDecide: z.number().int().nonnegative().max(600000).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => recordChoiceImpl(context.supabase, context.userId, data));
 
@@ -1426,9 +1767,17 @@ export const recordChoice = createServerFn({ method: "POST" })
 // committed response instead of counting twice. A different song for the same
 // pairing is a conflict, never a second vote.
 export class ChoiceConflictError extends Error {
-  constructor() { super("this pairing was already answered with a different song"); this.name = "ChoiceConflictError"; }
+  constructor() {
+    super("this pairing was already answered with a different song");
+    this.name = "ChoiceConflictError";
+  }
 }
-async function replayChoice(supabase: AuthedSupabase, sessionId: string, pairingId: string, chosenSongId: string) {
+async function replayChoice(
+  supabase: AuthedSupabase,
+  sessionId: string,
+  pairingId: string,
+  chosenSongId: string,
+) {
   const { data: existing } = await supabase
     .from("choices")
     .select("chosen_song_id, response")
@@ -1437,184 +1786,273 @@ async function replayChoice(supabase: AuthedSupabase, sessionId: string, pairing
     .maybeSingle();
   if (!existing) return null;
   if (existing.chosen_song_id !== chosenSongId) throw new ChoiceConflictError();
-  if (existing.response) return { ...(existing.response as Record<string, unknown>), replayed: true as const };
-  const { data: sess } = await supabase.from("sessions").select("vector").eq("id", sessionId).single();
-  return { vector: (sess?.vector ?? {}) as Record<string, number>, verdict: "Already counted.", why: "", hesitation: null, dim: "", delta: 0, replayed: true as const };
+  if (existing.response)
+    return { ...(existing.response as Record<string, unknown>), replayed: true as const };
+  const { data: sess } = await supabase
+    .from("sessions")
+    .select("vector")
+    .eq("id", sessionId)
+    .single();
+  return {
+    vector: (sess?.vector ?? {}) as Record<string, number>,
+    verdict: "Already counted.",
+    why: "",
+    hesitation: null,
+    dim: "",
+    delta: 0,
+    replayed: true as const,
+  };
 }
 
-export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string; pairingId: string; chosenSongId: string; msToDecide?: number; mutationId?: string; _retried?: boolean }): Promise<{ vector: Record<string, number>; verdict: string; why: string; hesitation: string | null; dim: string; delta: number; replayed?: true }> {
-    {
-      const replay = await replayChoice(supabase, data.sessionId, data.pairingId, data.chosenSongId);
-      if (replay) return replay as unknown as { vector: Record<string, number>; verdict: string; why: string; hesitation: string | null; dim: string; delta: number; replayed?: true };
-    }
-    const songCols = "id,title,artist,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
-    const [pairingRes, sessionRes] = await Promise.all([
-      supabase
-        .from("pairings")
-        .select(`tests, diagnostic_weight, song_a_id, song_b_id, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`)
-        .eq("id", data.pairingId).single(),
-      supabase.from("sessions").select("vector,user_id,lane,probe_state,bootstrap_choices_json").eq("id", data.sessionId).single(),
-    ]);
-    const pairing = pairingRes.data as unknown as {
-      tests: string[] | null; diagnostic_weight: number; song_a_id: string; song_b_id: string;
-      is_bootstrap: boolean | null;
-      song_a: Record<string, number> & { id: string; title: string; artist: string; primary_lane: string | null };
-      song_b: Record<string, number> & { id: string; title: string; artist: string; primary_lane: string | null };
-    } | null;
-    const session = sessionRes.data as {
-      vector: Record<string, number>; user_id: string; lane: Lane; probe_state: ProbeState | null;
-      bootstrap_choices_json: BootstrapChoiceEntry[] | null;
-    } | null;
-    if (pairingRes.error || !pairing) throw new Error(pairingRes.error?.message ?? "pairing not found");
-    if (sessionRes.error || !session) throw new Error(sessionRes.error?.message ?? "session not found");
-    if (session.user_id !== userId) throw new Error("forbidden");
-
-
-    // Reject choices that don't actually correspond to one of this pairing's songs.
-    if (data.chosenSongId !== pairing.song_a_id && data.chosenSongId !== pairing.song_b_id) {
-      throw new Error("invalid choice: chosenSongId is not part of this pairing");
-    }
-    const chosenIsA = data.chosenSongId === pairing.song_a_id;
-    const winner = chosenIsA ? pairing.song_a : pairing.song_b;
-    const loser = chosenIsA ? pairing.song_b : pairing.song_a;
-    const rejectedSongId = chosenIsA ? pairing.song_b_id : pairing.song_a_id;
-    const priorVec: Record<string, number> = { ...(session.vector as Record<string, number>) };
-    const applied = applyChoice({
-      prior_vector: priorVec,
-      winner: winner as unknown as Record<string, number>,
-      loser: loser as unknown as Record<string, number>,
-      tests: (pairing.tests as string[] | null) ?? [],
-      diagnostic_weight: pairing.diagnostic_weight,
-      fallback_dims: DIMS as readonly string[],
-    });
-    const vec = applied.vector;
-    const tests: string[] = pairing.tests?.length ? pairing.tests : (DIMS as readonly string[]).slice();
-    const topDim = applied.top_dim;
-    const topDelta = applied.top_delta;
-    const deltaVec = applied.delta_vector;
-
-    // Round-aware reveal builder.
-    // Rounds 1–2 stay curious (no identity claims). Round 3+ adds a hedged
-    // observation. Round 5+ with real support unlocks the confident reads.
-    // Axis label is spoken ONCE per session per pole (tracked by whether the
-    // running vector already carries meaningful weight on that dim).
-    const { count: priorChoices } = await supabase
-      .from("choices")
-      .select("id", { count: "exact", head: true })
-      .eq("session_id", data.sessionId);
-    const round = (priorChoices ?? 0) + 1;
-    const direction: "hi" | "lo" = topDelta >= 0 ? "hi" : "lo";
-    const pole = POLES[topDim]?.[direction];
-    const priorSupport = Math.abs(priorVec[topDim] ?? 0);
-    const axisMentioned = priorSupport > 4; // one prior contribution on this pole
-    const pairingHash = data.pairingId.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
-    const seedA = (priorChoices ?? 0) * 7 + dimSeed(topDim) + (direction === "hi" ? 0 : 1) + pairingHash;
-    const seedB = seedA * 31 + 13;
-    const ms = data.msToDecide ?? null;
-    const speedBeat = hesitationFor(ms, seedA);
-    const hedge = hedgeForRound(round);
-
-    // Line 1: reaction. Round 1 skips the hedge (avoid pretending pattern).
-    // Hedge goes on its own line so the UI can render it as a small label
-    // above the actual verdict — otherwise "Early read: Rehab over Blank
-    // Space." reads flat and same-size as everything else.
-    const reactionCore = `${winner.title} over ${loser.title}.`;
-    const reaction = round === 1 ? reactionCore : `${hedge}\n${reactionCore}`;
-
-    // Line 2: axis label (first mention) OR a fresh observation. Never both.
-    let inference = "";
-    if (pole) {
-      if (!axisMentioned) {
-        inference = `That's ${pole.axis_label}.`;
-      } else if (round >= 3) {
-        inference = pickByHash(pole.observations, seedA) ?? "";
-      }
-    }
-
-    // `why` carries a second, different observation only once we've earned it:
-    // round ≥ 5 AND at least ~3 supporting contributions on this pole.
-    const strongEnough = round >= 5 && priorSupport >= 30;
-    let why = "";
-    if (pole && strongEnough) {
-      // Pick a different observation than the inference line.
-      const pool = pole.observations.filter((o) => o !== inference);
-      why = pickByHash(pool, seedB) ?? "";
-    }
-
-    const verdict = [reaction, inference, speedBeat].filter(Boolean).join("\n");
-
-    // Dev-only guard against leaking internal vocabulary into user copy.
-    if (process.env.NODE_ENV !== "production") {
-      const bag = `${inference} ${why}`.toLowerCase();
-      for (const tok of FORBIDDEN_TOKENS) {
-        if (bag.includes(tok)) {
-          // eslint-disable-next-line no-console
-          console.warn(`[musicdna] reveal copy contains forbidden token "${tok}" on dim=${topDim} dir=${direction}`);
-        }
-      }
-    }
-
-    // Kept for back-compat with older UI paths that read `hesitation`.
-    const hesitation = speedBeat || null;
-
-    // Cross-lane probe flipping is quarantined. See
-    // src/musicdna/engine/experiments/cross-lane-probes.ts and
-    // mem://product/within-lane-only.md. The nextPairing invariant guarantees
-    // probe_state.pending is empty, so there is nothing to score here — the
-    // session's lane and probe_state pass through unchanged.
-    let nextLane: Lane = session.lane;
-    let nextLaneConfidence: number | null = null;
-    const probeState = session.probe_state ?? { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] };
-
-    // -------- Bootstrap-phase bookkeeping + lane promotion --------
-    // If this pairing was flagged is_bootstrap AND the session is still
-    // general, append the winner's primary_lane to bootstrap_choices_json.
-    // After the 2nd bootstrap choice, if both winners agree on a lane,
-    // promote sessions.lane and confidence so the remaining pairings come
-    // from that lane. Disagreement leaves the session in general.
-    let bootstrapChoices = session.bootstrap_choices_json ?? [];
-    let bootstrapEvent: null | { type: "lane_promoted" | "lane_promotion_failed"; props: Record<string, unknown> } = null;
-    if (pairing.is_bootstrap && session.lane === "general" && bootstrapChoices.length < 2) {
-      bootstrapChoices = [
-        ...bootstrapChoices,
-        {
-          pairing_id: data.pairingId,
-          winner_primary_lane: winner.primary_lane ?? null,
-          loser_primary_lane: loser.primary_lane ?? null,
-        },
-      ];
-      if (bootstrapChoices.length === 2) {
-        const [a, b] = bootstrapChoices;
-        const aLane = a.winner_primary_lane;
-        const bLane = b.winner_primary_lane;
-        if (aLane && bLane && aLane === bLane && (LANES as readonly string[]).includes(aLane) && aLane !== "general") {
-          nextLane = aLane as Lane;
-          nextLaneConfidence = 0.65;
-          bootstrapEvent = {
-            type: "lane_promoted",
-            props: { from: "general", to: aLane, winners: bootstrapChoices, confidence: 0.65 },
-          };
-        } else {
-          bootstrapEvent = {
-            type: "lane_promotion_failed",
-            props: { winners: bootstrapChoices, reason: aLane === bLane ? "invalid_lane" : "winners_disagree" },
-          };
-        }
-      }
-    }
-
-    const updatePayload: Record<string, unknown> = {
-      vector: vec,
-      lane: nextLane,
-      probe_state: probeState,
-      bootstrap_choices_json: bootstrapChoices,
+export async function recordChoiceImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: {
+    sessionId: string;
+    pairingId: string;
+    chosenSongId: string;
+    msToDecide?: number;
+    mutationId?: string;
+    _retried?: boolean;
+  },
+): Promise<{
+  vector: Record<string, number>;
+  verdict: string;
+  why: string;
+  hesitation: string | null;
+  dim: string;
+  delta: number;
+  replayed?: true;
+}> {
+  {
+    const replay = await replayChoice(supabase, data.sessionId, data.pairingId, data.chosenSongId);
+    if (replay)
+      return replay as unknown as {
+        vector: Record<string, number>;
+        verdict: string;
+        why: string;
+        hesitation: string | null;
+        dim: string;
+        delta: number;
+        replayed?: true;
+      };
+  }
+  const songCols =
+    "id,title,artist,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+  const [pairingRes, sessionRes] = await Promise.all([
+    supabase
+      .from("pairings")
+      .select(
+        `tests, diagnostic_weight, song_a_id, song_b_id, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`,
+      )
+      .eq("id", data.pairingId)
+      .single(),
+    supabase
+      .from("sessions")
+      .select("vector,user_id,lane,probe_state,bootstrap_choices_json")
+      .eq("id", data.sessionId)
+      .single(),
+  ]);
+  const pairing = pairingRes.data as unknown as {
+    tests: string[] | null;
+    diagnostic_weight: number;
+    song_a_id: string;
+    song_b_id: string;
+    is_bootstrap: boolean | null;
+    song_a: Record<string, number> & {
+      id: string;
+      title: string;
+      artist: string;
+      primary_lane: string | null;
     };
-    if (nextLaneConfidence !== null) updatePayload.lane_confidence = nextLaneConfidence;
+    song_b: Record<string, number> & {
+      id: string;
+      title: string;
+      artist: string;
+      primary_lane: string | null;
+    };
+  } | null;
+  const session = sessionRes.data as {
+    vector: Record<string, number>;
+    user_id: string;
+    lane: Lane;
+    probe_state: ProbeState | null;
+    bootstrap_choices_json: BootstrapChoiceEntry[] | null;
+  } | null;
+  if (pairingRes.error || !pairing)
+    throw new Error(pairingRes.error?.message ?? "pairing not found");
+  if (sessionRes.error || !session)
+    throw new Error(sessionRes.error?.message ?? "session not found");
+  if (session.user_id !== userId) throw new Error("forbidden");
 
-    // ARC03: vote + feedback + score update commit together in one
-    // transaction, guarded by the vector we read (no lost updates).
-    const response = { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
-    const { error: rpcErr } = await supabase.rpc("record_choice_atomic" as never, {
+  // Reject choices that don't actually correspond to one of this pairing's songs.
+  if (data.chosenSongId !== pairing.song_a_id && data.chosenSongId !== pairing.song_b_id) {
+    throw new Error("invalid choice: chosenSongId is not part of this pairing");
+  }
+  const chosenIsA = data.chosenSongId === pairing.song_a_id;
+  const winner = chosenIsA ? pairing.song_a : pairing.song_b;
+  const loser = chosenIsA ? pairing.song_b : pairing.song_a;
+  const rejectedSongId = chosenIsA ? pairing.song_b_id : pairing.song_a_id;
+  const priorVec: Record<string, number> = { ...(session.vector as Record<string, number>) };
+  const applied = applyChoice({
+    prior_vector: priorVec,
+    winner: winner as unknown as Record<string, number>,
+    loser: loser as unknown as Record<string, number>,
+    tests: (pairing.tests as string[] | null) ?? [],
+    diagnostic_weight: pairing.diagnostic_weight,
+    fallback_dims: DIMS as readonly string[],
+  });
+  const vec = applied.vector;
+  const tests: string[] = pairing.tests?.length
+    ? pairing.tests
+    : (DIMS as readonly string[]).slice();
+  const topDim = applied.top_dim;
+  const topDelta = applied.top_delta;
+  const deltaVec = applied.delta_vector;
+
+  // Round-aware reveal builder.
+  // Rounds 1–2 stay curious (no identity claims). Round 3+ adds a hedged
+  // observation. Round 5+ with real support unlocks the confident reads.
+  // Axis label is spoken ONCE per session per pole (tracked by whether the
+  // running vector already carries meaningful weight on that dim).
+  const { count: priorChoices } = await supabase
+    .from("choices")
+    .select("id", { count: "exact", head: true })
+    .eq("session_id", data.sessionId);
+  const round = (priorChoices ?? 0) + 1;
+  const direction: "hi" | "lo" = topDelta >= 0 ? "hi" : "lo";
+  const pole = POLES[topDim]?.[direction];
+  const priorSupport = Math.abs(priorVec[topDim] ?? 0);
+  const axisMentioned = priorSupport > 4; // one prior contribution on this pole
+  const pairingHash = data.pairingId.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
+  const seedA =
+    (priorChoices ?? 0) * 7 + dimSeed(topDim) + (direction === "hi" ? 0 : 1) + pairingHash;
+  const seedB = seedA * 31 + 13;
+  const ms = data.msToDecide ?? null;
+  const speedBeat = hesitationFor(ms, seedA);
+  const hedge = hedgeForRound(round);
+
+  // Line 1: reaction. Round 1 skips the hedge (avoid pretending pattern).
+  // Hedge goes on its own line so the UI can render it as a small label
+  // above the actual verdict — otherwise "Early read: Rehab over Blank
+  // Space." reads flat and same-size as everything else.
+  const reactionCore = `${winner.title} over ${loser.title}.`;
+  const reaction = round === 1 ? reactionCore : `${hedge}\n${reactionCore}`;
+
+  // Line 2: axis label (first mention) OR a fresh observation. Never both.
+  let inference = "";
+  if (pole) {
+    if (!axisMentioned) {
+      inference = `That's ${pole.axis_label}.`;
+    } else if (round >= 3) {
+      inference = pickByHash(pole.observations, seedA) ?? "";
+    }
+  }
+
+  // `why` carries a second, different observation only once we've earned it:
+  // round ≥ 5 AND at least ~3 supporting contributions on this pole.
+  const strongEnough = round >= 5 && priorSupport >= 30;
+  let why = "";
+  if (pole && strongEnough) {
+    // Pick a different observation than the inference line.
+    const pool = pole.observations.filter((o) => o !== inference);
+    why = pickByHash(pool, seedB) ?? "";
+  }
+
+  const verdict = [reaction, inference, speedBeat].filter(Boolean).join("\n");
+
+  // Dev-only guard against leaking internal vocabulary into user copy.
+  if (process.env.NODE_ENV !== "production") {
+    const bag = `${inference} ${why}`.toLowerCase();
+    for (const tok of FORBIDDEN_TOKENS) {
+      if (bag.includes(tok)) {
+        console.warn(
+          `[musicdna] reveal copy contains forbidden token "${tok}" on dim=${topDim} dir=${direction}`,
+        );
+      }
+    }
+  }
+
+  // Kept for back-compat with older UI paths that read `hesitation`.
+  const hesitation = speedBeat || null;
+
+  // Cross-lane probe flipping is quarantined. See
+  // src/musicdna/engine/experiments/cross-lane-probes.ts and
+  // mem://product/within-lane-only.md. The nextPairing invariant guarantees
+  // probe_state.pending is empty, so there is nothing to score here — the
+  // session's lane and probe_state pass through unchanged.
+  let nextLane: Lane = session.lane;
+  let nextLaneConfidence: number | null = null;
+  const probeState = session.probe_state ?? {
+    probes_shown: [],
+    pending: {},
+    lane_alignment: {},
+    flips: [],
+  };
+
+  // -------- Bootstrap-phase bookkeeping + lane promotion --------
+  // If this pairing was flagged is_bootstrap AND the session is still
+  // general, append the winner's primary_lane to bootstrap_choices_json.
+  // After the 2nd bootstrap choice, if both winners agree on a lane,
+  // promote sessions.lane and confidence so the remaining pairings come
+  // from that lane. Disagreement leaves the session in general.
+  let bootstrapChoices = session.bootstrap_choices_json ?? [];
+  let bootstrapEvent: null | {
+    type: "lane_promoted" | "lane_promotion_failed";
+    props: Record<string, unknown>;
+  } = null;
+  if (pairing.is_bootstrap && session.lane === "general" && bootstrapChoices.length < 2) {
+    bootstrapChoices = [
+      ...bootstrapChoices,
+      {
+        pairing_id: data.pairingId,
+        winner_primary_lane: winner.primary_lane ?? null,
+        loser_primary_lane: loser.primary_lane ?? null,
+      },
+    ];
+    if (bootstrapChoices.length === 2) {
+      const [a, b] = bootstrapChoices;
+      const aLane = a.winner_primary_lane;
+      const bLane = b.winner_primary_lane;
+      if (
+        aLane &&
+        bLane &&
+        aLane === bLane &&
+        (LANES as readonly string[]).includes(aLane) &&
+        aLane !== "general"
+      ) {
+        nextLane = aLane as Lane;
+        nextLaneConfidence = 0.65;
+        bootstrapEvent = {
+          type: "lane_promoted",
+          props: { from: "general", to: aLane, winners: bootstrapChoices, confidence: 0.65 },
+        };
+      } else {
+        bootstrapEvent = {
+          type: "lane_promotion_failed",
+          props: {
+            winners: bootstrapChoices,
+            reason: aLane === bLane ? "invalid_lane" : "winners_disagree",
+          },
+        };
+      }
+    }
+  }
+
+  const updatePayload: Record<string, unknown> = {
+    vector: vec,
+    lane: nextLane,
+    probe_state: probeState,
+    bootstrap_choices_json: bootstrapChoices,
+  };
+  if (nextLaneConfidence !== null) updatePayload.lane_confidence = nextLaneConfidence;
+
+  // ARC03: vote + feedback + score update commit together in one
+  // transaction, guarded by the vector we read (no lost updates).
+  const response = { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
+  const { error: rpcErr } = await supabase.rpc(
+    "record_choice_atomic" as never,
+    {
       p_session_id: data.sessionId,
       p_pairing_id: data.pairingId,
       p_chosen_song_id: data.chosenSongId,
@@ -1624,65 +2062,68 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
       p_prior_vector: session.vector ?? {},
       p_update: updatePayload,
       p_response: response,
-    } as never);
-    if (rpcErr) {
-      const code = (rpcErr as { code?: string }).code;
-      if (code === "23505") {
-        // A concurrent request already committed this pairing — replay it.
-        const replay = await replayChoice(supabase, data.sessionId, data.pairingId, data.chosenSongId);
-        if (replay) return replay as unknown as typeof response & { replayed?: true };
-        throw new Error("this pairing has already been answered for this session");
-      }
-      if (code === "40001" && !data._retried) {
-        // Another pick changed the scores underneath us. Recompute once.
-        return recordChoiceImpl(supabase, userId, { ...data, _retried: true });
-      }
-      throw new Error(rpcErr.message);
+    } as never,
+  );
+  if (rpcErr) {
+    const code = (rpcErr as { code?: string }).code;
+    if (code === "23505") {
+      // A concurrent request already committed this pairing — replay it.
+      const replay = await replayChoice(
+        supabase,
+        data.sessionId,
+        data.pairingId,
+        data.chosenSongId,
+      );
+      if (replay) return replay as unknown as typeof response & { replayed?: true };
+      throw new Error("this pairing has already been answered for this session");
     }
-
-    // Fire-and-forget promotion event. Diagnostics only.
-    if (bootstrapEvent) {
-      try {
-        await supabase.from("event_log").insert({
-          user_id: userId,
-          session_id: data.sessionId,
-          pairing_id: data.pairingId,
-          event_type: bootstrapEvent.type,
-          client: "server",
-          props: bootstrapEvent.props,
-        } as never);
-      } catch (e) {
-        // eslint-disable-next-line no-console
-        console.warn("[musicdna] bootstrap event log failed:", e instanceof Error ? e.message : e);
-      }
+    if (code === "40001" && !data._retried) {
+      // Another pick changed the scores underneath us. Recompute once.
+      return recordChoiceImpl(supabase, userId, { ...data, _retried: true });
     }
+    throw new Error(rpcErr.message);
+  }
 
-
-    // -------- Instrumentation: emit choice_scored + (milestone) archetype_ranking_snapshot --------
-    // Fire-and-forget. Failures never break the choice flow — diagnostics are
-    // an observability channel, not a product invariant. See
-    // docs/musicdna/instrumentation.md for the field contract.
+  // Fire-and-forget promotion event. Diagnostics only.
+  if (bootstrapEvent) {
     try {
-      await emitChoiceDiagnostics(supabase, userId, {
-        sessionId: data.sessionId,
-        pairingId: data.pairingId,
-        chosenSongId: data.chosenSongId,
-        rejectedSongId,
-        round,
-        tests,
-        priorVec,
-        deltaVec,
-        weightedVec: vec,
-        diagnosticWeight: pairing.diagnostic_weight ?? 50,
-        chosenArtist: winner.artist ?? null,
-        msToDecide: data.msToDecide ?? null,
-      });
+      await supabase.from("event_log").insert({
+        user_id: userId,
+        session_id: data.sessionId,
+        pairing_id: data.pairingId,
+        event_type: bootstrapEvent.type,
+        client: "server",
+        props: bootstrapEvent.props,
+      } as never);
     } catch (e) {
-      // eslint-disable-next-line no-console
-      console.warn("[musicdna] emitChoiceDiagnostics failed:", e instanceof Error ? e.message : e);
+      console.warn("[musicdna] bootstrap event log failed:", e instanceof Error ? e.message : e);
     }
+  }
 
-    return response as typeof response & { replayed?: true };
+  // -------- Instrumentation: emit choice_scored + (milestone) archetype_ranking_snapshot --------
+  // Fire-and-forget. Failures never break the choice flow — diagnostics are
+  // an observability channel, not a product invariant. See
+  // docs/musicdna/instrumentation.md for the field contract.
+  try {
+    await emitChoiceDiagnostics(supabase, userId, {
+      sessionId: data.sessionId,
+      pairingId: data.pairingId,
+      chosenSongId: data.chosenSongId,
+      rejectedSongId,
+      round,
+      tests,
+      priorVec,
+      deltaVec,
+      weightedVec: vec,
+      diagnosticWeight: pairing.diagnostic_weight ?? 50,
+      chosenArtist: winner.artist ?? null,
+      msToDecide: data.msToDecide ?? null,
+    });
+  } catch (e) {
+    console.warn("[musicdna] emitChoiceDiagnostics failed:", e instanceof Error ? e.message : e);
+  }
+
+  return response as typeof response & { replayed?: true };
 }
 
 // ============ Skip pairing ============
@@ -1695,11 +2136,13 @@ export async function recordChoiceImpl(supabase: AuthedSupabase, userId: string,
 export const skipPairing = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      sessionId: z.string().uuid(),
-      pairingId: z.string().uuid(),
-      msToDecide: z.number().int().nonnegative().max(600000).optional(),
-    }).parse(d),
+    z
+      .object({
+        sessionId: z.string().uuid(),
+        pairingId: z.string().uuid(),
+        msToDecide: z.number().int().nonnegative().max(600000).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => skipPairingImpl(context.supabase, context.userId, data));
 
@@ -1736,7 +2179,9 @@ export async function skipPairingImpl(
   if (uErr) throw new Error(uErr.message);
 
   try {
-    await (await trustedEventLog()).insert({
+    await (
+      await trustedEventLog()
+    ).insert({
       user_id: userId,
       session_id: data.sessionId,
       pairing_id: data.pairingId,
@@ -1745,14 +2190,14 @@ export async function skipPairingImpl(
       props: { ms_to_decide: data.msToDecide ?? null, reason: data.reason ?? null },
     } as never);
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn("[musicdna] pairing_skipped event log failed:", e instanceof Error ? e.message : e);
+    console.warn(
+      "[musicdna] pairing_skipped event log failed:",
+      e instanceof Error ? e.message : e,
+    );
   }
 
   return { ok: true as const, replayed: false as const };
 }
-
-
 
 // ============ Instrumentation helper (per-choice diagnostic snapshot) ============
 // Loads the archetype catalog, recomputes rankings on the just-updated
@@ -1779,12 +2224,14 @@ async function emitChoiceDiagnostics(
     msToDecide: number | null;
   },
 ): Promise<void> {
-  const archRes = await supabase
-    .from("archetypes")
-    .select("id,name,signature_axes");
-  const catalog = ((archRes.data ?? []) as unknown as Array<{
-    id: string; name: string; signature_axes: Record<string, number> | null;
-  }>).map((r) => ({
+  const archRes = await supabase.from("archetypes").select("id,name,signature_axes");
+  const catalog = (
+    (archRes.data ?? []) as unknown as Array<{
+      id: string;
+      name: string;
+      signature_axes: Record<string, number> | null;
+    }>
+  ).map((r) => ({
     id: r.id,
     name: r.name,
     signature_axes: r.signature_axes,
@@ -1803,19 +2250,28 @@ async function emitChoiceDiagnostics(
   for (const axis of args.tests) {
     const w = winnerAxes[axis] ?? 0;
     if (w === 0) continue;
-    const before = (args.priorVec[axis] ?? 0) / 100 * w;
-    const after = (args.weightedVec[axis] ?? 0) / 100 * w;
+    const before = ((args.priorVec[axis] ?? 0) / 100) * w;
+    const after = ((args.weightedVec[axis] ?? 0) / 100) * w;
     const delta = after - before;
-    if (delta >= 0) { supports[axis] = round3(delta); positive += delta; }
-    else            { contradicts[axis] = round3(delta); negative += Math.abs(delta); }
+    if (delta >= 0) {
+      supports[axis] = round3(delta);
+      positive += delta;
+    } else {
+      contradicts[axis] = round3(delta);
+      negative += Math.abs(delta);
+    }
   }
 
   const rankings = assignment
-    ? [{ id: assignment.id, name: assignment.name, score: assignment.score },
-       ...assignment.runners_up.map((r) => ({ id: r.id, name: r.name, score: r.score }))]
+    ? [
+        { id: assignment.id, name: assignment.name, score: assignment.score },
+        ...assignment.runners_up.map((r) => ({ id: r.id, name: r.name, score: r.score })),
+      ]
     : [];
 
-  await (await trustedEventLog()).insert({
+  await (
+    await trustedEventLog()
+  ).insert({
     user_id: userId,
     session_id: args.sessionId,
     pairing_id: args.pairingId,
@@ -1849,10 +2305,16 @@ async function emitChoiceDiagnostics(
 
   const STABILITY_CHECKPOINTS = new Set([2, 4, 6]);
   const isCheckpoint = STABILITY_CHECKPOINTS.has(args.round);
-  const stop = sessionCompletion({ answered: args.round, vector: args.weightedVec, dims: DIMS as readonly string[] });
+  const stop = sessionCompletion({
+    answered: args.round,
+    vector: args.weightedVec,
+    dims: DIMS as readonly string[],
+  });
   const isFinal = stop.done;
   if (isCheckpoint || isFinal) {
-    await (await trustedEventLog()).insert({
+    await (
+      await trustedEventLog()
+    ).insert({
       user_id: userId,
       session_id: args.sessionId,
       event_type: "archetype_ranking_snapshot",
@@ -1874,10 +2336,6 @@ function round3(n: number): number {
   return Math.round(n * 1000) / 1000;
 }
 
-
-
-
-
 // ============================================================
 // ANALYST (deterministic) + CRITIC (AI) pipeline.
 // The Analyst builds observations, patterns, and counter-hypotheses from
@@ -1887,9 +2345,22 @@ function round3(n: number): number {
 // ============================================================
 
 const BANNED_WORDS = [
-  "dreamer","seeker","old soul","empath","creative spirit","destiny",
-  "wound","soul","trauma","secretly","you are the kind of person who",
-  "energy","aura","journey of self","authentic self","true self",
+  "dreamer",
+  "seeker",
+  "old soul",
+  "empath",
+  "creative spirit",
+  "destiny",
+  "wound",
+  "soul",
+  "trauma",
+  "secretly",
+  "you are the kind of person who",
+  "energy",
+  "aura",
+  "journey of self",
+  "authentic self",
+  "true self",
 ];
 
 const CRITIC_VOICE = `${PERSONA}
@@ -1901,223 +2372,262 @@ Prefer: "across these choices", "this suggests", "you repeatedly favored", "the 
 export const finalizeSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
-  .handler(async ({ data, context }) => finalizeSessionImpl(context.supabase, context.userId, data));
+  .handler(async ({ data, context }) =>
+    finalizeSessionImpl(context.supabase, context.userId, data),
+  );
 
-export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string }) {
-    const { data: session, error: sErr } = await supabase
-      .from("sessions").select("vector,user_id").eq("id", data.sessionId).single();
-    if (sErr || !session) throw new Error(sErr?.message ?? "session not found");
-    if (session.user_id !== userId) throw new Error("forbidden");
+export async function finalizeSessionImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string },
+) {
+  const { data: session, error: sErr } = await supabase
+    .from("sessions")
+    .select("vector,user_id")
+    .eq("id", data.sessionId)
+    .single();
+  if (sErr || !session) throw new Error(sErr?.message ?? "session not found");
+  if (session.user_id !== userId) throw new Error("forbidden");
 
-    const songCols = "id,title,artist,year,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+  const songCols =
+    "id,title,artist,year,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
 
-    // -------- Pull raw evidence --------
-    const [archRes, choicesRes] = await Promise.all([
-      supabase.from("archetypes").select("id,name,tagline,signature_axes,core_question,commentary_keywords,confidence_thresholds"),
-      supabase
-        .from("choices")
-        .select(`
+  // -------- Pull raw evidence --------
+  const [archRes, choicesRes] = await Promise.all([
+    supabase
+      .from("archetypes")
+      .select(
+        "id,name,tagline,signature_axes,core_question,commentary_keywords,confidence_thresholds",
+      ),
+    supabase
+      .from("choices")
+      .select(
+        `
           ms_to_decide,
           pairing_id,
           pairing:pairing_id(tests, diagnostic_weight),
           chosen:chosen_song_id(${songCols}),
           rejected:rejected_song_id(${songCols})
-        `)
-        .eq("session_id", data.sessionId),
-    ]);
-    const archetypes = archRes.data ?? [];
-    type SongRow = Record<string, number | string | null> & { id: string; title: string; artist: string; year: number | null; lane: string };
-    type ChoiceRow = {
-      pairing_id: string | null;
-      ms_to_decide: number | null;
-      pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
-      chosen: SongRow | null;
-      rejected: SongRow | null;
-    };
-    const choices = ((choicesRes.data ?? []) as unknown as ChoiceRow[]).filter((c) => c.chosen && c.rejected);
+        `,
+      )
+      .eq("session_id", data.sessionId),
+  ]);
+  const archetypes = archRes.data ?? [];
+  type SongRow = Record<string, number | string | null> & {
+    id: string;
+    title: string;
+    artist: string;
+    year: number | null;
+    lane: string;
+  };
+  type ChoiceRow = {
+    pairing_id: string | null;
+    ms_to_decide: number | null;
+    pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
+    chosen: SongRow | null;
+    rejected: SongRow | null;
+  };
+  const choices = ((choicesRes.data ?? []) as unknown as ChoiceRow[]).filter(
+    (c) => c.chosen && c.rejected,
+  );
 
-    // -------- Layer 1: Observations --------
-    const observations = choices.map((c) => ({
-      chosen: c.chosen!.title,
-      chosen_artist: c.chosen!.artist,
-      rejected: c.rejected!.title,
-      rejected_artist: c.rejected!.artist,
-      tested_dimensions: c.pairing?.tests ?? [],
-      ms_to_decide: c.ms_to_decide,
-    }));
+  // -------- Layer 1: Observations --------
+  const observations = choices.map((c) => ({
+    chosen: c.chosen!.title,
+    chosen_artist: c.chosen!.artist,
+    rejected: c.rejected!.title,
+    rejected_artist: c.rejected!.artist,
+    tested_dimensions: c.pairing?.tests ?? [],
+    ms_to_decide: c.ms_to_decide,
+  }));
 
-    // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
-    const ledger = buildLedger(
-      choices.map((c) => ({
-        pairing_id: c.pairing_id ?? null,
-        tests: c.pairing?.tests ?? null,
-        diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
-        chosen: c.chosen as unknown as LedgerSong,
-        rejected: c.rejected as unknown as LedgerSong,
+  // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
+  const ledger = buildLedger(
+    choices.map((c) => ({
+      pairing_id: c.pairing_id ?? null,
+      tests: c.pairing?.tests ?? null,
+      diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
+      chosen: c.chosen as unknown as LedgerSong,
+      rejected: c.rejected as unknown as LedgerSong,
+    })),
+    DIMS as readonly string[],
+  );
+  const patterns = ledger.axes.map((a) => {
+    const label = DIM_LABEL[a.axis];
+    const preferred = a.direction === "hi" ? label?.hi : label?.lo;
+    const opposed = a.direction === "hi" ? label?.lo : label?.hi;
+    const magnitudeFactor = Math.min(1, a.magnitude / 30);
+    return {
+      dimension: a.axis,
+      preferred,
+      opposed,
+      supporting_choices: a.supporting,
+      contradicting_choices: a.contradicting,
+      tested_total: a.tested,
+      confidence: Number((a.consistency * 0.7 + magnitudeFactor * 0.3).toFixed(3)),
+      claim_status: a.status,
+      claim_eligible: a.eligible,
+      examples: a.supporting_examples.map((e) => ({
+        chosen: e.chosen,
+        rejected: e.rejected,
+        delta: e.delta,
       })),
-      DIMS as readonly string[],
-    );
-    const patterns = ledger.axes.map((a) => {
-      const label = DIM_LABEL[a.axis];
-      const preferred = a.direction === "hi" ? label?.hi : label?.lo;
-      const opposed = a.direction === "hi" ? label?.lo : label?.hi;
-      const magnitudeFactor = Math.min(1, a.magnitude / 30);
-      return {
-        dimension: a.axis,
-        preferred,
-        opposed,
-        supporting_choices: a.supporting,
-        contradicting_choices: a.contradicting,
-        tested_total: a.tested,
-        confidence: Number((a.consistency * 0.7 + magnitudeFactor * 0.3).toFixed(3)),
-        claim_status: a.status,
-        claim_eligible: a.eligible,
-        examples: a.supporting_examples.map((e) => ({ chosen: e.chosen, rejected: e.rejected, delta: e.delta })),
-        counter_examples: a.contradicting_examples.map((e) => ({ chosen: e.chosen, rejected: e.rejected, delta: e.delta })),
-        tradeoff: `${preferred} over ${opposed}`,
-      };
-    });
+      counter_examples: a.contradicting_examples.map((e) => ({
+        chosen: e.chosen,
+        rejected: e.rejected,
+        delta: e.delta,
+      })),
+      tradeoff: `${preferred} over ${opposed}`,
+    };
+  });
 
-    // -------- Layer 3: Counter-hypotheses --------
-    const counterarguments: Array<{ claim: string; impact: "low" | "medium" | "high"; notes: string }> = [];
-    const artistCount: Record<string, number> = {};
-    const eraCount: Record<string, number> = {};
-    const laneCount: Record<string, number> = {};
-    let fastPicks = 0;
-    for (const c of choices) {
-      const artist = c.chosen!.artist;
-      artistCount[artist] = (artistCount[artist] ?? 0) + 1;
-      const year = Number(c.chosen!.year);
-      if (year) {
-        const decade = `${Math.floor(year / 10) * 10}s`;
-        eraCount[decade] = (eraCount[decade] ?? 0) + 1;
-      }
-      const lane = String(c.chosen!.lane ?? "");
-      if (lane) laneCount[lane] = (laneCount[lane] ?? 0) + 1;
-      if ((c.ms_to_decide ?? 99999) < 2000) fastPicks += 1;
+  // -------- Layer 3: Counter-hypotheses --------
+  const counterarguments: Array<{
+    claim: string;
+    impact: "low" | "medium" | "high";
+    notes: string;
+  }> = [];
+  const artistCount: Record<string, number> = {};
+  const eraCount: Record<string, number> = {};
+  const laneCount: Record<string, number> = {};
+  let fastPicks = 0;
+  for (const c of choices) {
+    const artist = c.chosen!.artist;
+    artistCount[artist] = (artistCount[artist] ?? 0) + 1;
+    const year = Number(c.chosen!.year);
+    if (year) {
+      const decade = `${Math.floor(year / 10) * 10}s`;
+      eraCount[decade] = (eraCount[decade] ?? 0) + 1;
     }
-    for (const [artist, n] of Object.entries(artistCount)) {
-      if (n >= 3) counterarguments.push({
+    const lane = String(c.chosen!.lane ?? "");
+    if (lane) laneCount[lane] = (laneCount[lane] ?? 0) + 1;
+    if ((c.ms_to_decide ?? 99999) < 2000) fastPicks += 1;
+  }
+  for (const [artist, n] of Object.entries(artistCount)) {
+    if (n >= 3)
+      counterarguments.push({
         claim: `User may simply prefer ${artist}.`,
         impact: n >= 5 ? "high" : "medium",
         notes: `${n} of ${choices.length} winning songs are by ${artist}.`,
       });
-    }
-    for (const [decade, n] of Object.entries(eraCount)) {
-      if (n >= Math.max(4, Math.ceil(choices.length * 0.5))) counterarguments.push({
+  }
+  for (const [decade, n] of Object.entries(eraCount)) {
+    if (n >= Math.max(4, Math.ceil(choices.length * 0.5)))
+      counterarguments.push({
         claim: `User may be selecting on era (${decade}) rather than the tested dimensions.`,
         impact: "medium",
         notes: `${n} winning songs come from the ${decade}.`,
       });
-    }
-    for (const [lane, n] of Object.entries(laneCount)) {
-      if (n >= Math.max(4, Math.ceil(choices.length * 0.6))) counterarguments.push({
+  }
+  for (const [lane, n] of Object.entries(laneCount)) {
+    if (n >= Math.max(4, Math.ceil(choices.length * 0.6)))
+      counterarguments.push({
         claim: `User may be selecting on lane (${lane}) rather than diagnostic tradeoffs.`,
         impact: "medium",
         notes: `${n} winning songs share the ${lane} lane.`,
       });
-    }
-    if (choices.length >= 8 && fastPicks / choices.length >= 0.6) counterarguments.push({
+  }
+  if (choices.length >= 8 && fastPicks / choices.length >= 0.6)
+    counterarguments.push({
       claim: "Many picks were snap decisions. Familiarity may be driving choice as much as taste.",
       impact: "medium",
       notes: `${fastPicks} of ${choices.length} choices resolved in under 2 seconds.`,
     });
 
-    // -------- Layer 4: Evidence threshold --------
-    // Tuned for 6-round adaptive test: 2 supporting choices on an axis is
-    // enough to call a tendency, as long as direction is consistent and the
-    // magnitude is real. 0.55 keeps out pure noise without demanding 12 rounds.
-    // D01 common claim policy (see engine/claims.ts).
-    const allowed_claims = patterns
-      .filter((p) => p.claim_eligible)
-      .slice(0, 5);
-    const blocked_claims = patterns
-      .filter((p) => !p.claim_eligible)
-      .slice(0, 5);
+  // -------- Layer 4: Evidence threshold --------
+  // Tuned for 6-round adaptive test: 2 supporting choices on an axis is
+  // enough to call a tendency, as long as direction is consistent and the
+  // magnitude is real. 0.55 keeps out pure noise without demanding 12 rounds.
+  // D01 common claim policy (see engine/claims.ts).
+  const allowed_claims = patterns.filter((p) => p.claim_eligible).slice(0, 5);
+  const blocked_claims = patterns.filter((p) => !p.claim_eligible).slice(0, 5);
 
-    // -------- Archetype (via engine.assignArchetype — one implementation of
-    //          scoring/margin/flagging shared with tests and REST) --------
-    const vector = (session.vector ?? {}) as Record<string, number>;
-    type ArchetypeRow = {
-      id: string;
-      name: string;
-      signature_axes: Record<string, number> | null;
-      core_question: string | null;
-      commentary_keywords: string[] | null;
-      confidence_thresholds: Record<string, string> | null;
-    };
-    const catalogRows = (archetypes as unknown as ArchetypeRow[]);
-    const { assignment, winner_row, flagged: archetypeFlagged, flag_reason: archetypeFlagReason } =
-      assignArchetype(vector, catalogRows);
+  // -------- Archetype (via engine.assignArchetype — one implementation of
+  //          scoring/margin/flagging shared with tests and REST) --------
+  const vector = (session.vector ?? {}) as Record<string, number>;
+  type ArchetypeRow = {
+    id: string;
+    name: string;
+    signature_axes: Record<string, number> | null;
+    core_question: string | null;
+    commentary_keywords: string[] | null;
+    confidence_thresholds: Record<string, string> | null;
+  };
+  const catalogRows = archetypes as unknown as ArchetypeRow[];
+  const {
+    assignment,
+    winner_row,
+    flagged: archetypeFlagged,
+    flag_reason: archetypeFlagReason,
+  } = assignArchetype(vector, catalogRows);
 
-    const top3 = assignment
-      ? [
-          { archetype_id: assignment.id, name: assignment.name, score: assignment.score },
-          ...assignment.runners_up.map((r: { id: string | null; name: string; score: number }) => ({
-            archetype_id: r.id,
-            name: r.name,
-            score: r.score,
-          })),
-        ]
-      : [];
-    const bestRow = winner_row as ArchetypeRow | null;
-    const best = assignment
-      ? { id: assignment.id, name: assignment.name, score: assignment.score }
-      : { id: null as string | null, name: "", score: -Infinity };
-    const margin = assignment?.margin ?? 0;
+  const top3 = assignment
+    ? [
+        { archetype_id: assignment.id, name: assignment.name, score: assignment.score },
+        ...assignment.runners_up.map((r: { id: string | null; name: string; score: number }) => ({
+          archetype_id: r.id,
+          name: r.name,
+          score: r.score,
+        })),
+      ]
+    : [];
+  const bestRow = winner_row as ArchetypeRow | null;
+  const best = assignment
+    ? { id: assignment.id, name: assignment.name, score: assignment.score }
+    : { id: null as string | null, name: "", score: -Infinity };
+  const margin = assignment?.margin ?? 0;
 
+  // -------- Log Analyst (deterministic, no model call) --------
+  await supabase.from("llm_calls").insert({
+    user_id: userId,
+    session_id: data.sessionId,
+    role: "analyst",
+    model: "deterministic",
+    prompt_version: "analyst.v1",
+    status: "ok",
+    latency_ms: 0,
+    input_summary: {
+      choices: choices.length,
+      archetypes: archetypes.length,
+      archetype_top3: top3,
+      archetype_margin: Math.round(margin * 1000) / 1000,
+      archetype_flagged: archetypeFlagged,
+      archetype_flag_reason: archetypeFlagReason,
+    },
+    output: { patterns, counterarguments, allowed_claims, blocked_claims } as never,
+    confidence: assignment?.score ?? null,
+  });
 
-    // -------- Log Analyst (deterministic, no model call) --------
-    await supabase.from("llm_calls").insert({
-      user_id: userId,
-      session_id: data.sessionId,
-      role: "analyst",
-      model: "deterministic",
-      prompt_version: "analyst.v1",
-      status: "ok",
-      latency_ms: 0,
-      input_summary: {
-        choices: choices.length,
-        archetypes: archetypes.length,
-        archetype_top3: top3,
-        archetype_margin: Math.round(margin * 1000) / 1000,
-        archetype_flagged: archetypeFlagged,
-        archetype_flag_reason: archetypeFlagReason,
-      },
-      output: { patterns, counterarguments, allowed_claims, blocked_claims } as never,
-      confidence: assignment?.score ?? null,
-    });
+  // -------- Layer 5: Critic (AI narrative, constrained) --------
+  const evidenceBlock = allowed_claims.length
+    ? allowed_claims
+        .map(
+          (c) =>
+            `- ${c.tradeoff} (${c.supporting_choices}/${c.tested_total} relevant matchups, confidence ${c.confidence}). Examples: ${c.examples.map((e) => `${e.chosen} > ${e.rejected}`).join("; ") || "—"}`,
+        )
+        .join("\n")
+    : "- (no claims cleared the evidence threshold)";
+  const counterBlock = counterarguments.length
+    ? counterarguments.map((c) => `- ${c.claim} (${c.impact} impact — ${c.notes})`).join("\n")
+    : "- (none)";
 
-    // -------- Layer 5: Critic (AI narrative, constrained) --------
-    const evidenceBlock = allowed_claims.length
-      ? allowed_claims.map((c) =>
-          `- ${c.tradeoff} (${c.supporting_choices}/${c.tested_total} relevant matchups, confidence ${c.confidence}). Examples: ${c.examples.map((e) => `${e.chosen} > ${e.rejected}`).join("; ") || "—"}`
-        ).join("\n")
-      : "- (no claims cleared the evidence threshold)";
-    const counterBlock = counterarguments.length
-      ? counterarguments.map((c) => `- ${c.claim} (${c.impact} impact — ${c.notes})`).join("\n")
-      : "- (none)";
+  // Pick the confidence tier from the winning cosine score. Each archetype
+  // ships its own phrasings for 20/50/80/95, so the critic's opening hedge
+  // tracks the actual evidence instead of always sounding equally sure.
+  const bestScore = assignment?.score ?? 0;
+  const tier = bestScore >= 0.95 ? "95" : bestScore >= 0.8 ? "80" : bestScore >= 0.5 ? "50" : "20";
+  const thresholds = (bestRow?.confidence_thresholds ?? {}) as Record<string, string>;
+  const openingHedge = thresholds[tier] ?? null;
+  const keywords = (bestRow?.commentary_keywords ?? []) as string[];
+  const coreQuestion = bestRow?.core_question ?? null;
 
-    // Pick the confidence tier from the winning cosine score. Each archetype
-    // ships its own phrasings for 20/50/80/95, so the critic's opening hedge
-    // tracks the actual evidence instead of always sounding equally sure.
-    const bestScore = assignment?.score ?? 0;
-    const tier = bestScore >= 0.95 ? "95"
-               : bestScore >= 0.80 ? "80"
-               : bestScore >= 0.50 ? "50"
-               : "20";
-    const thresholds = (bestRow?.confidence_thresholds ?? {}) as Record<string, string>;
-    const openingHedge = thresholds[tier] ?? null;
-    const keywords = (bestRow?.commentary_keywords ?? []) as string[];
-    const coreQuestion = bestRow?.core_question ?? null;
-
-    const archetypeVoiceBlock = bestRow
-      ? `\nARCHETYPE (aesthetic, not personality): ${bestRow.name}${coreQuestion ? ` — core question: "${coreQuestion}"` : ""}. Cosine confidence: ${Math.round(bestScore * 100)}%.
+  const archetypeVoiceBlock = bestRow
+    ? `\nARCHETYPE (aesthetic, not personality): ${bestRow.name}${coreQuestion ? ` — core question: "${coreQuestion}"` : ""}. Cosine confidence: ${Math.round(bestScore * 100)}%.
 Opening hedge for this confidence tier (use as your first move; do not quote verbatim if it doesn't fit the flow): "${openingHedge ?? ""}"
 Draw from this archetype's vocabulary where natural (do not list, do not overuse, no more than 3-4 of these across the write-up): ${keywords.slice(0, 24).join(", ") || "(none)"}.`
-      : "";
+    : "";
 
-    const criticPrompt = `Write 3-4 sentences about this listener. Use ONLY the allowed claims below. \
+  const criticPrompt = `Write 3-4 sentences about this listener. Use ONLY the allowed claims below. \
 Cite the evidence inline (e.g. "across 7 of 12 matchups"). If a strong counter-hypothesis exists, name it. \
 If no claims cleared the threshold, say so plainly — do not invent. \
 Frame the archetype as what this listener SEEKS from music, not who they are as a person.
@@ -2131,64 +2641,71 @@ ${counterBlock}
 
 Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
 
-    const criticStart = Date.now();
-    let narrative = "";
-    let criticStatus: "ok" | "error" = "ok";
-    let criticError: string | null = null;
-    try {
-      narrative = await ai([
-        { role: "system", content: CRITIC_VOICE },
-        { role: "user", content: criticPrompt },
-      ]);
-    } catch (e) {
-      criticStatus = "error";
-      criticError = e instanceof Error ? e.message : String(e);
-    }
-    const criticLatency = Date.now() - criticStart;
+  const criticStart = Date.now();
+  let narrative = "";
+  let criticStatus: "ok" | "error" = "ok";
+  let criticError: string | null = null;
+  try {
+    narrative = await ai([
+      { role: "system", content: CRITIC_VOICE },
+      { role: "user", content: criticPrompt },
+    ]);
+  } catch (e) {
+    criticStatus = "error";
+    criticError = e instanceof Error ? e.message : String(e);
+  }
+  const criticLatency = Date.now() - criticStart;
 
-    await supabase.from("llm_calls").insert({
-      user_id: userId,
-      session_id: data.sessionId,
-      role: "critic",
-      model: MODEL,
-      prompt_version: "critic.v1",
-      status: criticStatus,
-      latency_ms: criticLatency,
-      error_message: criticError,
-      input_summary: {
-        allowed_claims: allowed_claims.length,
-        counterarguments: counterarguments.length,
-        archetype: best.name,
-        fit_tier: tier,
-        cosine_score: Math.round(bestScore * 1000) / 1000,
-      },
-      output: { length: narrative.length } as never,
-      narrative: narrative || null,
-    });
+  await supabase.from("llm_calls").insert({
+    user_id: userId,
+    session_id: data.sessionId,
+    role: "critic",
+    model: MODEL,
+    prompt_version: "critic.v1",
+    status: criticStatus,
+    latency_ms: criticLatency,
+    error_message: criticError,
+    input_summary: {
+      allowed_claims: allowed_claims.length,
+      counterarguments: counterarguments.length,
+      archetype: best.name,
+      fit_tier: tier,
+      cosine_score: Math.round(bestScore * 1000) / 1000,
+    },
+    output: { length: narrative.length } as never,
+    narrative: narrative || null,
+  });
 
-    // If the critic AI failed, don't strand the user — fall back to a
-    // deterministic narrative built from the allowed claims. The error is
-    // already logged to llm_calls above.
-    if (criticStatus === "error" || !narrative.trim()) {
-      narrative = allowed_claims.length
-        ? `Across these matchups you kept choosing ${allowed_claims[0].tradeoff} (${allowed_claims[0].supporting_choices} of ${allowed_claims[0].tested_total} relevant picks). The shape's there — consistent, if not loud.`
-        : `Nothing cleared the evidence threshold this round. Either you're harder to read than most, or the matchups didn't catch you. Worth another pass.`;
-    }
+  // If the critic AI failed, don't strand the user — fall back to a
+  // deterministic narrative built from the allowed claims. The error is
+  // already logged to llm_calls above.
+  if (criticStatus === "error" || !narrative.trim()) {
+    narrative = allowed_claims.length
+      ? `Across these matchups you kept choosing ${allowed_claims[0].tradeoff} (${allowed_claims[0].supporting_choices} of ${allowed_claims[0].tested_total} relevant picks). The shape's there — consistent, if not loud.`
+      : `Nothing cleared the evidence threshold this round. Either you're harder to read than most, or the matchups didn't catch you. Worth another pass.`;
+  }
 
-    // -------- Persist --------
-    const reasoningRow = {
-      session_id: data.sessionId,
-      user_id: userId,
-      observations,
-      patterns,
-      counterarguments,
-      allowed_claims,
-      blocked_claims,
-      evidence_thresholds: { ledger: LEDGER_VERSION, policy: CLAIM_POLICY_VERSION, supporting_choices: CLAIM_MIN_SUPPORT, consistency_threshold: CLAIM_MIN_CONSISTENCY },
-      narrative,
-    };
-    await supabase.from("session_reasoning").upsert(reasoningRow, { onConflict: "session_id" });
-    await supabase.from("sessions").update({
+  // -------- Persist --------
+  const reasoningRow = {
+    session_id: data.sessionId,
+    user_id: userId,
+    observations,
+    patterns,
+    counterarguments,
+    allowed_claims,
+    blocked_claims,
+    evidence_thresholds: {
+      ledger: LEDGER_VERSION,
+      policy: CLAIM_POLICY_VERSION,
+      supporting_choices: CLAIM_MIN_SUPPORT,
+      consistency_threshold: CLAIM_MIN_CONSISTENCY,
+    },
+    narrative,
+  };
+  await supabase.from("session_reasoning").upsert(reasoningRow, { onConflict: "session_id" });
+  await supabase
+    .from("sessions")
+    .update({
       archetype_id: best.id,
       archetype_top3: top3,
       archetype_score: assignment ? assignment.score : null,
@@ -2197,18 +2714,18 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
       archetype_flag_reason: archetypeFlagReason,
       interpretation: narrative,
       completed_at: new Date().toISOString(),
-    }).eq("id", data.sessionId);
+    })
+    .eq("id", data.sessionId);
 
-    return {
-      archetypeId: best.id,
-      archetypeName: best.name,
-      interpretation: narrative,
-      vector,
-      allowed_claims,
-      counterarguments,
-    };
+  return {
+    archetypeId: best.id,
+    archetypeName: best.name,
+    interpretation: narrative,
+    vector,
+    allowed_claims,
+    counterarguments,
+  };
 }
-
 
 // ============ Get latest profile + session for /profile page ============
 export const getMyResult = createServerFn({ method: "GET" })
@@ -2216,63 +2733,75 @@ export const getMyResult = createServerFn({ method: "GET" })
   .handler(async ({ context }) => getMyResultImpl(context.supabase, context.userId));
 
 export async function getMyResultImpl(supabase: AuthedSupabase, userId: string) {
-    const [{ data: profile }, { data: sessions }] = await Promise.all([
-      supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
-      supabase
-        .from("sessions")
-        .select("id,share_token,started_at,completed_at,interpretation,vector,archetype:archetype_id(id,name,tagline,description)")
-        .eq("user_id", userId)
-        .order("started_at", { ascending: false })
-        .limit(20),
-    ]);
-    const latest = sessions?.[0];
-    let definingChoices: Array<{ chosen: string; chosenArtist: string; rejected: string; rejectedArtist: string }> = [];
-    type Claim = {
-      dimension: string;
-      preferred?: string;
-      opposed?: string;
-      supporting_choices: number;
-      tested_total: number;
-      confidence: number;
-      examples: Array<{ chosen: string; rejected: string; delta: number }>;
-      tradeoff: string;
-    };
-    type Counter = { claim: string; impact: "low" | "medium" | "high"; notes: string };
-    let reasoning: {
-      allowed_claims: Claim[];
-      blocked_claims: Claim[];
-      counterarguments: Counter[];
-      patterns: Claim[];
-    } | null = null;
+  const [{ data: profile }, { data: sessions }] = await Promise.all([
+    supabase.from("profiles").select("*").eq("user_id", userId).maybeSingle(),
+    supabase
+      .from("sessions")
+      .select(
+        "id,share_token,started_at,completed_at,interpretation,vector,archetype:archetype_id(id,name,tagline,description)",
+      )
+      .eq("user_id", userId)
+      .order("started_at", { ascending: false })
+      .limit(20),
+  ]);
+  const latest = sessions?.[0];
+  let definingChoices: Array<{
+    chosen: string;
+    chosenArtist: string;
+    rejected: string;
+    rejectedArtist: string;
+  }> = [];
+  type Claim = {
+    dimension: string;
+    preferred?: string;
+    opposed?: string;
+    supporting_choices: number;
+    tested_total: number;
+    confidence: number;
+    examples: Array<{ chosen: string; rejected: string; delta: number }>;
+    tradeoff: string;
+  };
+  type Counter = { claim: string; impact: "low" | "medium" | "high"; notes: string };
+  let reasoning: {
+    allowed_claims: Claim[];
+    blocked_claims: Claim[];
+    counterarguments: Counter[];
+    patterns: Claim[];
+  } | null = null;
 
-    if (latest) {
-      const [choicesRes, reasoningRes] = await Promise.all([
-        supabase
-          .from("choices")
-          .select("created_at, ms_to_decide, chosen:chosen_song_id(title,artist), rejected:rejected_song_id(title,artist)")
-          .eq("session_id", latest.id)
-          .order("ms_to_decide", { ascending: true, nullsFirst: false })
-          .limit(5),
-        supabase
-          .from("session_reasoning")
-          .select("allowed_claims, blocked_claims, counterarguments, patterns")
-          .eq("session_id", latest.id)
-          .maybeSingle(),
-      ]);
-      definingChoices = ((choicesRes.data ?? []) as unknown as Array<{
+  if (latest) {
+    const [choicesRes, reasoningRes] = await Promise.all([
+      supabase
+        .from("choices")
+        .select(
+          "created_at, ms_to_decide, chosen:chosen_song_id(title,artist), rejected:rejected_song_id(title,artist)",
+        )
+        .eq("session_id", latest.id)
+        .order("ms_to_decide", { ascending: true, nullsFirst: false })
+        .limit(5),
+      supabase
+        .from("session_reasoning")
+        .select("allowed_claims, blocked_claims, counterarguments, patterns")
+        .eq("session_id", latest.id)
+        .maybeSingle(),
+    ]);
+    definingChoices = (
+      (choicesRes.data ?? []) as unknown as Array<{
         chosen: { title: string; artist: string } | null;
         rejected: { title: string; artist: string } | null;
-      }>)
-        .filter((c) => c.chosen && c.rejected)
-        .map((c) => ({
-          chosen: c.chosen!.title, chosenArtist: c.chosen!.artist,
-          rejected: c.rejected!.title, rejectedArtist: c.rejected!.artist,
-        }));
-      reasoning = (reasoningRes.data as unknown as typeof reasoning) ?? null;
-    }
-    return { profile, sessions: sessions ?? [], definingChoices, reasoning };
+      }>
+    )
+      .filter((c) => c.chosen && c.rejected)
+      .map((c) => ({
+        chosen: c.chosen!.title,
+        chosenArtist: c.chosen!.artist,
+        rejected: c.rejected!.title,
+        rejectedArtist: c.rejected!.artist,
+      }));
+    reasoning = (reasoningRes.data as unknown as typeof reasoning) ?? null;
+  }
+  return { profile, sessions: sessions ?? [], definingChoices, reasoning };
 }
-
 
 // ============ Instrumentation: events + feedback ============
 
@@ -2283,7 +2812,6 @@ const EVENT_TYPES = [
   "onboarding_classified",
   "pairing_shown",
   "choice_made",
-  "pairing_skipped",
   "reveal_shown",
   "reveal_continued",
   "session_completed",
@@ -2292,26 +2820,24 @@ const EVENT_TYPES = [
   "session_quit",
   "lane_probed",
   "lane_flipped",
-  // Instrumentation (server-emitted, see emitChoiceDiagnostics):
-  "choice_scored",
-  "archetype_ranking_snapshot",
 ] as const;
-
 
 export const recordEvent = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      event_type: z.enum(EVENT_TYPES),
-      session_id: z.string().uuid().nullable().optional(),
-      pairing_id: z.string().uuid().nullable().optional(),
-      choice_id: z.string().uuid().nullable().optional(),
-      response_time_ms: z.number().int().nonnegative().max(600000).nullable().optional(),
-      variant: z.string().max(80).nullable().optional(),
-      experiment_key: z.string().max(80).nullable().optional(),
-      props: z.record(z.unknown()).optional(),
-      client: z.string().max(40).nullable().optional(),
-    }).parse(d),
+    z
+      .object({
+        event_type: z.enum(EVENT_TYPES),
+        session_id: z.string().uuid().nullable().optional(),
+        pairing_id: z.string().uuid().nullable().optional(),
+        choice_id: z.string().uuid().nullable().optional(),
+        response_time_ms: z.number().int().nonnegative().max(600000).nullable().optional(),
+        variant: z.string().max(80).nullable().optional(),
+        experiment_key: z.string().max(80).nullable().optional(),
+        props: z.record(z.unknown()).optional(),
+        client: z.string().max(40).nullable().optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -2334,30 +2860,40 @@ export const recordEvent = createServerFn({ method: "POST" })
 export const submitFeedback = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      session_id: z.string().uuid(),
-      // "partly" is the plan's three-way accuracy label; kept alongside
-      // the pre-existing "mixed" alias so older UI paths still submit.
-      accuracy: z.enum(["accurate", "not_accurate", "mixed", "partly", "wrong"]).nullable().optional(),
-      rating: z.number().int().min(-1).max(1).nullable().optional(),
-      comment: z.string().max(2000).nullable().optional(),
-      target: z.string().max(120).nullable().optional(),
-      // Reveal-sentence-level feedback (see docs/musicdna/instrumentation.md).
-      most_accurate_sentence: z.string().max(1000).nullable().optional(),
-      least_accurate_sentence: z.string().max(1000).nullable().optional(),
-    }).parse(d),
+    z
+      .object({
+        session_id: z.string().uuid(),
+        // "partly" is the plan's three-way accuracy label; kept alongside
+        // the pre-existing "mixed" alias so older UI paths still submit.
+        accuracy: z
+          .enum(["accurate", "not_accurate", "mixed", "partly", "wrong"])
+          .nullable()
+          .optional(),
+        rating: z.number().int().min(-1).max(1).nullable().optional(),
+        comment: z.string().max(2000).nullable().optional(),
+        target: z.string().max(120).nullable().optional(),
+        // Reveal-sentence-level feedback (see docs/musicdna/instrumentation.md).
+        most_accurate_sentence: z.string().max(1000).nullable().optional(),
+        least_accurate_sentence: z.string().max(1000).nullable().optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
     // Normalize accuracy aliases so downstream analysis has a single vocabulary.
-    const accuracy = data.accuracy === "partly" ? "mixed"
-                   : data.accuracy === "wrong" ? "not_accurate"
-                   : data.accuracy ?? null;
+    const accuracy =
+      data.accuracy === "partly"
+        ? "mixed"
+        : data.accuracy === "wrong"
+          ? "not_accurate"
+          : (data.accuracy ?? null);
     // Only include the new sentence columns when the client actually sent
     // them — keeps the write payload valid against pre-migration schemas.
     const sentenceCols: Record<string, string | null> = {};
-    if (data.most_accurate_sentence !== undefined) sentenceCols.most_accurate_sentence = data.most_accurate_sentence;
-    if (data.least_accurate_sentence !== undefined) sentenceCols.least_accurate_sentence = data.least_accurate_sentence;
+    if (data.most_accurate_sentence !== undefined)
+      sentenceCols.most_accurate_sentence = data.most_accurate_sentence;
+    if (data.least_accurate_sentence !== undefined)
+      sentenceCols.least_accurate_sentence = data.least_accurate_sentence;
     const row = {
       user_id: userId,
       session_id: data.session_id,
@@ -2373,9 +2909,8 @@ export const submitFeedback = createServerFn({ method: "POST" })
       .select("id")
       .eq("user_id", userId)
       .eq("session_id", data.session_id);
-    const { data: existing } = await (data.target
-      ? q.eq("target", data.target)
-      : q.is("target", null)
+    const { data: existing } = await (
+      data.target ? q.eq("target", data.target) : q.is("target", null)
     ).maybeSingle();
     if (existing?.id) {
       const { error } = await supabase.from("result_feedback").update(row).eq("id", existing.id);
@@ -2383,11 +2918,18 @@ export const submitFeedback = createServerFn({ method: "POST" })
       return { id: existing.id, updated: true as const };
     }
     const { data: inserted, error } = await supabase
-      .from("result_feedback").insert(row).select("id").single();
+      .from("result_feedback")
+      .insert(row)
+      .select("id")
+      .single();
     if (error) throw new Error(error.message);
     // Nudge the per-user critic profile from explicit feedback.
     // Defined later in this file; safe to call via hoisted function declarations.
-    try { await nudgeCriticFromFeedback(supabase as never, userId, { ...data, accuracy }); } catch { /* best-effort */ }
+    try {
+      await nudgeCriticFromFeedback(supabase as never, userId, { ...data, accuracy });
+    } catch {
+      /* best-effort */
+    }
     return { id: inserted.id, updated: false as const };
   });
 
@@ -2395,11 +2937,18 @@ export const submitFeedback = createServerFn({ method: "POST" })
 async function nudgeCriticFromFeedback(
   supabase: { from: (t: string) => any },
   userId: string,
-  fb: { accuracy?: string | null; rating?: number | null; comment?: string | null; target?: string | null },
+  fb: {
+    accuracy?: string | null;
+    rating?: number | null;
+    comment?: string | null;
+    target?: string | null;
+  },
 ): Promise<void> {
   const { data: existing } = await supabase
     .from("critic_profile")
-    .select("bluntness, playfulness, patience, provocation_appetite, move_tally, forbidden_moves, turns_observed")
+    .select(
+      "bluntness, playfulness, patience, provocation_appetite, move_tally, forbidden_moves, turns_observed",
+    )
     .eq("user_id", userId)
     .maybeSingle();
   const p = {
@@ -2407,7 +2956,10 @@ async function nudgeCriticFromFeedback(
     playfulness: existing?.playfulness ?? 0,
     patience: existing?.patience ?? 0,
     provocation_appetite: existing?.provocation_appetite ?? 0,
-    move_tally: (existing?.move_tally ?? {}) as Record<string, { landed?: number; ignored?: number; pushed_back?: number }>,
+    move_tally: (existing?.move_tally ?? {}) as Record<
+      string,
+      { landed?: number; ignored?: number; pushed_back?: number }
+    >,
     forbidden_moves: (existing?.forbidden_moves ?? []) as string[],
     turns_observed: existing?.turns_observed ?? 0,
   };
@@ -2424,8 +2976,11 @@ async function nudgeCriticFromFeedback(
   // Tally the synthesis move outcome so we know how often the final read landed.
   const move = "counter_hypothesis"; // synthesis is a counter-hypothesis-class move
   const outcome: "landed" | "pushed_back" | "ignored" =
-    fb.rating === 1 || fb.accuracy === "accurate" ? "landed" :
-    fb.rating === -1 || fb.accuracy === "not_accurate" ? "pushed_back" : "ignored";
+    fb.rating === 1 || fb.accuracy === "accurate"
+      ? "landed"
+      : fb.rating === -1 || fb.accuracy === "not_accurate"
+        ? "pushed_back"
+        : "ignored";
   const bucket = { ...(p.move_tally[move] ?? {}) };
   bucket[outcome] = (bucket[outcome] ?? 0) + 1;
   p.move_tally[move] = bucket;
@@ -2440,28 +2995,34 @@ async function nudgeCriticFromFeedback(
       const cleaned = raw.replace(/```json\s*|```/g, "").trim();
       const parsed = JSON.parse(cleaned) as { forbid?: string[] };
       for (const phrase of parsed.forbid ?? []) {
-        const trimmed = String(phrase ?? "").trim().slice(0, 120);
+        const trimmed = String(phrase ?? "")
+          .trim()
+          .slice(0, 120);
         if (!trimmed) continue;
         if (!p.forbidden_moves.some((f) => f.toLowerCase() === trimmed.toLowerCase())) {
           p.forbidden_moves.push(trimmed);
         }
       }
-    } catch { /* best-effort */ }
+    } catch {
+      /* best-effort */
+    }
   }
-  await supabase.from("critic_profile").upsert({
-    user_id: userId,
-    bluntness: p.bluntness,
-    playfulness: p.playfulness,
-    patience: p.patience,
-    provocation_appetite: p.provocation_appetite,
-    move_tally: p.move_tally,
-    forbidden_moves: p.forbidden_moves.slice(0, 8),
-    // Count an explicit feedback event as one "observed" tick so the voice
-    // modulation gate (turns_observed >= 2) can trip from feedback alone.
-    turns_observed: p.turns_observed + 1,
-  }, { onConflict: "user_id" });
+  await supabase.from("critic_profile").upsert(
+    {
+      user_id: userId,
+      bluntness: p.bluntness,
+      playfulness: p.playfulness,
+      patience: p.patience,
+      provocation_appetite: p.provocation_appetite,
+      move_tally: p.move_tally,
+      forbidden_moves: p.forbidden_moves.slice(0, 8),
+      // Count an explicit feedback event as one "observed" tick so the voice
+      // modulation gate (turns_observed >= 2) can trip from feedback alone.
+      turns_observed: p.turns_observed + 1,
+    },
+    { onConflict: "user_id" },
+  );
 }
-
 
 export const getMyFeedback = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -2475,7 +3036,6 @@ export const getMyFeedback = createServerFn({ method: "POST" })
       .eq("session_id", data.session_id);
     return { feedback: rows ?? [] };
   });
-
 
 // ============================================================
 // CONVERSATIONAL ONBOARDING — react / refine / insight / synthesis
@@ -2498,19 +3058,52 @@ const ONBOARDING_RULES = `HARD RULES — no exceptions:
 // Lookup helper: pull what we know about a single song from the catalog.
 // Used to give micro-reactions specific facts instead of vibes.
 async function lookupSongContext(
-  supabase: { from: (t: string) => { select: (c: string) => { ilike: (col: string, v: string) => { limit: (n: number) => Promise<{ data: Array<{ title: string; artist: string; year: number | null; primary_lane: string | null; lane: string | null }> | null }> } } } },
+  supabase: {
+    from: (t: string) => {
+      select: (c: string) => {
+        ilike: (
+          col: string,
+          v: string,
+        ) => {
+          limit: (n: number) => Promise<{
+            data: Array<{
+              title: string;
+              artist: string;
+              year: number | null;
+              primary_lane: string | null;
+              lane: string | null;
+            }> | null;
+          }>;
+        };
+      };
+    };
+  },
   raw: string,
-): Promise<{ title: string; artist: string; year: number | null; primary_lane: string | null } | null> {
+): Promise<{
+  title: string;
+  artist: string;
+  year: number | null;
+  primary_lane: string | null;
+} | null> {
   const [titlePart, artistPart] = raw.split(/—|–|-/).map((s) => s.trim());
   const title = titlePart || raw;
   if (!title) return null;
   try {
-    const { data } = await supabase.from("songs").select("title,artist,year,primary_lane,lane").ilike("title", title).limit(5);
+    const { data } = await supabase
+      .from("songs")
+      .select("title,artist,year,primary_lane,lane")
+      .ilike("title", title)
+      .limit(5);
     if (!data?.length) return null;
     const best = artistPart
-      ? data.find((r) => r.artist?.toLowerCase().includes(artistPart.toLowerCase())) ?? data[0]
+      ? (data.find((r) => r.artist?.toLowerCase().includes(artistPart.toLowerCase())) ?? data[0])
       : data[0];
-    return { title: best.title, artist: best.artist, year: best.year, primary_lane: best.primary_lane ?? best.lane };
+    return {
+      title: best.title,
+      artist: best.artist,
+      year: best.year,
+      primary_lane: best.primary_lane ?? best.lane,
+    };
   } catch {
     return null;
   }
@@ -2564,18 +3157,33 @@ export const reactToThree = createServerFn({ method: "POST" })
     try {
       const ctx = await Promise.all(data.songs.map((s) => lookupSongContext(supabase as never, s)));
       const ctxBlock = ctx
-        .map((c, i) => c ? `${i + 1}. ${c.title} — ${c.artist}${c.year ? ` (${c.year})` : ""}${c.primary_lane ? ` · ${c.primary_lane}` : ""}` : `${i + 1}. (no catalog match)`)
+        .map((c, i) =>
+          c
+            ? `${i + 1}. ${c.title} — ${c.artist}${c.year ? ` (${c.year})` : ""}${c.primary_lane ? ` · ${c.primary_lane}` : ""}`
+            : `${i + 1}. (no catalog match)`,
+        )
         .join("\n");
       const txt = await ai([
         { role: "system", content: REACT_VOICE },
-        { role: "user", content: `Three songs they love (raw input):\n${data.songs.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nWhat the catalog knows (use only if it matches; don't invent):\n${ctxBlock}\n\nReturn the JSON now.` },
+        {
+          role: "user",
+          content: `Three songs they love (raw input):\n${data.songs.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nWhat the catalog knows (use only if it matches; don't invent):\n${ctxBlock}\n\nReturn the JSON now.`,
+        },
       ]);
       const cleaned = txt.replace(/```json\s*|```/g, "").trim();
       const p = JSON.parse(cleaned) as Partial<ReactToThreeResult>;
-      const lane = (LANES as readonly string[]).includes(p.lane_guess as string) ? (p.lane_guess as Lane) : "general";
-      const observation = typeof p.observation === "string" && p.observation.trim() ? p.observation.trim() : (typeof p.reaction === "string" ? p.reaction.trim() : "");
+      const lane = (LANES as readonly string[]).includes(p.lane_guess as string)
+        ? (p.lane_guess as Lane)
+        : "general";
+      const observation =
+        typeof p.observation === "string" && p.observation.trim()
+          ? p.observation.trim()
+          : typeof p.reaction === "string"
+            ? p.reaction.trim()
+            : "";
       const fork = typeof p.fork === "string" && p.fork.trim() ? p.fork.trim() : fallback.fork;
-      const stakes = typeof p.stakes === "string" && p.stakes.trim() ? p.stakes.trim() : fallback.stakes;
+      const stakes =
+        typeof p.stakes === "string" && p.stakes.trim() ? p.stakes.trim() : fallback.stakes;
       return {
         reaction: observation || fallback.reaction,
         hypothesis_v1: `${fork}. ${stakes}`,
@@ -2585,14 +3193,18 @@ export const reactToThree = createServerFn({ method: "POST" })
         lane_guess: lane,
         confidence: Math.max(0, Math.min(1, Number(p.confidence ?? 0))),
         suspected_dimensions: Array.isArray(p.suspected_dimensions)
-          ? p.suspected_dimensions.filter((s): s is string => typeof s === "string" && (DIMS as readonly string[]).includes(s)).slice(0, 4)
+          ? p.suspected_dimensions
+              .filter(
+                (s): s is string =>
+                  typeof s === "string" && (DIMS as readonly string[]).includes(s),
+              )
+              .slice(0, 4)
           : [],
       };
     } catch {
       return fallback;
     }
   });
-
 
 // Per-song micro-reaction. LADDERED by index — the PERSONA itself escalates:
 // song 1–2 = casual friend, song 3 = music-loving friend, song 4 = sharper
@@ -2631,8 +3243,6 @@ Tier: SONG 4 — pressure test. Say whether the new pick strengthens the theory,
   return `${MICRO_REACT_BASE}
 Tier: SONG 5+ — landed read. One short, specific observation. Still falsifiable. If evidence is thin, say so.`;
 }
-
-
 
 export const ReactToOneInput = z.object({
   song: z.string().trim().min(1).max(200),
@@ -2690,8 +3300,14 @@ Rules for nextLabel:
 - If you can't pin a distinctive angle, return nextLabel as "" (empty string).`;
 
     const txt = await ai([
-      { role: "system", content: `${microReactVoice(data.index)}\n${nextPromptRules}\n\nReturn STRICT JSON: {"reaction": "...", "nextLabel": "..."}. No markdown fences.` },
-      { role: "user", content: `${prior}Just named (#${data.index + 1}): ${data.song}\n${ctxBlock}\n\nReturn the JSON now.` },
+      {
+        role: "system",
+        content: `${microReactVoice(data.index)}\n${nextPromptRules}\n\nReturn STRICT JSON: {"reaction": "...", "nextLabel": "..."}. No markdown fences.`,
+      },
+      {
+        role: "user",
+        content: `${prior}Just named (#${data.index + 1}): ${data.song}\n${ctxBlock}\n\nReturn the JSON now.`,
+      },
     ]);
     const cleaned = txt.replace(/```json\s*|```/g, "").trim();
     let reaction = "";
@@ -2704,7 +3320,10 @@ Rules for nextLabel:
         if (nl && nl.length <= 120 && nl.split(/\s+/).length <= 14) nextLabel = nl;
       }
     } catch {
-      reaction = cleaned.split("\n")[0].replace(/^["'`\s]+|["'`\s]+$/g, "").trim();
+      reaction = cleaned
+        .split("\n")[0]
+        .replace(/^["'`\s]+|["'`\s]+$/g, "")
+        .trim();
     }
     if (!reaction) reaction = fallbackText;
     const capped = reaction.length > 200 ? reaction.slice(0, 197) + "…" : reaction;
@@ -2718,7 +3337,6 @@ export const reactToOne = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => ReactToOneInput.parse(d))
   .handler(async ({ data, context }) => reactToOneImpl(context.supabase, data));
-
 
 // Step B: 5 songs total + the prior hypothesis. The AI produces an EVIDENCE
 // LEDGER, not a verdict. The threshold rule (≥3 supporting picks AND 0 strong
@@ -2769,11 +3387,13 @@ type ShippedClaim = {
 export const refineWithTwoMore = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      firstThree: z.array(z.string().trim().min(1).max(200)).length(3),
-      twoMore: z.array(z.string().trim().min(1).max(200)).length(2),
-      hypothesis_v1: z.string().max(500).optional(),
-    }).parse(d),
+    z
+      .object({
+        firstThree: z.array(z.string().trim().min(1).max(200)).length(3),
+        twoMore: z.array(z.string().trim().min(1).max(200)).length(2),
+        hypothesis_v1: z.string().max(500).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -2783,13 +3403,20 @@ export const refineWithTwoMore = createServerFn({ method: "POST" })
     let reaction = "That's enough for now. Still forming a read.";
     let lane: Lane = "general";
     let candidateClaims: EvidenceClaim[] = [];
-    let perSong: Array<{ input: string; lane: Lane | "unknown"; source: "llm" | "catalog"; canon_id?: string }> =
-      allFive.map((s) => ({ input: s, lane: "unknown", source: "llm" }));
+    let perSong: Array<{
+      input: string;
+      lane: Lane | "unknown";
+      source: "llm" | "catalog";
+      canon_id?: string;
+    }> = allFive.map((s) => ({ input: s, lane: "unknown", source: "llm" }));
 
     try {
       const txt = await ai([
         { role: "system", content: REFINE_VOICE },
-        { role: "user", content: `Working note after three picks:\n"${data.hypothesis_v1 ?? "(none)"}"\n\nFirst three:\n${data.firstThree.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nNew two:\n${data.twoMore.map((s, i) => `${i + 4}. ${s}`).join("\n")}\n\nReturn the JSON now.` },
+        {
+          role: "user",
+          content: `Working note after three picks:\n"${data.hypothesis_v1 ?? "(none)"}"\n\nFirst three:\n${data.firstThree.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nNew two:\n${data.twoMore.map((s, i) => `${i + 4}. ${s}`).join("\n")}\n\nReturn the JSON now.`,
+        },
       ]);
       const cleaned = txt.replace(/```json\s*|```/g, "").trim();
       const parsed = JSON.parse(cleaned) as {
@@ -2798,30 +3425,47 @@ export const refineWithTwoMore = createServerFn({ method: "POST" })
         candidate_claims?: unknown;
         per_song?: unknown;
       };
-      if (typeof parsed.reaction === "string" && parsed.reaction.trim()) reaction = parsed.reaction.trim();
-      if (typeof parsed.lane === "string" && (LANES as readonly string[]).includes(parsed.lane)) lane = parsed.lane as Lane;
+      if (typeof parsed.reaction === "string" && parsed.reaction.trim())
+        reaction = parsed.reaction.trim();
+      if (typeof parsed.lane === "string" && (LANES as readonly string[]).includes(parsed.lane))
+        lane = parsed.lane as Lane;
       if (Array.isArray(parsed.candidate_claims)) {
         candidateClaims = parsed.candidate_claims
           .filter((c): c is Record<string, unknown> => !!c && typeof c === "object")
           .slice(0, 2)
           .map((c) => ({
             text: typeof c.text === "string" ? c.text.trim() : "",
-            supporting_songs: Array.isArray(c.supporting_songs) ? c.supporting_songs.filter((s): s is string => typeof s === "string") : [],
-            contradicting_songs: Array.isArray(c.contradicting_songs) ? c.contradicting_songs.filter((s): s is string => typeof s === "string") : [],
-            competing_explanations: Array.isArray(c.competing_explanations) ? c.competing_explanations.filter((s): s is string => typeof s === "string").slice(0, 3) : [],
+            supporting_songs: Array.isArray(c.supporting_songs)
+              ? c.supporting_songs.filter((s): s is string => typeof s === "string")
+              : [],
+            contradicting_songs: Array.isArray(c.contradicting_songs)
+              ? c.contradicting_songs.filter((s): s is string => typeof s === "string")
+              : [],
+            competing_explanations: Array.isArray(c.competing_explanations)
+              ? c.competing_explanations
+                  .filter((s): s is string => typeof s === "string")
+                  .slice(0, 3)
+              : [],
           }))
           .filter((c) => c.text.length > 0);
       }
       if (Array.isArray(parsed.per_song)) {
         perSong = allFive.map((input) => {
-          const match = (parsed.per_song as Array<{ input?: unknown; lane?: unknown }>).find((p) => p?.input === input);
-          const l = match && typeof match.lane === "string" && (LANES as readonly string[]).includes(match.lane)
-            ? (match.lane as Lane)
-            : "unknown" as const;
+          const match = (parsed.per_song as Array<{ input?: unknown; lane?: unknown }>).find(
+            (p) => p?.input === input,
+          );
+          const l =
+            match &&
+            typeof match.lane === "string" &&
+            (LANES as readonly string[]).includes(match.lane)
+              ? (match.lane as Lane)
+              : ("unknown" as const);
           return { input, lane: l, source: "llm" as const };
         });
       }
-    } catch { /* keep still-learning defaults */ }
+    } catch {
+      /* keep still-learning defaults */
+    }
 
     // Threshold rule (enforced in code, not by the model):
     //   ship a claim only if ≥3 supporting picks AND 0 contradictions.
@@ -2845,7 +3489,13 @@ export const refineWithTwoMore = createServerFn({ method: "POST" })
     const stillLearning = shipped.length === 0;
     // For back-compat with older consumers of this function.
     const hypothesis = shipped[0]?.text ?? "Not enough evidence yet — still listening.";
-    const confidence = shipped[0] ? (shipped[0].status === "stable" ? 0.8 : shipped[0].status === "strengthening" ? 0.6 : 0.4) : 0.2;
+    const confidence = shipped[0]
+      ? shipped[0].status === "stable"
+        ? 0.8
+        : shipped[0].status === "strengthening"
+          ? 0.6
+          : 0.4
+      : 0.2;
 
     // Fallback lane from per_song majority if the model went "general" but the picks agree.
     if (lane === "general") {
@@ -2854,7 +3504,13 @@ export const refineWithTwoMore = createServerFn({ method: "POST" })
     }
 
     // Hidden canon enrichment — silent, best-effort.
-    const canonMatches: Array<{ input: string; song_id: string; title: string; artist: string; primary_lane: string }> = [];
+    const canonMatches: Array<{
+      input: string;
+      song_id: string;
+      title: string;
+      artist: string;
+      primary_lane: string;
+    }> = [];
     for (let i = 0; i < allFive.length; i++) {
       const raw = allFive[i];
       const [titlePart, artistPart] = raw.split(/—|–|-/).map((s) => s.trim());
@@ -2868,19 +3524,35 @@ export const refineWithTwoMore = createServerFn({ method: "POST" })
           .limit(5);
         if (!rows?.length) continue;
         const best = artistPart
-          ? rows.find((r: { artist?: string | null }) => r.artist?.toLowerCase().includes(artistPart.toLowerCase())) ?? rows[0]
+          ? (rows.find((r: { artist?: string | null }) =>
+              r.artist?.toLowerCase().includes(artistPart.toLowerCase()),
+            ) ?? rows[0])
           : rows[0];
         const topLane = catalogLaneToTopLane(best.primary_lane ?? best.lane);
         canonMatches.push({
-          input: raw, song_id: best.id, title: best.title, artist: best.artist,
+          input: raw,
+          song_id: best.id,
+          title: best.title,
+          artist: best.artist,
           primary_lane: best.primary_lane ?? best.lane,
         });
-        if (perSong[i]) perSong[i] = { ...perSong[i], source: "catalog", canon_id: best.id, lane: topLane ?? perSong[i].lane };
-      } catch { /* swallow */ }
+        if (perSong[i])
+          perSong[i] = {
+            ...perSong[i],
+            source: "catalog",
+            canon_id: best.id,
+            lane: topLane ?? perSong[i].lane,
+          };
+      } catch {
+        /* swallow */
+      }
     }
 
     const artifact = {
-      reaction, lane, confidence, hypothesis,
+      reaction,
+      lane,
+      confidence,
+      hypothesis,
       claims: shipped,
       stillLearning,
       candidate_claims: candidateClaims,
@@ -2906,7 +3578,6 @@ export const refineWithTwoMore = createServerFn({ method: "POST" })
     return artifact;
   });
 
-
 // ============================================================
 // commitOpeningThree — lock-in read after the 3rd ranked song.
 // 3-song one-at-a-time variant of refineWithTwoMore.
@@ -2931,124 +3602,167 @@ No prose, no markdown fences. Three songs is not enough for certainty — keep c
 export const commitOpeningThree = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      songs: z.array(z.string().trim().min(1).max(200)).length(3),
-    }).parse(d),
+    z
+      .object({
+        songs: z.array(z.string().trim().min(1).max(200)).length(3),
+      })
+      .parse(d),
   )
-  .handler(async ({ data, context }) => commitOpeningThreeImpl(context.supabase, context.userId, data));
+  .handler(async ({ data, context }) =>
+    commitOpeningThreeImpl(context.supabase, context.userId, data),
+  );
 
-export async function commitOpeningThreeImpl(supabase: AuthedSupabase, userId: string, data: { songs: string[] }) {
-    const allThree = data.songs;
-    const fallbackObservation = "Three songs in. Already a shape, not a portrait — let's keep going.";
-    let llm: OpeningAnalysis & { reaction: string; observation?: string; fork?: string; stakes?: string } = {
-      ...FALLBACK,
-      reaction: fallbackObservation,
-      observation: fallbackObservation,
+export async function commitOpeningThreeImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { songs: string[] },
+) {
+  const allThree = data.songs;
+  const fallbackObservation = "Three songs in. Already a shape, not a portrait — let's keep going.";
+  let llm: OpeningAnalysis & {
+    reaction: string;
+    observation?: string;
+    fork?: string;
+    stakes?: string;
+  } = {
+    ...FALLBACK,
+    reaction: fallbackObservation,
+    observation: fallbackObservation,
+    fork: "",
+    stakes: "",
+    per_song: allThree.map((s) => ({ input: s, lane: "unknown", source: "llm" })),
+  };
+  try {
+    // Catalog context for all three. Lets the critic reference real facts.
+    const ctx = await Promise.all(allThree.map((s) => lookupSongContext(supabase as never, s)));
+    const ctxBlock = ctx
+      .map((c, i) =>
+        c
+          ? `${i + 1}. ${c.title} — ${c.artist}${c.year ? ` (${c.year})` : ""}${c.primary_lane ? ` · ${c.primary_lane}` : ""}`
+          : `${i + 1}. (no catalog match — don't invent facts for this one)`,
+      )
+      .join("\n");
+    const txt = await ai([
+      { role: "system", content: COMMIT_THREE_VOICE },
+      {
+        role: "user",
+        content: `Three songs, ranked top to bottom (raw input):\n${allThree.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nWhat the catalog knows (use only if matched; don't invent):\n${ctxBlock}\n\nReturn the JSON now.`,
+      },
+    ]);
+    const cleaned = txt.replace(/```json\s*|```/g, "").trim();
+    const parsed = JSON.parse(cleaned) as Partial<
+      OpeningAnalysis & {
+        observation?: string;
+        reaction?: string;
+      }
+    >;
+    const lane = (LANES as readonly string[]).includes(parsed.lane as string)
+      ? (parsed.lane as Lane)
+      : "general";
+    const rawConfidence = Math.max(0, Math.min(1, Number(parsed.confidence ?? 0)));
+    const confidence = Math.min(0.65, rawConfidence);
+    const secondary = Array.isArray(parsed.secondary_lanes)
+      ? parsed.secondary_lanes.filter(
+          (l): l is Lane =>
+            (LANES as readonly string[]).includes(l as string) && l !== lane && l !== "general",
+        )
+      : [];
+    const dims: LlmDimensions = {};
+    if (parsed.candidate_dimensions && typeof parsed.candidate_dimensions === "object") {
+      for (const d of DIMS) {
+        const v = (parsed.candidate_dimensions as Record<string, unknown>)[d];
+        if (typeof v === "number" && Number.isFinite(v))
+          dims[d] = Math.max(-100, Math.min(100, Math.round(v)));
+      }
+    }
+    const perSong = allThree.map((input) => {
+      const match = Array.isArray(parsed.per_song)
+        ? parsed.per_song.find((p) => p?.input === input)
+        : null;
+      const songLane =
+        match && (LANES as readonly string[]).includes(match.lane as string)
+          ? (match.lane as Lane)
+          : "unknown";
+      return { input, lane: songLane as Lane | "unknown", source: "llm" as const };
+    });
+    const observation =
+      typeof parsed.observation === "string" && parsed.observation.trim()
+        ? parsed.observation.trim()
+        : typeof parsed.reaction === "string"
+          ? parsed.reaction.trim()
+          : fallbackObservation;
+    // `reaction` (shown next to song #3) and `hypothesis` are both the single
+    // conversational observation. The model talks to the user, not about itself.
+    llm = {
+      lane: confidence < 0.4 ? (dominantPerSongLane(perSong) ?? "general") : lane,
+      confidence,
+      secondary_lanes: secondary,
+      reasoning: Array.isArray(parsed.reasoning) ? parsed.reasoning.slice(0, 4).map(String) : [],
+      hypothesis: observation,
+      candidate_dimensions: dims,
+      per_song: perSong,
+      canon_matches: [],
+      reaction: observation,
+      observation,
       fork: "",
       stakes: "",
-      per_song: allThree.map((s) => ({ input: s, lane: "unknown", source: "llm" })),
     };
+  } catch {
+    /* keep fallback */
+  }
+
+  // Hidden canon enrichment.
+  for (let i = 0; i < allThree.length; i++) {
+    const raw = allThree[i];
+    const [titlePart, artistPart] = raw.split(/—|–|-/).map((s) => s.trim());
+    const title = titlePart || raw;
+    if (!title) continue;
     try {
-      // Catalog context for all three. Lets the critic reference real facts.
-      const ctx = await Promise.all(allThree.map((s) => lookupSongContext(supabase as never, s)));
-      const ctxBlock = ctx
-        .map((c, i) => c ? `${i + 1}. ${c.title} — ${c.artist}${c.year ? ` (${c.year})` : ""}${c.primary_lane ? ` · ${c.primary_lane}` : ""}` : `${i + 1}. (no catalog match — don't invent facts for this one)`)
-        .join("\n");
-      const txt = await ai([
-        { role: "system", content: COMMIT_THREE_VOICE },
-        { role: "user", content: `Three songs, ranked top to bottom (raw input):\n${allThree.map((s, i) => `${i + 1}. ${s}`).join("\n")}\n\nWhat the catalog knows (use only if matched; don't invent):\n${ctxBlock}\n\nReturn the JSON now.` },
-      ]);
-      const cleaned = txt.replace(/```json\s*|```/g, "").trim();
-      const parsed = JSON.parse(cleaned) as Partial<OpeningAnalysis & {
-        observation?: string; reaction?: string;
-      }>;
-      const lane = (LANES as readonly string[]).includes(parsed.lane as string) ? (parsed.lane as Lane) : "general";
-      const rawConfidence = Math.max(0, Math.min(1, Number(parsed.confidence ?? 0)));
-      const confidence = Math.min(0.65, rawConfidence);
-      const secondary = Array.isArray(parsed.secondary_lanes)
-        ? parsed.secondary_lanes.filter((l): l is Lane => (LANES as readonly string[]).includes(l as string) && l !== lane && l !== "general")
-        : [];
-      const dims: LlmDimensions = {};
-      if (parsed.candidate_dimensions && typeof parsed.candidate_dimensions === "object") {
-        for (const d of DIMS) {
-          const v = (parsed.candidate_dimensions as Record<string, unknown>)[d];
-          if (typeof v === "number" && Number.isFinite(v)) dims[d] = Math.max(-100, Math.min(100, Math.round(v)));
-        }
-      }
-      const perSong = allThree.map((input) => {
-        const match = Array.isArray(parsed.per_song) ? parsed.per_song.find((p) => p?.input === input) : null;
-        const songLane = match && (LANES as readonly string[]).includes(match.lane as string) ? (match.lane as Lane) : "unknown";
-        return { input, lane: songLane as Lane | "unknown", source: "llm" as const };
+      const { data: rows } = await supabase
+        .from("songs")
+        .select("id,primary_lane,lane,title,artist")
+        .ilike("title", title)
+        .limit(5);
+      if (!rows?.length) continue;
+      const best = artistPart
+        ? (rows.find((r: { artist?: string | null }) =>
+            r.artist?.toLowerCase().includes(artistPart.toLowerCase()),
+          ) ?? rows[0])
+        : rows[0];
+      const topLane = catalogLaneToTopLane(best.primary_lane ?? best.lane);
+      llm.canon_matches.push({
+        input: raw,
+        song_id: best.id,
+        title: best.title,
+        artist: best.artist,
+        primary_lane: best.primary_lane ?? best.lane,
       });
-      const observation = typeof parsed.observation === "string" && parsed.observation.trim()
-        ? parsed.observation.trim()
-        : (typeof parsed.reaction === "string" ? parsed.reaction.trim() : fallbackObservation);
-      // `reaction` (shown next to song #3) and `hypothesis` are both the single
-      // conversational observation. The model talks to the user, not about itself.
-      llm = {
-        lane: confidence < 0.4 ? (dominantPerSongLane(perSong) ?? "general") : lane,
-        confidence,
-        secondary_lanes: secondary,
-        reasoning: Array.isArray(parsed.reasoning) ? parsed.reasoning.slice(0, 4).map(String) : [],
-        hypothesis: observation,
-        candidate_dimensions: dims,
-        per_song: perSong,
-        canon_matches: [],
-        reaction: observation,
-        observation,
-        fork: "",
-        stakes: "",
-      };
-    } catch { /* keep fallback */ }
-
-
-    // Hidden canon enrichment.
-    for (let i = 0; i < allThree.length; i++) {
-      const raw = allThree[i];
-      const [titlePart, artistPart] = raw.split(/—|–|-/).map((s) => s.trim());
-      const title = titlePart || raw;
-      if (!title) continue;
-      try {
-        const { data: rows } = await supabase
-          .from("songs")
-          .select("id,primary_lane,lane,title,artist")
-          .ilike("title", title)
-          .limit(5);
-        if (!rows?.length) continue;
-        const best = artistPart
-          ? rows.find((r: { artist?: string | null }) => r.artist?.toLowerCase().includes(artistPart.toLowerCase())) ?? rows[0]
-          : rows[0];
-        const topLane = catalogLaneToTopLane(best.primary_lane ?? best.lane);
-        llm.canon_matches.push({
-          input: raw,
-          song_id: best.id,
-          title: best.title,
-          artist: best.artist,
-          primary_lane: best.primary_lane ?? best.lane,
-        });
-        if (llm.per_song[i]) {
-          llm.per_song[i] = { ...llm.per_song[i], source: "catalog", canon_id: best.id, lane: topLane ?? llm.per_song[i].lane };
-        }
-      } catch { /* swallow */ }
+      if (llm.per_song[i]) {
+        llm.per_song[i] = {
+          ...llm.per_song[i],
+          source: "catalog",
+          canon_id: best.id,
+          lane: topLane ?? llm.per_song[i].lane,
+        };
+      }
+    } catch {
+      /* swallow */
     }
+  }
 
-    await supabase
-      .from("profiles")
-      .update({
-        opening_songs: allThree,
-        opening_hypothesis: llm.hypothesis,
-        opening_lane: llm.lane,
-        opening_lane_confidence: llm.confidence,
-        opening_analysis_json: JSON.parse(JSON.stringify(llm)),
-      })
-      .eq("user_id", userId);
+  await supabase
+    .from("profiles")
+    .update({
+      opening_songs: allThree,
+      opening_hypothesis: llm.hypothesis,
+      opening_lane: llm.lane,
+      opening_lane_confidence: llm.confidence,
+      opening_analysis_json: JSON.parse(JSON.stringify(llm)),
+    })
+    .eq("user_id", userId);
 
-    return llm;
+  return llm;
 }
-
-
-
-
 
 // ============================================================
 // Round insights — interleaved observations during pairings.
@@ -3105,14 +3819,23 @@ export const roundInsight = createServerFn({ method: "POST" })
     // Pull the last 4 choices for grounding.
     const choicesRes = await supabase
       .from("choices")
-      .select("ms_to_decide,chosen:chosen_song_id(title,artist),rejected:rejected_song_id(title,artist)")
+      .select(
+        "ms_to_decide,chosen:chosen_song_id(title,artist),rejected:rejected_song_id(title,artist)",
+      )
       .eq("session_id", data.sessionId)
       .order("created_at", { ascending: false })
       .limit(4);
-    type Row = { ms_to_decide: number | null; chosen: { title: string; artist: string } | null; rejected: { title: string; artist: string } | null };
+    type Row = {
+      ms_to_decide: number | null;
+      chosen: { title: string; artist: string } | null;
+      rejected: { title: string; artist: string } | null;
+    };
     const recent = ((choicesRes.data ?? []) as unknown as Row[])
       .filter((r) => r.chosen && r.rejected)
-      .map((r) => `${r.chosen!.title} > ${r.rejected!.title}${r.ms_to_decide != null ? ` (${r.ms_to_decide}ms)` : ""}`);
+      .map(
+        (r) =>
+          `${r.chosen!.title} > ${r.rejected!.title}${r.ms_to_decide != null ? ` (${r.ms_to_decide}ms)` : ""}`,
+      );
 
     const axisBlock = ranked
       .map(({ d, v }) => {
@@ -3122,7 +3845,8 @@ export const roundInsight = createServerFn({ method: "POST" })
       })
       .join("\n");
 
-    const kindHint = data.round === 3 ? "observation" : data.round === 6 ? "challenge" : "refinement";
+    const kindHint =
+      data.round === 3 ? "observation" : data.round === 6 ? "challenge" : "refinement";
     const prompt = `Round ${data.round}. Vector so far:\n${axisBlock}\n\nRecent picks:\n${recent.join("\n") || "(none)"}\n\nPreferred kind for this round: ${kindHint}. But override if the evidence demands the other.\n\nReturn the JSON now.`;
 
     try {
@@ -3132,7 +3856,9 @@ export const roundInsight = createServerFn({ method: "POST" })
       ]);
       const cleaned = txt.replace(/```json\s*|```/g, "").trim();
       const parsed = JSON.parse(cleaned) as { kind?: string; text?: string };
-      const kind = (INSIGHT_KINDS as readonly string[]).includes(parsed.kind ?? "") ? (parsed.kind as InsightKind) : (kindHint as InsightKind);
+      const kind = (INSIGHT_KINDS as readonly string[]).includes(parsed.kind ?? "")
+        ? (parsed.kind as InsightKind)
+        : (kindHint as InsightKind);
       const text = typeof parsed.text === "string" && parsed.text.trim() ? parsed.text.trim() : "";
       if (!text) return null;
       return { kind, text };
@@ -3140,7 +3866,6 @@ export const roundInsight = createServerFn({ method: "POST" })
       return null;
     }
   });
-
 
 // ============================================================
 // Final synthesis — the big reveal after the last pairing.
@@ -3178,11 +3903,18 @@ type SynthPayload = {
 export const finalSynthesis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
-  .handler(async ({ data, context }): Promise<SynthPayload> => finalSynthesisImpl(context.supabase, context.userId, data));
+  .handler(
+    async ({ data, context }): Promise<SynthPayload> =>
+      finalSynthesisImpl(context.supabase, context.userId, data),
+  );
 
 // RES04: the first pairing-based result is saved once and replayed verbatim
 // afterwards, so reopening or sharing the same version renders the same read.
-export async function finalSynthesisImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string }): Promise<SynthPayload> {
+export async function finalSynthesisImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string },
+): Promise<SynthPayload> {
   const { data: saved } = await supabase
     .from("session_results")
     .select("version, content")
@@ -3207,15 +3939,22 @@ export async function finalSynthesisImpl(supabase: AuthedSupabase, userId: strin
     version: 1,
     source: "pairings",
     content: fresh as never,
-    evidence: { allowed_claims: reasoning?.allowed_claims ?? [], counterarguments: reasoning?.counterarguments ?? [] } as never,
+    evidence: {
+      allowed_claims: reasoning?.allowed_claims ?? [],
+      counterarguments: reasoning?.counterarguments ?? [],
+    } as never,
     ledger_version: LEDGER_VERSION,
     policy_version: CLAIM_POLICY_VERSION,
     engine_version: ENGINE_VERSION,
   });
   if (error && (error as { code?: string }).code === "23505") {
     // A concurrent request saved it first — return that one.
-    const { data: winner } = await supabase.from("session_results").select("version, content")
-      .eq("session_id", data.sessionId).eq("version", 1).maybeSingle();
+    const { data: winner } = await supabase
+      .from("session_results")
+      .select("version, content")
+      .eq("session_id", data.sessionId)
+      .eq("version", 1)
+      .maybeSingle();
     if (winner?.content) return { ...(winner.content as SynthPayload), result_version: 1 };
   }
   return { ...fresh, result_version: error ? null : 1 };
@@ -3223,85 +3962,120 @@ export async function finalSynthesisImpl(supabase: AuthedSupabase, userId: strin
 
 /** Latest saved version for a session (any source), for refinements. */
 export async function latestResultVersion(supabase: AuthedSupabase, sessionId: string) {
-  const { data } = await supabase.from("session_results")
+  const { data } = await supabase
+    .from("session_results")
     .select("version, content, self_report, source")
-    .eq("session_id", sessionId).order("version", { ascending: false }).limit(1).maybeSingle();
+    .eq("session_id", sessionId)
+    .order("version", { ascending: false })
+    .limit(1)
+    .maybeSingle();
   return data;
 }
 
-async function computeFinalSynthesis(supabase: AuthedSupabase, userId: string, data: { sessionId: string }): Promise<SynthPayload> {
-    const sessionRes = await supabase
-      .from("sessions")
-      .select("user_id, vector, probe_state")
-      .eq("id", data.sessionId)
-      .single();
-    const session = sessionRes.data as { user_id: string; vector: Record<string, number> | null; probe_state: { skipped_pairing_ids?: string[] } | null } | null;
-    const empty: SynthPayload = { synthesis: "", kept_choosing: [], counter_reads: [] };
-    if (!session || session.user_id !== userId) return empty;
-    const derivedMoods = deriveDescriptors(session.vector ?? {});
+async function computeFinalSynthesis(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string },
+): Promise<SynthPayload> {
+  const sessionRes = await supabase
+    .from("sessions")
+    .select("user_id, vector, probe_state")
+    .eq("id", data.sessionId)
+    .single();
+  const session = sessionRes.data as {
+    user_id: string;
+    vector: Record<string, number> | null;
+    probe_state: { skipped_pairing_ids?: string[] } | null;
+  } | null;
+  const empty: SynthPayload = { synthesis: "", kept_choosing: [], counter_reads: [] };
+  if (!session || session.user_id !== userId) return empty;
+  const derivedMoods = deriveDescriptors(session.vector ?? {});
 
-    // Pull the Analyst's stored reasoning — that's the evidence. Don't re-derive.
-    const reasoningRes = await supabase
-      .from("session_reasoning")
-      .select("allowed_claims, counterarguments, observations")
-      .eq("session_id", data.sessionId)
-      .maybeSingle();
-    const reasoning = reasoningRes.data as {
-      allowed_claims?: Array<{ tradeoff?: string; supporting_choices?: number; tested_total?: number; examples?: Array<{ chosen: string; rejected: string }> }>;
-      counterarguments?: Array<{ claim: string; impact: string; notes: string }>;
-      observations?: Array<{ chosen: string; rejected: string }>;
-    } | null;
+  // Pull the Analyst's stored reasoning — that's the evidence. Don't re-derive.
+  const reasoningRes = await supabase
+    .from("session_reasoning")
+    .select("allowed_claims, counterarguments, observations")
+    .eq("session_id", data.sessionId)
+    .maybeSingle();
+  const reasoning = reasoningRes.data as {
+    allowed_claims?: Array<{
+      tradeoff?: string;
+      supporting_choices?: number;
+      tested_total?: number;
+      examples?: Array<{ chosen: string; rejected: string }>;
+    }>;
+    counterarguments?: Array<{ claim: string; impact: string; notes: string }>;
+    observations?: Array<{ chosen: string; rejected: string }>;
+  } | null;
 
-    const allowed = reasoning?.allowed_claims ?? [];
-    const counters = reasoning?.counterarguments ?? [];
-    const observations = reasoning?.observations ?? [];
+  const allowed = reasoning?.allowed_claims ?? [];
+  const counters = reasoning?.counterarguments ?? [];
+  const observations = reasoning?.observations ?? [];
 
-    const kept_choosing: SynthEvidence[] = allowed.slice(0, 4).map((c) => ({
+  const kept_choosing: SynthEvidence[] = allowed
+    .slice(0, 4)
+    .map((c) => ({
       tradeoff: String(c.tradeoff ?? ""),
       examples: (c.examples ?? []).map((e) => `${e.chosen} over ${e.rejected}`),
       supporting: Number(c.supporting_choices ?? 0),
       tested: Number(c.tested_total ?? 0),
-    })).filter((e) => e.tradeoff);
+    }))
+    .filter((e) => e.tradeoff);
 
-    const counter_reads: SynthCounter[] = counters.slice(0, 4).map((c) => ({
+  const counter_reads: SynthCounter[] = counters
+    .slice(0, 4)
+    .map((c) => ({
       claim: String(c.claim ?? ""),
       impact: String(c.impact ?? "medium"),
       notes: String(c.notes ?? ""),
-    })).filter((c) => c.claim);
+    }))
+    .filter((c) => c.claim);
 
-    // Build the prompt — evidence-first, songs named explicitly.
-    const evidenceBlock = kept_choosing.length
-      ? kept_choosing.map((e) =>
-          `- ${e.tradeoff} (${e.supporting}/${e.tested} matchups). Songs: ${e.examples.join("; ") || "—"}`
-        ).join("\n")
-      : "(none cleared the threshold)";
-    const counterBlock = counter_reads.length
-      ? counter_reads.map((c) => `- ${c.claim} — ${c.notes}`).join("\n")
-      : "(none)";
-    const songsPicked = observations.slice(0, 12).map((o) => o.chosen).join(", ") || "—";
+  // Build the prompt — evidence-first, songs named explicitly.
+  const evidenceBlock = kept_choosing.length
+    ? kept_choosing
+        .map(
+          (e) =>
+            `- ${e.tradeoff} (${e.supporting}/${e.tested} matchups). Songs: ${e.examples.join("; ") || "—"}`,
+        )
+        .join("\n")
+    : "(none cleared the threshold)";
+  const counterBlock = counter_reads.length
+    ? counter_reads.map((c) => `- ${c.claim} — ${c.notes}`).join("\n")
+    : "(none)";
+  const songsPicked =
+    observations
+      .slice(0, 12)
+      .map((o) => o.chosen)
+      .join(", ") || "—";
 
-    let synthesis = "";
-    // RES03: when nothing cleared the claim policy, the ending is written
-    // deterministically and says WHY — no model, so no trait guesses from
-    // one or two picks.
-    const answeredN = observations.length;
-    const skippedN = session.probe_state?.skipped_pairing_ids?.length ?? 0;
-    const named = observations.slice(0, 3).map((o) => `${o.chosen} over ${o.rejected}`).join("; ");
-    if (kept_choosing.length === 0) {
-      synthesis =
-        answeredN === 0
-          ? "No read yet. None of these matchups landed on songs you know — that's on the catalog, not you. Start over with different openers and we'll find your lane."
-          : skippedN >= 3
-            ? `These weren't your songs. You knew ${answeredN === 1 ? "one matchup" : `${answeredN} matchups`} (${named}) and skipped ${skippedN}. That's not enough to say anything true about how you listen — so I won't.`
-            : answeredN < 3
-              ? `${answeredN === 1 ? "One pick" : "Two picks"} isn't a pattern. ${named} — noted, not decoded. Give me a few more and I'll commit to something.`
-              : `Not enough consistent evidence for a read yet. ${named} pulled in different directions, and these matchups can't settle which one is you. Push back or keep going.`;
-    }
-    if (!synthesis) try {
+  let synthesis = "";
+  // RES03: when nothing cleared the claim policy, the ending is written
+  // deterministically and says WHY — no model, so no trait guesses from
+  // one or two picks.
+  const answeredN = observations.length;
+  const skippedN = session.probe_state?.skipped_pairing_ids?.length ?? 0;
+  const named = observations
+    .slice(0, 3)
+    .map((o) => `${o.chosen} over ${o.rejected}`)
+    .join("; ");
+  if (kept_choosing.length === 0) {
+    synthesis =
+      answeredN === 0
+        ? "No read yet. None of these matchups landed on songs you know — that's on the catalog, not you. Start over with different openers and we'll find your lane."
+        : skippedN >= 3
+          ? `These weren't your songs. You knew ${answeredN === 1 ? "one matchup" : `${answeredN} matchups`} (${named}) and skipped ${skippedN}. That's not enough to say anything true about how you listen — so I won't.`
+          : answeredN < 3
+            ? `${answeredN === 1 ? "One pick" : "Two picks"} isn't a pattern. ${named} — noted, not decoded. Give me a few more and I'll commit to something.`
+            : `Not enough consistent evidence for a read yet. ${named} pulled in different directions, and these matchups can't settle which one is you. Push back or keep going.`;
+  }
+  if (!synthesis)
+    try {
       const txt = await ai([
         { role: "system", content: SYNTH_VOICE },
-      { role: "user", content:
-`SONGS THEY PICKED (in order):
+        {
+          role: "user",
+          content: `SONGS THEY PICKED (in order):
 ${songsPicked}
 
 PATTERNS WITH EVIDENCE:
@@ -3313,7 +4087,8 @@ ${counterBlock}
 DERIVED MOODS (read off their tradeoffs — you MAY call them this if the evidence supports it, never as a label, only as flavor):
 ${derivedMoods.length ? derivedMoods.join(", ") : "(none earned)"}
 
-Return the JSON now.` },
+Return the JSON now.`,
+        },
       ]);
       const cleaned = txt.replace(/```json\s*|```/g, "").trim();
       const parsed = JSON.parse(cleaned) as { synthesis?: string };
@@ -3322,20 +4097,16 @@ Return the JSON now.` },
       // fall through to deterministic fallback below
     }
 
-    if (!synthesis) {
-      synthesis = kept_choosing.length
-        ? `Across these matchups you kept choosing ${kept_choosing[0].tradeoff}. The shape's there — it's not loud yet, but it's consistent.`
-        : `Not enough consistent evidence for a read yet. Your picks — ${songsPicked.split(",").slice(0, 3).join(",")} — pulled in different directions, and six matchups can't settle which one is you. Push back or keep going.`;
-    }
+  if (!synthesis) {
+    synthesis = kept_choosing.length
+      ? `Across these matchups you kept choosing ${kept_choosing[0].tradeoff}. The shape's there — it's not loud yet, but it's consistent.`
+      : `Not enough consistent evidence for a read yet. Your picks — ${songsPicked.split(",").slice(0, 3).join(",")} — pulled in different directions, and six matchups can't settle which one is you. Push back or keep going.`;
+  }
 
-    await supabase
-      .from("profiles")
-      .update({ opening_hypothesis: synthesis })
-      .eq("user_id", userId);
+  await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
 
-    return { synthesis, kept_choosing, counter_reads };
+  return { synthesis, kept_choosing, counter_reads };
 }
-
 
 // ============================================================
 // Chat — free-form conversation that continues the interview.
@@ -3372,7 +4143,9 @@ async function loadCriticProfile(
 ): Promise<CriticProfileRow> {
   const { data } = await supabase
     .from("critic_profile")
-    .select("bluntness, playfulness, patience, provocation_appetite, move_tally, forbidden_moves, turns_observed")
+    .select(
+      "bluntness, playfulness, patience, provocation_appetite, move_tally, forbidden_moves, turns_observed",
+    )
     .eq("user_id", userId)
     .maybeSingle();
   return {
@@ -3400,7 +4173,12 @@ function buildVoiceModulation(p: CriticProfileRow): string | null {
   dial("bluntness", p.bluntness, "Lean blunter, less hedging", "Soften delivery, drop snarl");
   dial("playfulness", p.playfulness, "More wit and wordplay", "Keep it dry, fewer jokes");
   dial("patience", p.patience, "Slow down, let them finish", "Move faster, cut filler");
-  dial("provocation_appetite", p.provocation_appetite, "Push harder, provoke a reaction", "Ease off on provocation");
+  dial(
+    "provocation_appetite",
+    p.provocation_appetite,
+    "Push harder, provoke a reaction",
+    "Ease off on provocation",
+  );
   // Surface top-landing move so the critic favors what's been working.
   let bestMove: MoveKey | null = null;
   let bestScore = 0;
@@ -3410,10 +4188,15 @@ function buildVoiceModulation(p: CriticProfileRow): string | null {
     const total = landed + (t.ignored ?? 0) + (t.pushed_back ?? 0);
     if (total < 2) continue;
     const score = landed / total;
-    if (score > bestScore) { bestScore = score; bestMove = m; }
+    if (score > bestScore) {
+      bestScore = score;
+      bestMove = m;
+    }
   }
   if (bestMove && bestScore >= 0.6) {
-    lines.push(`- Your ${bestMove.replace("_", "-")} moves land best with this listener — favor them.`);
+    lines.push(
+      `- Your ${bestMove.replace("_", "-")} moves land best with this listener — favor them.`,
+    );
   }
   if (p.forbidden_moves.length) {
     lines.push(`- Do not: ${p.forbidden_moves.slice(0, 5).join("; ")}.`);
@@ -3427,9 +4210,8 @@ async function persistCriticProfile(
   userId: string,
   next: CriticProfileRow,
 ): Promise<void> {
-  await supabase
-    .from("critic_profile")
-    .upsert({
+  await supabase.from("critic_profile").upsert(
+    {
       user_id: userId,
       bluntness: clampDial(next.bluntness),
       playfulness: clampDial(next.playfulness),
@@ -3438,7 +4220,9 @@ async function persistCriticProfile(
       move_tally: next.move_tally,
       forbidden_moves: next.forbidden_moves.slice(0, 8),
       turns_observed: next.turns_observed,
-    }, { onConflict: "user_id" });
+    },
+    { onConflict: "user_id" },
+  );
 }
 
 type ToneSignals = {
@@ -3471,7 +4255,10 @@ Most fields should be 0 / "none" / []. Be conservative.`;
   try {
     const raw = await ai([
       { role: "system", content: sys },
-      { role: "user", content: `Critic last said:\n"${priorAssistant}"\n\nListener replied:\n"${userReply}"\n\nReturn the JSON.` },
+      {
+        role: "user",
+        content: `Critic last said:\n"${priorAssistant}"\n\nListener replied:\n"${userReply}"\n\nReturn the JSON.`,
+      },
     ]);
     const cleaned = raw.replace(/```json\s*|```/g, "").trim();
     const parsed = JSON.parse(cleaned) as ToneSignals;
@@ -3498,7 +4285,9 @@ function applyToneSignals(p: CriticProfileRow, s: ToneSignals): CriticProfileRow
   }
   if (Array.isArray(s.forbid)) {
     for (const phrase of s.forbid) {
-      const trimmed = String(phrase ?? "").trim().slice(0, 120);
+      const trimmed = String(phrase ?? "")
+        .trim()
+        .slice(0, 120);
       if (!trimmed) continue;
       if (!next.forbidden_moves.some((f) => f.toLowerCase() === trimmed.toLowerCase())) {
         next.forbidden_moves.push(trimmed);
@@ -3516,7 +4305,9 @@ async function ensureChatSessionForUser(
 ): Promise<{ sessionId: string; profile: any } | null> {
   const { data: profile } = await supabase
     .from("profiles")
-    .select("opening_songs, opening_hypothesis, opening_lane, opening_lane_confidence, opening_analysis_json")
+    .select(
+      "opening_songs, opening_hypothesis, opening_lane, opening_lane_confidence, opening_analysis_json",
+    )
     .eq("user_id", userId)
     .maybeSingle();
 
@@ -3533,7 +4324,10 @@ async function ensureChatSessionForUser(
   if (!profile?.opening_songs) return null;
   const lane = (profile.opening_lane as string | null) ?? "general";
   const conf = Number(profile.opening_lane_confidence ?? 0);
-  const dims = (profile.opening_analysis_json?.candidate_dimensions ?? {}) as Record<string, number>;
+  const dims = (profile.opening_analysis_json?.candidate_dimensions ?? {}) as Record<
+    string,
+    number
+  >;
   const vector = seedVectorFromPriors(dims);
   const { data: created, error } = await supabase
     .from("sessions")
@@ -3554,10 +4348,12 @@ async function ensureChatSessionForUser(
 export const chatTurn = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      message: z.string().trim().min(1).max(2000),
-      sessionId: z.string().uuid().optional(),
-    }).parse(d),
+    z
+      .object({
+        message: z.string().trim().min(1).max(2000),
+        sessionId: z.string().uuid().optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }): Promise<{ reply: string; sessionId: string }> => {
     const { supabase, userId } = context;
@@ -3614,14 +4410,14 @@ export const chatTurn = createServerFn({ method: "POST" })
       .select("vector, lane")
       .eq("id", sessionId)
       .maybeSingle();
-    let vector = (sessionRow?.vector ?? {}) as Record<string, number>;
+    const vector = (sessionRow?.vector ?? {}) as Record<string, number>;
 
     // -------- Chat-driven dimension extraction --------
     // The user's reply is evidence too. Run a tight LLM pass to pull signed
     // deltas per dimension from the latest user turn (with brief recent
     // history for context). Cap per-turn movement so pairings stay primary.
-    const PER_TURN_CAP = 10;          // max |delta| applied to any one axis per turn
-    const VECTOR_BOUND = 200;         // overall clamp on |vector[axis]|
+    const PER_TURN_CAP = 10; // max |delta| applied to any one axis per turn
+    const VECTOR_BOUND = 200; // overall clamp on |vector[axis]|
     // Skip the extractor pass on short / trivial replies ("ok", "yeah", "lol").
     // Saves an LLM call and avoids feeding noise into the vector.
     const EXTRACTOR_MIN_CHARS = 12;
@@ -3636,59 +4432,74 @@ Only include dimensions the message clearly speaks to. Positive = high pole, neg
 ${(DIMS as readonly string[]).map((d) => `- ${d}: +${DIM_LABEL[d]?.hi} / -${DIM_LABEL[d]?.lo}`).join("\n")}
 Rules: at most 5 dimensions per reply. Skip dimensions the reply doesn't actually address. If the reply is empty, hostile filler, or off-topic, return {"deltas": {}}.
 No prose, no markdown fences.`;
-    if (trimmedMsg.length >= EXTRACTOR_MIN_CHARS) try {
-      const extractTxt = await ai([
-        { role: "system", content: extractorVoice },
-        { role: "user", content: `Recent turns:\n${recentTurns || "(none)"}\n\nLatest user reply:\n${data.message}\n\nReturn the JSON now.` },
-      ]);
-      const cleaned = extractTxt.replace(/```json\s*|```/g, "").trim();
-      const parsed = JSON.parse(cleaned) as { deltas?: Record<string, unknown> };
-      const deltas = parsed?.deltas ?? {};
-      const applied: Record<string, number> = {};
-      for (const dim of DIMS as readonly string[]) {
-        const raw = deltas[dim];
-        if (typeof raw !== "number" || !Number.isFinite(raw)) continue;
-        const capped = Math.max(-PER_TURN_CAP, Math.min(PER_TURN_CAP, Math.round(raw)));
-        if (capped === 0) continue;
-        const next = Math.max(-VECTOR_BOUND, Math.min(VECTOR_BOUND, (vector[dim] ?? 0) + capped));
-        if (next !== (vector[dim] ?? 0)) applied[dim] = capped;
-        vector[dim] = next;
-      }
-      if (Object.keys(applied).length) {
-        // D04: chat is self-report, not pairing evidence. The session vector
-        // and the original result stay frozen; the refinement is recorded
-        // separately and produces a new result version with provenance.
-        await (await trustedEventLog()).insert({
-          user_id: userId,
-          session_id: sessionId,
-          event_type: "self_report",
-          props: { deltas: applied, message_chars: trimmedMsg.length } as never,
-          client: "server",
-        });
-        const latest = await latestResultVersion(supabase, sessionId);
-        if (latest) {
-          const prior = (latest.self_report ?? {}) as { deltas?: Record<string, number>; turns?: number };
-          const cum: Record<string, number> = { ...(prior.deltas ?? {}) };
-          for (const [d, v] of Object.entries(applied)) cum[d] = (cum[d] ?? 0) + v;
-          const base = await supabase.from("session_results").select("version, content")
-            .eq("session_id", sessionId).eq("source", "pairings").order("version").limit(1).maybeSingle();
-          await supabase.from("session_results").insert({
-            session_id: sessionId,
-            user_id: userId,
-            version: latest.version + 1,
-            source: "chat_self_report",
-            base_version: base.data?.version ?? null,
-            content: (base.data?.content ?? {}) as never,
-            self_report: { deltas: cum, turns: (prior.turns ?? 0) + 1 } as never,
-            ledger_version: LEDGER_VERSION,
-            policy_version: CLAIM_POLICY_VERSION,
-            engine_version: ENGINE_VERSION,
-          });
+    if (trimmedMsg.length >= EXTRACTOR_MIN_CHARS)
+      try {
+        const extractTxt = await ai([
+          { role: "system", content: extractorVoice },
+          {
+            role: "user",
+            content: `Recent turns:\n${recentTurns || "(none)"}\n\nLatest user reply:\n${data.message}\n\nReturn the JSON now.`,
+          },
+        ]);
+        const cleaned = extractTxt.replace(/```json\s*|```/g, "").trim();
+        const parsed = JSON.parse(cleaned) as { deltas?: Record<string, unknown> };
+        const deltas = parsed?.deltas ?? {};
+        const applied: Record<string, number> = {};
+        for (const dim of DIMS as readonly string[]) {
+          const raw = deltas[dim];
+          if (typeof raw !== "number" || !Number.isFinite(raw)) continue;
+          const capped = Math.max(-PER_TURN_CAP, Math.min(PER_TURN_CAP, Math.round(raw)));
+          if (capped === 0) continue;
+          const next = Math.max(-VECTOR_BOUND, Math.min(VECTOR_BOUND, (vector[dim] ?? 0) + capped));
+          if (next !== (vector[dim] ?? 0)) applied[dim] = capped;
+          vector[dim] = next;
         }
+        if (Object.keys(applied).length) {
+          // D04: chat is self-report, not pairing evidence. The session vector
+          // and the original result stay frozen; the refinement is recorded
+          // separately and produces a new result version with provenance.
+          await (
+            await trustedEventLog()
+          ).insert({
+            user_id: userId,
+            session_id: sessionId,
+            event_type: "self_report",
+            props: { deltas: applied, message_chars: trimmedMsg.length } as never,
+            client: "server",
+          });
+          const latest = await latestResultVersion(supabase, sessionId);
+          if (latest) {
+            const prior = (latest.self_report ?? {}) as {
+              deltas?: Record<string, number>;
+              turns?: number;
+            };
+            const cum: Record<string, number> = { ...(prior.deltas ?? {}) };
+            for (const [d, v] of Object.entries(applied)) cum[d] = (cum[d] ?? 0) + v;
+            const base = await supabase
+              .from("session_results")
+              .select("version, content")
+              .eq("session_id", sessionId)
+              .eq("source", "pairings")
+              .order("version")
+              .limit(1)
+              .maybeSingle();
+            await supabase.from("session_results").insert({
+              session_id: sessionId,
+              user_id: userId,
+              version: latest.version + 1,
+              source: "chat_self_report",
+              base_version: base.data?.version ?? null,
+              content: (base.data?.content ?? {}) as never,
+              self_report: { deltas: cum, turns: (prior.turns ?? 0) + 1 } as never,
+              ledger_version: LEDGER_VERSION,
+              policy_version: CLAIM_POLICY_VERSION,
+              engine_version: ENGINE_VERSION,
+            });
+          }
+        }
+      } catch {
+        // Extraction is best-effort; chat continues with the prior vector.
       }
-    } catch {
-      // Extraction is best-effort; chat continues with the prior vector.
-    }
 
     const topAxes = (DIMS as readonly string[])
       .map((d) => ({ d, v: vector[d] ?? 0 }))
@@ -3696,10 +4507,11 @@ No prose, no markdown fences.`;
       .sort((a, b) => Math.abs(b.v) - Math.abs(a.v))
       .slice(0, 5);
 
-
     const ctxLines: string[] = [];
     if (profile?.opening_songs?.length) {
-      ctxLines.push(`Opener songs (ranked):\n${(profile.opening_songs as string[]).map((s, i) => `${i + 1}. ${s}`).join("\n")}`);
+      ctxLines.push(
+        `Opener songs (ranked):\n${(profile.opening_songs as string[]).map((s, i) => `${i + 1}. ${s}`).join("\n")}`,
+      );
     }
     if (profile?.opening_hypothesis) {
       ctxLines.push(`Working hypothesis: "${profile.opening_hypothesis}"`);
@@ -3717,7 +4529,9 @@ No prose, no markdown fences.`;
           .join("\n")}`,
       );
     }
-    const contextBlock = ctxLines.length ? `Listener context:\n${ctxLines.join("\n\n")}` : "No prior context yet.";
+    const contextBlock = ctxLines.length
+      ? `Listener context:\n${ctxLines.join("\n\n")}`
+      : "No prior context yet.";
 
     const criticProfile = await loadCriticProfile(supabase as never, userId);
     const voiceMod = buildVoiceModulation(criticProfile);
@@ -3756,18 +4570,18 @@ No prose, no markdown fences.`;
     // assistant entry in it is correctly the one the user just reacted to —
     // don't reorder those statements.
     // Skip on short / trivial replies — no real signal, just LLM spend.
-    if (trimmedMsg.length >= EXTRACTOR_MIN_CHARS) try {
-      const priorAssistant = [...(history ?? [])]
-        .reverse()
-        .find((m) => m.role === "assistant")?.content as string | undefined;
-      const signals = await extractToneSignals(priorAssistant ?? null, data.message);
-      if (signals) {
-        const next = applyToneSignals(criticProfile, signals);
-        await persistCriticProfile(supabase as never, userId, next);
+    if (trimmedMsg.length >= EXTRACTOR_MIN_CHARS)
+      try {
+        const priorAssistant = [...(history ?? [])].reverse().find((m) => m.role === "assistant")
+          ?.content as string | undefined;
+        const signals = await extractToneSignals(priorAssistant ?? null, data.message);
+        if (signals) {
+          const next = applyToneSignals(criticProfile, signals);
+          await persistCriticProfile(supabase as never, userId, next);
+        }
+      } catch {
+        // Profile update is best-effort.
       }
-    } catch {
-      // Profile update is best-effort.
-    }
 
     return { reply, sessionId };
   });
@@ -3789,7 +4603,11 @@ export const listChat = createServerFn({ method: "GET" })
         .limit(1);
       sessionId = existing?.[0]?.id ?? null;
     }
-    if (!sessionId) return { sessionId: null, messages: [] as Array<{ role: ChatRole; content: string; created_at: string }> };
+    if (!sessionId)
+      return {
+        sessionId: null,
+        messages: [] as Array<{ role: ChatRole; content: string; created_at: string }>,
+      };
     const { data: rows } = await supabase
       .from("chat_messages")
       .select("role, content, created_at")
@@ -3798,14 +4616,15 @@ export const listChat = createServerFn({ method: "GET" })
       .limit(200);
     return {
       sessionId,
-      messages: ((rows ?? []) as Array<{ role: string; content: string; created_at: string }>).map((r) => ({
-        role: r.role as ChatRole,
-        content: r.content,
-        created_at: r.created_at,
-      })),
+      messages: ((rows ?? []) as Array<{ role: string; content: string; created_at: string }>).map(
+        (r) => ({
+          role: r.role as ChatRole,
+          content: r.content,
+          created_at: r.created_at,
+        }),
+      ),
     };
   });
-
 
 // ============================================================
 // Per-round running read — the "detective board" line.
@@ -3844,24 +4663,66 @@ export type CurrentReadResult = {
   } | null;
 };
 
-export async function currentReadImpl(supabase: AuthedSupabase, userId: string, data: { sessionId: string }): Promise<CurrentReadResult> {
-    const emptyEvidence: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
-    const axisCols = (DIMS as readonly string[]).join(",");
-    const [sessionRes, choicesRes] = await Promise.all([
-      supabase.from("sessions").select("vector,user_id").eq("id", data.sessionId).single(),
-      supabase
-        .from("choices")
-        .select(
-          `created_at, pairing_id, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
-        )
-        .eq("session_id", data.sessionId)
-        .order("created_at", { ascending: true }),
-    ]);
-    const s = sessionRes.data as { vector: Record<string, number>; user_id: string } | null;
-    if (!s || s.user_id !== userId) {
+export async function currentReadImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string },
+): Promise<CurrentReadResult> {
+  const emptyEvidence: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
+  const axisCols = (DIMS as readonly string[]).join(",");
+  const [sessionRes, choicesRes] = await Promise.all([
+    supabase.from("sessions").select("vector,user_id").eq("id", data.sessionId).single(),
+    supabase
+      .from("choices")
+      .select(
+        `created_at, pairing_id, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
+      )
+      .eq("session_id", data.sessionId)
+      .order("created_at", { ascending: true }),
+  ]);
+  const s = sessionRes.data as { vector: Record<string, number>; user_id: string } | null;
+  if (!s || s.user_id !== userId) {
+    return {
+      thesis: "Nothing to read yet.",
+      hook: "",
+      topDim: null,
+      strength: 0,
+      tier: "observation",
+      direction: "forming",
+      evidence: emptyEvidence,
+      question: "",
+    };
+  }
+
+  type SongRow = Record<string, unknown> & { title?: string; artist?: string };
+  type ChoiceRow = {
+    pairing_id: string | null;
+    pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
+    chosen: SongRow | null;
+    rejected: SongRow | null;
+  };
+  const choices = (choicesRes.data ?? []) as unknown as ChoiceRow[];
+  const answered = choices.length;
+  const num = (row: SongRow | null, dim: string) => {
+    const v = row?.[dim];
+    return typeof v === "number" ? v : 0;
+  };
+  const label = (row: SongRow | null) =>
+    row?.title ? `${row.title}${row.artist ? ` (${row.artist})` : ""}` : "that one";
+
+  const vector = s.vector ?? {};
+  const ranked = (DIMS as readonly string[])
+    .map((d) => ({ d, v: vector[d] ?? 0 }))
+    .sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
+  const top = ranked[0];
+
+  // ---- Tier 1: too little evidence for a thread. Talk about the choice. ----
+  const latest = choices[answered - 1];
+  if (!top || answered < 3) {
+    if (!latest) {
       return {
-        thesis: "Nothing to read yet.",
-        hook: "",
+        thesis: "First one's yours to call.",
+        hook: "Pick the one you'd actually put on.",
         topDim: null,
         strength: 0,
         tier: "observation",
@@ -3870,144 +4731,144 @@ export async function currentReadImpl(supabase: AuthedSupabase, userId: string, 
         question: "",
       };
     }
-
-    type SongRow = Record<string, unknown> & { title?: string; artist?: string };
-    type ChoiceRow = {
-      pairing_id: string | null;
-      pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
-      chosen: SongRow | null;
-      rejected: SongRow | null;
-    };
-    const choices = (choicesRes.data ?? []) as unknown as ChoiceRow[];
-    const answered = choices.length;
-    const num = (row: SongRow | null, dim: string) => {
-      const v = row?.[dim];
-      return typeof v === "number" ? v : 0;
-    };
-    const label = (row: SongRow | null) =>
-      row?.title ? `${row.title}${row.artist ? ` (${row.artist})` : ""}` : "that one";
-
-    const vector = s.vector ?? {};
-    const ranked = (DIMS as readonly string[])
-      .map((d) => ({ d, v: vector[d] ?? 0 }))
-      .sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
-    const top = ranked[0];
-
-    // ---- Tier 1: too little evidence for a thread. Talk about the choice. ----
-    const latest = choices[answered - 1];
-    if (!top || answered < 3) {
-      if (!latest) {
-        return {
-          thesis: "First one's yours to call.",
-          hook: "Pick the one you'd actually put on.",
-          topDim: null,
-          strength: 0,
-          tier: "observation",
-          direction: "forming",
-          evidence: emptyEvidence,
-          question: "",
-        };
+    // Biggest gap in the choice they just made — that's the real tradeoff.
+    const gaps = (DIMS as readonly string[])
+      .map((d) => ({ d, delta: num(latest.chosen, d) - num(latest.rejected, d) }))
+      .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
+    const g = gaps[0];
+    const pole = g ? POLES[g.d]?.[g.delta >= 0 ? "hi" : "lo"] : undefined;
+    const line = pickByHash(pole?.observations, answered + dimSeed(g?.d ?? "x"));
+    const obsThesis = `${label(latest.chosen)} over ${label(latest.rejected)}. ${line ?? "Noted."}`;
+    // Save early observations too, so a resumed session shows them (READ03).
+    {
+      const { data: prev } = await supabase
+        .from("event_log")
+        .select("props")
+        .eq("session_id", data.sessionId)
+        .eq("event_type", "read_shown")
+        .order("created_at", { ascending: false })
+        .limit(1);
+      const prevAnswered = (prev?.[0]?.props as { answered?: number } | null)?.answered;
+      if (prevAnswered !== answered) {
+        await (
+          await trustedEventLog()
+        ).insert({
+          user_id: userId,
+          session_id: data.sessionId,
+          event_type: "read_shown",
+          props: {
+            axis: g?.d ?? null,
+            direction: g && g.delta >= 0 ? "hi" : "lo",
+            tier: "observation",
+            answered,
+            thesis: obsThesis,
+            revised: false,
+          } as never,
+        });
       }
-      // Biggest gap in the choice they just made — that's the real tradeoff.
-      const gaps = (DIMS as readonly string[])
-        .map((d) => ({ d, delta: num(latest.chosen, d) - num(latest.rejected, d) }))
-        .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta));
-      const g = gaps[0];
-      const pole = g ? POLES[g.d]?.[g.delta >= 0 ? "hi" : "lo"] : undefined;
-      const line = pickByHash(pole?.observations, answered + dimSeed(g?.d ?? "x"));
-      const obsThesis = `${label(latest.chosen)} over ${label(latest.rejected)}. ${line ?? "Noted."}`;
-      // Save early observations too, so a resumed session shows them (READ03).
-      {
-        const { data: prev } = await supabase.from("event_log").select("props")
-          .eq("session_id", data.sessionId).eq("event_type", "read_shown")
-          .order("created_at", { ascending: false }).limit(1);
-        const prevAnswered = (prev?.[0]?.props as { answered?: number } | null)?.answered;
-        if (prevAnswered !== answered) {
-          await (await trustedEventLog()).insert({
-            user_id: userId, session_id: data.sessionId, event_type: "read_shown",
-            props: { axis: g?.d ?? null, direction: g && g.delta >= 0 ? "hi" : "lo", tier: "observation",
-              answered, thesis: obsThesis, revised: false } as never,
-          });
+    }
+    return {
+      thesis: obsThesis,
+      hook:
+        answered === 1
+          ? "One data point. Let's get another."
+          : "Twice now. Could still be a coincidence.",
+      topDim: g?.d ?? null,
+      strength: g ? Math.abs(g.delta) : 0,
+      tier: "observation",
+      direction: "forming",
+      evidence: { supporting: 0, contradicting: 0, tested: answered, examples: [] },
+      question: "Does that hold when the other side is a song you love?",
+    };
+  }
+
+  // ---- Evidence from the shared ledger (same builder as the final read). ----
+  const ledger = buildLedger(
+    choices.map((c) => ({
+      pairing_id: c.pairing_id ?? null,
+      tests: c.pairing?.tests ?? null,
+      diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
+      chosen: c.chosen as LedgerSong | null,
+      rejected: c.rejected as LedgerSong | null,
+    })),
+    DIMS as readonly string[],
+  );
+  const lead = ledger.axes[0];
+  if (!lead) {
+    return {
+      thesis: "Your picks so far don't line up on anything yet.",
+      hook: "Let's find the tradeoff that does.",
+      topDim: null,
+      strength: 0,
+      tier: "theory",
+      direction: "forming",
+      evidence: emptyEvidence,
+      question: "",
+      revision: null,
+    };
+  }
+  const fmt = (e: {
+    chosen: string;
+    chosen_artist: string;
+    rejected: string;
+    rejected_artist: string;
+  }) => ({
+    chosen: e.chosen_artist ? `${e.chosen} (${e.chosen_artist})` : e.chosen,
+    rejected: e.rejected_artist ? `${e.rejected} (${e.rejected_artist})` : e.rejected,
+  });
+  const ev: ReadEvidence = {
+    supporting: lead.supporting,
+    contradicting: lead.contradicting,
+    tested: lead.tested,
+    examples: lead.supporting_examples.slice(0, 2).map(fmt),
+  };
+
+  // ---- Revision: compare against the last read the user actually saw. ----
+  const { data: priorRows } = await supabase
+    .from("event_log")
+    .select("props")
+    .eq("session_id", data.sessionId)
+    .eq("event_type", "read_shown")
+    .order("created_at", { ascending: false })
+    .limit(1);
+  const priorProps = (priorRows?.[0]?.props ?? null) as {
+    axis?: string;
+    direction?: "hi" | "lo";
+    tier?: string;
+    answered?: number;
+    thesis?: string;
+  } | null;
+  const prior: PriorRead =
+    priorProps?.axis && priorProps.direction
+      ? {
+          axis: priorProps.axis,
+          direction: priorProps.direction,
+          tier: priorProps.tier ?? "theory",
         }
-      }
-      return {
-        thesis: obsThesis,
-        hook: answered === 1 ? "One data point. Let's get another." : "Twice now. Could still be a coincidence.",
-        topDim: g?.d ?? null,
-        strength: g ? Math.abs(g.delta) : 0,
-        tier: "observation",
-        direction: "forming",
-        evidence: { supporting: 0, contradicting: 0, tested: answered, examples: [] },
-        question: "Does that hold when the other side is a song you love?",
-      };
-    }
-
-    // ---- Evidence from the shared ledger (same builder as the final read). ----
-    const ledger = buildLedger(
-      choices.map((c) => ({
-        pairing_id: c.pairing_id ?? null,
-        tests: c.pairing?.tests ?? null,
-        diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
-        chosen: c.chosen as LedgerSong | null,
-        rejected: c.rejected as LedgerSong | null,
-      })),
-      DIMS as readonly string[],
-    );
-    const lead = ledger.axes[0];
-    if (!lead) {
-      return {
-        thesis: "Your picks so far don't line up on anything yet.",
-        hook: "Let's find the tradeoff that does.",
-        topDim: null, strength: 0, tier: "theory", direction: "forming",
-        evidence: emptyEvidence, question: "", revision: null,
-      };
-    }
-    const fmt = (e: { chosen: string; chosen_artist: string; rejected: string; rejected_artist: string }) => ({
-      chosen: e.chosen_artist ? `${e.chosen} (${e.chosen_artist})` : e.chosen,
-      rejected: e.rejected_artist ? `${e.rejected} (${e.rejected_artist})` : e.rejected,
-    });
-    const ev: ReadEvidence = {
-      supporting: lead.supporting,
-      contradicting: lead.contradicting,
-      tested: lead.tested,
-      examples: lead.supporting_examples.slice(0, 2).map(fmt),
-    };
-
-    // ---- Revision: compare against the last read the user actually saw. ----
-    const { data: priorRows } = await supabase
-      .from("event_log")
-      .select("props")
-      .eq("session_id", data.sessionId)
-      .eq("event_type", "read_shown")
-      .order("created_at", { ascending: false })
-      .limit(1);
-    const priorProps = (priorRows?.[0]?.props ?? null) as
-      | { axis?: string; direction?: "hi" | "lo"; tier?: string; answered?: number; thesis?: string }
-      | null;
-    const prior: PriorRead = priorProps?.axis && priorProps.direction
-      ? { axis: priorProps.axis, direction: priorProps.direction, tier: priorProps.tier ?? "theory" }
       : null;
-    const rev = detectRevision(prior, ledger);
+  const rev = detectRevision(prior, ledger);
 
-    const direction: CurrentReadResult["direction"] = rev.revised
-      ? "revising"
-      : lead.contradicting > 0
-        ? "contested"
-        : lead.supporting >= 2
-          ? "holding"
-          : "forming";
+  const direction: CurrentReadResult["direction"] = rev.revised
+    ? "revising"
+    : lead.contradicting > 0
+      ? "contested"
+      : lead.supporting >= 2
+        ? "holding"
+        : "forming";
 
-    const hi = lead.direction === "hi";
-    const variantSeed = answered + dimSeed(lead.axis) + (hi ? 0 : 1);
-    const beat = BEAT[lead.axis];
-    const pole = pickVariant(hi ? beat?.hi : beat?.lo, variantSeed);
-    const fallback = POLES[lead.axis]?.[hi ? "hi" : "lo"];
-    const claimLine = pole?.thesis ?? pickByHash(fallback?.observations, variantSeed) ?? "There's a thread here.";
-    const axisLabel = fallback?.axis_label ?? "something";
-    const priorLabel = prior ? (POLES[prior.axis]?.[prior.direction]?.axis_label ?? "one thing") : "";
-    const changed = rev.changed_by ? fmt(rev.changed_by) : null;
+  const hi = lead.direction === "hi";
+  const variantSeed = answered + dimSeed(lead.axis) + (hi ? 0 : 1);
+  const beat = BEAT[lead.axis];
+  const pole = pickVariant(hi ? beat?.hi : beat?.lo, variantSeed);
+  const fallback = POLES[lead.axis]?.[hi ? "hi" : "lo"];
+  const claimLine =
+    pole?.thesis ?? pickByHash(fallback?.observations, variantSeed) ?? "There's a thread here.";
+  const axisLabel = fallback?.axis_label ?? "something";
+  const priorLabel = prior ? (POLES[prior.axis]?.[prior.direction]?.axis_label ?? "one thing") : "";
+  const changed = rev.changed_by ? fmt(rev.changed_by) : null;
 
-    const revision = rev.revised && prior
+  const revision =
+    rev.revised && prior
       ? {
           previous_claim: priorProps?.thesis ?? priorLabel,
           previous_axis: prior.axis,
@@ -4016,55 +4877,77 @@ export async function currentReadImpl(supabase: AuthedSupabase, userId: string, 
         }
       : null;
 
-    let result: CurrentReadResult;
-    if (lead.eligible && !rev.revised) {
-      // ---- Tier 3: earned claim under D01 (3+ support, >= 0.65, support > contra). ----
-      result = {
-        thesis: lead.status === "qualified" ? `${claimLine} Mostly.` : claimLine,
-        hook: pole?.hook ?? "That one's not a coincidence anymore.",
-        topDim: lead.axis, strength: lead.magnitude, tier: "read", direction,
-        evidence: ev, question: "", revision: null,
-      };
-    } else {
-      const hedged = rev.revised
-        ? changed
-          ? `I had you on ${priorLabel}. Then you took ${changed.chosen} over ${changed.rejected}. Rethinking.`
-          : `I had you on ${priorLabel}. The evidence moved. Now it might be ${axisLabel}.`
+  let result: CurrentReadResult;
+  if (lead.eligible && !rev.revised) {
+    // ---- Tier 3: earned claim under D01 (3+ support, >= 0.65, support > contra). ----
+    result = {
+      thesis: lead.status === "qualified" ? `${claimLine} Mostly.` : claimLine,
+      hook: pole?.hook ?? "That one's not a coincidence anymore.",
+      topDim: lead.axis,
+      strength: lead.magnitude,
+      tier: "read",
+      direction,
+      evidence: ev,
+      question: "",
+      revision: null,
+    };
+  } else {
+    const hedged = rev.revised
+      ? changed
+        ? `I had you on ${priorLabel}. Then you took ${changed.chosen} over ${changed.rejected}. Rethinking.`
+        : `I had you on ${priorLabel}. The evidence moved. Now it might be ${axisLabel}.`
+      : direction === "contested"
+        ? `${claimLine} Except once, where you went the other way.`
+        : `Might be ${axisLabel}. One more would tell me.`;
+    result = {
+      thesis: hedged,
+      hook: rev.revised
+        ? "Let me start that thread over."
         : direction === "contested"
-          ? `${claimLine} Except once, where you went the other way.`
-          : `Might be ${axisLabel}. One more would tell me.`;
-      result = {
-        thesis: hedged,
-        hook: rev.revised ? "Let me start that thread over." : direction === "contested" ? "So which was the exception?" : "Let's test it properly.",
-        topDim: lead.axis, strength: lead.magnitude, tier: "theory", direction,
-        evidence: ev,
-        question: direction === "contested" ? "Was that one a mood, or is my read wrong?" : "Does it hold against something you already love?",
-        revision,
-      };
-    }
+          ? "So which was the exception?"
+          : "Let's test it properly.",
+      topDim: lead.axis,
+      strength: lead.magnitude,
+      tier: "theory",
+      direction,
+      evidence: ev,
+      question:
+        direction === "contested"
+          ? "Was that one a mood, or is my read wrong?"
+          : "Does it hold against something you already love?",
+      revision,
+    };
+  }
 
-    // Record what was shown so the next read can detect a real revision.
-    if (priorProps?.answered !== answered) {
-      await (await trustedEventLog()).insert({
-        user_id: userId,
-        session_id: data.sessionId,
-        event_type: "read_shown",
-        props: {
-          axis: lead.axis, direction: lead.direction, tier: result.tier, answered,
-          thesis: result.thesis, supporting: lead.supporting, contradicting: lead.contradicting,
-          ledger: ledger.version, policy: ledger.policy, revised: rev.revised,
-          revision: result.revision,
-        } as never,
-      });
-    }
-    return result;
+  // Record what was shown so the next read can detect a real revision.
+  if (priorProps?.answered !== answered) {
+    await (
+      await trustedEventLog()
+    ).insert({
+      user_id: userId,
+      session_id: data.sessionId,
+      event_type: "read_shown",
+      props: {
+        axis: lead.axis,
+        direction: lead.direction,
+        tier: result.tier,
+        answered,
+        thesis: result.thesis,
+        supporting: lead.supporting,
+        contradicting: lead.contradicting,
+        ledger: ledger.version,
+        policy: ledger.policy,
+        revised: rev.revised,
+        revision: result.revision,
+      } as never,
+    });
+  }
+  return result;
 }
 
 export const currentRead = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ sessionId: z.string().uuid() }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => currentReadImpl(context.supabase, context.userId, data));
 
 // Trusted event_log writer. Event types that drive engine logic (skip stop

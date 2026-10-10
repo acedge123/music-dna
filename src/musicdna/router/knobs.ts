@@ -1,10 +1,5 @@
 import type { PairingKnobs as EnginePairingKnobs } from "@/musicdna/engine/pairing";
-import {
-  RECOGNITION_FLOORS,
-  type PairingKnobs,
-  type Regime,
-  type SelectionMode,
-} from "./types";
+import { RECOGNITION_FLOORS, type PairingKnobs, type Regime, type SelectionMode } from "./types";
 
 export type RegimeKnobs = Partial<EnginePairingKnobs>;
 

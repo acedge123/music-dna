@@ -14,11 +14,7 @@ import {
 } from "./terrain";
 import { regimeToPairingKnobs, regimeToSelectionMode } from "./knobs";
 import { recommendRegime, scoringAgrees, type Recommendation } from "./scoring";
-import type {
-  MusicDNARegimeRecommendation,
-  MusicDNATerrainInput,
-  Regime,
-} from "./types";
+import type { MusicDNARegimeRecommendation, MusicDNATerrainInput, Regime } from "./types";
 
 type AuthedSupabase = SupabaseClient<Database>;
 
@@ -86,7 +82,8 @@ export async function recommendForSession(
     const attempts = (attemptsRes.data ?? []) as Array<{ event_type: string }>;
     const recentSkipCount = attempts.filter((r) => r.event_type === "pairing_skipped").length;
     const skippedPairingIds =
-      opts.skippedPairingIds ?? Array.from({ length: recentSkipCount }, (_, i) => `recent-skip-${i}`);
+      opts.skippedPairingIds ??
+      Array.from({ length: recentSkipCount }, (_, i) => `recent-skip-${i}`);
 
     let archetypeMargin: number | null = opts.archetypeMargin ?? null;
     if (archetypeMargin === null && choiceRes.data && choiceRes.data.length > 0) {
@@ -127,8 +124,10 @@ export async function recommendForSession(
       },
     };
   } catch (e) {
-    // eslint-disable-next-line no-console
-    console.warn("[musicdna.router] recommendForSession failed:", e instanceof Error ? e.message : e);
+    console.warn(
+      "[musicdna.router] recommendForSession failed:",
+      e instanceof Error ? e.message : e,
+    );
     return null;
   }
 }

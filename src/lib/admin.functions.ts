@@ -38,15 +38,16 @@ export const adminCheck = createServerFn({ method: "GET" })
     return { isAdmin: true, userId: context.userId };
   });
 
-
 export const adminList = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      table: z.enum(ADMIN_TABLES),
-      search: z.string().max(120).optional(),
-      lane: z.string().max(40).optional(),
-    }).parse(d),
+    z
+      .object({
+        table: z.enum(ADMIN_TABLES),
+        search: z.string().max(120).optional(),
+        lane: z.string().max(40).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
@@ -87,7 +88,9 @@ export const adminList = createServerFn({ method: "POST" })
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const recRes = await (admin as any)
         .from("pairing_recognition")
-        .select("pairing_id, min_canon, avg_canon, recognition_score, era_bucket, era_span_years, cross_subculture, shared_subcultures")
+        .select(
+          "pairing_id, min_canon, avg_canon, recognition_score, era_bucket, era_span_years, cross_subculture, shared_subcultures",
+        )
         .in("pairing_id", ids);
       const byId = new Map<string, Record<string, unknown>>();
       for (const r of (recRes.data ?? []) as Array<Record<string, unknown>>) {
@@ -108,11 +111,13 @@ const RowSchema = z.record(z.string(), z.unknown());
 export const adminUpsert = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      table: z.enum(ADMIN_TABLES),
-      id: z.string().uuid().nullable().optional(),
-      row: RowSchema,
-    }).parse(d),
+    z
+      .object({
+        table: z.enum(ADMIN_TABLES),
+        id: z.string().uuid().nullable().optional(),
+        row: RowSchema,
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
@@ -143,10 +148,12 @@ export const adminUpsert = createServerFn({ method: "POST" })
 export const adminDelete = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      table: z.enum(ADMIN_TABLES),
-      id: z.string().uuid(),
-    }).parse(d),
+    z
+      .object({
+        table: z.enum(ADMIN_TABLES),
+        id: z.string().uuid(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
@@ -161,12 +168,14 @@ export const adminDelete = createServerFn({ method: "POST" })
 export const adminSetDiagnosticWeight = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      id: z.string().uuid(),
-      diagnostic_weight: z.number().int().min(0).max(100),
-      active: z.boolean().optional(),
-      is_bootstrap: z.boolean().optional(),
-    }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        diagnostic_weight: z.number().int().min(0).max(100),
+        active: z.boolean().optional(),
+        is_bootstrap: z.boolean().optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
@@ -180,7 +189,6 @@ export const adminSetDiagnosticWeight = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
-
 // --------- Residual review queue ---------
 // Sessions where the archetype match didn't clear the confidence bar.
 // This is the "did any listener escape all current archetypes?" queue:
@@ -192,19 +200,25 @@ export const adminSetDiagnosticWeight = createServerFn({ method: "POST" })
 export const adminResidualQueue = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      limit: z.number().int().min(1).max(200).default(50),
-      reason: z.enum(["low_score", "ambiguous", "no_archetypes", "any"]).default("any"),
-      lane: z.string().max(40).optional(),
-    }).parse(d),
+    z
+      .object({
+        limit: z.number().int().min(1).max(200).default(50),
+        reason: z.enum(["low_score", "ambiguous", "no_archetypes", "any"]).default("any"),
+        lane: z.string().max(40).optional(),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
 
     // Totals for the residual rate — completed sessions vs flagged ones.
-    const totalP = admin.from("sessions").select("id", { count: "exact", head: true })
+    const totalP = admin
+      .from("sessions")
+      .select("id", { count: "exact", head: true })
       .not("completed_at", "is", null);
-    const flaggedP = admin.from("sessions").select("id", { count: "exact", head: true })
+    const flaggedP = admin
+      .from("sessions")
+      .select("id", { count: "exact", head: true })
       .eq("archetype_flagged", true);
     const [totalRes, flaggedRes] = await Promise.all([totalP, flaggedP]);
     if (totalRes.error) throw new Error(totalRes.error.message);
@@ -213,7 +227,8 @@ export const adminResidualQueue = createServerFn({ method: "POST" })
     // Per-reason counts.
     const reasons: Record<string, number> = { low_score: 0, ambiguous: 0, no_archetypes: 0 };
     for (const r of Object.keys(reasons)) {
-      const { count, error } = await admin.from("sessions")
+      const { count, error } = await admin
+        .from("sessions")
         .select("id", { count: "exact", head: true })
         .eq("archetype_flagged", true)
         .eq("archetype_flag_reason", r);
@@ -221,8 +236,11 @@ export const adminResidualQueue = createServerFn({ method: "POST" })
       reasons[r] = count ?? 0;
     }
 
-    let q = admin.from("sessions")
-      .select("id, user_id, lane, lane_confidence, completed_at, archetype_top3, archetype_score, archetype_margin, archetype_flag_reason, share_token")
+    let q = admin
+      .from("sessions")
+      .select(
+        "id, user_id, lane, lane_confidence, completed_at, archetype_top3, archetype_score, archetype_margin, archetype_flag_reason, share_token",
+      )
       .eq("archetype_flagged", true)
       .order("completed_at", { ascending: false, nullsFirst: false })
       .limit(data.limit);
@@ -249,14 +267,18 @@ export const adminOntology = createServerFn({ method: "GET" })
     const admin = await assertAdminAndGetClient(context.userId);
 
     // ---- catalog ----
-    const songsRes = await admin.from("songs")
+    const songsRes = await admin
+      .from("songs")
       .select("id, title, artist, primary_lane, archetype_signals, active")
       .limit(5000);
     if (songsRes.error) throw new Error(songsRes.error.message);
     const songs = songsRes.data ?? [];
 
-    const pairingsRes = await admin.from("pairings")
-      .select("id, song_a_id, song_b_id, lane, diagnostic_weight, active, expected_split, user_facing_tradeoff, hypothesis, difficulty")
+    const pairingsRes = await admin
+      .from("pairings")
+      .select(
+        "id, song_a_id, song_b_id, lane, diagnostic_weight, active, expected_split, user_facing_tradeoff, hypothesis, difficulty",
+      )
       .limit(5000);
     if (pairingsRes.error) throw new Error(pairingsRes.error.message);
     const pairings = pairingsRes.data ?? [];
@@ -266,7 +288,8 @@ export const adminOntology = createServerFn({ method: "GET" })
     const archetypes = archRes.data ?? [];
 
     // ---- session-scale data (bounded — most recent 5k choices, 2k sessions) ----
-    const sessionsRes = await admin.from("sessions")
+    const sessionsRes = await admin
+      .from("sessions")
       .select("id, lane, archetype_id, archetype_score, completed_at")
       .not("completed_at", "is", null)
       .order("completed_at", { ascending: false })
@@ -274,7 +297,8 @@ export const adminOntology = createServerFn({ method: "GET" })
     if (sessionsRes.error) throw new Error(sessionsRes.error.message);
     const sessions = sessionsRes.data ?? [];
 
-    const choicesRes = await admin.from("choices")
+    const choicesRes = await admin
+      .from("choices")
       .select("pairing_id, chosen_song_id, rejected_song_id, ms_to_decide")
       .order("created_at", { ascending: false })
       .limit(5000);
@@ -284,7 +308,11 @@ export const adminOntology = createServerFn({ method: "GET" })
     // ---- coverage: lane × archetype-signal from the catalog ----
     // songs.archetype_signals is a free-form array; we count each signal
     // that matches a known archetype name (case-insensitive slug match).
-    const archNames = archetypes.map((a) => ({ id: a.id, name: a.name, key: a.name.toLowerCase() }));
+    const archNames = archetypes.map((a) => ({
+      id: a.id,
+      name: a.name,
+      key: a.name.toLowerCase(),
+    }));
     const laneList = new Set<string>();
     const coverage: Record<string, Record<string, number>> = {};
     const laneSongCount: Record<string, number> = {};
@@ -312,14 +340,20 @@ export const adminOntology = createServerFn({ method: "GET" })
       laneList.add(lane);
       laneSessionCount[lane] = (laneSessionCount[lane] ?? 0) + 1;
       const archName = archById.get(sess.archetype_id as string) ?? null;
-      if (!archName) { unassigned++; continue; }
+      if (!archName) {
+        unassigned++;
+        continue;
+      }
       heatmap[lane] ??= {};
       heatmap[lane][archName] = (heatmap[lane][archName] ?? 0) + 1;
     }
 
     // ---- pairing health ----
     const songById = new Map(songs.map((s) => [s.id as string, s]));
-    const pairingStats = new Map<string, { picks_a: number; picks_b: number; total: number; ms_sum: number; ms_n: number }>();
+    const pairingStats = new Map<
+      string,
+      { picks_a: number; picks_b: number; total: number; ms_sum: number; ms_n: number }
+    >();
     for (const c of choices) {
       const pid = c.pairing_id as string;
       if (!pid) continue;
@@ -330,7 +364,10 @@ export const adminOntology = createServerFn({ method: "GET" })
       else if (c.chosen_song_id === p.song_b_id) st.picks_b++;
       st.total++;
       const ms = c.ms_to_decide as number | null;
-      if (typeof ms === "number" && ms > 0 && ms < 60_000) { st.ms_sum += ms; st.ms_n++; }
+      if (typeof ms === "number" && ms > 0 && ms < 60_000) {
+        st.ms_sum += ms;
+        st.ms_n++;
+      }
       pairingStats.set(pid, st);
     }
 
@@ -338,13 +375,12 @@ export const adminOntology = createServerFn({ method: "GET" })
       .map((p) => {
         const st = pairingStats.get(p.id as string);
         const total = st?.total ?? 0;
-        const splitA = total ? (st!.picks_a / total) : null;
+        const splitA = total ? st!.picks_a / total : null;
         // Info gain proxy: balanced splits (~50/50) are more diagnostic.
         // Score 0..100; 50/50 → 100, 100/0 → 0. Only meaningful once we
         // have a real sample; keep null under 5 choices.
-        const infoGain = splitA != null && total >= 5
-          ? Math.round((1 - Math.abs(splitA - 0.5) * 2) * 100)
-          : null;
+        const infoGain =
+          splitA != null && total >= 5 ? Math.round((1 - Math.abs(splitA - 0.5) * 2) * 100) : null;
         const avgMs = st && st.ms_n ? Math.round(st.ms_sum / st.ms_n) : null;
         const a = songById.get(p.song_a_id as string);
         const b = songById.get(p.song_b_id as string);
@@ -369,26 +405,50 @@ export const adminOntology = createServerFn({ method: "GET" })
           info_gain: infoGain,
         };
       })
-      .sort((x, y) => (y.total - x.total));
+      .sort((x, y) => y.total - x.total);
 
     // ---- song health ----
-    const songStats = new Map<string, { appearances: number; chosen: number; ms_sum: number; ms_n: number; info_sum: number; info_n: number }>();
+    const songStats = new Map<
+      string,
+      {
+        appearances: number;
+        chosen: number;
+        ms_sum: number;
+        ms_n: number;
+        info_sum: number;
+        info_n: number;
+      }
+    >();
     for (const c of choices) {
       const pid = c.pairing_id as string;
       const p = pairings.find((pr) => pr.id === pid);
       if (!p) continue;
       const stAll = pairingStats.get(pid);
-      const infoGain = stAll && stAll.total >= 5
-        ? (1 - Math.abs(stAll.picks_a / stAll.total - 0.5) * 2) * 100
-        : null;
+      const infoGain =
+        stAll && stAll.total >= 5
+          ? (1 - Math.abs(stAll.picks_a / stAll.total - 0.5) * 2) * 100
+          : null;
       for (const sid of [p.song_a_id, p.song_b_id]) {
         if (!sid) continue;
-        const st = songStats.get(sid as string) ?? { appearances: 0, chosen: 0, ms_sum: 0, ms_n: 0, info_sum: 0, info_n: 0 };
+        const st = songStats.get(sid as string) ?? {
+          appearances: 0,
+          chosen: 0,
+          ms_sum: 0,
+          ms_n: 0,
+          info_sum: 0,
+          info_n: 0,
+        };
         st.appearances++;
         if (c.chosen_song_id === sid) st.chosen++;
         const ms = c.ms_to_decide as number | null;
-        if (typeof ms === "number" && ms > 0 && ms < 60_000) { st.ms_sum += ms; st.ms_n++; }
-        if (infoGain != null) { st.info_sum += infoGain; st.info_n++; }
+        if (typeof ms === "number" && ms > 0 && ms < 60_000) {
+          st.ms_sum += ms;
+          st.ms_n++;
+        }
+        if (infoGain != null) {
+          st.info_sum += infoGain;
+          st.info_n++;
+        }
         songStats.set(sid as string, st);
       }
     }
@@ -430,7 +490,6 @@ export const adminOntology = createServerFn({ method: "GET" })
     };
   });
 
-
 // ============ Diagnostics ============
 // Reads the read-only views defined in the instrumentation migration.
 // Requires admin; uses the service-role client so the security_invoker views
@@ -447,7 +506,11 @@ export const adminDiagnostics = createServerFn({ method: "GET" })
     const db = admin as any;
 
     const [stability, independence, contradiction, residual, agreement] = await Promise.all([
-      db.from("v_session_stability").select("*").order("created_at", { ascending: false }).limit(500),
+      db
+        .from("v_session_stability")
+        .select("*")
+        .order("created_at", { ascending: false })
+        .limit(500),
       db.from("v_axis_independence").select("*").limit(500),
       db.from("v_contradiction_load").select("*").limit(500),
       db.from("v_residual_rate").select("*").order("created_at", { ascending: false }).limit(500),
@@ -458,8 +521,9 @@ export const adminDiagnostics = createServerFn({ method: "GET" })
     // instead of throwing so the rest of the admin still works.
     type Res = { data: unknown[] | null; error: { message?: string } | null };
     const rows = (res: Res) =>
-      res.error ? { rows: [] as JsonRow[], error: res.error.message ?? "unknown" }
-                : { rows: (res.data ?? []) as JsonRow[], error: null };
+      res.error
+        ? { rows: [] as JsonRow[], error: res.error.message ?? "unknown" }
+        : { rows: (res.data ?? []) as JsonRow[], error: null };
 
     // Derived headline numbers — pre-aggregated so the UI stays simple.
     const residualRows = rows(residual).rows as Array<{ residual?: boolean | null }>;
@@ -473,9 +537,13 @@ export const adminDiagnostics = createServerFn({ method: "GET" })
     return {
       headline: {
         sessions_final: finalCount,
-        residual_rate: finalCount > 0 ? Math.round((residualCount / finalCount) * 1000) / 1000 : null,
+        residual_rate:
+          finalCount > 0 ? Math.round((residualCount / finalCount) * 1000) / 1000 : null,
         feedback_captured: withFeedback.length,
-        accuracy_rate: withFeedback.length > 0 ? Math.round((accurate / withFeedback.length) * 1000) / 1000 : null,
+        accuracy_rate:
+          withFeedback.length > 0
+            ? Math.round((accurate / withFeedback.length) * 1000) / 1000
+            : null,
       },
       session_stability: rows(stability),
       axis_independence: rows(independence),
@@ -484,7 +552,6 @@ export const adminDiagnostics = createServerFn({ method: "GET" })
       human_agreement: rows(agreement),
     };
   });
-
 
 // ============ Shadow router telemetry (Step 1 of Agent Brain integration) ============
 // Reads the `regime_recommended` events written fire-and-forget by
@@ -498,9 +565,11 @@ const CONFIDENT_AXIS_THRESHOLD = 20; // |vector - 50| >= 20 → axis is "confide
 export const adminShadowRouter = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      days: z.number().int().min(1).max(90).default(30),
-    }).parse(d),
+    z
+      .object({
+        days: z.number().int().min(1).max(90).default(30),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
@@ -510,31 +579,40 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
     const db = admin as any;
 
     const [regimeRes, choiceRes, skipRes, sessionRes] = await Promise.all([
-      db.from("event_log")
+      db
+        .from("event_log")
         .select("session_id, pairing_id, created_at, props")
         .eq("event_type", "regime_recommended")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
         .limit(5000),
-      db.from("event_log")
+      db
+        .from("event_log")
         .select("session_id, created_at, props")
         .eq("event_type", "choice_scored")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
         .limit(5000),
-      db.from("event_log")
+      db
+        .from("event_log")
         .select("session_id, created_at")
         .eq("event_type", "pairing_skipped")
         .gte("created_at", since)
         .limit(5000),
-      db.from("sessions")
+      db
+        .from("sessions")
         .select("id, lane, lane_confidence, completed_at, archetype_margin, vector, created_at")
         .gte("created_at", since)
         .order("created_at", { ascending: false })
         .limit(2000),
     ]);
 
-    type Row = { session_id: string | null; pairing_id?: string | null; created_at: string; props: Record<string, unknown> | null };
+    type Row = {
+      session_id: string | null;
+      pairing_id?: string | null;
+      created_at: string;
+      props: Record<string, unknown> | null;
+    };
     const regimeRows = (regimeRes.data ?? []) as Row[];
     const choiceRows = (choiceRes.data ?? []) as Row[];
     const skipRows = (skipRes.data ?? []) as Row[];
@@ -549,9 +627,18 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
     }>;
 
     // ---- Regime distribution + confidence ----
-    const regimeCounts: Record<string, number> = { explore: 0, prune: 0, compound: 0, coordinate: 0 };
+    const regimeCounts: Record<string, number> = {
+      explore: 0,
+      prune: 0,
+      compound: 0,
+      coordinate: 0,
+    };
     const featureCounts: Record<string, Record<string, number>> = {
-      uncertainty: {}, ruggedness: {}, local_minima_risk: {}, branching_factor: {}, mode_pressure: {},
+      uncertainty: {},
+      ruggedness: {},
+      local_minima_risk: {},
+      branching_factor: {},
+      mode_pressure: {},
     };
     const perRound: Record<number, Record<string, number>> = {};
     let confidenceSum = 0;
@@ -563,10 +650,14 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
       const regime = String((p as { regime?: unknown }).regime ?? "");
       if (regime && regime in regimeCounts) regimeCounts[regime]++;
       const conf = Number((p as { confidence?: unknown }).confidence);
-      if (Number.isFinite(conf)) { confidenceSum += conf; confidenceN++; }
+      if (Number.isFinite(conf)) {
+        confidenceSum += conf;
+        confidenceN++;
+      }
       if (r.session_id) uniqSessions.add(r.session_id);
 
-      const fs = ((p as { features_summary?: Record<string, unknown> }).features_summary ?? {}) as Record<string, unknown>;
+      const fs = ((p as { features_summary?: Record<string, unknown> }).features_summary ??
+        {}) as Record<string, unknown>;
       for (const k of Object.keys(featureCounts)) {
         const v = String(fs[k] ?? "");
         if (v) featureCounts[k][v] = (featureCounts[k][v] ?? 0) + 1;
@@ -632,7 +723,8 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
         sessions_completed: completedSessions,
       },
       regime_distribution: regimeCounts,
-      avg_confidence: confidenceN > 0 ? Math.round((confidenceSum / confidenceN) * 1000) / 1000 : null,
+      avg_confidence:
+        confidenceN > 0 ? Math.round((confidenceSum / confidenceN) * 1000) / 1000 : null,
       feature_distribution: featureCounts,
       per_round: perRound,
       compound_reachability: {
@@ -644,7 +736,10 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
       empty_reveal: {
         completed: completedSessions,
         flat: flatSessions,
-        rate: completedSessions > 0 ? Math.round((flatSessions / completedSessions) * 1000) / 1000 : null,
+        rate:
+          completedSessions > 0
+            ? Math.round((flatSessions / completedSessions) * 1000) / 1000
+            : null,
       },
     };
   });

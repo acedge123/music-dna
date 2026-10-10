@@ -33,7 +33,9 @@ describe("MusicDNA scoring parity", () => {
   });
 
   it("returns Agent Brain-style recommendation shape", () => {
-    const rec = scoreMusicDNATerrain(baseFeatures({ mode_pressure: "compound", uncertainty: "low" }));
+    const rec = scoreMusicDNATerrain(
+      baseFeatures({ mode_pressure: "compound", uncertainty: "low" }),
+    );
     expect(rec.primary_regime).toBe("compound");
     expect(rec.secondary_regime).toBeTruthy();
     expect(rec.opposing_regime).toBeTruthy();

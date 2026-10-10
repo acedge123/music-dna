@@ -19,9 +19,7 @@ export const Route = createFileRoute("/api/v1/account")({
       DELETE: async ({ request }) => {
         try {
           const { userId } = await verifyBearer(request);
-          const { supabaseAdmin } = await import(
-            "@/integrations/supabase/client.server"
-          );
+          const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
           const { error } = await supabaseAdmin.auth.admin.deleteUser(userId);
           if (error) {
             return errorResponse("INTERNAL", error.message, 500);

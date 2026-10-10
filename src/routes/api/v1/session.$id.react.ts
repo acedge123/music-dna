@@ -30,16 +30,28 @@ export const Route = createFileRoute("/api/v1/session/$id/react")({
           const sid = UUID.safeParse(params.id);
           if (!sid.success) return errorResponse("INVALID_INPUT", "Invalid session id", 400);
           let raw: unknown;
-          try { raw = await request.json(); } catch { return errorResponse("INVALID_INPUT", "Invalid JSON body", 400); }
+          try {
+            raw = await request.json();
+          } catch {
+            return errorResponse("INVALID_INPUT", "Invalid JSON body", 400);
+          }
           const body = BodySchema.safeParse(raw);
           if (!body.success) return errorResponse("INVALID_INPUT", body.error.message, 400);
           const { supabase, userId } = await verifyBearer(request);
 
           const { data: session } = await supabase
-            .from("sessions").select("user_id, completed_at").eq("id", sid.data).maybeSingle();
-          if (!session || session.user_id !== userId) return errorResponse("NOT_FOUND", "Session not found", 404);
+            .from("sessions")
+            .select("user_id, completed_at")
+            .eq("id", sid.data)
+            .maybeSingle();
+          if (!session || session.user_id !== userId)
+            return errorResponse("NOT_FOUND", "Session not found", 404);
 
-          await (await (await import("@/integrations/supabase/client.server")).supabaseAdmin.from("event_log")).insert({
+          await (
+            await (
+              await import("@/integrations/supabase/client.server")
+            ).supabaseAdmin.from("event_log")
+          ).insert({
             user_id: userId,
             session_id: sid.data,
             pairing_id: body.data.pairing_id ?? null,
@@ -52,7 +64,10 @@ export const Route = createFileRoute("/api/v1/session/$id/react")({
             return jsonResponse({
               contract: 1,
               effect: "pacing_only",
-              message: body.data.kind === "thats_me" ? "Noted. Let's keep pushing on it." : "Session's done — push back on the reading instead.",
+              message:
+                body.data.kind === "thats_me"
+                  ? "Noted. Let's keep pushing on it."
+                  : "Session's done — push back on the reading instead.",
               next: null,
             });
           }
@@ -63,7 +78,11 @@ export const Route = createFileRoute("/api/v1/session/$id/react")({
           const replaced = !!next.pairing;
           return jsonResponse({
             contract: 1,
-            effect: replaced ? (steer === "harder" ? "harder_pairing" : "retest_pairing") : "no_alternative",
+            effect: replaced
+              ? steer === "harder"
+                ? "harder_pairing"
+                : "retest_pairing"
+              : "no_alternative",
             message: replaced
               ? `${steer === "harder" ? "Fine. Harder one." : "Alright, let's check that."} ${next.prompt ?? ""}`.trim()
               : "Nothing in the catalog tests that differently right now. Your call on the next one stands.",

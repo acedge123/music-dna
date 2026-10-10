@@ -1,9 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  assignArchetype,
-  ARCHETYPE_SCORE_FLOOR,
-  ARCHETYPE_MARGIN_FLOOR,
-} from "./archetypes";
+import { assignArchetype, ARCHETYPE_SCORE_FLOOR, ARCHETYPE_MARGIN_FLOOR } from "./archetypes";
 
 const CATALOG = [
   { id: "arch-arch", name: "Architect", signature_axes: { craft: 1, escape: -0.5 } },
@@ -40,9 +36,7 @@ describe("assignArchetype", () => {
 
   it("flags low_score with a constructed sub-floor winner (unconditional)", () => {
     // Archetype spans 5 axes (magnitude √5). User only hits one → cos = 1/√5 ≈ 0.447 < 0.5.
-    const wide = [
-      { id: "w", name: "Wide", signature_axes: { a: 1, b: 1, c: 1, d: 1, e: 1 } },
-    ];
+    const wide = [{ id: "w", name: "Wide", signature_axes: { a: 1, b: 1, c: 1, d: 1, e: 1 } }];
     const result = assignArchetype({ a: 100 }, wide);
     expect(result.assignment).not.toBeNull();
     expect(result.assignment!.score).toBeLessThan(ARCHETYPE_SCORE_FLOOR);
@@ -72,9 +66,7 @@ describe("assignArchetype", () => {
   it("boundary: score exactly at the 0.5 floor is NOT flagged low_score", () => {
     // 4-axis archetype (magnitude 2); user hits one axis with value 100
     // → normalized magnitude 1, dot = 1 → cos = 1/2 = 0.5 exact.
-    const four = [
-      { id: "f", name: "Four", signature_axes: { a: 1, b: 1, c: 1, d: 1 } },
-    ];
+    const four = [{ id: "f", name: "Four", signature_axes: { a: 1, b: 1, c: 1, d: 1 } }];
     const result = assignArchetype({ a: 100 }, four);
     expect(result.assignment!.score).toBeCloseTo(0.5, 10);
     expect(result.flag_reason).not.toBe("low_score");

@@ -15,11 +15,7 @@ const FALLBACK: OnboardingOpener = {
   eyebrow: "three songs · ranked",
   headline: "Name three songs you love.\nRank them.",
   sub: "The order matters. Your #1 says more than you think.",
-  slot_labels: [
-    "The one you'd save first",
-    "The one right after",
-    "And one more",
-  ],
+  slot_labels: ["The one you'd save first", "The one right after", "And one more"],
   cta: "See what I think →",
 };
 

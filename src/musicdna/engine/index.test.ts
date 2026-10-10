@@ -5,22 +5,22 @@
 // this test surfaces it before web/Flutter hit it in production.
 
 import { describe, expect, it } from "vitest";
-import {
-  createEngine,
-  seededRng,
-  fixedClock,
-} from "./index";
-import {
-  createInMemorySupabaseGateway,
-  createScriptedLLMGateway,
-  emptyStore,
-} from "./testing";
+import { createEngine, seededRng, fixedClock } from "./index";
+import { createInMemorySupabaseGateway, createScriptedLLMGateway, emptyStore } from "./testing";
 import type { ArchetypeCatalogEntry } from "./archetypes";
 import type { PairingCandidate } from "./pairing";
 
 const DIMS = [
-  "movement", "atmosphere", "immersion", "scale", "community",
-  "perspective", "confidence", "tension", "texture", "transformation",
+  "movement",
+  "atmosphere",
+  "immersion",
+  "scale",
+  "community",
+  "perspective",
+  "confidence",
+  "tension",
+  "texture",
+  "transformation",
 ] as const;
 
 const ARCHETYPES: ArchetypeCatalogEntry[] = [
@@ -119,8 +119,6 @@ describe("engine factory — golden loop", () => {
   // evaluateProbe (cross-lane probe flipping) is quarantined out of the live
   // engine — its regression coverage lives in
   // src/musicdna/engine/experiments/cross-lane-probes.experimental.test.ts
-
-
 
   it("in-memory gateway serves the same shape the real adapter does", async () => {
     const store = emptyStore();

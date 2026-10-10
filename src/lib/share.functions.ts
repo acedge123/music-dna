@@ -12,17 +12,21 @@ import { buildPublicReveal, type PublicRevealInput } from "@/musicdna/engine/rev
 // endpoint /api/v1/share/:token calls the exact same `buildPublicReveal`.
 export const getPublicSession = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) =>
-    z.object({
-      // Accept either the share_token (hex string) or — for back-compat with
-      // old links — a session UUID. UUIDs are only honored if the session is
-      // explicitly marked is_public.
-      token: z.string().min(8).max(64),
-    }).parse(d),
+    z
+      .object({
+        // Accept either the share_token (hex string) or — for back-compat with
+        // old links — a session UUID. UUIDs are only honored if the session is
+        // explicitly marked is_public.
+        token: z.string().min(8).max(64),
+      })
+      .parse(d),
   )
   .handler(async ({ data }) => {
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
-    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(data.token);
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      data.token,
+    );
 
     let query = supabaseAdmin
       .from("sessions")

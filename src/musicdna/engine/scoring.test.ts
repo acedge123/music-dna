@@ -1,12 +1,5 @@
 import { describe, it, expect } from "vitest";
-import {
-  dot,
-  magnitude,
-  cosine,
-  l1Over,
-  scoreArchetype,
-  fitTier,
-} from "./scoring";
+import { dot, magnitude, cosine, l1Over, scoreArchetype, fitTier } from "./scoring";
 
 describe("dot / magnitude / cosine", () => {
   it("dot: only overlapping keys contribute", () => {

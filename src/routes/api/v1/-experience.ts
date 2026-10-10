@@ -25,8 +25,8 @@ export function nextV1(r: NextResult) {
   return {
     contract: 1,
     pairing: r.pairing,
-    prompt: r.pairing ? r.prompt ?? null : null,
+    prompt: r.pairing ? (r.prompt ?? null) : null,
     progress: { answered: r.answered ?? 0, max_answered: r.max_rounds ?? 6 },
-    completion: { done: r.done, reason: r.done ? r.stop_reason ?? "budget" : null },
+    completion: { done: r.done, reason: r.done ? (r.stop_reason ?? "budget") : null },
   };
 }

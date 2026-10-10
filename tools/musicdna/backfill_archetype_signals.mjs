@@ -35,15 +35,21 @@ const CONCURRENCY = 4;
 // Controlled vocabulary — the 9 canonical signals used across seeded lanes.
 // Keep this in sync with tools/musicdna/generate_alternative_canon.cjs.
 const SIGNAL_VOCAB = [
-  { slug: "open_signal",             desc: "Anthemic, radio-friendly, invites everyone in." },
-  { slug: "bassline_mystic",         desc: "Groove and low-end carry the song; body-forward." },
-  { slug: "melody_maximalist",       desc: "Big memorable hooks, melody is the point." },
-  { slug: "catharsis_engine",        desc: "Emotional release, loud/quiet payoff, explosive climax." },
-  { slug: "texture_astronaut",       desc: "Atmosphere and sonic space over song structure." },
-  { slug: "communal_lift_seeker",    desc: "Made for crowds, gospel/choir energy, collective uplift." },
-  { slug: "cinematic_romantic",      desc: "Widescreen, slow-burn, film-scored feeling." },
-  { slug: "forward_motion_romantic", desc: "Propulsive rhythm + emotional pull, driving yearning." },
-  { slug: "beautiful_doom_seeker",   desc: "Dark, gorgeous, melancholy that feels sublime." },
+  { slug: "open_signal", desc: "Anthemic, radio-friendly, invites everyone in." },
+  { slug: "bassline_mystic", desc: "Groove and low-end carry the song; body-forward." },
+  { slug: "melody_maximalist", desc: "Big memorable hooks, melody is the point." },
+  { slug: "catharsis_engine", desc: "Emotional release, loud/quiet payoff, explosive climax." },
+  { slug: "texture_astronaut", desc: "Atmosphere and sonic space over song structure." },
+  {
+    slug: "communal_lift_seeker",
+    desc: "Made for crowds, gospel/choir energy, collective uplift.",
+  },
+  { slug: "cinematic_romantic", desc: "Widescreen, slow-burn, film-scored feeling." },
+  {
+    slug: "forward_motion_romantic",
+    desc: "Propulsive rhythm + emotional pull, driving yearning.",
+  },
+  { slug: "beautiful_doom_seeker", desc: "Dark, gorgeous, melancholy that feels sublime." },
 ];
 
 // ---------- Args ----------
@@ -51,7 +57,7 @@ const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
     const m = a.match(/^--([^=]+)=?(.*)$/);
     return m ? [m[1], m[2] || true] : [a, true];
-  })
+  }),
 );
 const lanes = args.lanes ? String(args.lanes).split(",") : DEFAULT_LANES;
 const limit = args.limit ? Number(args.limit) : null;
@@ -61,7 +67,10 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SERVICE_KEY = process.env.SB_SECRET_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY;
 const LOVABLE_API_KEY = process.env.LOVABLE_API_KEY;
 for (const [k, v] of Object.entries({ SUPABASE_URL, SERVICE_KEY, LOVABLE_API_KEY })) {
-  if (!v) { console.error(`Missing env: ${k}`); process.exit(1); }
+  if (!v) {
+    console.error(`Missing env: ${k}`);
+    process.exit(1);
+  }
 }
 
 // ---------- Supabase REST helpers ----------
@@ -111,7 +120,11 @@ Pick 1–3 signals from the vocabulary.`;
   const json = await res.json();
   const raw = json.choices?.[0]?.message?.content ?? "{}";
   let parsed;
-  try { parsed = JSON.parse(raw); } catch { parsed = { signals: [], why: "parse_error" }; }
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    parsed = { signals: [], why: "parse_error" };
+  }
   const valid = new Set(SIGNAL_VOCAB.map((s) => s.slug));
   const signals = (parsed.signals || [])
     .filter((s) => typeof s === "string" && valid.has(s))
@@ -135,7 +148,9 @@ async function main() {
     "or=(archetype_signals.is.null,archetype_signals.eq.{})",
     "order=lane.asc,artist.asc,title.asc",
     limit ? `limit=${limit}` : "",
-  ].filter(Boolean).join("&");
+  ]
+    .filter(Boolean)
+    .join("&");
   const songs = await sbSelect(qs);
   console.log(`Fetched ${songs.length} untagged songs.`);
   if (!songs.length) return;
@@ -165,21 +180,36 @@ async function main() {
   const outDir = path.join(ROOT, "data", "musicdna");
   fs.mkdirSync(outDir, { recursive: true });
   const csvPath = path.join(outDir, "archetype_signals_backfill_proposals.csv");
-  const headers = ["id", "lane", "artist", "title", "year", "subculture", "proposed_signals", "why", "error"];
-  const csv = [
-    headers.join(","),
-    ...results.map((r) => [
-      r.song.id,
-      r.song.lane,
-      r.song.artist,
-      r.song.title,
-      r.song.year ?? "",
-      (r.song.subculture || []).join("|"),
-      r.signals.join("|"),
-      r.why,
-      r.error ?? "",
-    ].map(csvEscape).join(",")),
-  ].join("\n") + "\n";
+  const headers = [
+    "id",
+    "lane",
+    "artist",
+    "title",
+    "year",
+    "subculture",
+    "proposed_signals",
+    "why",
+    "error",
+  ];
+  const csv =
+    [
+      headers.join(","),
+      ...results.map((r) =>
+        [
+          r.song.id,
+          r.song.lane,
+          r.song.artist,
+          r.song.title,
+          r.song.year ?? "",
+          (r.song.subculture || []).join("|"),
+          r.signals.join("|"),
+          r.why,
+          r.error ?? "",
+        ]
+          .map(csvEscape)
+          .join(","),
+      ),
+    ].join("\n") + "\n";
   fs.writeFileSync(csvPath, csv);
   console.log(`Wrote proposals → ${path.relative(ROOT, csvPath)}`);
 
@@ -194,8 +224,8 @@ async function main() {
   fs.writeFileSync(
     sqlPath,
     `-- Auto-generated by tools/musicdna/backfill_archetype_signals.mjs\n` +
-    `-- Review the CSV before applying. ${stmts.length} songs will be updated.\n\n` +
-    `BEGIN;\n${stmts.join("\n")}\nCOMMIT;\n`
+      `-- Review the CSV before applying. ${stmts.length} songs will be updated.\n\n` +
+      `BEGIN;\n${stmts.join("\n")}\nCOMMIT;\n`,
   );
   console.log(`Wrote SQL       → ${path.relative(ROOT, sqlPath)}  (${stmts.length} updates)`);
 
@@ -204,4 +234,7 @@ async function main() {
   console.log(`Done. tagged=${results.length - empty} empty=${empty} errors=${errs}`);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

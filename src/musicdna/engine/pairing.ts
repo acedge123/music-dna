@@ -33,10 +33,7 @@ export type RecognitionRow = {
 // - "recognition_boost": blend recognition and diagnostic weight (uncertain lane).
 // - "recognition_first": hard-filter to recognizable pairings, then blend
 //   (general lane after bootstrap).
-export type SelectionMode =
-  | "diagnostic_first"
-  | "recognition_boost"
-  | "recognition_first";
+export type SelectionMode = "diagnostic_first" | "recognition_boost" | "recognition_first";
 
 // Phase 3.5: fork filter is now a first-class knob so the regime router can
 // switch between hard filtering (prune/compound), soft weighting (explore),
@@ -76,24 +73,24 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
 export type PairingKnobs = {
   // Axes with |v| >= this are considered "leaning" — feed the fork filter
   // and the challenge boost.
-  leaning_threshold: number;                // was 15
+  leaning_threshold: number; // was 15
   // Cap on how many leaning axes we track.
-  leaning_top_k: number;                    // was 3
+  leaning_top_k: number; // was 3
   // Multiplier applied to pairings whose tests overlap a leaning axis.
   // Only meaningful when fork_filter is "soft" or "off" — with "hard" the
   // pool is already restricted to fork-matching pairings.
-  challenge_boost: number;                  // was 1.5
+  challenge_boost: number; // was 1.5
   // axis_need weighting: w *= (base + slope * axisNeed).
-  axis_need_base: number;                   // was 0.4
-  axis_need_slope: number;                  // was 0.6
+  axis_need_base: number; // was 0.4
+  axis_need_slope: number; // was 0.6
   // Recognition/diagnostic blend factors per mode.
-  recog_blend_recognition_first: number;    // was 0.6
-  recog_blend_recognition_boost: number;    // was 0.4
+  recog_blend_recognition_first: number; // was 0.6
+  recog_blend_recognition_boost: number; // was 0.4
   // Phase 3.5 additions — nullable so top-level fields on SelectPairingInput
   // can override without ambiguity.
-  mode: SelectionMode;                      // was hard-coded to "diagnostic_first"
-  fork_filter: ForkFilterMode;              // was hard-coded to "hard"
-  canon_floor: number | null;               // null = use RECOGNITION_FLOORS[mode]
+  mode: SelectionMode; // was hard-coded to "diagnostic_first"
+  fork_filter: ForkFilterMode; // was hard-coded to "hard"
+  canon_floor: number | null; // null = use RECOGNITION_FLOORS[mode]
 };
 
 export const DEFAULT_PAIRING_KNOBS: PairingKnobs = {
@@ -131,7 +128,6 @@ export const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
   recognition_boost: 45,
   recognition_first: 55,
 };
-
 
 export type SelectPairingResult<P extends PairingCandidate = PairingCandidate> =
   | { kind: "picked"; pairing: P; selection_reason: SelectionReason }
@@ -188,7 +184,13 @@ export function sessionCompletion(input: {
   skip_bound?: number;
   /** Skips since the last answered pairing (D02). */
   consecutive_skips?: number;
-}): { done: boolean; reason: StopReason; confidence: number; confident_axes: number; max_answered: number } {
+}): {
+  done: boolean;
+  reason: StopReason;
+  confidence: number;
+  confident_axes: number;
+  max_answered: number;
+} {
   const maxAnswered = input.max_answered ?? 6;
   const earlyMin = input.early_min_answered ?? 4;
   const confThresh = input.confidence_threshold ?? 0.6;
@@ -231,8 +233,7 @@ export function selectPairing<P extends PairingCandidate>(
   // through `knobs`.
   const mode: SelectionMode = input.mode ?? knobs.mode;
   const recognition = input.recognition;
-  const canonFloor =
-    input.min_canon_floor ?? knobs.canon_floor ?? RECOGNITION_FLOORS[mode];
+  const canonFloor = input.min_canon_floor ?? knobs.canon_floor ?? RECOGNITION_FLOORS[mode];
   const forkFilter: ForkFilterMode = knobs.fork_filter;
 
   // Same-artist exclusion is UNCONDITIONAL — see Step 3 gate in the
@@ -291,9 +292,7 @@ export function selectPairing<P extends PairingCandidate>(
     const dw = (p.diagnostic_weight ?? 50) / 100;
     const rec = recognition?.get(p.id);
     const recNorm = rec ? Math.max(0, Math.min(100, rec.recognition_score)) / 100 : 0.5;
-    const base = recogBlend > 0
-      ? (recogBlend * recNorm + (1 - recogBlend) * dw)
-      : dw;
+    const base = recogBlend > 0 ? recogBlend * recNorm + (1 - recogBlend) * dw : dw;
     const w = base * (knobs.axis_need_base + knobs.axis_need_slope * axisNeed) * challengeBoost;
     return { p, w, tests, axisNeed, challengesHypothesis, rec };
   });
@@ -318,7 +317,6 @@ export function selectPairing<P extends PairingCandidate>(
   };
   return { kind: "picked", pairing: pick.p, selection_reason };
 }
-
 
 // Guard used by the route/server-fn to fail loud if we ever pick a pairing
 // outside the session's lane. Never mutate; throw at the caller.

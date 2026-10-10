@@ -1,4 +1,4 @@
-export const FALLBACK_SUPABASE_URL = 'https://udycgnhvaanemhrchbuj.supabase.co'
+export const FALLBACK_SUPABASE_URL = "https://udycgnhvaanemhrchbuj.supabase.co";
 
 export const FALLBACK_SUPABASE_PUBLISHABLE_KEY =
-  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkeWNnbmh2YWFuZW1ocmNoYnVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3MDM5MjQsImV4cCI6MjA5NjI3OTkyNH0.tb6Q1s2d29sJslJYb0oAOtOEKw-n2yLkhtBRk1ByoOM'
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVkeWNnbmh2YWFuZW1ocmNoYnVqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA3MDM5MjQsImV4cCI6MjA5NjI3OTkyNH0.tb6Q1s2d29sJslJYb0oAOtOEKw-n2yLkhtBRk1ByoOM";

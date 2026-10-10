@@ -9,7 +9,10 @@ export const CLAIM_MIN_CONSISTENCY = 0.65;
 
 export type ClaimStatus = "supported" | "qualified" | "provisional" | "mixed" | "insufficient";
 
-export function evaluateClaim(supporting: number, contradicting: number): {
+export function evaluateClaim(
+  supporting: number,
+  contradicting: number,
+): {
   status: ClaimStatus;
   eligible: boolean;
   consistency: number;
@@ -18,7 +21,8 @@ export function evaluateClaim(supporting: number, contradicting: number): {
   const consistency = directional > 0 ? supporting / directional : 0;
   if (directional === 0) return { status: "insufficient", eligible: false, consistency };
   if (supporting <= contradicting) return { status: "mixed", eligible: false, consistency };
-  if (supporting < CLAIM_MIN_SUPPORT) return { status: "provisional", eligible: false, consistency };
+  if (supporting < CLAIM_MIN_SUPPORT)
+    return { status: "provisional", eligible: false, consistency };
   if (consistency < CLAIM_MIN_CONSISTENCY) return { status: "mixed", eligible: false, consistency };
   return { status: contradicting > 0 ? "qualified" : "supported", eligible: true, consistency };
 }

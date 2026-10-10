@@ -45,8 +45,8 @@ export function buildStartSessionSeed(input: BuildStartSessionInputs): StartSess
   const lane_confidence = Number(input.profile?.opening_lane_confidence ?? 0);
 
   const analysis = input.profile?.opening_analysis_json ?? {};
-  const secondaries = (analysis.secondary_lanes ?? []).filter((l): l is Lane =>
-    (input.all_lanes as readonly string[]).includes(l) && l !== lane,
+  const secondaries = (analysis.secondary_lanes ?? []).filter(
+    (l): l is Lane => (input.all_lanes as readonly string[]).includes(l) && l !== lane,
   );
   const wildcardPool = input.all_lanes.filter((l) => l !== lane && !secondaries.includes(l));
   const wildcard =

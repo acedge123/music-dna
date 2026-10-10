@@ -51,10 +51,7 @@ export function l1Over(v: Vector, dims: readonly string[]): number {
  * cosine so the two live in comparable magnitudes — matching the behavior in
  * musicdna.functions.ts (the /100 there is per-key inside the dot loop).
  */
-export function scoreArchetype(
-  userVector: Vector,
-  archetypeVector: Vector,
-): number {
+export function scoreArchetype(userVector: Vector, archetypeVector: Vector): number {
   const normalized: Vector = {};
   for (const k in archetypeVector) {
     normalized[k] = (userVector[k] ?? 0) / 100;
@@ -88,4 +85,3 @@ export function fitTier(score: number): FitTier {
 
 /** @deprecated Use `fitTier`. */
 export const confidenceTier = fitTier;
-
