@@ -142,7 +142,12 @@ export function evaluateProbe(input: EvaluateProbeInput): EvaluateProbeResult {
   const flipMinWin = input.flip_min_win_rate ?? 0.75;
   const flipMinCos = input.flip_min_avg_cosine ?? 0.3;
   const alreadyFlipped = probe_state.flips.some((f) => f.to === probe_lane);
-  if (tally.total >= flipMinTotal && win_rate >= flipMinWin && avg_cosine >= flipMinCos && !alreadyFlipped) {
+  if (
+    tally.total >= flipMinTotal &&
+    win_rate >= flipMinWin &&
+    avg_cosine >= flipMinCos &&
+    !alreadyFlipped
+  ) {
     const reason = `probe lane ${probe_lane}: ${tally.wins}/${tally.total} wins, avg cosine ${avg_cosine.toFixed(2)}`;
     probe_state.flips.push({
       round: probe_state.probes_shown.length,

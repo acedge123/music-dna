@@ -50,10 +50,12 @@ function resolveConfig(config?: MapperConfig): Required<MapperConfig> {
       low: config?.confidence_thresholds?.low ?? DEFAULT_MAPPER_CONFIG.confidence_thresholds.low,
       high: config?.confidence_thresholds?.high ?? DEFAULT_MAPPER_CONFIG.confidence_thresholds.high,
     },
-    artist_bias_threshold: config?.artist_bias_threshold ?? DEFAULT_MAPPER_CONFIG.artist_bias_threshold,
+    artist_bias_threshold:
+      config?.artist_bias_threshold ?? DEFAULT_MAPPER_CONFIG.artist_bias_threshold,
     axis_confidence_threshold:
       config?.axis_confidence_threshold ?? DEFAULT_MAPPER_CONFIG.axis_confidence_threshold,
-    volatility_threshold: config?.volatility_threshold ?? DEFAULT_MAPPER_CONFIG.volatility_threshold,
+    volatility_threshold:
+      config?.volatility_threshold ?? DEFAULT_MAPPER_CONFIG.volatility_threshold,
     snap_threshold_ms: config?.snap_threshold_ms ?? DEFAULT_MAPPER_CONFIG.snap_threshold_ms,
     snap_rate_threshold: config?.snap_rate_threshold ?? DEFAULT_MAPPER_CONFIG.snap_rate_threshold,
   };
@@ -63,7 +65,9 @@ export function sessionConfidence(
   vector: Record<string, number>,
   axisThreshold = DEFAULT_AXIS_CONFIDENCE_THRESHOLD,
 ): SessionConfidence {
-  const confident_axes = MUSICDNA_DIMS.filter((d) => Math.abs(vector[d] ?? 0) >= axisThreshold).length;
+  const confident_axes = MUSICDNA_DIMS.filter(
+    (d) => Math.abs(vector[d] ?? 0) >= axisThreshold,
+  ).length;
   return {
     confidence: confident_axes / MUSICDNA_DIMS.length,
     confident_axes,
@@ -221,11 +225,16 @@ export function choiceRowsToTerrainInput(args: {
 
 export function mapTerrain(input: TerrainInputs): TerrainFeatures {
   const syntheticVector: Record<string, number> = {};
-  const confidentAxes = Math.round((input.vector_confidence ?? input.lane_confidence) * MUSICDNA_DIMS.length);
+  const confidentAxes = Math.round(
+    (input.vector_confidence ?? input.lane_confidence) * MUSICDNA_DIMS.length,
+  );
   for (const dim of MUSICDNA_DIMS.slice(0, confidentAxes)) {
     syntheticVector[dim] = DEFAULT_AXIS_CONFIDENCE_THRESHOLD;
   }
-  const skipped_pairing_ids = Array.from({ length: input.skipped_rounds_last3 }, (_, i) => `skip-${i}`);
+  const skipped_pairing_ids = Array.from(
+    { length: input.skipped_rounds_last3 },
+    (_, i) => `skip-${i}`,
+  );
   return sessionToTerrain(
     choiceRowsToTerrainInput({
       session_id: "legacy-mapTerrain",
@@ -255,7 +264,12 @@ export function enumerateMusicDNATerrains(): TerrainFeatures[] {
       confidence: 40,
     },
   ];
-  const artistFreqs: Array<Record<string, number>> = [{}, { Radiohead: 2 }, { Radiohead: 3 }, { Radiohead: 5 }];
+  const artistFreqs: Array<Record<string, number>> = [
+    {},
+    { Radiohead: 2 },
+    { Radiohead: 3 },
+    { Radiohead: 5 },
+  ];
 
   const skipSets = [[], ["a"], ["a", "b", "c"]];
   const deltaSets: Array<Array<Record<string, number>> | undefined> = [

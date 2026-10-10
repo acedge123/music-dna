@@ -11,7 +11,11 @@
 // implementation of the domain logic.
 
 import type { Clock, EngineDeps, Rng, SupabaseGateway, LLMGateway } from "./ports";
-import { buildStartSessionSeed, type BuildStartSessionInputs, type StartSessionSeed } from "./session";
+import {
+  buildStartSessionSeed,
+  type BuildStartSessionInputs,
+  type StartSessionSeed,
+} from "./session";
 import {
   selectPairing,
   shouldStop,

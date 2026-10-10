@@ -14,7 +14,6 @@
 import type { ArchetypeAssignment, Vector } from "./types";
 import { scoreArchetype, fitTier } from "./scoring";
 
-
 export type ArchetypeCatalogEntry = {
   id: string;
   name: string;
@@ -31,11 +30,7 @@ export type ArchetypeCatalogEntry = {
 export const ARCHETYPE_SCORE_FLOOR = 0.5;
 export const ARCHETYPE_MARGIN_FLOOR = 0.05;
 
-export type ArchetypeFlagReason =
-  | "no_archetypes"
-  | "low_score"
-  | "ambiguous"
-  | null;
+export type ArchetypeFlagReason = "no_archetypes" | "low_score" | "ambiguous" | null;
 
 export type ArchetypeAssignmentResult = {
   assignment: ArchetypeAssignment | null;

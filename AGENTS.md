@@ -9,3 +9,4 @@
 - Session history for any resume comes from `loadSessionHistory` (`src/musicdna/adapters/session-history.ts`) — so web and mobile restore the same conversation.
 - Picks are replay-safe: the committed feedback is stored on `choices.response` and returned on retry; a different song for the same pairing is a 409 — so retries can't double-count.
 - Results are saved in `session_results`; version 1 (source `pairings`) is frozen and replayed verbatim, chat only adds `chat_self_report` versions and never writes `sessions.vector` — so shared readings never change underneath anyone.
+- Engine-driving event_log types (read_shown, pairing_skipped, reaction_submitted, self_report, choice_scored, archetype_ranking_snapshot, regime_recommended) are written only by the server via `trustedEventLog()` after an ownership check; RLS rejects them from listeners — so a listener cannot fake skips or revisions.

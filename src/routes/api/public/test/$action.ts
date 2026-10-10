@@ -57,43 +57,65 @@ async function getOrCreateRun(personaId: string, pairingCount?: number, reset = 
   if (reset) {
     // Wipe everything for this persona: delete sessions/choices via cascade,
     // then clear the test_runs row's session pointers and counters.
-    const existing = await admin.from("test_runs").select("user_id, session_id").eq("persona_id", personaId).maybeSingle();
+    const existing = await admin
+      .from("test_runs")
+      .select("user_id, session_id")
+      .eq("persona_id", personaId)
+      .maybeSingle();
     if (existing.data?.user_id) {
       // Delete the user's sessions (choices cascade if FK is set; otherwise delete explicitly).
       const userId = existing.data.user_id;
-      await admin.from("choices").delete().in(
-        "session_id",
-        (await admin.from("sessions").select("id").eq("user_id", userId)).data?.map((s) => s.id) ?? [],
-      );
+      await admin
+        .from("choices")
+        .delete()
+        .in(
+          "session_id",
+          (await admin.from("sessions").select("id").eq("user_id", userId)).data?.map(
+            (s) => s.id,
+          ) ?? [],
+        );
       await admin.from("sessions").delete().eq("user_id", userId);
       await admin.from("session_reasoning").delete().eq("user_id", userId);
       await admin.from("event_log").delete().eq("user_id", userId);
       await admin.from("llm_calls").delete().eq("user_id", userId);
-      await admin.from("profiles").update({
-        opening_songs: null,
-        opening_hypothesis: null,
-        opening_lane: null,
-        opening_lane_confidence: null,
-        opening_analysis_json: null,
-      }).eq("user_id", userId);
-      await admin.from("test_runs").update({
-        session_id: null,
-        opener_songs: null,
-        opener_payload: null,
-        current_pairing_id: null,
-        current_pairing_payload: null,
-        choices_log: [],
-        pairings_used: 0,
-        ...(pairingCount ? { pairing_count: pairingCount } : {}),
-        report: null,
-      }).eq("persona_id", personaId);
+      await admin
+        .from("profiles")
+        .update({
+          opening_songs: null,
+          opening_hypothesis: null,
+          opening_lane: null,
+          opening_lane_confidence: null,
+          opening_analysis_json: null,
+        })
+        .eq("user_id", userId);
+      await admin
+        .from("test_runs")
+        .update({
+          session_id: null,
+          opener_songs: null,
+          opener_payload: null,
+          current_pairing_id: null,
+          current_pairing_payload: null,
+          choices_log: [],
+          pairings_used: 0,
+          ...(pairingCount ? { pairing_count: pairingCount } : {}),
+          report: null,
+        })
+        .eq("persona_id", personaId);
     }
   }
 
-  const existing = await admin.from("test_runs").select("*").eq("persona_id", personaId).maybeSingle();
+  const existing = await admin
+    .from("test_runs")
+    .select("*")
+    .eq("persona_id", personaId)
+    .maybeSingle();
   if (existing.data) {
     if (pairingCount && pairingCount !== existing.data.pairing_count) {
-      await admin.from("test_runs").update({ pairing_count: pairingCount }).eq("persona_id", personaId);
+      await admin
+        .from("test_runs")
+        .update({ pairing_count: pairingCount })
+        .eq("persona_id", personaId);
       existing.data.pairing_count = pairingCount;
     }
     return existing.data;
@@ -117,7 +139,8 @@ async function getOrCreateRun(personaId: string, pairingCount?: number, reset = 
     // Likely "User already registered" — look it up via listUsers.
     const list = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
     const found = list.data?.users.find((u) => u.email?.toLowerCase() === email.toLowerCase());
-    if (!found) throw new Error(`auth.admin.createUser failed: ${created.error?.message ?? "unknown"}`);
+    if (!found)
+      throw new Error(`auth.admin.createUser failed: ${created.error?.message ?? "unknown"}`);
     userId = found.id;
   }
 
@@ -130,14 +153,12 @@ async function getOrCreateRun(personaId: string, pairingCount?: number, reset = 
     throw new Error(`test_runs insert failed: ${inserted.error?.message ?? "unknown"}`);
   }
   // Ensure profile/user_roles exist (trigger should have done it; belt-and-suspenders).
-  await admin.from("profiles").upsert(
-    { user_id: userId, display_name: `persona:${personaId}` },
-    { onConflict: "user_id" },
-  );
-  await admin.from("user_roles").upsert(
-    { user_id: userId, role: "user" },
-    { onConflict: "user_id,role" },
-  );
+  await admin
+    .from("profiles")
+    .upsert({ user_id: userId, display_name: `persona:${personaId}` }, { onConflict: "user_id" });
+  await admin
+    .from("user_roles")
+    .upsert({ user_id: userId, role: "user" }, { onConflict: "user_id,role" });
   return inserted.data;
 }
 
@@ -162,10 +183,13 @@ async function handleOpener(req: Request) {
   const run = await getOrCreateRun(body.persona_id, body.pairing_count, body.reset ?? false);
   const admin = await getAdmin();
   const opener = await commitOpeningThreeImpl(admin, run.user_id, { songs: body.songs });
-  await admin.from("test_runs").update({
-    opener_songs: body.songs,
-    opener_payload: opener as never,
-  }).eq("persona_id", body.persona_id);
+  await admin
+    .from("test_runs")
+    .update({
+      opener_songs: body.songs,
+      opener_payload: opener as never,
+    })
+    .eq("persona_id", body.persona_id);
   return json({
     ok: true,
     persona_id: body.persona_id,
@@ -178,14 +202,21 @@ async function handleOpener(req: Request) {
 async function handleNext(req: Request) {
   const body = PersonaOnly.parse(await req.json());
   const admin = await getAdmin();
-  const run = await admin.from("test_runs").select("*").eq("persona_id", body.persona_id).maybeSingle();
+  const run = await admin
+    .from("test_runs")
+    .select("*")
+    .eq("persona_id", body.persona_id)
+    .maybeSingle();
   if (!run.data) return err(404, "unknown persona_id — call /opener first");
 
   let sessionId = run.data.session_id;
   if (!sessionId) {
     const s = await startSessionImpl(admin, run.data.user_id);
     sessionId = s.sessionId;
-    await admin.from("test_runs").update({ session_id: sessionId }).eq("persona_id", body.persona_id);
+    await admin
+      .from("test_runs")
+      .update({ session_id: sessionId })
+      .eq("persona_id", body.persona_id);
   }
 
   // Honor the agent-chosen pairing_count: stop early if we've already hit it.
@@ -203,10 +234,13 @@ async function handleNext(req: Request) {
 
   const np = await nextPairingImpl(admin, { sessionId });
   if (np.pairing) {
-    await admin.from("test_runs").update({
-      current_pairing_id: np.pairing.id,
-      current_pairing_payload: np.pairing as never,
-    }).eq("persona_id", body.persona_id);
+    await admin
+      .from("test_runs")
+      .update({
+        current_pairing_id: np.pairing.id,
+        current_pairing_payload: np.pairing as never,
+      })
+      .eq("persona_id", body.persona_id);
   }
   return json({
     ok: true,
@@ -231,7 +265,11 @@ async function handleNext(req: Request) {
 async function handleChoice(req: Request) {
   const body = ChoiceBody.parse(await req.json());
   const admin = await getAdmin();
-  const run = await admin.from("test_runs").select("*").eq("persona_id", body.persona_id).maybeSingle();
+  const run = await admin
+    .from("test_runs")
+    .select("*")
+    .eq("persona_id", body.persona_id)
+    .maybeSingle();
   if (!run.data) return err(404, "unknown persona_id");
   if (!run.data.session_id) return err(400, "no active session — call /next first");
 
@@ -250,12 +288,15 @@ async function handleChoice(req: Request) {
     reveal,
     at: new Date().toISOString(),
   });
-  await admin.from("test_runs").update({
-    pairings_used: (run.data.pairings_used ?? 0) + 1,
-    choices_log: log as never,
-    current_pairing_id: null,
-    current_pairing_payload: null,
-  }).eq("persona_id", body.persona_id);
+  await admin
+    .from("test_runs")
+    .update({
+      pairings_used: (run.data.pairings_used ?? 0) + 1,
+      choices_log: log as never,
+      current_pairing_id: null,
+      current_pairing_payload: null,
+    })
+    .eq("persona_id", body.persona_id);
 
   return json({
     ok: true,
@@ -269,17 +310,33 @@ async function handleChoice(req: Request) {
 async function handleReport(req: Request) {
   const body = PersonaOnly.parse(await req.json());
   const admin = await getAdmin();
-  const run = await admin.from("test_runs").select("*").eq("persona_id", body.persona_id).maybeSingle();
+  const run = await admin
+    .from("test_runs")
+    .select("*")
+    .eq("persona_id", body.persona_id)
+    .maybeSingle();
   if (!run.data) return err(404, "unknown persona_id");
   if (!run.data.session_id) return err(400, "no session to finalize");
 
-  const finalize = await finalizeSessionImpl(admin, run.data.user_id, { sessionId: run.data.session_id });
-  const synth = await finalSynthesisImpl(admin, run.data.user_id, { sessionId: run.data.session_id });
+  const finalize = await finalizeSessionImpl(admin, run.data.user_id, {
+    sessionId: run.data.session_id,
+  });
+  const synth = await finalSynthesisImpl(admin, run.data.user_id, {
+    sessionId: run.data.session_id,
+  });
   const result = await getMyResultImpl(admin, run.data.user_id);
 
   const report = { finalize, synth, result };
-  await admin.from("test_runs").update({ report: report as never }).eq("persona_id", body.persona_id);
-  return json({ ok: true, persona_id: body.persona_id, session_id: run.data.session_id, ...report });
+  await admin
+    .from("test_runs")
+    .update({ report: report as never })
+    .eq("persona_id", body.persona_id);
+  return json({
+    ok: true,
+    persona_id: body.persona_id,
+    session_id: run.data.session_id,
+    ...report,
+  });
 }
 
 async function handleReset(req: Request) {
@@ -343,14 +400,22 @@ async function dispatch(req: Request, action: string) {
   if (!authorized(req)) return err(401, "invalid or missing x-test-harness-secret");
   try {
     switch (action as Action) {
-      case "opener": return await handleOpener(req);
-      case "next":   return await handleNext(req);
-      case "choice": return await handleChoice(req);
-      case "report": return await handleReport(req);
-      case "reset":  return await handleReset(req);
-      case "status": return await handleStatus(req);
-      case "bearer": return await handleBearer(req);
-      default:       return err(404, `unknown action: ${action}`);
+      case "opener":
+        return await handleOpener(req);
+      case "next":
+        return await handleNext(req);
+      case "choice":
+        return await handleChoice(req);
+      case "report":
+        return await handleReport(req);
+      case "reset":
+        return await handleReset(req);
+      case "status":
+        return await handleStatus(req);
+      case "bearer":
+        return await handleBearer(req);
+      default:
+        return err(404, `unknown action: ${action}`);
     }
   } catch (e) {
     if (e instanceof z.ZodError) return err(400, "validation failed", { issues: e.issues });
@@ -362,7 +427,7 @@ async function dispatch(req: Request, action: string) {
 export const Route = createFileRoute("/api/public/test/$action")({
   server: {
     handlers: {
-      GET:  async ({ request, params }) => dispatch(request, params.action),
+      GET: async ({ request, params }) => dispatch(request, params.action),
       POST: async ({ request, params }) => dispatch(request, params.action),
     },
   },

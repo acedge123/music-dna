@@ -33,7 +33,8 @@ function AuthPage() {
     try {
       if (mode === "sign-up") {
         const { error } = await supabase.auth.signUp({
-          email, password,
+          email,
+          password,
           options: { emailRedirectTo: window.location.origin + "/onboarding" },
         });
         if (error) throw error;
@@ -52,30 +53,42 @@ function AuthPage() {
   return (
     <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
       <div className="w-full max-w-md">
-        <Link to="/" className="eyebrow mb-10 inline-block">← Back</Link>
+        <Link to="/" className="eyebrow mb-10 inline-block">
+          ← Back
+        </Link>
         <h1 className="display text-4xl mb-2">
           {mode === "sign-in" ? "Continue your MusicDNA." : "Begin your MusicDNA."}
         </h1>
         <p className="text-sm text-muted-foreground mb-8">
-          {mode === "sign-in" ? "Your readings persist across sessions." : "Email and a password. No social, no ceremony."}
+          {mode === "sign-in"
+            ? "Your readings persist across sessions."
+            : "Email and a password. No social, no ceremony."}
         </p>
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label className="eyebrow block mb-2">Email</label>
             <input
-              type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               className="w-full bg-surface border hairline-strong rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
             />
           </div>
           <div>
             <label className="eyebrow block mb-2">Password</label>
             <input
-              type="password" required minLength={6} value={password} onChange={(e) => setPassword(e.target.value)}
+              type="password"
+              required
+              minLength={6}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-surface border hairline-strong rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
             />
           </div>
           <button
-            type="submit" disabled={busy}
+            type="submit"
+            disabled={busy}
             className="w-full bg-primary text-primary-foreground rounded-sm px-4 py-3 text-sm font-medium hover:opacity-90 disabled:opacity-50"
           >
             {busy ? "…" : mode === "sign-in" ? "Sign in" : "Create account"}

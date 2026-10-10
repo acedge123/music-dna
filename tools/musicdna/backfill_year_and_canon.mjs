@@ -40,7 +40,7 @@ const args = Object.fromEntries(
   process.argv.slice(2).map((a) => {
     const m = a.match(/^--([^=]+)=?(.*)$/);
     return m ? [m[1], m[2] || true] : [a, true];
-  })
+  }),
 );
 const lanes = args.lanes ? String(args.lanes).split(",") : null;
 const limit = args.limit ? Number(args.limit) : null;
@@ -61,7 +61,10 @@ if (!SUPABASE_URL || !SERVICE_KEY) {
 let providerCfg;
 if (provider === "lovable") {
   const key = process.env.LOVABLE_API_KEY;
-  if (!key) { console.error("Missing LOVABLE_API_KEY (needed for --provider=lovable)"); process.exit(1); }
+  if (!key) {
+    console.error("Missing LOVABLE_API_KEY (needed for --provider=lovable)");
+    process.exit(1);
+  }
   providerCfg = {
     url: "https://ai.gateway.lovable.dev/v1/chat/completions",
     headers: { "Content-Type": "application/json", "Lovable-API-Key": key },
@@ -70,7 +73,10 @@ if (provider === "lovable") {
   };
 } else if (provider === "openai") {
   const key = process.env.OPENAI_API_KEY;
-  if (!key) { console.error("Missing OPENAI_API_KEY (needed for --provider=openai)"); process.exit(1); }
+  if (!key) {
+    console.error("Missing OPENAI_API_KEY (needed for --provider=openai)");
+    process.exit(1);
+  }
   const base = (process.env.OPENAI_BASE_URL || "https://api.openai.com/v1").replace(/\/+$/, "");
   providerCfg = {
     url: `${base}/chat/completions`,
@@ -132,12 +138,20 @@ Fill in the missing metadata.`;
   const json = await res.json();
   const raw = json.choices?.[0]?.message?.content ?? "{}";
   let parsed;
-  try { parsed = JSON.parse(raw); } catch { parsed = {}; }
+  try {
+    parsed = JSON.parse(raw);
+  } catch {
+    parsed = {};
+  }
 
-  const year = Number.isFinite(parsed.year) && parsed.year >= 1900 && parsed.year <= 2100
-    ? Math.round(parsed.year) : null;
-  const canon = Number.isFinite(parsed.canon_score) && parsed.canon_score >= 0 && parsed.canon_score <= 100
-    ? Math.round(parsed.canon_score) : null;
+  const year =
+    Number.isFinite(parsed.year) && parsed.year >= 1900 && parsed.year <= 2100
+      ? Math.round(parsed.year)
+      : null;
+  const canon =
+    Number.isFinite(parsed.canon_score) && parsed.canon_score >= 0 && parsed.canon_score <= 100
+      ? Math.round(parsed.canon_score)
+      : null;
   return { year, canon_score: canon, why: String(parsed.why || "").slice(0, 200) };
 }
 
@@ -149,13 +163,17 @@ function csvEscape(v) {
 
 async function main() {
   console.log(`Provider: ${providerCfg.label}  model=${providerCfg.model}`);
-  console.log(`Scope: only=${only}${lanes ? ` lanes=${lanes.join(",")}` : ""}${limit ? ` limit=${limit}` : ""}`);
+  console.log(
+    `Scope: only=${only}${lanes ? ` lanes=${lanes.join(",")}` : ""}${limit ? ` limit=${limit}` : ""}`,
+  );
 
   // Build filter: rows missing whatever the user asked for.
   const missingClauses =
-    only === "year"  ? "year=is.null"
-    : only === "canon" ? "canon_score=is.null"
-    : "or=(year.is.null,canon_score.is.null)";
+    only === "year"
+      ? "year=is.null"
+      : only === "canon"
+        ? "canon_score=is.null"
+        : "or=(year.is.null,canon_score.is.null)";
 
   const parts = [
     "select=id,title,artist,year,canon_score,lane,subculture",
@@ -181,7 +199,13 @@ async function main() {
         const proposal = await proposeMeta(song);
         results[i] = { song, ...proposal, error: null };
       } catch (e) {
-        results[i] = { song, year: null, canon_score: null, why: "", error: String(e.message || e) };
+        results[i] = {
+          song,
+          year: null,
+          canon_score: null,
+          why: "",
+          error: String(e.message || e),
+        };
       }
       done++;
       if (done % 10 === 0 || done === songs.length) {
@@ -196,16 +220,38 @@ async function main() {
   const outDir = path.join(ROOT, "data", "musicdna");
   fs.mkdirSync(outDir, { recursive: true });
   const csvPath = path.join(outDir, "year_canon_backfill_proposals.csv");
-  const headers = ["id","lane","artist","title","current_year","current_canon","proposed_year","proposed_canon","why","error"];
-  const csv = [
-    headers.join(","),
-    ...results.map((r) => [
-      r.song.id, r.song.lane, r.song.artist, r.song.title,
-      r.song.year ?? "", r.song.canon_score ?? "",
-      r.year ?? "", r.canon_score ?? "",
-      r.why, r.error ?? "",
-    ].map(csvEscape).join(",")),
-  ].join("\n") + "\n";
+  const headers = [
+    "id",
+    "lane",
+    "artist",
+    "title",
+    "current_year",
+    "current_canon",
+    "proposed_year",
+    "proposed_canon",
+    "why",
+    "error",
+  ];
+  const csv =
+    [
+      headers.join(","),
+      ...results.map((r) =>
+        [
+          r.song.id,
+          r.song.lane,
+          r.song.artist,
+          r.song.title,
+          r.song.year ?? "",
+          r.song.canon_score ?? "",
+          r.year ?? "",
+          r.canon_score ?? "",
+          r.why,
+          r.error ?? "",
+        ]
+          .map(csvEscape)
+          .join(","),
+      ),
+    ].join("\n") + "\n";
   fs.writeFileSync(csvPath, csv);
   console.log(`Wrote proposals → ${path.relative(ROOT, csvPath)}`);
 
@@ -214,7 +260,8 @@ async function main() {
   for (const r of results) {
     const sets = [];
     if (r.year != null && r.song.year == null) sets.push(`year = ${r.year}`);
-    if (r.canon_score != null && r.song.canon_score == null) sets.push(`canon_score = ${r.canon_score}`);
+    if (r.canon_score != null && r.song.canon_score == null)
+      sets.push(`canon_score = ${r.canon_score}`);
     if (!sets.length) continue;
     sets.push("updated_at = now()");
     stmts.push(`UPDATE public.songs SET ${sets.join(", ")} WHERE id = '${r.song.id}';`);
@@ -223,9 +270,9 @@ async function main() {
   fs.writeFileSync(
     sqlPath,
     `-- Auto-generated by tools/musicdna/backfill_year_and_canon.mjs\n` +
-    `-- Provider: ${providerCfg.label}  model=${providerCfg.model}\n` +
-    `-- Review the CSV before applying. ${stmts.length} rows will be updated.\n\n` +
-    `BEGIN;\n${stmts.join("\n")}\nCOMMIT;\n`
+      `-- Provider: ${providerCfg.label}  model=${providerCfg.model}\n` +
+      `-- Review the CSV before applying. ${stmts.length} rows will be updated.\n\n` +
+      `BEGIN;\n${stmts.join("\n")}\nCOMMIT;\n`,
   );
   console.log(`Wrote SQL       → ${path.relative(ROOT, sqlPath)}  (${stmts.length} updates)`);
 
@@ -233,4 +280,7 @@ async function main() {
   console.log(`Done. proposals=${results.length} sql_updates=${stmts.length} errors=${errs}`);
 }
 
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

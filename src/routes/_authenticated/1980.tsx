@@ -85,7 +85,11 @@ function NineteenEighty() {
   const [busy, setBusy] = useState(false);
 
   type RevealStage = "thinking" | "preamble" | "observation";
-  type ShippedClaim = { text: string; status: "tentative" | "strengthening" | "stable"; competing_explanation: string };
+  type ShippedClaim = {
+    text: string;
+    status: "tentative" | "strengthening" | "stable";
+    competing_explanation: string;
+  };
   type FinalRead = {
     lane: string;
     hypothesis: string;
@@ -128,7 +132,6 @@ function NineteenEighty() {
     }
   }, [pending]);
 
-
   async function handleSubmit() {
     const value = input.trim();
     if (value.length < 2 || busy || pending) return;
@@ -156,7 +159,11 @@ function NineteenEighty() {
         setPending((p) => (p ? { ...p, reaction: r.text } : p));
       } else {
         const allSongs = [...history.map((h) => h.song), value];
-        type ShippedClaim = { text: string; status: "tentative" | "strengthening" | "stable"; competing_explanation: string };
+        type ShippedClaim = {
+          text: string;
+          status: "tentative" | "strengthening" | "stable";
+          competing_explanation: string;
+        };
         const r = (await refineFn({
           data: {
             firstThree: allSongs.slice(0, 3),
@@ -172,17 +179,19 @@ function NineteenEighty() {
         };
         const reaction = r.reaction ?? "That's enough. Here's where I've landed.";
         setPending((p) =>
-          p ? {
-            ...p,
-            reaction,
-            final: {
-              lane: r.lane,
-              hypothesis: r.hypothesis,
-              reaction: r.reaction,
-              claims: r.claims ?? [],
-              stillLearning: r.stillLearning ?? true,
-            },
-          } : p,
+          p
+            ? {
+                ...p,
+                reaction,
+                final: {
+                  lane: r.lane,
+                  hypothesis: r.hypothesis,
+                  reaction: r.reaction,
+                  claims: r.claims ?? [],
+                  stillLearning: r.stillLearning ?? true,
+                },
+              }
+            : p,
         );
         logEvent({
           data: {
@@ -235,7 +244,11 @@ function NineteenEighty() {
   const activePrompt = showingQuestion ? PROMPTS[idx] : null;
   const counter = `${String(Math.min(idx + 1, 5)).padStart(2, "0")} / 05`;
   const isFinalPending = pending?.final != null;
-  const nextLabel = isFinalPending ? "See what I think →" : idx + 1 >= 5 ? "Finish →" : "Next question →";
+  const nextLabel = isFinalPending
+    ? "See what I think →"
+    : idx + 1 >= 5
+      ? "Finish →"
+      : "Next question →";
 
   return (
     <main className="mx-auto max-w-2xl px-6 pt-16 pb-24 min-h-screen flex flex-col">
@@ -283,9 +296,7 @@ function NineteenEighty() {
         <section className="space-y-6 animate-in fade-in duration-700">
           <div className="flex items-baseline justify-between">
             <p className="eyebrow">{counter}</p>
-            {history.length > 0 && (
-              <p className="eyebrow text-muted-foreground">listening</p>
-            )}
+            {history.length > 0 && <p className="eyebrow text-muted-foreground">listening</p>}
           </div>
 
           <h1
@@ -314,7 +325,11 @@ function NineteenEighty() {
           </div>
 
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
-            {input.trim().length >= 2 ? "press enter" : idx === 0 ? "start anywhere in the decade" : "keep going"}
+            {input.trim().length >= 2
+              ? "press enter"
+              : idx === 0
+                ? "start anywhere in the decade"
+                : "keep going"}
           </p>
         </section>
       )}
@@ -332,9 +347,15 @@ function NineteenEighty() {
             <p className="font-mono text-sm uppercase tracking-[0.22em] text-muted-foreground inline-flex items-center gap-2">
               listening
               <span className="inline-flex gap-1 text-primary">
-                <span className="animate-bounce" style={{ animationDelay: "0ms" }}>·</span>
-                <span className="animate-bounce" style={{ animationDelay: "120ms" }}>·</span>
-                <span className="animate-bounce" style={{ animationDelay: "240ms" }}>·</span>
+                <span className="animate-bounce" style={{ animationDelay: "0ms" }}>
+                  ·
+                </span>
+                <span className="animate-bounce" style={{ animationDelay: "120ms" }}>
+                  ·
+                </span>
+                <span className="animate-bounce" style={{ animationDelay: "240ms" }}>
+                  ·
+                </span>
               </span>
             </p>
           )}
@@ -369,67 +390,69 @@ function NineteenEighty() {
               </button>
             </div>
           )}
-
         </section>
       )}
 
       {/* FINAL PAYOFF — one claim or the still-learning state. No percentages. */}
-      {done && (() => {
-        const claim = done.claims[0];
-        const statusLabel =
-          !claim ? "still learning" :
-          claim.status === "stable" ? "pretty confident" :
-          claim.status === "strengthening" ? "starting to think" :
-          "working theory";
-        return (
-          <section className="space-y-8 animate-in fade-in duration-700">
-            <p className="eyebrow">that's enough</p>
-            {done.reaction && (
-              <p className="font-serif text-2xl md:text-3xl leading-snug">{done.reaction}</p>
-            )}
+      {done &&
+        (() => {
+          const claim = done.claims[0];
+          const statusLabel = !claim
+            ? "still learning"
+            : claim.status === "stable"
+              ? "pretty confident"
+              : claim.status === "strengthening"
+                ? "starting to think"
+                : "working theory";
+          return (
+            <section className="space-y-8 animate-in fade-in duration-700">
+              <p className="eyebrow">that's enough</p>
+              {done.reaction && (
+                <p className="font-serif text-2xl md:text-3xl leading-snug">{done.reaction}</p>
+              )}
 
-            {claim ? (
-              <div className="space-y-3">
-                <p className="eyebrow text-primary">{statusLabel}</p>
-                <p className="display text-3xl md:text-4xl leading-[1.1] italic text-primary">
-                  "{claim.text}"
-                </p>
-                <p className="font-serif text-base md:text-lg italic text-muted-foreground leading-snug">
-                  {claim.competing_explanation}. Let's see if that survives.
-                </p>
+              {claim ? (
+                <div className="space-y-3">
+                  <p className="eyebrow text-primary">{statusLabel}</p>
+                  <p className="display text-3xl md:text-4xl leading-[1.1] italic text-primary">
+                    "{claim.text}"
+                  </p>
+                  <p className="font-serif text-base md:text-lg italic text-muted-foreground leading-snug">
+                    {claim.competing_explanation}. Let's see if that survives.
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  <p className="eyebrow text-muted-foreground">{statusLabel}</p>
+                  <p className="display text-2xl md:text-3xl leading-[1.15] italic text-foreground">
+                    Not enough to call it yet.
+                  </p>
+                  <p className="font-serif text-base md:text-lg italic text-muted-foreground leading-snug">
+                    Five picks, no thread I trust. The matchups will do the work.
+                  </p>
+                </div>
+              )}
+
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
+                  Lane
+                </span>
+                <span className="border hairline-strong rounded-sm px-3 py-1 text-sm font-medium">
+                  {LANE_LABEL[done.lane] ?? done.lane}
+                </span>
               </div>
-            ) : (
-              <div className="space-y-3">
-                <p className="eyebrow text-muted-foreground">{statusLabel}</p>
-                <p className="display text-2xl md:text-3xl leading-[1.15] italic text-foreground">
-                  Not enough to call it yet.
-                </p>
-                <p className="font-serif text-base md:text-lg italic text-muted-foreground leading-snug">
-                  Five picks, no thread I trust. The matchups will do the work.
-                </p>
+
+              <div className="pt-4">
+                <button
+                  onClick={() => navigate({ to: "/onboarding" })}
+                  className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90"
+                >
+                  Let's test that →
+                </button>
               </div>
-            )}
-
-            <div className="flex flex-wrap items-center gap-3 pt-2">
-              <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground">
-                Lane
-              </span>
-              <span className="border hairline-strong rounded-sm px-3 py-1 text-sm font-medium">
-                {LANE_LABEL[done.lane] ?? done.lane}
-              </span>
-            </div>
-
-            <div className="pt-4">
-              <button
-                onClick={() => navigate({ to: "/onboarding" })}
-                className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90"
-              >
-                Let's test that →
-              </button>
-            </div>
-          </section>
-        );
-      })()}
+            </section>
+          );
+        })()}
     </main>
   );
 }

@@ -22,10 +22,15 @@ export const resumeLatestSession = createServerFn({ method: "POST" })
     const exchanges: Exchange[] = await loadSessionHistory(supabase, s.id);
     if (!exchanges.some((e) => e.type === "choice")) return null;
     const { data: profile } = await supabase
-      .from("profiles").select("opening_hypothesis, opening_lane").eq("user_id", userId).maybeSingle();
+      .from("profiles")
+      .select("opening_hypothesis, opening_lane")
+      .eq("user_id", userId)
+      .maybeSingle();
     return {
       sessionId: s.id,
       exchanges,
-      opener: profile ? { hypothesis: profile.opening_hypothesis ?? "", lane: profile.opening_lane ?? "" } : null,
+      opener: profile
+        ? { hypothesis: profile.opening_hypothesis ?? "", lane: profile.opening_lane ?? "" }
+        : null,
     };
   });

@@ -4,9 +4,7 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 
 export const searchSongs = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ q: z.string().trim().min(1).max(80) }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ q: z.string().trim().min(1).max(80) }).parse(d))
   .handler(async ({ data, context }) => {
     const { supabase } = context;
     // PostgREST .or() parses commas, parens, dots, asterisks and double quotes

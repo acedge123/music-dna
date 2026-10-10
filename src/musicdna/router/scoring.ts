@@ -79,7 +79,6 @@ const DIMENSION_WEIGHTS: DimensionWeightTable = {
   },
 };
 
-
 const OPPOSING: Record<Regime, Regime> = {
   prune: "explore",
   explore: "compound",
@@ -101,17 +100,11 @@ function isRegime(value: string): value is Regime {
 }
 void isRegime;
 
-
-
-
 export function scoreTerrain(features: TerrainFeatures): Scores {
-  return scoreMusicDNATerrain(features).breakdown.reduce<Scores>(
-    (scores, row) => {
-      scores[row.regime] = row.score;
-      return scores;
-    },
-    createEmptyScoreMap(),
-  );
+  return scoreMusicDNATerrain(features).breakdown.reduce<Scores>((scores, row) => {
+    scores[row.regime] = row.score;
+    return scores;
+  }, createEmptyScoreMap());
 }
 
 export function scoreMusicDNATerrain(features: TerrainFeatures): Recommendation {
@@ -137,9 +130,6 @@ export function scoreMusicDNATerrain(features: TerrainFeatures): Recommendation 
     }
   }
 
-
-
-
   const breakdown = SEARCH_REGIMES.map((regime) => ({
     regime,
     score: scores[regime],
@@ -163,10 +153,7 @@ export function scoreMusicDNATerrain(features: TerrainFeatures): Recommendation 
   };
 }
 
-function transitionCandidateFor(
-  profile: TerrainFeatures,
-  topRegime: Regime,
-): Regime | null {
+function transitionCandidateFor(profile: TerrainFeatures, topRegime: Regime): Regime | null {
   if (
     topRegime === "explore" &&
     profile.uncertainty !== "high" &&
@@ -203,13 +190,10 @@ export function recommendRegime(features: TerrainFeatures): Recommendation & {
   archetype_margin: null;
 } {
   const rec = scoreMusicDNATerrain(features);
-  const scores = rec.breakdown.reduce<Scores>(
-    (acc, row) => {
-      acc[row.regime] = row.score;
-      return acc;
-    },
-    createEmptyScoreMap(),
-  );
+  const scores = rec.breakdown.reduce<Scores>((acc, row) => {
+    acc[row.regime] = row.score;
+    return acc;
+  }, createEmptyScoreMap());
   const margin = (rec.breakdown[0]?.score ?? 0) - (rec.breakdown[1]?.score ?? 0);
   return {
     ...rec,
@@ -229,6 +213,5 @@ export function scoringAgrees(modePressureIn: ModePressure, regimeOut: Regime): 
     modePressureIn === "escape" ? "explore" : modePressureIn;
   return normalized === regimeOut;
 }
-
 
 export type { Recommendation, Regime };

@@ -15,9 +15,7 @@ import type { Lane, Pairing, SongLite, Vector } from "@/musicdna/engine/types";
 
 const SONG_COLS = "id,title,artist,year,primary_lane,lane";
 
-export function createSupabaseGateway(
-  supabase: SupabaseClient<Database>,
-): SupabaseGateway {
+export function createSupabaseGateway(supabase: SupabaseClient<Database>): SupabaseGateway {
   return {
     async getSession(sessionId) {
       const { data, error } = await supabase
@@ -39,10 +37,7 @@ export function createSupabaseGateway(
 
     async getSongs(ids) {
       if (!ids.length) return [];
-      const { data, error } = await supabase
-        .from("songs")
-        .select(SONG_COLS)
-        .in("id", ids);
+      const { data, error } = await supabase.from("songs").select(SONG_COLS).in("id", ids);
       if (error) throw new Error(error.message);
       return (data ?? []) as SongLite[];
     },
@@ -50,9 +45,7 @@ export function createSupabaseGateway(
     async getPairing(pairingId) {
       const { data, error } = await supabase
         .from("pairings")
-        .select(
-          `id, song_a:song_a_id(${SONG_COLS}), song_b:song_b_id(${SONG_COLS})`,
-        )
+        .select(`id, song_a:song_a_id(${SONG_COLS}), song_b:song_b_id(${SONG_COLS})`)
         .eq("id", pairingId)
         .maybeSingle();
       if (error) throw new Error(error.message);

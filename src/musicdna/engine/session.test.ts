@@ -1,7 +1,16 @@
 import { describe, it, expect } from "vitest";
 import { buildStartSessionSeed } from "./session";
 
-const ALL: readonly string[] = ["alternative", "pop", "hip_hop", "electronic", "classic_rock", "metal", "country", "r_and_b"];
+const ALL: readonly string[] = [
+  "alternative",
+  "pop",
+  "hip_hop",
+  "electronic",
+  "classic_rock",
+  "metal",
+  "country",
+  "r_and_b",
+];
 
 const fixedRng = (v: number) => ({ next: () => v });
 

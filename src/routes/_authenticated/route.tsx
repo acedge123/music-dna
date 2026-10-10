@@ -19,7 +19,11 @@ function AuthedLayout() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const check = useServerFn(adminCheck);
-  const adminQ = useQuery({ queryKey: ["adminCheck"], queryFn: () => check(), staleTime: 5 * 60_000 });
+  const adminQ = useQuery({
+    queryKey: ["adminCheck"],
+    queryFn: () => check(),
+    staleTime: 5 * 60_000,
+  });
   async function signOut() {
     await supabase.auth.signOut();
     // Clear cached authenticated data (admin check, profile, etc.) so it
@@ -34,15 +38,43 @@ function AuthedLayout() {
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b hairline">
         <div className="mx-auto max-w-6xl px-6 py-4 flex items-center justify-between">
-          <Link to="/" className="font-mono text-xs tracking-[0.22em] uppercase">MusicDNA</Link>
+          <Link to="/" className="font-mono text-xs tracking-[0.22em] uppercase">
+            MusicDNA
+          </Link>
           <nav className="flex items-center gap-6 text-sm">
-            <Link to="/onboarding" className="text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>Interview</Link>
-            <Link to="/me" className="text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>Me</Link>
-            <Link to="/profile" className="text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>Profile</Link>
+            <Link
+              to="/onboarding"
+              className="text-muted-foreground hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              Interview
+            </Link>
+            <Link
+              to="/me"
+              className="text-muted-foreground hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              Me
+            </Link>
+            <Link
+              to="/profile"
+              className="text-muted-foreground hover:text-foreground"
+              activeProps={{ className: "text-foreground" }}
+            >
+              Profile
+            </Link>
             {adminQ.data?.isAdmin && (
-              <Link to="/admin" className="text-muted-foreground hover:text-foreground" activeProps={{ className: "text-foreground" }}>Admin</Link>
+              <Link
+                to="/admin"
+                className="text-muted-foreground hover:text-foreground"
+                activeProps={{ className: "text-foreground" }}
+              >
+                Admin
+              </Link>
             )}
-            <button onClick={signOut} className="text-muted-foreground hover:text-foreground">Sign out</button>
+            <button onClick={signOut} className="text-muted-foreground hover:text-foreground">
+              Sign out
+            </button>
           </nav>
         </div>
       </header>

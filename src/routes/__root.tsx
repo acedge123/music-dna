@@ -87,7 +87,8 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:title", content: "MusicDNA" },
       {
         property: "og:description",
-        content: "A catalog of revealing decisions. Music is the language. Identity is the destination.",
+        content:
+          "A catalog of revealing decisions. Music is the language. Identity is the destination.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

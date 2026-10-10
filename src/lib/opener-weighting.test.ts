@@ -6,8 +6,7 @@ import {
   dominantPerSongLane,
 } from "./musicdna.functions";
 
-const p = (lanes: Array<string>) =>
-  lanes.map((lane) => ({ lane: lane as never }));
+const p = (lanes: Array<string>) => lanes.map((lane) => ({ lane: lane as never }));
 
 describe("opener slot weighting", () => {
   it("weights sum to 6 (3+2+1)", () => {

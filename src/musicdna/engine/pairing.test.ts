@@ -8,7 +8,18 @@ import {
   type RecognitionRow,
 } from "./pairing";
 
-const DIMS = ["movement", "atmosphere", "immersion", "scale", "community", "perspective", "confidence", "tension", "texture", "transformation"] as const;
+const DIMS = [
+  "movement",
+  "atmosphere",
+  "immersion",
+  "scale",
+  "community",
+  "perspective",
+  "confidence",
+  "tension",
+  "texture",
+  "transformation",
+] as const;
 
 const p = (id: string, overrides: Partial<PairingCandidate> = {}): PairingCandidate => ({
   id,
@@ -72,10 +83,7 @@ describe("selectPairing", () => {
   it("prefers fork-testing pairings when leaning axes exist", () => {
     // vector leans hard on movement; only pairing 'good' tests it.
     const r = selectPairing({
-      pool: [
-        p("bad", { tests: ["scale"] }),
-        p("good", { tests: ["movement"] }),
-      ],
+      pool: [p("bad", { tests: ["scale"] }), p("good", { tests: ["movement"] })],
       vector: { movement: 40 },
       used_ids: new Set(),
       session_lane: "alternative" as never,
@@ -169,11 +177,11 @@ describe("selectPairing — fork_filter knob (Phase 3.5)", () => {
 describe("selectPairing — mode + canon_floor knobs (Phase 3.5)", () => {
   const rec: Map<string, RecognitionRow> = new Map([
     ["obscure", { min_canon: 10, avg_canon: 12, recognition_score: 15 }],
-    ["known",   { min_canon: 80, avg_canon: 85, recognition_score: 90 }],
+    ["known", { min_canon: 80, avg_canon: 85, recognition_score: 90 }],
   ]);
   const CORPUS: PairingCandidate[] = [
     p("obscure", { tests: ["scale"], diagnostic_weight: 80 }),
-    p("known",   { tests: ["scale"], diagnostic_weight: 80 }),
+    p("known", { tests: ["scale"], diagnostic_weight: 80 }),
   ];
 
   it("mode='recognition_first' via knobs filters obscure pairings out", () => {
@@ -264,12 +272,28 @@ describe("selectPairing — golden regression across all three modes", () => {
     ["m6", { min_canon: 55, avg_canon: 58, recognition_score: 60 }],
   ]);
 
-  const scenarios: Array<{ label: string; vector: Record<string, number>; mode: "diagnostic_first" | "recognition_boost" | "recognition_first" }> = [
+  const scenarios: Array<{
+    label: string;
+    vector: Record<string, number>;
+    mode: "diagnostic_first" | "recognition_boost" | "recognition_first";
+  }> = [
     { label: "diagnostic_first neutral", vector: {}, mode: "diagnostic_first" },
-    { label: "diagnostic_first leaning", vector: { movement: 40, atmosphere: 20 }, mode: "diagnostic_first" },
-    { label: "recognition_boost mid",    vector: { scale: -25, community: 30 },  mode: "recognition_boost" },
-    { label: "recognition_first cold",   vector: {},                             mode: "recognition_first" },
-    { label: "recognition_first leaning",vector: { texture: 50, atmosphere: -40, confidence: 20 }, mode: "recognition_first" },
+    {
+      label: "diagnostic_first leaning",
+      vector: { movement: 40, atmosphere: 20 },
+      mode: "diagnostic_first",
+    },
+    {
+      label: "recognition_boost mid",
+      vector: { scale: -25, community: 30 },
+      mode: "recognition_boost",
+    },
+    { label: "recognition_first cold", vector: {}, mode: "recognition_first" },
+    {
+      label: "recognition_first leaning",
+      vector: { texture: 50, atmosphere: -40, confidence: 20 },
+      mode: "recognition_first",
+    },
   ];
 
   for (const { label, vector, mode } of scenarios) {
@@ -278,7 +302,8 @@ describe("selectPairing — golden regression across all three modes", () => {
         pool: CORPUS,
         vector,
         used_ids: new Set(),
-        session_lane: mode === "recognition_first" ? ("general" as never) : ("alternative" as never),
+        session_lane:
+          mode === "recognition_first" ? ("general" as never) : ("alternative" as never),
         dims: DIMS,
         rng: seededRng(1234),
         recognition: RECOGNITION,
@@ -287,8 +312,9 @@ describe("selectPairing — golden regression across all three modes", () => {
       // Inline snapshots capture the exact selection_reason on first run and
       // fail loudly if selection math drifts later. First run of the suite
       // populates these; do not hand-edit them without understanding why.
-      expect(r.kind === "picked" ? { id: r.pairing.id, reason: r.selection_reason } : { empty: true })
-        .toMatchSnapshot();
+      expect(
+        r.kind === "picked" ? { id: r.pairing.id, reason: r.selection_reason } : { empty: true },
+      ).toMatchSnapshot();
     });
   }
 });
@@ -341,4 +367,3 @@ describe("DEFAULT_PAIRING_KNOBS — pinned defaults", () => {
     });
   });
 });
-

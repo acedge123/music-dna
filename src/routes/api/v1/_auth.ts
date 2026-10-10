@@ -45,8 +45,7 @@ export async function verifyBearer(request: Request): Promise<AuthedContext> {
   const token = authHeader.slice("Bearer ".length).trim();
   if (!token) throw new HttpError("UNAUTHORIZED", 401, "Empty bearer token");
 
-  const url =
-    process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL;
+  const url = process.env.SUPABASE_URL || process.env.VITE_SUPABASE_URL || FALLBACK_SUPABASE_URL;
   const key =
     process.env.SUPABASE_PUBLISHABLE_KEY ||
     process.env.VITE_SUPABASE_PUBLISHABLE_KEY ||

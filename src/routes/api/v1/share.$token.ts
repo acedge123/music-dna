@@ -11,15 +11,8 @@
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
-import {
-  buildPublicReveal,
-  type PublicRevealInput,
-} from "@/musicdna/engine/reveal";
-import {
-  errorResponse,
-  jsonResponse,
-  preflightResponse,
-} from "./_cors";
+import { buildPublicReveal, type PublicRevealInput } from "@/musicdna/engine/reveal";
+import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 
 const TokenSchema = z.string().min(8).max(64);
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -38,9 +31,7 @@ export const Route = createFileRoute("/api/v1/share/$token")({
 
         // Route files are client-reachable — load the admin client inside the
         // handler to keep it out of the client bundle graph.
-        const { supabaseAdmin } = await import(
-          "@/integrations/supabase/client.server"
-        );
+        const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
 
         let query = supabaseAdmin
           .from("sessions")

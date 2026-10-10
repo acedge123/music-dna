@@ -48,7 +48,11 @@ async function harness(action: string, body: Json): Promise<Json> {
   return JSON.parse(text) as Json;
 }
 
-async function v1(path: string, init: RequestInit, token?: string): Promise<{ status: number; body: Json }> {
+async function v1(
+  path: string,
+  init: RequestInit,
+  token?: string,
+): Promise<{ status: number; body: Json }> {
   const res = await fetch(`${BASE_URL}${path}`, {
     ...init,
     headers: {
@@ -59,7 +63,11 @@ async function v1(path: string, init: RequestInit, token?: string): Promise<{ st
   });
   const text = await res.text();
   let body: Json = {};
-  try { body = text ? (JSON.parse(text) as Json) : {}; } catch { body = { raw: text }; }
+  try {
+    body = text ? (JSON.parse(text) as Json) : {};
+  } catch {
+    body = { raw: text };
+  }
   return { status: res.status, body };
 }
 
@@ -67,85 +75,85 @@ const d = shouldRun ? describe : describe.skip;
 
 d("REST v1 end-to-end", () => {
   // Long-running: opener + reveal both hit the LLM; each choice is a DB round-trip.
-  it(
-    "session → next → choice × N → reveal → share",
-    async () => {
-      // 1. Bootstrap persona + opening analysis.
-      const opener = await harness("opener", {
-        persona_id: PERSONA_ID,
-        songs: OPENER_SONGS,
-        pairing_count: MAX_ROUNDS,
-        reset: true,
-      });
-      expect(opener.ok).toBe(true);
+  it("session → next → choice × N → reveal → share", async () => {
+    // 1. Bootstrap persona + opening analysis.
+    const opener = await harness("opener", {
+      persona_id: PERSONA_ID,
+      songs: OPENER_SONGS,
+      pairing_count: MAX_ROUNDS,
+      reset: true,
+    });
+    expect(opener.ok).toBe(true);
 
-      // 2. Mint a bearer for this persona.
-      const bearer = await harness("bearer", { persona_id: PERSONA_ID });
-      const token = bearer.access_token as string;
-      expect(token).toBeTruthy();
+    // 2. Mint a bearer for this persona.
+    const bearer = await harness("bearer", { persona_id: PERSONA_ID });
+    const token = bearer.access_token as string;
+    expect(token).toBeTruthy();
 
-      // 3. Auth boundary: v1 rejects unauthenticated calls.
-      const unauth = await v1("/api/v1/session", { method: "POST" });
-      expect(unauth.status).toBe(401);
-      expect((unauth.body.error as Json)?.code).toBe("UNAUTHORIZED");
+    // 3. Auth boundary: v1 rejects unauthenticated calls.
+    const unauth = await v1("/api/v1/session", { method: "POST" });
+    expect(unauth.status).toBe(401);
+    expect((unauth.body.error as Json)?.code).toBe("UNAUTHORIZED");
 
-      // 4. POST /api/v1/session
-      const start = await v1("/api/v1/session", { method: "POST" }, token);
-      expect(start.status).toBe(200);
-      const sessionId = start.body.session_id as string;
-      expect(sessionId).toMatch(/^[0-9a-f-]{36}$/i);
+    // 4. POST /api/v1/session
+    const start = await v1("/api/v1/session", { method: "POST" }, token);
+    expect(start.status).toBe(200);
+    const sessionId = start.body.session_id as string;
+    expect(sessionId).toMatch(/^[0-9a-f-]{36}$/i);
 
-      // 5. Interactive loop: next → choice, until done or MAX_ROUNDS.
-      let rounds = 0;
-      let lastReveal: Json | null = null;
-      for (let i = 0; i < MAX_ROUNDS; i++) {
-        const next = await v1(`/api/v1/session/${sessionId}/next`, { method: "GET" }, token);
-        expect(next.status).toBe(200);
-        if (next.body.done || !next.body.pairing) break;
+    // 5. Interactive loop: next → choice, until done or MAX_ROUNDS.
+    let rounds = 0;
+    let lastReveal: Json | null = null;
+    for (let i = 0; i < MAX_ROUNDS; i++) {
+      const next = await v1(`/api/v1/session/${sessionId}/next`, { method: "GET" }, token);
+      expect(next.status).toBe(200);
+      if (next.body.done || !next.body.pairing) break;
 
-        const pairing = next.body.pairing as { pairing_id: string; song_a: { id: string }; song_b: { id: string } };
-        const chosen = i % 2 === 0 ? pairing.song_a.id : pairing.song_b.id;
+      const pairing = next.body.pairing as {
+        pairing_id: string;
+        song_a: { id: string };
+        song_b: { id: string };
+      };
+      const chosen = i % 2 === 0 ? pairing.song_a.id : pairing.song_b.id;
 
-        const choice = await v1(
-          `/api/v1/session/${sessionId}/choice`,
-          {
-            method: "POST",
-            body: JSON.stringify({
-              pairing_id: pairing.pairing_id,
-              chosen_song_id: chosen,
-              ms_to_decide: 1500 + i * 100,
-            }),
-          },
-          token,
-        );
-        expect(choice.status).toBe(200);
-        lastReveal = choice.body;
-        rounds++;
-      }
-      expect(rounds).toBeGreaterThanOrEqual(1);
-      expect(lastReveal).not.toBeNull();
+      const choice = await v1(
+        `/api/v1/session/${sessionId}/choice`,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            pairing_id: pairing.pairing_id,
+            chosen_song_id: chosen,
+            ms_to_decide: 1500 + i * 100,
+          }),
+        },
+        token,
+      );
+      expect(choice.status).toBe(200);
+      lastReveal = choice.body;
+      rounds++;
+    }
+    expect(rounds).toBeGreaterThanOrEqual(1);
+    expect(lastReveal).not.toBeNull();
 
-      // 6. POST /api/v1/session/:id/reveal — assign archetype + synthesis.
-      const reveal = await v1(`/api/v1/session/${sessionId}/reveal`, { method: "POST" }, token);
-      expect(reveal.status).toBe(200);
-      const shareToken = reveal.body.share_token as string | null;
-      expect(shareToken).toBeTruthy();
-      expect((reveal.body.archetype as Json | null)?.name).toBeTypeOf("string");
+    // 6. POST /api/v1/session/:id/reveal — assign archetype + synthesis.
+    const reveal = await v1(`/api/v1/session/${sessionId}/reveal`, { method: "POST" }, token);
+    expect(reveal.status).toBe(200);
+    const shareToken = reveal.body.share_token as string | null;
+    expect(shareToken).toBeTruthy();
+    expect((reveal.body.archetype as Json | null)?.name).toBeTypeOf("string");
 
-      // 7. GET /api/v1/share/:token — public, no auth.
-      const share = await v1(`/api/v1/share/${shareToken}`, { method: "GET" });
-      expect(share.status).toBe(200);
-      expect(share.body.session_id).toBe(sessionId);
-      expect(share.body.share_token).toBe(shareToken);
-      expect(Array.isArray(share.body.defining_choices)).toBe(true);
+    // 7. GET /api/v1/share/:token — public, no auth.
+    const share = await v1(`/api/v1/share/${shareToken}`, { method: "GET" });
+    expect(share.status).toBe(200);
+    expect(share.body.session_id).toBe(sessionId);
+    expect(share.body.share_token).toBe(shareToken);
+    expect(Array.isArray(share.body.defining_choices)).toBe(true);
 
-      // 8. CORS preflight — share route is cross-origin.
-      const preflight = await fetch(`${BASE_URL}/api/v1/share/${shareToken}`, { method: "OPTIONS" });
-      expect(preflight.status).toBe(204);
-      expect(preflight.headers.get("access-control-allow-origin")).toBe("*");
-    },
-    180_000,
-  );
+    // 8. CORS preflight — share route is cross-origin.
+    const preflight = await fetch(`${BASE_URL}/api/v1/share/${shareToken}`, { method: "OPTIONS" });
+    expect(preflight.status).toBe(204);
+    expect(preflight.headers.get("access-control-allow-origin")).toBe("*");
+  }, 180_000);
 
   it.runIf(shouldRun)("rejects malformed share tokens with a typed error envelope", async () => {
     const bad = await v1("/api/v1/share/x", { method: "GET" });
@@ -208,7 +216,7 @@ d("REST v1 end-to-end", () => {
 
 if (!shouldRun) {
   // Tell the developer why nothing ran — quiet skip is worse than a hint.
-   
+
   console.info(
     "[e2e] Skipped REST v1 end-to-end suite. Set MUSICDNA_E2E_BASE_URL and AGENT_TEST_HARNESS_KEY to run.",
   );

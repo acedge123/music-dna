@@ -21,7 +21,8 @@ export function nextPromptFor(
   leadAxis?: string | null,
 ): string {
   const t = (tests ?? []).filter((a) => AXIS_QUESTION[a]);
-  if (leadAxis && t.includes(leadAxis)) return "Same question, different songs. Let's see if it holds.";
+  if (leadAxis && t.includes(leadAxis))
+    return "Same question, different songs. Let's see if it holds.";
   if (t.length === 0) return "Next one. Go with your gut.";
   return AXIS_QUESTION[t[0]];
 }

@@ -17,9 +17,7 @@ export type DecadePrompt = {
 // Public-readable: anyone (signed in or out) can fetch the active prompt for a
 // decade. Backed by the "Anyone can read decade prompts" RLS policy + anon GRANT.
 export const getActiveDecadePrompt = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) =>
-    z.object({ decade: z.enum(DECADES) }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ decade: z.enum(DECADES) }).parse(d))
   .handler(async ({ data }): Promise<{ text: string | null }> => {
     const { data: row, error } = await publicSupabase
       .from("decade_opening_prompts")
@@ -35,19 +33,22 @@ export const getActiveDecadePrompt = createServerFn({ method: "GET" })
 // Used by per-decade onboarding pages (e.g. /1980) to drive the full question
 // sequence, not just the opener.
 export const listDecadePromptsPublic = createServerFn({ method: "GET" })
-  .inputValidator((d: unknown) =>
-    z.object({ decade: z.enum(DECADES) }).parse(d),
-  )
-  .handler(async ({ data }): Promise<{ rows: Array<{ text: string; position: number; is_active: boolean }> }> => {
-    const { data: rows, error } = await publicSupabase
-      .from("decade_opening_prompts")
-      .select("text,position,is_active")
-      .eq("decade", data.decade)
-      .order("position", { ascending: true });
-    if (error) return { rows: [] };
-    return { rows: (rows ?? []) as Array<{ text: string; position: number; is_active: boolean }> };
-  });
-
+  .inputValidator((d: unknown) => z.object({ decade: z.enum(DECADES) }).parse(d))
+  .handler(
+    async ({
+      data,
+    }): Promise<{ rows: Array<{ text: string; position: number; is_active: boolean }> }> => {
+      const { data: rows, error } = await publicSupabase
+        .from("decade_opening_prompts")
+        .select("text,position,is_active")
+        .eq("decade", data.decade)
+        .order("position", { ascending: true });
+      if (error) return { rows: [] };
+      return {
+        rows: (rows ?? []) as Array<{ text: string; position: number; is_active: boolean }>,
+      };
+    },
+  );
 
 // --- Admin operations ---
 
@@ -80,10 +81,12 @@ export const listDecadePrompts = createServerFn({ method: "GET" })
 export const updateDecadePromptText = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      id: z.string().uuid(),
-      text: z.string().trim().min(3).max(500),
-    }).parse(d),
+    z
+      .object({
+        id: z.string().uuid(),
+        text: z.string().trim().min(3).max(500),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
@@ -99,9 +102,7 @@ export const updateDecadePromptText = createServerFn({ method: "POST" })
 // that same decade first so the partial-unique index is satisfied.
 export const setActiveDecadePrompt = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid() }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
     const { data: target, error: tErr } = await admin
@@ -133,10 +134,12 @@ export const setActiveDecadePrompt = createServerFn({ method: "POST" })
 export const createDecadePrompt = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({
-      decade: z.enum(DECADES),
-      text: z.string().trim().min(3).max(500),
-    }).parse(d),
+    z
+      .object({
+        decade: z.enum(DECADES),
+        text: z.string().trim().min(3).max(500),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
@@ -166,15 +169,10 @@ export const createDecadePrompt = createServerFn({ method: "POST" })
 
 export const deleteDecadePrompt = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z.object({ id: z.string().uuid() }).parse(d),
-  )
+  .inputValidator((d: unknown) => z.object({ id: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
-    const { error } = await admin
-      .from("decade_opening_prompts")
-      .delete()
-      .eq("id", data.id);
+    const { error } = await admin.from("decade_opening_prompts").delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true as const };
   });

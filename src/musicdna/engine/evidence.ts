@@ -104,7 +104,8 @@ export function buildLedger(choices: LedgerChoice[], allDims: readonly string[])
     const sup = direction === "hi" ? hi : lo;
     const con = direction === "hi" ? lo : hi;
     const claim = evaluateClaim(sup.length, con.length);
-    const magnitude = list.reduce((s, e) => s + Math.abs(e.delta) * e.weight, 0) / (list.length || 1);
+    const magnitude =
+      list.reduce((s, e) => s + Math.abs(e.delta) * e.weight, 0) / (list.length || 1);
     axes.push({
       axis,
       direction,
@@ -115,13 +116,18 @@ export function buildLedger(choices: LedgerChoice[], allDims: readonly string[])
       consistency: Number(claim.consistency.toFixed(3)),
       status: claim.status,
       eligible: claim.eligible,
-      supporting_examples: [...sup].sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta)).slice(0, 3),
-      contradicting_examples: [...con].sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta)).slice(0, 3),
+      supporting_examples: [...sup]
+        .sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta))
+        .slice(0, 3),
+      contradicting_examples: [...con]
+        .sort((x, y) => Math.abs(y.delta) - Math.abs(x.delta))
+        .slice(0, 3),
     });
   }
   axes.sort((x, y) => {
     if (x.eligible !== y.eligible) return x.eligible ? -1 : 1;
-    const sx = x.supporting - x.contradicting, sy = y.supporting - y.contradicting;
+    const sx = x.supporting - x.contradicting,
+      sy = y.supporting - y.contradicting;
     if (sx !== sy) return sy - sx;
     return y.consistency * y.magnitude - x.consistency * x.magnitude;
   });
@@ -146,19 +152,27 @@ export function detectRevision(
   prior: PriorRead,
   ledger: Ledger,
 ): { revised: boolean; previous: PriorRead; changed_by: LedgerEntry | null } {
-  if (!prior || prior.tier === "observation") return { revised: false, previous: prior, changed_by: null };
+  if (!prior || prior.tier === "observation")
+    return { revised: false, previous: prior, changed_by: null };
   const prev = ledger.axes.find((a) => a.axis === prior.axis);
   const lead = ledger.axes[0];
   const flippedDirection = !!prev && prev.direction !== prior.direction;
   const lostLead = !!prev && prev.supporting <= prev.contradicting;
   const overtaken =
-    !!lead && lead.axis !== prior.axis && !!prev &&
+    !!lead &&
+    lead.axis !== prior.axis &&
+    !!prev &&
     lead.supporting - lead.contradicting > prev.supporting - prev.contradicting;
   const revised = flippedDirection || lostLead || overtaken;
   if (!revised) return { revised: false, previous: prior, changed_by: null };
   // The most recent decision on the prior axis that went against it.
-  const against = ledger.entries
-    .filter((e) => e.axis === prior.axis && (prior.direction === "hi" ? e.delta <= -MIN_CONTRAST : e.delta >= MIN_CONTRAST))
-    .sort((a, b) => b.index - a.index)[0] ?? null;
+  const against =
+    ledger.entries
+      .filter(
+        (e) =>
+          e.axis === prior.axis &&
+          (prior.direction === "hi" ? e.delta <= -MIN_CONTRAST : e.delta >= MIN_CONTRAST),
+      )
+      .sort((a, b) => b.index - a.index)[0] ?? null;
   return { revised: true, previous: prior, changed_by: against };
 }
