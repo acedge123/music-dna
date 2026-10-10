@@ -382,6 +382,7 @@ export const startSession = createServerFn({ method: "POST" })
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
 import { buildLedger, detectRevision, LEDGER_VERSION, type LedgerSong, type PriorRead } from "@/musicdna/engine/evidence";
+import { nextPromptFor } from "@/musicdna/engine/prompts";
 import { evaluateClaim, CLAIM_POLICY_VERSION, CLAIM_MIN_SUPPORT, CLAIM_MIN_CONSISTENCY } from "@/musicdna/engine/claims";
 import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
@@ -744,6 +745,7 @@ export async function nextPairingImpl(
         });
         return {
           pairing: stripPrivatePairingFields(bootPicked),
+          prompt: nextPromptFor((bootPicked.tests ?? []) as string[]),
           round: round + 1,
           answered,
           max_rounds: stop.max_answered,
@@ -955,6 +957,10 @@ export async function nextPairingImpl(
       // why_good / hypothesis are the critic's private notes — never ship them
       // to a client before the choice is made.
       pairing: stripPrivatePairingFields(picked.pairing),
+      prompt: nextPromptFor(
+        ((picked.pairing as { tests?: string[] | null }).tests ?? []) as string[],
+        topLeadAxis(vector),
+      ),
       round: round + 1,
       answered,
       max_rounds: stop.max_answered,
@@ -968,6 +974,15 @@ export async function nextPairingImpl(
 }
 
 
+
+function topLeadAxis(vector: Record<string, number>): string | null {
+  let best: string | null = null, bv = 0;
+  for (const d of DIMS as readonly string[]) {
+    const v = Math.abs(vector[d] ?? 0);
+    if (v > bv) { bv = v; best = d; }
+  }
+  return bv >= 12 ? best : null;
+}
 
 // ============ Record choice ============
 // Two-layer copy system:
