@@ -14,7 +14,7 @@ event types (server-emitted from `recordChoiceImpl` → `emitChoiceDiagnostics`)
 
 - `choice_scored` — one per user choice.
 - `archetype_ranking_snapshot` — round-level trajectory. Emitted at
-  stability checkpoints (rounds 8, 10, 12, 14) and when the session ends
+  stability checkpoints (answered rounds 2, 4, 6) and when the session ends
   (`is_final=true`).
 
 The listener-facing `pairing_shown` event (client-emitted) additionally
@@ -80,7 +80,7 @@ listeners see only their own rows (RLS on the underlying tables).
 
 | View | Question |
 |---|---|
-| `v_session_stability` | Winner at rounds 8/10/12/14 per session — did the round-8 winner survive to reveal? |
+| `v_session_stability` | Winner at answered rounds 2/4/6 per session — did the round-2 winner survive to reveal? |
 | `v_axis_independence` | Per session, count of *distinct* axes that ever appeared in `choice_scored.supports`. Repeated-axis "supports" collapse to one. |
 | `v_contradiction_load` | Sum of `positive_contribution` vs. `negative_contribution` per session, plus their ratio. "How much did we ignore?" |
 | `v_residual_rate` | Sessions where the final snapshot's `winner_score < 0.5` or `margin < 0.05`. |

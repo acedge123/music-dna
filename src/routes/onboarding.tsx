@@ -395,10 +395,13 @@ function Onboarding() {
       setEntries((prev) => [...prev, entry]);
       setPairing(null);
 
-      const { pairing: nxt, round: nr, done: isDone, max_rounds, selection_reason } = await nextFn({ data: { sessionId } }) as {
-        pairing: Pairing | null; round: number; done: boolean; max_rounds?: number; selection_reason?: unknown;
+      const { pairing: nxt, round: nr, done: isDone, max_rounds, selection_reason, prompt } = await nextFn({ data: { sessionId } }) as {
+        pairing: Pairing | null; round: number; done: boolean; max_rounds?: number; selection_reason?: unknown; prompt?: string;
       };
       if (max_rounds) setMaxRounds(max_rounds);
+      // The prompt comes from the pairing actually selected, so it always
+      // matches what the next matchup tests.
+      if (prompt) setNextPrompt(prompt);
       if (isDone || !nxt) {
         try {
           await finalizeFn({ data: { sessionId } });

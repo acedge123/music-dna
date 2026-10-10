@@ -381,6 +381,8 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
+import { buildLedger, detectRevision, LEDGER_VERSION, type LedgerSong, type PriorRead } from "@/musicdna/engine/evidence";
+import { nextPromptFor } from "@/musicdna/engine/prompts";
 import { evaluateClaim, CLAIM_POLICY_VERSION, CLAIM_MIN_SUPPORT, CLAIM_MIN_CONSISTENCY } from "@/musicdna/engine/claims";
 import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
@@ -743,6 +745,7 @@ export async function nextPairingImpl(
         });
         return {
           pairing: stripPrivatePairingFields(bootPicked),
+          prompt: nextPromptFor((bootPicked.tests ?? []) as string[]),
           round: round + 1,
           answered,
           max_rounds: stop.max_answered,
@@ -954,6 +957,10 @@ export async function nextPairingImpl(
       // why_good / hypothesis are the critic's private notes — never ship them
       // to a client before the choice is made.
       pairing: stripPrivatePairingFields(picked.pairing),
+      prompt: nextPromptFor(
+        ((picked.pairing as { tests?: string[] | null }).tests ?? []) as string[],
+        topLeadAxis(vector),
+      ),
       round: round + 1,
       answered,
       max_rounds: stop.max_answered,
@@ -967,6 +974,15 @@ export async function nextPairingImpl(
 }
 
 
+
+function topLeadAxis(vector: Record<string, number>): string | null {
+  let best: string | null = null, bv = 0;
+  for (const d of DIMS as readonly string[]) {
+    const v = Math.abs(vector[d] ?? 0);
+    if (v > bv) { bv = v; best = d; }
+  }
+  return bv >= 12 ? best : null;
+}
 
 // ============ Record choice ============
 // Two-layer copy system:
@@ -1707,7 +1723,7 @@ export async function skipPairingImpl(
 // Loads the archetype catalog, recomputes rankings on the just-updated
 // vector, and writes two events into event_log.props for offline analysis:
 //   • choice_scored — always. Full snapshot of this pairing's contribution.
-//   • archetype_ranking_snapshot — at rounds 8/10/12/14 (stability checkpoints)
+//   • archetype_ranking_snapshot — at answered rounds 2/4/6 (stability checkpoints)
 //     AND when shouldStop says we're done (is_final=true). Cheap; makes the
 //     "did the winner change late?" query one WHERE clause.
 async function emitChoiceDiagnostics(
@@ -1796,9 +1812,9 @@ async function emitChoiceDiagnostics(
     } as never,
   });
 
-  const STABILITY_CHECKPOINTS = new Set([8, 10, 12, 14]);
+  const STABILITY_CHECKPOINTS = new Set([2, 4, 6]);
   const isCheckpoint = STABILITY_CHECKPOINTS.has(args.round);
-  const stop = shouldStop({ round: args.round, vector: args.weightedVec, dims: DIMS as readonly string[] });
+  const stop = sessionCompletion({ answered: args.round, vector: args.weightedVec, dims: DIMS as readonly string[] });
   const isFinal = stop.done;
   if (isCheckpoint || isFinal) {
     await supabase.from("event_log").insert({
@@ -1867,6 +1883,7 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
         .from("choices")
         .select(`
           ms_to_decide,
+          pairing_id,
           pairing:pairing_id(tests, diagnostic_weight),
           chosen:chosen_song_id(${songCols}),
           rejected:rejected_song_id(${songCols})
@@ -1876,6 +1893,7 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
     const archetypes = archRes.data ?? [];
     type SongRow = Record<string, number | string | null> & { id: string; title: string; artist: string; year: number | null; lane: string };
     type ChoiceRow = {
+      pairing_id: string | null;
       ms_to_decide: number | null;
       pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
       chosen: SongRow | null;
@@ -1893,60 +1911,37 @@ export async function finalizeSessionImpl(supabase: AuthedSupabase, userId: stri
       ms_to_decide: c.ms_to_decide,
     }));
 
-    // -------- Layer 2: Patterns (per axis) --------
-    type PatternAcc = {
-      chosen_dir: number;      // +1 each time chosen side > rejected on this axis
-      rejected_dir: number;    // +1 each time rejected side > chosen
-      magnitude: number;       // sum of |delta|, weighted by diagnostic_weight
-      supporting: number;      // count of choices where this axis was tested
-      examples: Array<{ chosen: string; rejected: string; delta: number }>;
-    };
-    const acc: Record<string, PatternAcc> = {};
-    for (const c of choices) {
-      const tests = c.pairing?.tests?.length ? c.pairing.tests : (DIMS as readonly string[]).slice();
-      const w = ((c.pairing?.diagnostic_weight ?? 50) / 100);
-      for (const dim of tests) {
-        const a = Number(c.chosen![dim] ?? 50);
-        const b = Number(c.rejected![dim] ?? 50);
-        const delta = a - b;
-        if (!acc[dim]) acc[dim] = { chosen_dir: 0, rejected_dir: 0, magnitude: 0, supporting: 0, examples: [] };
-        acc[dim].supporting += 1;
-        acc[dim].magnitude += Math.abs(delta) * w;
-        if (delta > 5) acc[dim].chosen_dir += 1;
-        else if (delta < -5) acc[dim].rejected_dir += 1;
-        if (Math.abs(delta) > 15) {
-          acc[dim].examples.push({ chosen: c.chosen!.title, rejected: c.rejected!.title, delta });
-        }
-      }
-    }
-
-    const patterns = Object.entries(acc).map(([dim, p]) => {
-      const direction: "hi" | "lo" = p.chosen_dir >= p.rejected_dir ? "hi" : "lo";
-      const supporting_choices = direction === "hi" ? p.chosen_dir : p.rejected_dir;
-      const label = DIM_LABEL[dim];
-      // confidence = directional consistency * magnitude factor
-      const contradicting_choices = direction === "hi" ? p.rejected_dir : p.chosen_dir;
-      const claim = evaluateClaim(supporting_choices, contradicting_choices);
-      const consistency = claim.consistency;
-      const magnitudeFactor = Math.min(1, p.magnitude / (p.supporting * 30 || 1));
-      const confidence = Number((consistency * 0.7 + magnitudeFactor * 0.3).toFixed(3));
+    // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
+    const ledger = buildLedger(
+      choices.map((c) => ({
+        pairing_id: c.pairing_id ?? null,
+        tests: c.pairing?.tests ?? null,
+        diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
+        chosen: c.chosen as unknown as LedgerSong,
+        rejected: c.rejected as unknown as LedgerSong,
+      })),
+      DIMS as readonly string[],
+    );
+    const patterns = ledger.axes.map((a) => {
+      const label = DIM_LABEL[a.axis];
+      const preferred = a.direction === "hi" ? label?.hi : label?.lo;
+      const opposed = a.direction === "hi" ? label?.lo : label?.hi;
+      const magnitudeFactor = Math.min(1, a.magnitude / 30);
       return {
-        dimension: dim,
-        preferred: direction === "hi" ? label?.hi : label?.lo,
-        opposed: direction === "hi" ? label?.lo : label?.hi,
-        supporting_choices,
-        tested_total: p.supporting,
-        confidence,
-        contradicting_choices,
-        claim_status: claim.status,
-        claim_eligible: claim.eligible,
-        // Only examples that point the same way as the claim (no opposing picks).
-        examples: p.examples
-          .filter((e) => (direction === "hi" ? e.delta > 0 : e.delta < 0))
-          .slice(0, 3),
-        tradeoff: `${direction === "hi" ? label?.hi : label?.lo} over ${direction === "hi" ? label?.lo : label?.hi}`,
+        dimension: a.axis,
+        preferred,
+        opposed,
+        supporting_choices: a.supporting,
+        contradicting_choices: a.contradicting,
+        tested_total: a.tested,
+        confidence: Number((a.consistency * 0.7 + magnitudeFactor * 0.3).toFixed(3)),
+        claim_status: a.status,
+        claim_eligible: a.eligible,
+        examples: a.supporting_examples.map((e) => ({ chosen: e.chosen, rejected: e.rejected, delta: e.delta })),
+        counter_examples: a.contradicting_examples.map((e) => ({ chosen: e.chosen, rejected: e.rejected, delta: e.delta })),
+        tradeoff: `${preferred} over ${opposed}`,
       };
-    }).sort((x, y) => y.confidence - x.confidence);
+    });
 
     // -------- Layer 3: Counter-hypotheses --------
     const counterarguments: Array<{ claim: string; impact: "low" | "medium" | "high"; notes: string }> = [];
@@ -2154,7 +2149,7 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
       counterarguments,
       allowed_claims,
       blocked_claims,
-      evidence_thresholds: { policy: CLAIM_POLICY_VERSION, supporting_choices: CLAIM_MIN_SUPPORT, consistency_threshold: CLAIM_MIN_CONSISTENCY },
+      evidence_thresholds: { ledger: LEDGER_VERSION, policy: CLAIM_POLICY_VERSION, supporting_choices: CLAIM_MIN_SUPPORT, consistency_threshold: CLAIM_MIN_CONSISTENCY },
       narrative,
     };
     await supabase.from("session_reasoning").upsert(reasoningRow, { onConflict: "session_id" });
@@ -3718,6 +3713,12 @@ export type CurrentReadResult = {
   direction: "forming" | "holding" | "contested" | "revising";
   evidence: ReadEvidence;
   question: string;
+  revision?: {
+    previous_claim: string;
+    previous_axis: string;
+    changed_by: { chosen: string; rejected: string } | null;
+    new_interpretation: string;
+  } | null;
 };
 
 export const currentRead = createServerFn({ method: "POST" })
@@ -3734,7 +3735,7 @@ export const currentRead = createServerFn({ method: "POST" })
       supabase
         .from("choices")
         .select(
-          `created_at, chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
+          `created_at, pairing_id, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
         )
         .eq("session_id", data.sessionId)
         .order("created_at", { ascending: true }),
@@ -3754,7 +3755,12 @@ export const currentRead = createServerFn({ method: "POST" })
     }
 
     type SongRow = Record<string, unknown> & { title?: string; artist?: string };
-    type ChoiceRow = { chosen: SongRow | null; rejected: SongRow | null };
+    type ChoiceRow = {
+      pairing_id: string | null;
+      pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
+      chosen: SongRow | null;
+      rejected: SongRow | null;
+    };
     const choices = (choicesRes.data ?? []) as unknown as ChoiceRow[];
     const answered = choices.length;
     const num = (row: SongRow | null, dim: string) => {
@@ -3804,73 +3810,120 @@ export const currentRead = createServerFn({ method: "POST" })
       };
     }
 
-    // ---- Evidence for the leading axis, straight from the choices. ----
-    const sign = top.v >= 0 ? 1 : -1;
-    const ev: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
-    for (const c of choices) {
-      const delta = num(c.chosen, top.d) - num(c.rejected, top.d);
-      if (Math.abs(delta) < 10) continue;
-      ev.tested += 1;
-      if (Math.sign(delta) === sign) {
-        ev.supporting += 1;
-        if (ev.examples.length < 2) ev.examples.push({ chosen: label(c.chosen), rejected: label(c.rejected) });
-      } else {
-        ev.contradicting += 1;
-      }
-    }
-    const direction: CurrentReadResult["direction"] =
-      ev.contradicting > ev.supporting
-        ? "revising"
-        : ev.contradicting > 0
-          ? "contested"
-          : ev.supporting >= 2
-            ? "holding"
-            : "forming";
-
-    const variantSeed = answered + dimSeed(top.d) + (top.v >= 0 ? 0 : 1);
-    const beat = BEAT[top.d];
-    const pole = pickVariant(top.v >= 0 ? beat?.hi : beat?.lo, variantSeed);
-    const fallback = POLES[top.d]?.[top.v >= 0 ? "hi" : "lo"];
-    const claimLine = pole?.thesis ?? pickByHash(fallback?.observations, variantSeed) ?? `Leaning ${top.d}.`;
-    const axisLabel = fallback?.axis_label ?? top.d;
-
-    // ---- Tier 3: earned claim — 3+ supporting, nothing against it. ----
-    if (ev.supporting >= 3 && ev.contradicting === 0 && Math.abs(top.v) >= 12) {
+    // ---- Evidence from the shared ledger (same builder as the final read). ----
+    const ledger = buildLedger(
+      choices.map((c) => ({
+        pairing_id: c.pairing_id ?? null,
+        tests: c.pairing?.tests ?? null,
+        diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
+        chosen: c.chosen as LedgerSong | null,
+        rejected: c.rejected as LedgerSong | null,
+      })),
+      DIMS as readonly string[],
+    );
+    const lead = ledger.axes[0];
+    if (!lead) {
       return {
-        thesis: claimLine,
-        hook: pole?.hook ?? "That one's not a coincidence anymore.",
-        topDim: top.d,
-        strength: Math.abs(top.v),
-        tier: "read",
-        direction,
-        evidence: ev,
-        question: "",
+        thesis: "Your picks so far don't line up on anything yet.",
+        hook: "Let's find the tradeoff that does.",
+        topDim: null, strength: 0, tier: "theory", direction: "forming",
+        evidence: emptyEvidence, question: "", revision: null,
       };
     }
+    const fmt = (e: { chosen: string; chosen_artist: string; rejected: string; rejected_artist: string }) => ({
+      chosen: e.chosen_artist ? `${e.chosen} (${e.chosen_artist})` : e.chosen,
+      rejected: e.rejected_artist ? `${e.rejected} (${e.rejected_artist})` : e.rejected,
+    });
+    const ev: ReadEvidence = {
+      supporting: lead.supporting,
+      contradicting: lead.contradicting,
+      tested: lead.tested,
+      examples: lead.supporting_examples.slice(0, 2).map(fmt),
+    };
 
-    // ---- Tier 2: hedged thread, with the contradiction named out loud. ----
-    const hedged =
-      direction === "revising"
-        ? `I had you on ${axisLabel}. The last few say otherwise.`
+    // ---- Revision: compare against the last read the user actually saw. ----
+    const { data: priorRows } = await supabase
+      .from("event_log")
+      .select("props")
+      .eq("session_id", data.sessionId)
+      .eq("event_type", "read_shown")
+      .order("created_at", { ascending: false })
+      .limit(1);
+    const priorProps = (priorRows?.[0]?.props ?? null) as
+      | { axis?: string; direction?: "hi" | "lo"; tier?: string; answered?: number; thesis?: string }
+      | null;
+    const prior: PriorRead = priorProps?.axis && priorProps.direction
+      ? { axis: priorProps.axis, direction: priorProps.direction, tier: priorProps.tier ?? "theory" }
+      : null;
+    const rev = detectRevision(prior, ledger);
+
+    const direction: CurrentReadResult["direction"] = rev.revised
+      ? "revising"
+      : lead.contradicting > 0
+        ? "contested"
+        : lead.supporting >= 2
+          ? "holding"
+          : "forming";
+
+    const hi = lead.direction === "hi";
+    const variantSeed = answered + dimSeed(lead.axis) + (hi ? 0 : 1);
+    const beat = BEAT[lead.axis];
+    const pole = pickVariant(hi ? beat?.hi : beat?.lo, variantSeed);
+    const fallback = POLES[lead.axis]?.[hi ? "hi" : "lo"];
+    const claimLine = pole?.thesis ?? pickByHash(fallback?.observations, variantSeed) ?? "There's a thread here.";
+    const axisLabel = fallback?.axis_label ?? "something";
+    const priorLabel = prior ? (POLES[prior.axis]?.[prior.direction]?.axis_label ?? "one thing") : "";
+    const changed = rev.changed_by ? fmt(rev.changed_by) : null;
+
+    const revision = rev.revised && prior
+      ? {
+          previous_claim: priorProps?.thesis ?? priorLabel,
+          previous_axis: prior.axis,
+          changed_by: changed,
+          new_interpretation: lead.eligible ? claimLine : `Maybe ${axisLabel}.`,
+        }
+      : null;
+
+    let result: CurrentReadResult;
+    if (lead.eligible && !rev.revised) {
+      // ---- Tier 3: earned claim under D01 (3+ support, >= 0.65, support > contra). ----
+      result = {
+        thesis: lead.status === "qualified" ? `${claimLine} Mostly.` : claimLine,
+        hook: pole?.hook ?? "That one's not a coincidence anymore.",
+        topDim: lead.axis, strength: lead.magnitude, tier: "read", direction,
+        evidence: ev, question: "", revision: null,
+      };
+    } else {
+      const hedged = rev.revised
+        ? changed
+          ? `I had you on ${priorLabel}. Then you took ${changed.chosen} over ${changed.rejected}. Rethinking.`
+          : `I had you on ${priorLabel}. The evidence moved. Now it might be ${axisLabel}.`
         : direction === "contested"
           ? `${claimLine} Except once, where you went the other way.`
           : `Might be ${axisLabel}. One more would tell me.`;
-    return {
-      thesis: hedged,
-      hook:
-        direction === "revising"
-          ? "Let me start that thread over."
-          : direction === "contested"
-            ? "So which was the exception?"
-            : "Let's test it properly.",
-      topDim: top.d,
-      strength: Math.abs(top.v),
-      tier: "theory",
-      direction,
-      evidence: ev,
-      question:
-        direction === "contested"
-          ? "Was that one a mood, or is my read wrong?"
-          : "Does it hold against something you already love?",
-    };
+      result = {
+        thesis: hedged,
+        hook: rev.revised ? "Let me start that thread over." : direction === "contested" ? "So which was the exception?" : "Let's test it properly.",
+        topDim: lead.axis, strength: lead.magnitude, tier: "theory", direction,
+        evidence: ev,
+        question: direction === "contested" ? "Was that one a mood, or is my read wrong?" : "Does it hold against something you already love?",
+        revision,
+      };
+    }
+
+    // Record what was shown so the next read can detect a real revision.
+    if (priorProps?.answered !== answered) {
+      await supabase.from("event_log").insert({
+        user_id: userId,
+        session_id: data.sessionId,
+        event_type: "read_shown",
+        props: {
+          axis: lead.axis, direction: lead.direction, tier: result.tier, answered,
+          thesis: result.thesis, supporting: lead.supporting, contradicting: lead.contradicting,
+          ledger: ledger.version, policy: ledger.policy, revised: rev.revised,
+          revision: result.revision,
+        } as never,
+      });
+    }
+    return result;
   });
