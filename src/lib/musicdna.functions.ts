@@ -62,6 +62,15 @@ function seedFrom(sessionId: string, round: number): number {
 // the auth middleware so agents can drive end-to-end runs without auth.
 export type AuthedSupabase = SupabaseClient<Database>;
 
+type OpenerProfile = Pick<
+  Database["public"]["Tables"]["profiles"]["Row"],
+  | "opening_songs"
+  | "opening_hypothesis"
+  | "opening_lane"
+  | "opening_lane_confidence"
+  | "opening_analysis_json"
+> | null;
+
 // Canonical 10 axes. Source of truth: public.axes (9 rows) + transformation.
 // Moods (nostalgic, dreamy, dark, hopeful, romantic, etc.) are DERIVED from
 // combinations of these — see deriveDescriptors below. Never stored.
@@ -4304,7 +4313,7 @@ type ChatRole = "user" | "assistant" | "system";
 async function ensureChatSessionForUser(
   supabase: AuthedSupabase,
   userId: string,
-): Promise<{ sessionId: string; profile: any } | null> {
+): Promise<{ sessionId: string; profile: OpenerProfile } | null> {
   const { data: profile } = await supabase
     .from("profiles")
     .select(
@@ -4361,7 +4370,7 @@ export const chatTurn = createServerFn({ method: "POST" })
     const { supabase, userId } = context;
 
     let sessionId = data.sessionId ?? null;
-    let profile: any = null;
+    let profile: OpenerProfile = null;
     if (!sessionId) {
       const anchor = await ensureChatSessionForUser(supabase as never, userId);
       if (!anchor) {
