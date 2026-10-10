@@ -1,6 +1,8 @@
 # D06 — Retention and account linking
 
-Status: **policy decided (ACE, 2026-10-10); implementation and verification pending.**
+Status: **policy decided (ACE, 2026-10-10); implementation deferred until launch.**
+
+Deferred on purpose: the tables are small, so the sweeps buy no meaningful storage today. The policy stays settled here so it can be built in one pass when it actually matters — before public launch, or earlier if a user asks for deletion. Until then, nothing in this checklist is implemented: no activity timestamps, no purge job, no account-linking flow.
 
 ## Retention
 
