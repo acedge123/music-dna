@@ -12,7 +12,7 @@ export type HistPairing = { id: string; tests: string[]; diagnostic_weight: numb
 
 export type Exchange =
   | { type: "choice"; at: string; pairing_id: string; pairing: HistPairing | null; chosen: HistSong | null; rejected: HistSong | null; feedback: { verdict: string; why: string } | null }
-  | { type: "read"; at: string; answered: number | null; tier: string | null; thesis: string | null; direction: string | null; revised: boolean; revision: unknown }
+  | { type: "read"; at: string; answered: number | null; tier: string | null; thesis: string | null; direction: string | null; revised: boolean; revision: Record<string, string | number | boolean | null | Record<string, string>> | null }
   | { type: "skip"; at: string; pairing_id: string | null; reason: string | null }
   | { type: "reaction"; at: string; kind: string | null };
 
@@ -43,7 +43,7 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
     if (e.event_type === "read_shown") {
       out.push({ type: "read", at: e.created_at, answered: typeof p.answered === "number" ? p.answered : null,
         tier: (p.tier as string) ?? null, thesis: (p.thesis as string) ?? null,
-        direction: p.revised ? "revising" : null, revised: !!p.revised, revision: p.revision ?? null });
+        direction: p.revised ? "revising" : null, revised: !!p.revised, revision: (p.revision ?? null) as never });
     } else if (e.event_type === "pairing_skipped") {
       out.push({ type: "skip", at: e.created_at, pairing_id: e.pairing_id, reason: (p.reason as string) ?? null });
     } else {
