@@ -381,7 +381,7 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
-import { buildLedger, detectRevision, LEDGER_VERSION, type LedgerSong } from "@/musicdna/engine/evidence";
+import { buildLedger, detectRevision, LEDGER_VERSION, type LedgerSong, type PriorRead } from "@/musicdna/engine/evidence";
 import { evaluateClaim, CLAIM_POLICY_VERSION, CLAIM_MIN_SUPPORT, CLAIM_MIN_CONSISTENCY } from "@/musicdna/engine/claims";
 import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
@@ -3698,6 +3698,12 @@ export type CurrentReadResult = {
   direction: "forming" | "holding" | "contested" | "revising";
   evidence: ReadEvidence;
   question: string;
+  revision?: {
+    previous_claim: string;
+    previous_axis: string;
+    changed_by: { chosen: string; rejected: string } | null;
+    new_interpretation: string;
+  } | null;
 };
 
 export const currentRead = createServerFn({ method: "POST" })
@@ -3714,7 +3720,7 @@ export const currentRead = createServerFn({ method: "POST" })
       supabase
         .from("choices")
         .select(
-          `created_at, chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
+          `created_at, pairing_id, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
         )
         .eq("session_id", data.sessionId)
         .order("created_at", { ascending: true }),
@@ -3734,7 +3740,12 @@ export const currentRead = createServerFn({ method: "POST" })
     }
 
     type SongRow = Record<string, unknown> & { title?: string; artist?: string };
-    type ChoiceRow = { chosen: SongRow | null; rejected: SongRow | null };
+    type ChoiceRow = {
+      pairing_id: string | null;
+      pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
+      chosen: SongRow | null;
+      rejected: SongRow | null;
+    };
     const choices = (choicesRes.data ?? []) as unknown as ChoiceRow[];
     const answered = choices.length;
     const num = (row: SongRow | null, dim: string) => {
@@ -3784,73 +3795,120 @@ export const currentRead = createServerFn({ method: "POST" })
       };
     }
 
-    // ---- Evidence for the leading axis, straight from the choices. ----
-    const sign = top.v >= 0 ? 1 : -1;
-    const ev: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
-    for (const c of choices) {
-      const delta = num(c.chosen, top.d) - num(c.rejected, top.d);
-      if (Math.abs(delta) < 10) continue;
-      ev.tested += 1;
-      if (Math.sign(delta) === sign) {
-        ev.supporting += 1;
-        if (ev.examples.length < 2) ev.examples.push({ chosen: label(c.chosen), rejected: label(c.rejected) });
-      } else {
-        ev.contradicting += 1;
-      }
-    }
-    const direction: CurrentReadResult["direction"] =
-      ev.contradicting > ev.supporting
-        ? "revising"
-        : ev.contradicting > 0
-          ? "contested"
-          : ev.supporting >= 2
-            ? "holding"
-            : "forming";
-
-    const variantSeed = answered + dimSeed(top.d) + (top.v >= 0 ? 0 : 1);
-    const beat = BEAT[top.d];
-    const pole = pickVariant(top.v >= 0 ? beat?.hi : beat?.lo, variantSeed);
-    const fallback = POLES[top.d]?.[top.v >= 0 ? "hi" : "lo"];
-    const claimLine = pole?.thesis ?? pickByHash(fallback?.observations, variantSeed) ?? `Leaning ${top.d}.`;
-    const axisLabel = fallback?.axis_label ?? top.d;
-
-    // ---- Tier 3: earned claim — 3+ supporting, nothing against it. ----
-    if (ev.supporting >= 3 && ev.contradicting === 0 && Math.abs(top.v) >= 12) {
+    // ---- Evidence from the shared ledger (same builder as the final read). ----
+    const ledger = buildLedger(
+      choices.map((c) => ({
+        pairing_id: c.pairing_id ?? null,
+        tests: c.pairing?.tests ?? null,
+        diagnostic_weight: c.pairing?.diagnostic_weight ?? null,
+        chosen: c.chosen as LedgerSong | null,
+        rejected: c.rejected as LedgerSong | null,
+      })),
+      DIMS as readonly string[],
+    );
+    const lead = ledger.axes[0];
+    if (!lead) {
       return {
-        thesis: claimLine,
-        hook: pole?.hook ?? "That one's not a coincidence anymore.",
-        topDim: top.d,
-        strength: Math.abs(top.v),
-        tier: "read",
-        direction,
-        evidence: ev,
-        question: "",
+        thesis: "Your picks so far don't line up on anything yet.",
+        hook: "Let's find the tradeoff that does.",
+        topDim: null, strength: 0, tier: "theory", direction: "forming",
+        evidence: emptyEvidence, question: "", revision: null,
       };
     }
+    const fmt = (e: { chosen: string; chosen_artist: string; rejected: string; rejected_artist: string }) => ({
+      chosen: e.chosen_artist ? `${e.chosen} (${e.chosen_artist})` : e.chosen,
+      rejected: e.rejected_artist ? `${e.rejected} (${e.rejected_artist})` : e.rejected,
+    });
+    const ev: ReadEvidence = {
+      supporting: lead.supporting,
+      contradicting: lead.contradicting,
+      tested: lead.tested,
+      examples: lead.supporting_examples.slice(0, 2).map(fmt),
+    };
 
-    // ---- Tier 2: hedged thread, with the contradiction named out loud. ----
-    const hedged =
-      direction === "revising"
-        ? `I had you on ${axisLabel}. The last few say otherwise.`
+    // ---- Revision: compare against the last read the user actually saw. ----
+    const { data: priorRows } = await supabase
+      .from("event_log")
+      .select("props")
+      .eq("session_id", data.sessionId)
+      .eq("event_type", "read_shown")
+      .order("created_at", { ascending: false })
+      .limit(1);
+    const priorProps = (priorRows?.[0]?.props ?? null) as
+      | { axis?: string; direction?: "hi" | "lo"; tier?: string; answered?: number; thesis?: string }
+      | null;
+    const prior: PriorRead = priorProps?.axis && priorProps.direction
+      ? { axis: priorProps.axis, direction: priorProps.direction, tier: priorProps.tier ?? "theory" }
+      : null;
+    const rev = detectRevision(prior, ledger);
+
+    const direction: CurrentReadResult["direction"] = rev.revised
+      ? "revising"
+      : lead.contradicting > 0
+        ? "contested"
+        : lead.supporting >= 2
+          ? "holding"
+          : "forming";
+
+    const hi = lead.direction === "hi";
+    const variantSeed = answered + dimSeed(lead.axis) + (hi ? 0 : 1);
+    const beat = BEAT[lead.axis];
+    const pole = pickVariant(hi ? beat?.hi : beat?.lo, variantSeed);
+    const fallback = POLES[lead.axis]?.[hi ? "hi" : "lo"];
+    const claimLine = pole?.thesis ?? pickByHash(fallback?.observations, variantSeed) ?? "There's a thread here.";
+    const axisLabel = fallback?.axis_label ?? "something";
+    const priorLabel = prior ? (POLES[prior.axis]?.[prior.direction]?.axis_label ?? "one thing") : "";
+    const changed = rev.changed_by ? fmt(rev.changed_by) : null;
+
+    const revision = rev.revised && prior
+      ? {
+          previous_claim: priorProps?.thesis ?? priorLabel,
+          previous_axis: prior.axis,
+          changed_by: changed,
+          new_interpretation: lead.eligible ? claimLine : `Maybe ${axisLabel}.`,
+        }
+      : null;
+
+    let result: CurrentReadResult;
+    if (lead.eligible && !rev.revised) {
+      // ---- Tier 3: earned claim under D01 (3+ support, >= 0.65, support > contra). ----
+      result = {
+        thesis: lead.status === "qualified" ? `${claimLine} Mostly.` : claimLine,
+        hook: pole?.hook ?? "That one's not a coincidence anymore.",
+        topDim: lead.axis, strength: lead.magnitude, tier: "read", direction,
+        evidence: ev, question: "", revision: null,
+      };
+    } else {
+      const hedged = rev.revised
+        ? changed
+          ? `I had you on ${priorLabel}. Then you took ${changed.chosen} over ${changed.rejected}. Rethinking.`
+          : `I had you on ${priorLabel}. The evidence moved. Now it might be ${axisLabel}.`
         : direction === "contested"
           ? `${claimLine} Except once, where you went the other way.`
           : `Might be ${axisLabel}. One more would tell me.`;
-    return {
-      thesis: hedged,
-      hook:
-        direction === "revising"
-          ? "Let me start that thread over."
-          : direction === "contested"
-            ? "So which was the exception?"
-            : "Let's test it properly.",
-      topDim: top.d,
-      strength: Math.abs(top.v),
-      tier: "theory",
-      direction,
-      evidence: ev,
-      question:
-        direction === "contested"
-          ? "Was that one a mood, or is my read wrong?"
-          : "Does it hold against something you already love?",
-    };
+      result = {
+        thesis: hedged,
+        hook: rev.revised ? "Let me start that thread over." : direction === "contested" ? "So which was the exception?" : "Let's test it properly.",
+        topDim: lead.axis, strength: lead.magnitude, tier: "theory", direction,
+        evidence: ev,
+        question: direction === "contested" ? "Was that one a mood, or is my read wrong?" : "Does it hold against something you already love?",
+        revision,
+      };
+    }
+
+    // Record what was shown so the next read can detect a real revision.
+    if (priorProps?.answered !== answered) {
+      await supabase.from("event_log").insert({
+        user_id: userId,
+        session_id: data.sessionId,
+        event_type: "read_shown",
+        props: {
+          axis: lead.axis, direction: lead.direction, tier: result.tier, answered,
+          thesis: result.thesis, supporting: lead.supporting, contradicting: lead.contradicting,
+          ledger: ledger.version, policy: ledger.policy, revised: rev.revised,
+          revision: result.revision,
+        } as never,
+      });
+    }
+    return result;
   });
