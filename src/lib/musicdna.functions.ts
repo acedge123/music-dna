@@ -381,7 +381,7 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
-import { evaluateClaim } from "@/musicdna/engine/claims";
+import { evaluateClaim, CLAIM_POLICY_VERSION, CLAIM_MIN_SUPPORT, CLAIM_MIN_CONSISTENCY } from "@/musicdna/engine/claims";
 import { selectPairing, shouldStop, sessionCompletion, assertWithinLane, type PairingCandidate } from "@/musicdna/engine/pairing";
 import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
@@ -2140,7 +2140,7 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
       counterarguments,
       allowed_claims,
       blocked_claims,
-      evidence_thresholds: { supporting_choices: MIN_SUPPORT, confidence_threshold: MIN_CONFIDENCE },
+      evidence_thresholds: { policy: CLAIM_POLICY_VERSION, supporting_choices: CLAIM_MIN_SUPPORT, consistency_threshold: CLAIM_MIN_CONSISTENCY },
       narrative,
     };
     await supabase.from("session_reasoning").upsert(reasoningRow, { onConflict: "session_id" });
@@ -3214,7 +3214,7 @@ Return the JSON now.` },
     if (!synthesis) {
       synthesis = kept_choosing.length
         ? `Across these matchups you kept choosing ${kept_choosing[0].tradeoff}. The shape's there — it's not loud yet, but it's consistent.`
-        : `You refused to collapse into a single pattern. Every time a clear read started to form — ${songsPicked.split(",").slice(0, 3).join(",")} — another choice complicated it. That's either inconsistency or unusually broad taste. Probably the second.`;
+        : `Not enough consistent evidence for a read yet. Your picks — ${songsPicked.split(",").slice(0, 3).join(",")} — pulled in different directions, and six matchups can't settle which one is you. Push back or keep going.`;
     }
 
     await supabase
