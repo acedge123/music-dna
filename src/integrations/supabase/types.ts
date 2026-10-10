@@ -1379,6 +1379,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      record_choice_atomic: {
+        Args: {
+          p_chosen_song_id: string
+          p_ms_to_decide: number
+          p_mutation_id: string
+          p_pairing_id: string
+          p_prior_vector: Json
+          p_rejected_song_id: string
+          p_response: Json
+          p_session_id: string
+          p_update: Json
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "user"
