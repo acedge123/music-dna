@@ -9,6 +9,7 @@ import { z } from "zod";
 import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
 import { experienceVersion } from "./-experience";
+import { loadSessionHistory } from "@/musicdna/adapters/session-history";
 
 const UUID = z.string().uuid();
 
@@ -57,39 +58,12 @@ export const Route = createFileRoute("/api/v1/session/$id")({
 
           // READ03 / NFR01: full chronological history so a resumed client
           // restores the conversation, not just the last line.
-          const [choicesRes, eventsRes, openerRes, resultRes] = await Promise.all([
-            supabase.from("choices")
-              .select("pairing_id, created_at, response, chosen:chosen_song_id(id,title,artist), rejected:rejected_song_id(id,title,artist)")
-              .eq("session_id", parsed.data).order("created_at", { ascending: true }),
-            supabase.from("event_log")
-              .select("event_type, pairing_id, created_at, props")
-              .eq("session_id", parsed.data)
-              .in("event_type", ["read_shown", "pairing_skipped", "reaction_submitted"])
-              .order("created_at", { ascending: true }),
+          const [exchanges, openerRes, resultRes] = await Promise.all([
+            loadSessionHistory(supabase, parsed.data),
             supabase.from("profiles").select("opening_songs, opening_hypothesis").maybeSingle(),
             supabase.from("session_results").select("version, source, created_at")
               .eq("session_id", parsed.data).order("version", { ascending: true }),
           ]);
-          type Song = { id: string; title: string; artist: string } | null;
-          const exchanges: Array<Record<string, unknown>> = [];
-          for (const c of (choicesRes.data ?? []) as unknown as Array<{ pairing_id: string; created_at: string; response: { verdict?: string; why?: string } | null; chosen: Song; rejected: Song }>) {
-            exchanges.push({
-              type: "choice", at: c.created_at, pairing_id: c.pairing_id,
-              chosen: c.chosen, rejected: c.rejected,
-              feedback: c.response ? { verdict: c.response.verdict ?? "", why: c.response.why ?? "" } : null,
-            });
-          }
-          for (const e of (eventsRes.data ?? []) as Array<{ event_type: string; pairing_id: string | null; created_at: string; props: Record<string, unknown> | null }>) {
-            const p = e.props ?? {};
-            if (e.event_type === "read_shown") {
-              exchanges.push({ type: "read", at: e.created_at, tier: p.tier, thesis: p.thesis, revised: p.revised ?? false, revision: p.revision ?? null });
-            } else if (e.event_type === "pairing_skipped") {
-              exchanges.push({ type: "skip", at: e.created_at, pairing_id: e.pairing_id, reason: p.reason ?? null });
-            } else {
-              exchanges.push({ type: "reaction", at: e.created_at, kind: p.kind });
-            }
-          }
-          exchanges.sort((a, b) => String(a.at).localeCompare(String(b.at)));
           return jsonResponse({
             ...base,
             contract: 1,
