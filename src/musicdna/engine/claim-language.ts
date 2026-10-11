@@ -3,9 +3,16 @@ import type { AxisSummary, Ledger, LedgerEntry } from "./evidence";
 
 export const CLAIM_LANGUAGE_VERSION = "claim-language-v1";
 export type LanguageCeiling =
-  "observation" | "tentative" | "supported" | "contested" | "mixed" | "insufficient";
+  | "observation"
+  | "tentative"
+  | "supported"
+  | "contested"
+  | "mixed"
+  | "insufficient";
 export type InsufficiencyReason =
-  "sparse_evidence" | "conflicting_evidence" | "invalid_catalog_evidence";
+  | "sparse_evidence"
+  | "conflicting_evidence"
+  | "invalid_catalog_evidence";
 export type AxisLabels = Record<string, { hi: string; lo: string }>;
 
 export function languageCeiling(a: AxisSummary): LanguageCeiling {
