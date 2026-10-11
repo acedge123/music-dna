@@ -12,6 +12,12 @@ This guide is self-contained for execution planning. The companion PRD is the pr
 
 ## 1 Execution instructions
 
+October 10 decision/fixture handoff: [Parity Decisions V1](parity-decisions-v1.md)
+records adopted D06, D05 measurement gates and compatibility/rollback limits.
+[Product Parity Fixtures V1](product-parity-fixtures-v1.md) defines the F01-F26
+catalog and complete requirement/gap trace. D06 policy is decided; its cleanup,
+account linking and deletion implementation are not accepted by this record.
+
 Read repository instructions and inspect the actual branch before editing. Record the current web SHA, mobile SHA, API deployment, active configuration, and any divergence from the baseline. Never assume the deployed site or TestFlight build matches main. Do not use local paths from older documentation as if they were valid on the current machine.
 
 Keep the existing anonymous entry, three-song opening, lane constraints, ten canonical axes, ten archetypes, 0.35 prior seed multiplier, and deterministic choice math. Implement new experience behavior behind a compatible contract or feature flag. Treat scoring-policy corrections separately from a broad engine redesign.

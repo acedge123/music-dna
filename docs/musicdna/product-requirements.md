@@ -463,7 +463,7 @@ Minimum acceptance includes stable, contradictory, sparse, zero-answer, artist-c
 | D03 | Existing public links | Explicit publication and revocation for new shares; a token's existence does not make a reading public; inventory legacy links before migration | Accepted direction; implement lifecycle and document the inventory-based migration treatment |
 | D04 | Chat and diagnostic scores | Preserve original pairing ledger and result; store conversational evidence separately and version any subsequent read | Accepted; separate self-report and result versioning remain to implement |
 | D05 | Performance budgets and pilot thresholds | Use Section 12 budgets and collect baseline before setting business conversion targets | Validate on representative devices and hosting |
-| D06 | Retention and account linking | Define anonymous retention, diagnostic-log retention, and supported anonymous-to-account transfer | Confirm operational policy and test ownership |
+| D06 | Retention and account linking | Adopt d06-v1: abandoned anonymous 30 days inactive, completed anonymous 90 days inactive; registered until deletion; debug 30 days, content-free operational metadata 90 days; verified explicit linking; immediate access denial and active purge within seven days | Policy decided October 10; implementation/verification pending; backup expiration needs operator inventory. See [decision record](parity-decisions-v1.md). |
 
 No new streaming integration, cross-lane probe rollout, taxonomy expansion, billing, or broad engine redesign should be bundled into parity. An exact API shape can evolve during implementation if the product requirements and released-client compatibility remain satisfied and the contract document changes with it.
 
