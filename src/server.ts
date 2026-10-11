@@ -38,6 +38,17 @@ async function normalizeCatastrophicSsrResponse(response: Response): Promise<Res
   });
 }
 
+// The framework's built-in CORS layer answers OPTIONS preflights for
+// /api/v1/* before the route's own OPTIONS handler runs — and it does so
+// WITHOUT Access-Control-Allow-Origin, which breaks browser preflights for
+// cross-origin API clients (Flutter ignores CORS, browsers do not).
+// Answer those preflights here with the v1 CORS headers, before delegation.
+function isV1Preflight(request: Request): boolean {
+  if (request.method !== "OPTIONS") return false;
+  const url = new URL(request.url);
+  return url.pathname.startsWith("/api/v1/");
+}
+
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
