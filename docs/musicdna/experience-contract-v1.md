@@ -110,3 +110,14 @@ Public lookups (`/api/v1/share/:token`, `/s/:token`) return 404 unless the readi
 ## Reactions
 
 `POST /api/v1/session/:id/react` accepts an optional `mutation_id`; retries with the same id are recorded once. A failed write returns an error. The server never acknowledges a reaction it hasn't saved. Web uses the same server logic.
+
+## Chat (CHAT01/02, D04)
+
+`POST /api/v1/session/:id/chat` with `{ "message": "…", "mutation_id": "…" }` → `{ contract: 1, reply, session_id, replayed }`.
+- `mutation_id` is optional but recommended: a retried submit with the same id replays the saved reply (`replayed: true`) instead of double-posting — the same retry contract as choices.
+- Chat is self-report. It never changes the session's scores or the frozen version-1 result. Each refinement is saved as a new `chat_self_report` result version with `base_version` pointing at the original.
+
+`GET /api/v1/session/:id/chat` → `{ contract: 1, session_id, messages: [ { role, content, created_at } ], result_versions: [ { version, source, base_version, created_at } ] }`.
+- Returns the chronological transcript plus the session's result versions, so a client can restore the conversation and its revisions.
+
+Both endpoints are owner-only (403 for another user's session, 404 when it doesn't exist). Web and REST share one server implementation (`chatTurnImpl`), so turns, self-report versioning and retry semantics are identical across clients.
