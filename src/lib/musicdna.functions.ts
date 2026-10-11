@@ -3725,12 +3725,17 @@ Only choose exception if the evidence has a contradiction. Self-report never add
     }
     // Never truncate away the exception or qualification from a supported claim.
 
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      user_id: userId,
-      role: "assistant",
-      content: reply,
-    });
+    const { data: assistantRow } = await supabase
+      .from("chat_messages")
+      .insert({
+        session_id: sessionId,
+        user_id: userId,
+        role: "assistant",
+        content: reply,
+        mutation_id: replyMutationId,
+      })
+      .select("id")
+      .single();
 
     // -------- Update critic profile from this exchange --------
     // The user's reply is feedback on the critic's PRIOR assistant turn (the
