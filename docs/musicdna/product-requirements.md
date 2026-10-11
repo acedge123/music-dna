@@ -1,6 +1,6 @@
 # MusicDNA Product Requirements
 
-Product specification version 1.1 | October 10 2026
+Product specification version 1.2 | October 10 2026
 
 Prepared for ACE and the MusicDNA product and engineering team
 
@@ -30,6 +30,8 @@ The editorial matchup catalog is a core product asset. Each pairing should revea
 
 ### 1 2 Specification status
 
+Version 1.2 adds ACE's 2000–2026 catalog coverage direction (October 10, 2026), promotes the coverage audit to P0, and adds CAT06–CAT08. Earlier source assessments below remain dated checkpoints, not a fresh audit of all implementation work.
+
 Requirements below describe the target release. The original baseline describes acedge123/music-dna at d20d0d4687b1ecd9bd0863d33a106aa9b9862c67, including its mobile copy. ACE subsequently identified acedge123/idea-builder as the active mobile repository. Version 1.1 corrects repository ownership and records Lovable's October 10 progress. Reconcile the original mobile gap inventory against active Codex work before closing tickets. D01 through D04 are recorded as ratified in Lovable's checked-in decision register; they do not require another decision before implementation continues. Section 16 separates accepted direction from remaining implementation and operational decisions. Existing behavior is not evidence that a requirement has passed acceptance.
 
 The companion MusicDNA Codex Parity Guide supplies the implementation sequence, source files, proposed API contract, reproducible fixtures, and release evidence. The September handoff sequence remains applicable: ACE approves the corrected web experience before Flutter becomes its visual and behavioral counterpart.
@@ -58,7 +60,7 @@ The parity release includes anonymous entry, three-song onboarding, adaptive pai
 
 The same-choice challenge is a lightweight replay of the sender's selected pairing set. A side-by-side compatibility score, social network, public feed, or friend leaderboard is outside this release.
 
-Streaming playback, music-library import, playlist generation, subscriptions, payments, catalog expansion, new archetypes, a new personality taxonomy, and a new model provider are outside parity scope. Metadata and licensed outbound music links may be retained where already available. In-app audio is not a dependency for V1.
+Catalog expansion for listeners whose favorites come from 2000–2026 is in release scope; see CAT06–CAT08. Streaming playback, music-library import, playlist generation, subscriptions, payments, new archetypes, a new personality taxonomy, and a new model provider remain outside parity scope. Metadata and licensed outbound music links may be retained where already available. In-app audio is not a dependency for V1.
 
 ### 2 3 Product surfaces
 
@@ -251,9 +253,25 @@ Cosine similarity measures fit to an authored signature, not a probability that 
 
 **CAT04 P0 Adaptive purpose.** Selection should resolve a specific uncertainty or retest a proposed pattern. The server returns a safe user-facing prompt while keeping diagnostic notes private. A counterexample must meaningfully distinguish the primary interpretation from its alternative, not merely repeat the same axis label.
 
-**CAT05 P1 Coverage audit.** Report active songs and pairings by lane, axis, recognition level, artist concentration, missing values, and skip rate. Do not publish a fixed catalog count in the product without checking the live catalog. Controlled fixture catalogs remain stable even as the production catalog grows.
+**CAT05 P0 Coverage audit.** Report active songs and pairings by lane, release-era band, axis, recognition level, artist concentration, missing values, and skip rate. Do not publish a fixed catalog count in the product without checking the live catalog. Controlled fixture catalogs remain stable even as the production catalog grows.
 
 Current code and documents include alternative, pop, hip-hop, electronic, classic rock, metal, R and B, general routing, and references to country content. Shipping lane availability must come from the active catalog and routing configuration. Documentation is not proof that every lane has enough usable pairings.
+
+**CAT06 P0 2000–2026 coverage.** Expand the song and pairing catalogs so listeners whose three favorites come from 2000–2026 can receive a useful first session. Audit 2000–2009, 2010–2019, and 2020–2026 separately, through the latest verified released music at curation time. Preserve older coverage. Inventory usable approved pairings as well as songs by active lane, era, artist, declared axis, recognition, and missing metadata. Release-year coverage alone does not establish listener recognition or diagnostic quality.
+
+**CAT07 P0 Familiarity and era confounds.** Prefer credible, recognizable choices for the listener's musical territory using the opening context and observed familiarity. Treat opener era as a soft context signal; a new song can resemble older favorites and a listener can span decades. Never infer age from taste or force a narrow era filter from three songs. Distinguish an unknown-song skip from a preference vote. Use comparable-era, different-artist pairings to test a tendency before claiming that a preference for newer production reveals an emotional or personality trait. Cross-era pairings need a clear diagnostic purpose and a plausible familiarity match.
+
+**CAT08 P0 Modern-catalog acceptance.** For each lane/era scenario advertised as supported, demonstrate a server-selected path of up to six valid answered pairings plus exercised skip/retest alternatives, without repeating a pairing or relaxing lane, recognition, artist, or evidence safeguards. The curated pool must permit repeated independent tests and meaningful counterexamples under D01; a strong claim is never required from every participant. Verify 2000s-heavy, 2010s-heavy, 2020–2026-heavy, mixed-era, unfamiliar-song, and artist-concentrated sessions on web and Flutter. Report routing success, catalog-related early endings, skip rate, axis/artist concentration, and result specificity by scenario. Establish pilot baselines before setting numeric success targets.
+
+### 6 1 Expansion delivery and scope
+
+ACE added 2000–2026 catalog coverage to release scope on October 10, 2026. This supersedes the earlier blanket exclusion of catalog expansion. Catalog curation proceeds alongside evidence, reliability, sharing, and mobile work; broader-audience release acceptance includes CAT06–CAT08.
+
+Start with a versioned inventory of the actual active catalog. Expand supported lanes according to coverage gaps and representative modern opener sets, including contemporary pop, hip-hop, R&B, electronic, alternative/indie, and applicable metal or country territory where current routing supports it. Audit Latin, K-pop, country, R&B, and other underserved favorites explicitly rather than silently forcing them into an unsuitable lane. Where a valid lane is missing, record a concrete routing/catalog gap and implement a reviewed, compatible mapping or lane extension before claiming support. New personality axes or archetypes are not implied by this catalog decision.
+
+Use two reviewed passes: verified song metadata and editorial axis calibration, then approved diagnostic pairings. Preserve stable song/pairing identities, different-artist comparisons, the ten canonical dimensions, and immutable vote-time evidence. Distinguish objective release/artist metadata from subjective diagnostic scores; generated scores are drafts requiring editorial review. A 2026 candidate must already have been released, with a source and access date; do not invent future titles or dates.
+
+The song and pairing totals in the older catalog-expansion-spec.md are historical planning targets, not acceptance criteria for this change. Its roughly 12-matchup assumption and canon_workflow.md's old 15-dimension prototype do not override this PRD's six-answer session and ten axes. A minimum raw song count cannot substitute for an eligible, recognizable pairing pool. Catalog additions must not overwrite completed evidence snapshots or silently change a fixed-sequence share challenge.
 
 ## 7 Critic voice and result composition
 
@@ -465,7 +483,7 @@ Minimum acceptance includes stable, contradictory, sparse, zero-answer, artist-c
 | D05 | Performance budgets and pilot thresholds | Use Section 12 budgets and collect baseline before setting business conversion targets | Validate on representative devices and hosting |
 | D06 | Retention and account linking | Adopt d06-v1: abandoned anonymous 30 days inactive, completed anonymous 90 days inactive; registered until deletion; debug 30 days, content-free operational metadata 90 days; verified explicit linking; immediate access denial and active purge within seven days | Policy decided October 10; implementation/verification pending; backup expiration needs operator inventory. See [decision record](parity-decisions-v1.md). |
 
-No new streaming integration, cross-lane probe rollout, taxonomy expansion, billing, or broad engine redesign should be bundled into parity. An exact API shape can evolve during implementation if the product requirements and released-client compatibility remain satisfied and the contract document changes with it.
+The 2000–2026 catalog expansion is included in parity scope. Compatible music-lane coverage changes require an explicit mapping and review; they do not imply a new personality taxonomy. No new streaming integration, cross-lane probe rollout, personality-taxonomy expansion, billing, or broad engine redesign should be bundled into parity. An exact API shape can evolve during implementation if the product requirements and released-client compatibility remain satisfied and the contract document changes with it.
 
 ## 17 Source register and traceability
 

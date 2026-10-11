@@ -1,6 +1,6 @@
 # MusicDNA Codex Parity Guide
 
-Implementation companion version 1.1 | October 10 2026
+Implementation companion version 1.2 | October 10 2026
 
 Prepared for Codex and the MusicDNA engineering team
 
@@ -11,6 +11,8 @@ Implement the MusicDNA Product Requirements across the product repositories: ace
 This guide is self-contained for execution planning. The companion PRD is the product authority for requirements such as DIA03 or SHR01. Requirements are targets; the original inventory used music-dna at d20d0d4687b1ecd9bd0863d33a106aa9b9862c67, including its mobile copy. Version 1.1 corrects the active mobile repository to idea-builder. Reconcile mobile findings against current Codex work before assigning or closing tickets. Proposed names and shapes in this guide are not existing endpoints or shipped schemas.
 
 ## 1 Execution instructions
+
+Version 1.2 includes ACE's October 10 requirement to serve listeners whose favorite songs come from 2000–2026. The former blanket catalog-expansion exclusion is superseded; Section 4.7 records the parallel workstream. Preserve subsequent policy, fixture, and implementation handoffs already recorded in this repository.
 
 October 10 decision/fixture handoff: [Parity Decisions V1](parity-decisions-v1.md)
 records adopted D06, D05 measurement gates and compatibility/rollback limits.
@@ -24,7 +26,7 @@ Keep the existing anonymous entry, three-song opening, lane constraints, ten can
 
 ACE's September sequence is web first, review and approval, then Flutter parity. Work on shared services, tests, contracts, and safe mobile plumbing can proceed while the web is being prepared. Record the approved web commit and phone viewport before declaring the Flutter visual implementation complete. Creating these documents does not establish that the current web build has already been approved.
 
-Do not add streaming, new genres, new archetypes, compatibility scoring, or monetization. Do not move inference into Dart. Preserve current deployment and signing identity. Apply normal repository authorization for merges and distribution; producing a release candidate is distinct from publishing or uploading it.
+Include the 2000–2026 song and pairing expansion under CAT06–CAT08. Audit underserved musical territory and coordinate any necessary compatible lane extension with the backend owner. Do not add streaming, new personality axes/archetypes, compatibility scoring, or monetization. Do not move inference into Dart. Preserve current deployment and signing identity. Apply normal repository authorization for merges and distribution; producing a release candidate is distinct from publishing or uploading it.
 
 ### 1 1 Repository ownership and parallel work
 
@@ -185,6 +187,21 @@ Deliver equivalent phone screenshots and recordings from identical fixtures. Rec
 Run the acceptance suite in Section 10, verify production configuration without exposing secrets, and build using the existing iOS release process. Ensure the old released client remains compatible with the deployed API. Produce a rollback plan that does not erase user evidence.
 
 Observe a small first-user pilot and inspect unsupported-claim, skip, recovery, and share outcomes. Return a release report with each material gap marked passed, intentionally different, or unresolved. Follow existing authorization for distribution.
+
+### 4 7 Parallel workstream: 2000–2026 catalog coverage
+
+ACE's October 10 scope change includes CAT06–CAT08. Start this work alongside current parity tickets. Lovable/product curation owns active catalog additions in music-dna; mobile Codex verifies the same catalog behavior through the shared API; Agent Brain changes only if a reviewed routing interface or fixture needs synchronization.
+
+1. Export a versioned inventory of active songs, pairings, lanes, declared axes, recognition inputs, missing metadata, and artist concentration. Split coverage into 2000–2009, 2010–2019, and 2020–2026; retain the older catalog. Source inventory access through the existing authorized workflow. Do not infer production counts from seed CSVs.
+2. Build representative opener scenarios across contemporary pop, hip-hop, R&B, electronic, alternative/indie, and other supported territory. Record missing genre/language/routing coverage explicitly, including country, Latin, and K-pop where relevant. A documented lane is not proof of an eligible pool; do not force songs into a wrong lane just to satisfy a fixture.
+3. Draft verified song candidates and then curated pairings. Record title/artist identity, original release year and relevant version, metadata source/access date, sub-lane, editorial rationale, ten-axis values, declared tests, and review status. Confirm 2026 releases have occurred. Keep factual metadata separate from subjective scores. Reuse existing curation tooling and schemas; do not assume draft JSON is directly importable.
+4. Calibrate new song scores against reviewed anchors from the existing catalog. Pair different artists with credible familiarity and meaningful contrasts; include comparable-era tests and carefully justified cross-era comparisons. Ensure the actual eligible pool permits repeat tests, counterexamples, and skip/retest alternatives within the six-answer experience. Never lower D01 to make a new catalog seem successful.
+5. Add deterministic product fixtures for each supported era/lane scenario, mixed eras, unfamiliar modern tracks, and same-artist concentration. Exercise the real selector under its current exclusions and routing mode. Confirm completed histories retain their frozen evidence after catalog edits and fixed challenges preserve their recorded pairing set. Record these as new catalog coverage fixtures alongside F01–F26; do not repurpose Agent Brain's routing-only golden fixtures as product acceptance.
+6. Stage and review additions through existing catalog administration, then measure opener routing, skips, usable pool exhaustion, evidence diversity, and result specificity with listeners who know the intended territory. Record the catalog revision with web/mobile acceptance. A reviewed import and tested journey establish coverage; merely adding tracks does not.
+
+Treat opener era as a soft signal without inferring age. Any new familiarity/era preference UI or request field must join the shared experience contract before mobile uses it; do not invent a client-only filter. Preserve the existing six-answer/skip rules, evidence ledger, and private result lifecycle.
+
+Existing catalog-expansion-spec.md and canon_workflow.md contain useful curation material but historical counts, a roughly 12-matchup flow, and old prototype axes. The PRD v1.2 requirements govern this work: three openers, at most six answered pairings, ten active axes, and verified contemporary coverage. Song counts follow the audited gaps; streaming, playback licensing, and music-library import are separate features.
 
 ## 5 Evidence policy implementation
 
@@ -478,6 +495,7 @@ Report each command as passed, failed, or not run, with the reason and environme
 | ACC and DAT | Ownership and lifecycle | Account deletion and cross-user denial |
 | UX and NFR | Native parity and recovery | F16, F17, F22 and accessibility review |
 | ARC | One service and compatible contract | F23, F24 and route schema tests |
+| CAT05–CAT08 | Modern catalog coverage and era/familiarity integrity | Versioned inventory, reviewed songs/pairings, six-answer selector paths, skip/retest alternatives, and modern/mixed-era web/mobile fixtures |
 | ARC06 | Routing reference/runtime compatibility | If routing changes: shared golden outputs, mode/fallback checks, and invariant evidence/completion behavior |
 | ADM and MET | Preserved admin and useful telemetry | Role checks and six-round metrics |
 
@@ -509,4 +527,4 @@ The original source review used https://github.com/acedge123/music-dna/tree/d20d
 
 ## 13 Suggested initial Codex instruction
 
-Read MusicDNA Product Requirements v1.1 and this guide. Continue the existing mobile parity tickets in acedge123/idea-builder, preserving current local work and branch history. Revalidate the mobile baseline, map each ticket to PRD IDs and Lovable API/web dependencies, and implement ready client work against the agreed contract. Lovable owns web/shared-backend repairs in acedge123/music-dna; coordinate missing capabilities instead of duplicating that backend. The-Gig-Agency/agent-brain supplies the related routing reference: preserve its boundary and synchronize affected fixtures if routing code changes. Integrate against the implemented API and use the ACE-approved web commit as the visual reference. Return changes, actual verification results, contract compatibility evidence, and a parity matrix. Do not claim deployed or TestFlight parity from source inspection, mocks, or unit tests alone.
+Read MusicDNA Product Requirements v1.2 and this guide. Include the parallel 2000–2026 catalog workstream and CAT06–CAT08 dependencies in the ticket map. Continue the existing mobile parity tickets in acedge123/idea-builder, preserving current local work and branch history. Revalidate the mobile baseline, map each ticket to PRD IDs and Lovable API/web dependencies, and implement ready client work against the agreed contract. Lovable owns web/shared-backend repairs in acedge123/music-dna; coordinate missing capabilities instead of duplicating that backend. The-Gig-Agency/agent-brain supplies the related routing reference: preserve its boundary and synchronize affected fixtures if routing code changes. Integrate against the implemented API and use the ACE-approved web commit as the visual reference. Return changes, actual verification results, contract compatibility evidence, and a parity matrix. Do not claim deployed or TestFlight parity from source inspection, mocks, or unit tests alone.
