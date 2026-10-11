@@ -52,11 +52,22 @@ export const Route = createFileRoute("/api/v1/session/$id/chat")({
             if (msg === "forbidden") return errorResponse("FORBIDDEN", msg, 403);
             throw e;
           }
+          // The user turn committed but the reply never did (crash between
+          // writes). The client should retry the same mutation_id shortly.
+          if (r.pending) {
+            return errorResponse(
+              "CHAT_TURN_PENDING",
+              "Turn received; reply not committed yet. Retry with the same mutation_id.",
+              409,
+            );
+          }
           return jsonResponse({
             contract: 1,
             reply: r.reply,
             session_id: r.sessionId,
             replayed: r.replayed === true,
+            user_message_id: r.userMessageId ?? null,
+            assistant_message_id: r.assistantMessageId ?? null,
           });
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
