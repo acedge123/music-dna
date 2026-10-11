@@ -3427,11 +3427,21 @@ export const chatTurn = createServerFn({ method: "POST" })
       .object({
         message: z.string().trim().min(1).max(2000),
         sessionId: z.string().uuid().optional(),
+        mutationId: z.string().max(80).optional(),
       })
       .parse(d),
   )
-  .handler(async ({ data, context }): Promise<{ reply: string; sessionId: string }> => {
-    const { supabase, userId } = context;
+  .handler(async ({ data, context }): Promise<{ reply: string; sessionId: string }> =>
+    chatTurnImpl(context.supabase, context.userId, data),
+  );
+
+// Shared by the web server function and the v1 REST chat endpoint, so both
+// clients get identical turns, self-report versioning and retry semantics.
+export async function chatTurnImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { message: string; sessionId?: string; mutationId?: string },
+): Promise<{ reply: string; sessionId: string; replayed?: boolean }> {
 
     let sessionId = data.sessionId ?? null;
     let profile: OpenerProfile = null;
