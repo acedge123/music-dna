@@ -659,7 +659,9 @@ export type Database = {
           id: string
           least_accurate_sentence: string | null
           most_accurate_sentence: string | null
+          mutation_id: string | null
           rating: number | null
+          result_version: number | null
           session_id: string
           target: string | null
           updated_at: string
@@ -672,7 +674,9 @@ export type Database = {
           id?: string
           least_accurate_sentence?: string | null
           most_accurate_sentence?: string | null
+          mutation_id?: string | null
           rating?: number | null
+          result_version?: number | null
           session_id: string
           target?: string | null
           updated_at?: string
@@ -685,7 +689,9 @@ export type Database = {
           id?: string
           least_accurate_sentence?: string | null
           most_accurate_sentence?: string | null
+          mutation_id?: string | null
           rating?: number | null
+          result_version?: number | null
           session_id?: string
           target?: string | null
           updated_at?: string
