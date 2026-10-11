@@ -3,6 +3,11 @@
 ## Done
 - D06 retention: policy decided, implementation deferred until launch (docs/musicdna/data-retention-d06.md).
 - Live anonymous walkthrough: interview, pushback, resume, share, revoke.
+- Flutter parity fixes (TGA-305/307/310/311/313): chat replay stores the reply under `<mutation_id>:reply`
+  (no timestamp guessing, 409 CHAT_TURN_PENDING on half-committed turns), chat history/context load the
+  LATEST messages, chat GET returns result versions with full content, REST feedback endpoint with
+  result_version binding + mutation_id idempotency, share publish returns canonical share_url +
+  result_version, requirement trace refreshed to PRD v1.2 (CAT06–08).
 
 ## Open — found by the live walkthrough
 - Resume drops the three opening songs. Picks, reads and the round counter come back; the ranked
