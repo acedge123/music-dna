@@ -110,7 +110,7 @@ d("REST v1 end-to-end", () => {
       if (next.body.done || !next.body.pairing) break;
 
       const pairing = next.body.pairing as {
-        pairing_id: string;
+        id: string;
         song_a: { id: string };
         song_b: { id: string };
       };
