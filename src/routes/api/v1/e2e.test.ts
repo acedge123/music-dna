@@ -171,7 +171,9 @@ d("REST v1 end-to-end", () => {
     });
     expect(preflight.status).toBe(204);
     const acao = preflight.headers.get("access-control-allow-origin");
-    expect(acao === "*" || acao === new URL(BASE_URL).origin).toBe(true);
+    expect(
+      acao === "*" || acao === new URL(BASE_URL ?? "http://localhost:8080").origin,
+    ).toBe(true);
   }, 180_000);
 
   it.runIf(shouldRun)("rejects malformed share tokens with a typed error envelope", async () => {
