@@ -52,6 +52,9 @@ function isV1Preflight(request: Request): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      if (isV1Preflight(request)) {
+        return new Response(null, { status: 204, headers: V1_CORS_HEADERS });
+      }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);
       return await normalizeCatastrophicSsrResponse(response);
