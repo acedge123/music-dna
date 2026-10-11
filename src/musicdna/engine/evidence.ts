@@ -7,12 +7,17 @@
 
 import { evaluateClaim, CLAIM_POLICY_VERSION, type ClaimStatus } from "./claims";
 
-export const LEDGER_VERSION = "ledger-v1";
+export const LEDGER_VERSION = "ledger-v2";
 /** Contrast below this is too small to count for or against an axis. */
 export const MIN_CONTRAST = 10;
 
 export type LedgerSong = Record<string, unknown> & { id?: string; title?: string; artist?: string };
 export type LedgerChoice = {
+  choice_id?: string;
+  provenance?: "pairing" | "legacy_unavailable" | "invalid_snapshot";
+  pairing_revision?: string | null;
+  catalog_revision?: string;
+  ms_to_decide?: number | null;
   pairing_id?: string | null;
   tests?: string[] | null;
   diagnostic_weight?: number | null;
@@ -22,6 +27,9 @@ export type LedgerChoice = {
 };
 
 export type LedgerEntry = {
+  choice_id: string | null;
+  pairing_revision: string | null;
+  catalog_revision: string | null;
   index: number;
   pairing_id: string | null;
   axis: string;
@@ -49,6 +57,13 @@ export type AxisSummary = {
 };
 
 export type Ledger = {
+  unavailable: number;
+  confounds: {
+    kind: "artist" | "song" | "era" | "lane";
+    value: string;
+    count: number;
+    total: number;
+  }[];
   version: string;
   policy: string;
   answered: number;
@@ -64,20 +79,40 @@ function val(row: LedgerSong | null, axis: string): number | null {
 export function buildLedger(choices: LedgerChoice[], allDims: readonly string[]): Ledger {
   const entries: LedgerEntry[] = [];
   const seen = new Set<string>();
+  let unavailable = 0;
+  const concentrations = new Map<
+    string,
+    { kind: "artist" | "song" | "era" | "lane"; value: string; count: number }
+  >();
   choices.forEach((c, index) => {
-    if (!c.chosen || !c.rejected) return;
     // A distinct pairing counts once.
     const key = c.pairing_id ?? `idx-${index}`;
     if (seen.has(key)) return;
     seen.add(key);
-    // Only DECLARED tested axes count (TGA-303). A pairing with no declared
-    // tests contributes no evidence; unknown axes are ignored.
-    const tests = (c.tests ?? []).filter((t) => allDims.includes(t));
+    if (!c.chosen || !c.rejected) {
+      unavailable += 1;
+      return;
+    }
+    for (const [kind, raw] of [
+      ["artist", c.chosen.artist],
+      ["song", c.chosen.id],
+      ["era", typeof c.chosen.year === "number" ? `${Math.floor(c.chosen.year / 10) * 10}s` : null],
+      ["lane", c.chosen.lane ?? c.chosen.primary_lane],
+    ] as const) {
+      if (typeof raw !== "string" || !raw) continue;
+      const k = `${kind}:${raw}`;
+      const prior = concentrations.get(k);
+      concentrations.set(k, { kind, value: raw, count: (prior?.count ?? 0) + 1 });
+    }
+    const tests = [...new Set((c.tests ?? []).filter((d) => allDims.includes(d)))];
     for (const axis of tests) {
       const a = val(c.chosen, axis);
       const b = val(c.rejected, axis);
       if (a === null || b === null) continue;
       entries.push({
+        choice_id: c.choice_id ?? null,
+        pairing_revision: c.pairing_revision ?? null,
+        catalog_revision: c.catalog_revision ?? null,
         index,
         pairing_id: c.pairing_id ?? null,
         axis,
@@ -135,6 +170,10 @@ export function buildLedger(choices: LedgerChoice[], allDims: readonly string[])
   });
 
   return {
+    unavailable,
+    confounds: [...concentrations.values()]
+      .filter((c) => c.count >= 3)
+      .map((c) => ({ ...c, total: seen.size - unavailable })),
     version: LEDGER_VERSION,
     policy: CLAIM_POLICY_VERSION,
     answered: seen.size,

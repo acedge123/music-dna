@@ -460,7 +460,7 @@ function ProfilePage() {
                               </p>
                               <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground shrink-0">
                                 {c.supporting_choices}/{c.tested_total} picks ·{" "}
-                                {Math.round(c.confidence * 100)}% conf
+                                {c.supporting_choices} supporting / {c.tested_total} tested
                               </span>
                             </div>
                             <div className="h-1 w-full bg-border/60 rounded-sm overflow-hidden mb-2">
