@@ -770,7 +770,7 @@
     },
     {
       "id": "CAT05",
-      "priority": "P1",
+      "priority": "P0",
       "title": "Coverage audit.",
       "criteria": "Report active songs and pairings by lane, axis, recognition level, artist concentration, missing values, and skip rate. Do not publish a fixed catalog count in the product without checking the live catalog. Controlled fixture catalogs remain stable even as the production catalog grows.",
       "tickets": [
