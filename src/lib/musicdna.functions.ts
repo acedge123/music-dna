@@ -3441,12 +3441,24 @@ export async function chatTurnImpl(
   supabase: AuthedSupabase,
   userId: string,
   data: { message: string; sessionId?: string; mutationId?: string },
-): Promise<{ reply: string; sessionId: string; replayed?: boolean }> {
+): Promise<{
+  reply: string;
+  sessionId: string;
+  replayed?: boolean;
+  pending?: boolean;
+  userMessageId?: string;
+  assistantMessageId?: string;
+}> {
+    // The assistant reply is stored with mutation_id `<mutationId>:reply`, so a
+    // retry looks up the exact reply row instead of guessing by timestamp.
+    const replyMutationId = data.mutationId ? `${data.mutationId}:reply` : null;
 
     let sessionId = data.sessionId ?? null;
     let profile: OpenerProfile = null;
 
-    // Retry safety: a resubmitted turn replays its saved reply.
+    // Retry safety: a resubmitted turn replays its saved reply. If the user
+    // turn committed but the reply never did (crash between writes), report
+    // the turn as pending instead of returning an empty "successful" replay.
     if (data.mutationId && sessionId) {
       const { data: prior } = await supabase
         .from("chat_messages")
@@ -3459,14 +3471,21 @@ export async function chatTurnImpl(
       if (prior) {
         const { data: replyRow } = await supabase
           .from("chat_messages")
-          .select("content")
+          .select("id, content")
           .eq("session_id", sessionId)
           .eq("role", "assistant")
-          .gt("created_at", prior.created_at)
-          .order("created_at", { ascending: true })
-          .limit(1)
+          .eq("mutation_id", replyMutationId!)
           .maybeSingle();
-        return { reply: replyRow?.content ?? "", sessionId, replayed: true };
+        if (!replyRow) {
+          return { reply: "", sessionId, replayed: true, pending: true, userMessageId: prior.id };
+        }
+        return {
+          reply: replyRow.content,
+          sessionId,
+          replayed: true,
+          userMessageId: prior.id,
+          assistantMessageId: replyRow.id,
+        };
       }
     }
 
