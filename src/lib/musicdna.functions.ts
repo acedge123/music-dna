@@ -3785,23 +3785,39 @@ export const listChat = createServerFn({ method: "GET" })
     if (!sessionId)
       return {
         sessionId: null,
-        messages: [] as Array<{ role: ChatRole; content: string; created_at: string }>,
+        messages: [] as Array<{
+          id: string;
+          role: ChatRole;
+          content: string;
+          created_at: string;
+          mutation_id: string | null;
+        }>,
       };
-    const { data: rows } = await supabase
+    // Latest 200 messages, returned chronologically.
+    const { data: rowsDesc } = await supabase
       .from("chat_messages")
-      .select("role, content, created_at")
+      .select("id, role, content, created_at, mutation_id")
       .eq("session_id", sessionId)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(200);
+    const rows = (rowsDesc ?? []).reverse();
     return {
       sessionId,
-      messages: ((rows ?? []) as Array<{ role: string; content: string; created_at: string }>).map(
-        (r) => ({
-          role: r.role as ChatRole,
-          content: r.content,
-          created_at: r.created_at,
-        }),
-      ),
+      messages: (
+        rows as Array<{
+          id: string;
+          role: string;
+          content: string;
+          created_at: string;
+          mutation_id: string | null;
+        }>
+      ).map((r) => ({
+        id: r.id,
+        role: r.role as ChatRole,
+        content: r.content,
+        created_at: r.created_at,
+        mutation_id: r.mutation_id,
+      })),
     };
   });
 
