@@ -121,7 +121,7 @@ d("REST v1 end-to-end", () => {
         {
           method: "POST",
           body: JSON.stringify({
-            pairing_id: pairing.pairing_id,
+            pairing_id: pairing.id,
             chosen_song_id: chosen,
             ms_to_decide: 1500 + i * 100,
           }),
