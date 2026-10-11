@@ -3698,7 +3698,7 @@ Only choose exception if the evidence has a contradiction. Self-report never add
       }
 
     return { reply, sessionId };
-  });
+  }
 
 export const listChat = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
