@@ -15,6 +15,7 @@
   critic's voice without naming the machinery.
 
 ## Open — blocked on others
+- Vercel production env vars: musicdna.fm is live and serves the frontend + typed v1 errors, but every server function that touches the Supabase admin client (public share lookup, reveal, publish, onboarding) returns a 500 HTML page because `SB_SECRET_KEY` (and `SUPABASE_URL`) are not set in the Vercel dashboard. Add them there (plus `AGENT_TEST_HARNESS_KEY` if the REST e2e should run against prod) and redeploy; then rerun `MUSICDNA_E2E_BASE_URL=https://www.musicdna.fm` to confirm.
 - Flutter parity: Codex is adopting the v1 contract.
 - Signed-in walkthrough: this project's Supabase is user-managed, so no account can be minted here.
 - D06 implementation: deferred until launch.
