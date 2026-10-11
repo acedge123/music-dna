@@ -1,4 +1,3 @@
-import { ledgerChoiceFromRow, snapshotEvidence } from "@/musicdna/adapters/choice-evidence";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -533,17 +532,22 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
-import {
-  buildLedger,
-  detectRevision,
-  LEDGER_VERSION,
-  type LedgerSong,
-  type PriorRead,
-} from "@/musicdna/engine/evidence";
+import { LEDGER_VERSION, type Ledger } from "@/musicdna/engine/evidence";
 import { ENGINE_VERSION } from "@/musicdna/engine/versions";
+import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
+import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
+import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
+import { narrateEvidence } from "@/musicdna/adapters/evidence-narrator";
+import {
+  validatedChat,
+  fallbackChat,
+  narrationOptions,
+  CLAIM_LANGUAGE_VERSION,
+} from "@/musicdna/engine/claim-language";
+import { fitTier } from "@/musicdna/engine/scoring";
+import { projectRead, type CurrentReadResult } from "@/musicdna/engine/read";
 import { nextPromptFor } from "@/musicdna/engine/prompts";
 import {
-  evaluateClaim,
   CLAIM_POLICY_VERSION,
   CLAIM_MIN_SUPPORT,
   CLAIM_MIN_CONSISTENCY,
@@ -1206,553 +1210,6 @@ function topLeadAxis(vector: Record<string, number>): string | null {
 }
 
 // ============ Record choice ============
-// Two-layer copy system:
-//   axis_label — the canonical "X over Y" line, spoken ONCE per session per pole.
-//   observations — 8–12 different-flavored observations of the same tradeoff.
-// The reveal builder picks by hash so no line repeats inside a session, and
-// gates identity claims behind round ≥ 3 (with real support required for the
-// stronger reads). Voice: Rolling Stone in its mean years — punchy, specific,
-// no therapy-speak, no restated axis. Every line should make the user nod.
-type BeatVariant = { thesis: string; hook: string };
-type Pole = { axis_label: string; observations: string[] };
-
-const POLES: Record<string, { hi: Pole; lo: Pole }> = {
-  movement: {
-    hi: {
-      axis_label: "songs that move over songs that sit still",
-      observations: [
-        "You want the song going somewhere.",
-        "Stillness bores you, at least so far.",
-        "Motion is the point, not decoration.",
-        "You reward a song with somewhere to be.",
-        "The one that leans forward keeps winning.",
-        "Standing still is for other people, apparently.",
-        "You'd rather be pulled than sat down.",
-        "The forward pick, again. Not an accident.",
-      ],
-    },
-    lo: {
-      axis_label: "songs that sit still over songs that move",
-      observations: [
-        "You'd rather the song wait with you.",
-        "Not in a hurry. Ever, or just today?",
-        "Patience reads as taste, not laziness.",
-        "The still ones keep pulling you in.",
-        "You reward a song that refuses to rush.",
-        "You want the room, not the road.",
-        "The one that plants itself keeps winning.",
-        "You'd take the pause over the push.",
-      ],
-    },
-  },
-  atmosphere: {
-    hi: {
-      axis_label: "atmosphere over statement",
-      observations: [
-        "The room around the song is doing the work.",
-        "You trust mood more than the lyric.",
-        "The blurrier one keeps winning your vote.",
-        "You want to be surrounded, not addressed.",
-        "Reverb reads as meaning, at least so far.",
-        "You reward the song that hides its edges.",
-        "The one that soaks the room keeps landing.",
-        "You'd rather feel it than be told.",
-      ],
-    },
-    lo: {
-      axis_label: "statement over atmosphere",
-      observations: [
-        "You want the words to land.",
-        "Not much patience for fog so far.",
-        "You reward a song that says the thing.",
-        "The direct one keeps winning.",
-        "Clarity beats haze on your card.",
-        "You'd rather be addressed than surrounded.",
-        "The song that means it out loud keeps landing.",
-        "You want the lyric doing real work.",
-      ],
-    },
-  },
-  immersion: {
-    hi: {
-      axis_label: "the slow burn over the quick hit",
-      observations: [
-        "You don't need the hook on contact.",
-        "You're patient with a slow fuse.",
-        "The payoff matters more than the opening.",
-        "You reward ambition over efficiency.",
-        "You don't mind waiting for the song to arrive.",
-        "The third-listen songs keep winning.",
-        "The ending changes how you hear the beginning.",
-        "You trust a song to earn it.",
-      ],
-    },
-    lo: {
-      axis_label: "the quick hit over the slow burn",
-      observations: [
-        "If it doesn't grab you fast, it doesn't grab you.",
-        "You vote on first impression and stick.",
-        "Eight bars or out.",
-        "The opener has to do real work.",
-        "You reward the song that lands immediately.",
-        "The hook better arrive on time.",
-        "First bar is the audition.",
-        "The slow reveal loses, at least so far.",
-      ],
-    },
-  },
-  scale: {
-    hi: {
-      axis_label: "vast over intimate",
-      observations: [
-        "You want the song bigger than the room.",
-        "The one with more air keeps winning.",
-        "Panorama beats close-up on your card.",
-        "You reward a song that opens up.",
-        "You want space to move around in the song.",
-        "The wider one keeps landing.",
-        "You'd rather the song stretch than lean in.",
-        "Big rooms, apparently.",
-      ],
-    },
-    lo: {
-      axis_label: "intimate over vast",
-      observations: [
-        "You want the song one inch away.",
-        "No stadiums, no fog machines.",
-        "The close pick keeps winning.",
-        "You reward a song breathing on your neck.",
-        "You'd take the whisper over the wall.",
-        "Private over public, so far.",
-        "The small room keeps landing.",
-        "You want it in the ear, not in the sky.",
-      ],
-    },
-  },
-  community: {
-    hi: {
-      axis_label: "songs built to be shared over songs built for headphones",
-      observations: [
-        "You're drawn to songs that invite people in.",
-        "The one built for a crowd keeps winning.",
-        "You reward a song that wants company.",
-        "You'd rather hear it together than alone.",
-        "The singalong is doing something for you.",
-        "You keep picking the one with room for more voices.",
-        "The shared pick keeps landing.",
-        "Music as gathering, apparently.",
-      ],
-    },
-    lo: {
-      axis_label: "songs built for headphones over songs built to be shared",
-      observations: [
-        "Headphones. Alone. On purpose.",
-        "You want the signal undiluted.",
-        "The song is between you and it.",
-        "You reward a song that doesn't need a crowd.",
-        "The private pick keeps winning.",
-        "Group hugs need not apply.",
-        "You'd rather listen than participate.",
-        "Solo listener, so far.",
-      ],
-    },
-  },
-  perspective: {
-    hi: {
-      axis_label: "the narrator over the confessor",
-      observations: [
-        "You want the song to show you something.",
-        "You reward a song that tells you about it.",
-        "Distance is doing something for you.",
-        "The camera keeps beating the mirror.",
-        "You'd rather watch than bleed.",
-        "The storyteller keeps winning.",
-        "You want the frame around the feeling.",
-        "You're here for the report, not the ride.",
-      ],
-    },
-    lo: {
-      axis_label: "the confessor over the narrator",
-      observations: [
-        "You want to be inside the song.",
-        "No glass between you and the feeling.",
-        "The first-person pick keeps winning.",
-        "You reward a song that admits something.",
-        "You'd rather feel it than hear about it.",
-        "No distance, on purpose.",
-        "You want the singer in the same room as the feeling.",
-        "The mirror beats the camera, at least so far.",
-      ],
-    },
-  },
-  confidence: {
-    hi: {
-      axis_label: "swagger over vulnerability",
-      observations: [
-        "You reward a song that walks in like it owns the place.",
-        "The certain one keeps winning.",
-        "You want the singer sure of it.",
-        "You'd take the assertion over the apology.",
-        "No apology takes on your card, so far.",
-        "You keep rewarding conviction.",
-        "The one that plants a flag keeps landing.",
-        "You want the song to mean it out loud.",
-      ],
-    },
-    lo: {
-      axis_label: "vulnerability over swagger",
-      observations: [
-        "You reward the cracked admission.",
-        "You'd take the flinch over the flex.",
-        "Honesty beats heat on your card.",
-        "You want the singer risking something.",
-        "The one that admits it keeps winning.",
-        "You're allergic to posing, so far.",
-        "The one with a lump in the throat keeps landing.",
-        "You want the song exposed, not armored.",
-      ],
-    },
-  },
-  tension: {
-    hi: {
-      axis_label: "pressure over release",
-      observations: [
-        "You don't want the song to let you off.",
-        "You reward a song that won't resolve.",
-        "You trust the squeeze.",
-        "The held breath keeps beating the exhale.",
-        "You want the song to keep you tight.",
-        "The unsettled one keeps winning.",
-        "You'd rather be pinned than freed.",
-        "Resolution can wait, apparently.",
-      ],
-    },
-    lo: {
-      axis_label: "release over pressure",
-      observations: [
-        "You want the song to let you breathe.",
-        "The exhale is the payoff.",
-        "You reward a song that opens the door.",
-        "The one that lets go keeps winning.",
-        "You'd take the resolution over the standoff.",
-        "You want air, not anxiety.",
-        "The one that finds daylight keeps landing.",
-        "You want the song to give something back.",
-      ],
-    },
-  },
-  texture: {
-    hi: {
-      axis_label: "the clean take over the cracked one",
-      observations: [
-        "You reward a song that hides its seams.",
-        "You hear the work and vote for it.",
-        "The polished one keeps winning.",
-        "You don't romanticize the mess.",
-        "Craft is doing the delivering.",
-        "The invisible-seam song keeps landing.",
-        "You want the production doing real work.",
-        "You'd take the fixed one over the flawed one.",
-      ],
-    },
-    lo: {
-      axis_label: "the cracked take over the clean one",
-      observations: [
-        "You'd take the cracked voice over the perfect one.",
-        "You want it human, not fixed.",
-        "The one with dirt on it keeps winning.",
-        "You trust the mess.",
-        "Polish reads suspicious, apparently.",
-        "The imperfect take keeps landing.",
-        "You want to hear the hands on the instrument.",
-        "Sincerity has a sound and you hear it.",
-      ],
-    },
-  },
-  transformation: {
-    hi: {
-      axis_label: "songs that go somewhere over songs that hold their shape",
-      observations: [
-        "You like songs that reveal themselves.",
-        "You reward ambition over efficiency.",
-        "The payoff matters more than the hook.",
-        "You don't need the chorus in the first minute.",
-        "The song that keeps renegotiating itself keeps winning.",
-        "You're listening for evolution, not impact.",
-        "The one that travels somewhere keeps landing.",
-        "You want the ending to change how you hear the start.",
-        "You reward motion inside the song itself.",
-      ],
-    },
-    lo: {
-      axis_label: "songs that hold their shape over songs that wander",
-      observations: [
-        "You want the song to know what it is from bar one.",
-        "No identity crisis on your card.",
-        "The formed one keeps winning.",
-        "You reward a song that arrives whole.",
-        "You'd take the statement over the sketch.",
-        "The one that commits keeps landing.",
-        "You want conviction, not exploration.",
-        "The song doesn't need to change to mean something.",
-      ],
-    },
-  },
-};
-
-// Voice helpers — hedge ladder, hesitation copy, hash-stable variant picking
-// live in the engine so both web and any future client render the same beat.
-import {
-  FORBIDDEN_TOKENS,
-  HEDGES,
-  HESITATION_BUCKETS,
-  hedgeForRound,
-  hesitationFor,
-  pickByHash,
-} from "@/musicdna/engine/voice";
-
-// Fragmented beats for the running thesis — short lines plus a hook
-// question/half-promise that pulls the next pick. Hedged on purpose.
-const BEAT: Record<string, { hi: BeatVariant[]; lo: BeatVariant[] }> = {
-  movement: {
-    hi: [
-      {
-        thesis: "You keep choosing songs that move.\nNot fast.\nJust forward.",
-        hook: "What happens if I throw you something that stands still?",
-      },
-      {
-        thesis: "Forward motion, again.\nThat's a pattern, not an accident.\nProbably.",
-        hook: "Want to test it with a song that refuses to move?",
-      },
-    ],
-    lo: [
-      {
-        thesis: "Stillness keeps winning.\nThe ones that sit you down.\nNo rush.",
-        hook: "Curious if a propulsive one breaks that.",
-      },
-      {
-        thesis: "You're drawn to the songs that wait.\nNot lazy — patient.\nDifferent thing.",
-        hook: "What if I throw you one with somewhere to be?",
-      },
-    ],
-  },
-  atmosphere: {
-    hi: [
-      {
-        thesis:
-          "You trust the room more than the lyric.\nThe air around the song is the song.\nReverb as meaning.",
-        hook: "Wonder if a flat-out statement song changes your mind.",
-      },
-      {
-        thesis: "Mood keeps beating message.\nYou'd rather feel it than be told.\nMostly.",
-        hook: "Let me try one that says it out loud.",
-      },
-    ],
-    lo: [
-      {
-        thesis: "You want the song to say it.\nOut loud.\nNo hiding behind reverb.",
-        hook: "Let's see if a haze-bomb still gets through.",
-      },
-      {
-        thesis: "Clarity keeps winning.\nDirect over dreamy.\nNoted.",
-        hook: "What does a real atmosphere piece do to that?",
-      },
-    ],
-  },
-  immersion: {
-    hi: [
-      {
-        thesis:
-          "You don't need the hook on contact.\nThird listen, real estate opens up.\nYou wait the song out.",
-        hook: "What does a song that grabs you in eight bars do for you?",
-      },
-      {
-        thesis:
-          "Slow burns keep winning.\nYou give songs the benefit of the doubt.\nThat's rarer than you think.",
-        hook: "Curious if a fast-hooker still pulls you.",
-      },
-    ],
-    lo: [
-      {
-        thesis:
-          "If it doesn't hook you fast, it doesn't hook you.\nEight bars or out.\nNo slow reveals.",
-        hook: "Wonder if a sleeper still wins you over.",
-      },
-      {
-        thesis: "You vote on first impression.\nAnd you're not changing your mind.\nProbably.",
-        hook: "Let me try a real grower on you.",
-      },
-    ],
-  },
-  scale: {
-    hi: [
-      {
-        thesis: "You want the song bigger than the room.\nCathedral over kitchen.\nMore air.",
-        hook: "What about a song built for one set of headphones?",
-      },
-      {
-        thesis: "Wide keeps winning.\nYou want space in the song.\nNot crowding.",
-        hook: "Curious how a close-up one lands.",
-      },
-    ],
-    lo: [
-      {
-        thesis: "Up close.\nIn your ear.\nNo stadiums.",
-        hook: "Let's see if a wall-of-sound moment still pulls you.",
-      },
-      {
-        thesis: "You want the song one inch away.\nNot one mile.\nIntimate by design.",
-        hook: "What does a vast one do to that?",
-      },
-    ],
-  },
-  community: {
-    hi: [
-      {
-        thesis:
-          "Songs heard in rooms full of people.\nThe singalong is the meaning.\nMusic as gathering.",
-        hook: "What about a song built for one set of headphones?",
-      },
-      {
-        thesis: "Communal keeps winning.\nYou hear the crowd in the song.\nAnd you like it there.",
-        hook: "Curious if a solo-listener piece still gets you.",
-      },
-    ],
-    lo: [
-      {
-        thesis:
-          "Headphones. Alone. On purpose.\nCrowds dilute the signal.\nThe song is between you and it.",
-        hook: "Curious if a singalong still moves you.",
-      },
-      {
-        thesis: "You keep it private.\nNo group hugs in the music.\nJust you.",
-        hook: "Let me try one built for the room.",
-      },
-    ],
-  },
-  perspective: {
-    hi: [
-      {
-        thesis:
-          "You want the song to show you something.\nNot become you.\nNarrator over screamer.",
-        hook: "What happens with a song that wants you inside it?",
-      },
-      {
-        thesis:
-          "Distance keeps winning.\nYou like the camera, not the mirror.\nStorytellers over bleeders.",
-        hook: "Wonder if a first-person one cracks that.",
-      },
-    ],
-    lo: [
-      {
-        thesis:
-          "You don't want a report from the scene.\nYou want to be in it.\nFirst person, no distance.",
-        hook: "Let's see if a great storyteller still gets through.",
-      },
-      {
-        thesis: "Inside the song, every time.\nNo glass.\nYou want the heat.",
-        hook: "What does a great narrator do to that?",
-      },
-    ],
-  },
-  confidence: {
-    hi: [
-      {
-        thesis: "You like a singer who isn't asking.\nPosture as music.\nNo flinching.",
-        hook: "Wonder what a vulnerable one does to you.",
-      },
-      {
-        thesis: "Swagger keeps winning.\nYou want the song sure of itself.\nNo apologies.",
-        hook: "Curious if a cracked voice still gets through.",
-      },
-    ],
-    lo: [
-      {
-        thesis: "The cracked admission over the swagger.\nThe flinch is the point.\nNo armor.",
-        hook: "Curious if a power move still pulls you in.",
-      },
-      {
-        thesis: "You want the singer admitting something.\nNot performing.\nMostly.",
-        hook: "Let me throw a confident one at you.",
-      },
-    ],
-  },
-  tension: {
-    hi: [
-      {
-        thesis: "You don't want the song to let you off.\nPressure all the way.\nNo exhale.",
-        hook: "What does a real release do for you?",
-      },
-      {
-        thesis: "Tension keeps winning.\nYou trust the squeeze.\nResolution can wait.",
-        hook: "Curious if a real exhale changes that.",
-      },
-    ],
-    lo: [
-      {
-        thesis: "You want the song to let you breathe.\nExhale is the payoff.\nRoom to move.",
-        hook: "Let's see if a real squeeze still gets through.",
-      },
-      {
-        thesis: "Release over pressure.\nYou want the door open.\nNot locked.",
-        hook: "What does a song that won't resolve do to that?",
-      },
-    ],
-  },
-  texture: {
-    hi: [
-      {
-        thesis: "Craft, not mess.\nPolish is the delivery system.\nThe seams should be invisible.",
-        hook: "Wonder if a raw nerve still gets through.",
-      },
-      {
-        thesis: "Refinement keeps winning.\nYou hear the work.\nAnd you reward it.",
-        hook: "Curious how a cracked take lands on you.",
-      },
-    ],
-    lo: [
-      {
-        thesis:
-          "Cracked voice over the perfect take.\nEvery time.\nYou want it bleeding, not fixed.",
-        hook: "What does a flawlessly produced one do for you?",
-      },
-      {
-        thesis: "Grit keeps winning.\nYou trust the mess.\nPolish reads suspicious.",
-        hook: "Let me try a clean one and see.",
-      },
-    ],
-  },
-  transformation: {
-    hi: [
-      {
-        thesis:
-          "You want the song to become something.\nNot be something.\nBecoming is the whole bet.",
-        hook: "What about a song that arrives fully formed?",
-      },
-      {
-        thesis:
-          "Evolution keeps winning.\nYou want the surprise inside the song.\nNot just at the start.",
-        hook: "Curious if a song that holds its shape still pulls you.",
-      },
-    ],
-    lo: [
-      {
-        thesis: "You want the song to know what it is.\nFrom the first bar.\nNo identity crisis.",
-        hook: "Let's try one that morphs on you.",
-      },
-      {
-        thesis:
-          "Conviction keeps winning.\nThe song doesn't need to change to mean something.\nIt already does.",
-        hook: "What does a real shape-shifter do to that?",
-      },
-    ],
-  },
-};
-
-// dimSeed lives in engine/voice; pickVariant is the same shape as pickByHash.
-import { dimSeed } from "@/musicdna/engine/voice";
-const pickVariant = pickByHash;
-
 // Derived descriptors — pure read off the 10 axes, kept in the engine so the
 // synthesis prompt and any future client share one set of thresholds.
 import { deriveDescriptors } from "@/musicdna/engine/descriptors";
@@ -1847,12 +1304,12 @@ export async function recordChoiceImpl(
       };
   }
   const songCols =
-    "id,title,artist,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+    "id,title,artist,year,lane,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
   const [pairingRes, sessionRes] = await Promise.all([
     supabase
       .from("pairings")
       .select(
-        `tests, diagnostic_weight, song_a_id, song_b_id, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`,
+        `tests, diagnostic_weight, updated_at, song_a_id, song_b_id, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${songCols}), song_b:songs!pairings_song_b_id_fkey(${songCols})`,
       )
       .eq("id", data.pairingId)
       .single(),
@@ -1863,6 +1320,7 @@ export async function recordChoiceImpl(
       .single(),
   ]);
   const pairing = pairingRes.data as unknown as {
+    updated_at: string;
     tests: string[] | null;
     diagnostic_weight: number;
     song_a_id: string;
@@ -1910,80 +1368,24 @@ export async function recordChoiceImpl(
     tests: (pairing.tests as string[] | null) ?? [],
     diagnostic_weight: pairing.diagnostic_weight,
     fallback_dims: DIMS as readonly string[],
+    strict_axes: true,
   });
   const vec = applied.vector;
-  const tests: string[] = pairing.tests?.length
-    ? pairing.tests
-    : (DIMS as readonly string[]).slice();
+  const tests = Object.keys(applied.delta_vector);
   const topDim = applied.top_dim;
   const topDelta = applied.top_delta;
   const deltaVec = applied.delta_vector;
 
-  // Round-aware reveal builder.
-  // Rounds 1–2 stay curious (no identity claims). Round 3+ adds a hedged
-  // observation. Round 5+ with real support unlocks the confident reads.
-  // Axis label is spoken ONCE per session per pole (tracked by whether the
-  // running vector already carries meaningful weight on that dim).
+  // A vote acknowledgement describes this choice only. The running ledger
+  // decides whether a pattern is earned; round count and tap speed cannot.
   const { count: priorChoices } = await supabase
     .from("choices")
     .select("id", { count: "exact", head: true })
     .eq("session_id", data.sessionId);
   const round = (priorChoices ?? 0) + 1;
-  const direction: "hi" | "lo" = topDelta >= 0 ? "hi" : "lo";
-  const pole = POLES[topDim]?.[direction];
-  const priorSupport = Math.abs(priorVec[topDim] ?? 0);
-  const axisMentioned = priorSupport > 4; // one prior contribution on this pole
-  const pairingHash = data.pairingId.split("").reduce((s, c) => s + c.charCodeAt(0), 0);
-  const seedA =
-    (priorChoices ?? 0) * 7 + dimSeed(topDim) + (direction === "hi" ? 0 : 1) + pairingHash;
-  const seedB = seedA * 31 + 13;
-  const ms = data.msToDecide ?? null;
-  const speedBeat = hesitationFor(ms, seedA);
-  const hedge = hedgeForRound(round);
-
-  // Line 1: reaction. Round 1 skips the hedge (avoid pretending pattern).
-  // Hedge goes on its own line so the UI can render it as a small label
-  // above the actual verdict — otherwise "Early read: Rehab over Blank
-  // Space." reads flat and same-size as everything else.
-  const reactionCore = `${winner.title} over ${loser.title}.`;
-  const reaction = round === 1 ? reactionCore : `${hedge}\n${reactionCore}`;
-
-  // Line 2: axis label (first mention) OR a fresh observation. Never both.
-  let inference = "";
-  if (pole) {
-    if (!axisMentioned) {
-      inference = `That's ${pole.axis_label}.`;
-    } else if (round >= 3) {
-      inference = pickByHash(pole.observations, seedA) ?? "";
-    }
-  }
-
-  // `why` carries a second, different observation only once we've earned it:
-  // round ≥ 5 AND at least ~3 supporting contributions on this pole.
-  const strongEnough = round >= 5 && priorSupport >= 30;
-  let why = "";
-  if (pole && strongEnough) {
-    // Pick a different observation than the inference line.
-    const pool = pole.observations.filter((o) => o !== inference);
-    why = pickByHash(pool, seedB) ?? "";
-  }
-
-  const verdict = [reaction, inference, speedBeat].filter(Boolean).join("\n");
-
-  // Dev-only guard against leaking internal vocabulary into user copy.
-  if (process.env.NODE_ENV !== "production") {
-    const bag = `${inference} ${why}`.toLowerCase();
-    for (const tok of FORBIDDEN_TOKENS) {
-      if (bag.includes(tok)) {
-        console.warn(
-          `[musicdna] reveal copy contains forbidden token "${tok}" on dim=${topDim} dir=${direction}`,
-        );
-      }
-    }
-  }
-
-  // Kept for back-compat with older UI paths that read `hesitation`.
-  const hesitation = speedBeat || null;
+  const verdict = `${winner.title} over ${loser.title}.`;
+  const why = "Choice noted. A pattern needs independent evidence.";
+  const hesitation = null;
 
   // Cross-lane probe flipping is quarantined. See
   // src/musicdna/engine/experiments/cross-lane-probes.ts and
@@ -2070,13 +1472,7 @@ export async function recordChoiceImpl(
       p_mutation_id: data.mutationId ?? null,
       p_prior_vector: session.vector ?? {},
       p_update: updatePayload,
-      p_response: response,
-      p_evidence: snapshotEvidence({
-        tests: (pairing.tests as string[] | null) ?? [],
-        diagnostic_weight: pairing.diagnostic_weight,
-        chosen: winner as unknown as Record<string, unknown>,
-        rejected: loser as unknown as Record<string, unknown>,
-      }),
+      p_response: { ...response, _expected_catalog: expectedCatalog(pairing, winner, loser) },
     } as never,
   );
   if (rpcErr) {
@@ -2359,30 +1755,8 @@ function round3(n: number): number {
 // that he is a music critic, not a therapist.
 // ============================================================
 
-const BANNED_WORDS = [
-  "dreamer",
-  "seeker",
-  "old soul",
-  "empath",
-  "creative spirit",
-  "destiny",
-  "wound",
-  "soul",
-  "trauma",
-  "secretly",
-  "you are the kind of person who",
-  "energy",
-  "aura",
-  "journey of self",
-  "authentic self",
-  "true self",
-];
-
 const CRITIC_VOICE = `${PERSONA}
-Mode: long-form critic write-up. You are not a therapist, astrologer, psychologist, or life coach — you are reading patterns in choices, not diagnosing a person.
-Every claim must reference the evidence you were given. Acknowledge uncertainty where the evidence is thin. Do not invent claims that are not in the allowed_claims list.
-Banned words: ${BANNED_WORDS.join(", ")}.
-Prefer: "across these choices", "this suggests", "you repeatedly favored", "the strongest evidence is", "a weaker reading would be".`;
+Mode: evidence-bounded critic selection. Select only eligible claims and frozen choice references provided by the caller. Return only the requested structured selection JSON, no prose. Editorial fit is not a calibrated probability.`;
 
 export const finalizeSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -2404,48 +1778,17 @@ export async function finalizeSessionImpl(
   if (sErr || !session) throw new Error(sErr?.message ?? "session not found");
   if (session.user_id !== userId) throw new Error("forbidden");
 
-  const songCols =
-    "id,title,artist,year,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
-
   // -------- Pull raw evidence --------
-  const [archRes, choicesRes] = await Promise.all([
+  const [archRes, evidence] = await Promise.all([
     supabase
       .from("archetypes")
       .select(
         "id,name,tagline,signature_axes,core_question,commentary_keywords,confidence_thresholds",
       ),
-    supabase
-      .from("choices")
-      .select(
-        `
-          ms_to_decide,
-          pairing_id,
-          evidence,
-          pairing:pairing_id(tests, diagnostic_weight),
-          chosen:chosen_song_id(${songCols}),
-          rejected:rejected_song_id(${songCols})
-        `,
-      )
-      .eq("session_id", data.sessionId),
+    loadChoiceEvidence(supabase, data.sessionId),
   ]);
   const archetypes = archRes.data ?? [];
-  type SongRow = Record<string, number | string | null> & {
-    id: string;
-    title: string;
-    artist: string;
-    year: number | null;
-    lane: string;
-  };
-  type ChoiceRow = {
-    pairing_id: string | null;
-    ms_to_decide: number | null;
-    pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
-    chosen: SongRow | null;
-    rejected: SongRow | null;
-  };
-  const choices = ((choicesRes.data ?? []) as unknown as ChoiceRow[]).filter(
-    (c) => c.chosen && c.rejected,
-  );
+  const choices = evidence.choices.filter((c) => c.chosen && c.rejected);
 
   // -------- Layer 1: Observations --------
   const observations = choices.map((c) => ({
@@ -2453,15 +1796,12 @@ export async function finalizeSessionImpl(
     chosen_artist: c.chosen!.artist,
     rejected: c.rejected!.title,
     rejected_artist: c.rejected!.artist,
-    tested_dimensions: c.pairing?.tests ?? [],
+    tested_dimensions: c.tests ?? [],
     ms_to_decide: c.ms_to_decide,
   }));
 
   // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
-  const ledger = buildLedger(
-    choices.map((c) => ledgerChoiceFromRow(c as never)),
-    DIMS as readonly string[],
-  );
+  const ledger = evidence.ledger;
   const patterns = ledger.axes.map((a) => {
     const label = DIM_LABEL[a.axis];
     const preferred = a.direction === "hi" ? label?.hi : label?.lo;
@@ -2497,58 +1837,15 @@ export async function finalizeSessionImpl(
     impact: "low" | "medium" | "high";
     notes: string;
   }> = [];
-  const artistCount: Record<string, number> = {};
-  const eraCount: Record<string, number> = {};
-  const laneCount: Record<string, number> = {};
-  let fastPicks = 0;
-  for (const c of choices) {
-    const artist = c.chosen!.artist;
-    artistCount[artist] = (artistCount[artist] ?? 0) + 1;
-    const year = Number(c.chosen!.year);
-    if (year) {
-      const decade = `${Math.floor(year / 10) * 10}s`;
-      eraCount[decade] = (eraCount[decade] ?? 0) + 1;
-    }
-    const lane = String(c.chosen!.lane ?? "");
-    if (lane) laneCount[lane] = (laneCount[lane] ?? 0) + 1;
-    if ((c.ms_to_decide ?? 99999) < 2000) fastPicks += 1;
-  }
-  for (const [artist, n] of Object.entries(artistCount)) {
-    if (n >= 3)
-      counterarguments.push({
-        claim: `User may simply prefer ${artist}.`,
-        impact: n >= 5 ? "high" : "medium",
-        notes: `${n} of ${choices.length} winning songs are by ${artist}.`,
-      });
-  }
-  for (const [decade, n] of Object.entries(eraCount)) {
-    if (n >= Math.max(4, Math.ceil(choices.length * 0.5)))
-      counterarguments.push({
-        claim: `User may be selecting on era (${decade}) rather than the tested dimensions.`,
-        impact: "medium",
-        notes: `${n} winning songs come from the ${decade}.`,
-      });
-  }
-  for (const [lane, n] of Object.entries(laneCount)) {
-    if (n >= Math.max(4, Math.ceil(choices.length * 0.6)))
-      counterarguments.push({
-        claim: `User may be selecting on lane (${lane}) rather than diagnostic tradeoffs.`,
-        impact: "medium",
-        notes: `${n} winning songs share the ${lane} lane.`,
-      });
-  }
-  if (choices.length >= 8 && fastPicks / choices.length >= 0.6)
+  for (const c of ledger.confounds)
     counterarguments.push({
-      claim: "Many picks were snap decisions. Familiarity may be driving choice as much as taste.",
+      claim: `Repeated ${c.kind} (${c.value}) is a possible concentration confound, not a listener trait.`,
       impact: "medium",
-      notes: `${fastPicks} of ${choices.length} choices resolved in under 2 seconds.`,
+      notes: `${c.count} of ${c.total} chosen songs share this ${c.kind}. Timing does not establish decisiveness.`,
     });
 
   // -------- Layer 4: Evidence threshold --------
-  // Tuned for 6-round adaptive test: 2 supporting choices on an axis is
-  // enough to call a tendency, as long as direction is consistent and the
-  // magnitude is real. 0.55 keeps out pure noise without demanding 12 rounds.
-  // D01 common claim policy (see engine/claims.ts).
+  // Approved D01 editorial policy, never a calibrated probability.
   const allowed_claims = patterns.filter((p) => p.claim_eligible).slice(0, 5);
   const blocked_claims = patterns.filter((p) => !p.claim_eligible).slice(0, 5);
 
@@ -2566,7 +1863,6 @@ export async function finalizeSessionImpl(
   const catalogRows = archetypes as unknown as ArchetypeRow[];
   const {
     assignment,
-    winner_row,
     flagged: archetypeFlagged,
     flag_reason: archetypeFlagReason,
   } = assignArchetype(vector, catalogRows);
@@ -2581,7 +1877,6 @@ export async function finalizeSessionImpl(
         })),
       ]
     : [];
-  const bestRow = winner_row as ArchetypeRow | null;
   const best = assignment
     ? { id: assignment.id, name: assignment.name, score: assignment.score }
     : { id: null as string | null, name: "", score: -Infinity };
@@ -2609,61 +1904,22 @@ export async function finalizeSessionImpl(
   });
 
   // -------- Layer 5: Critic (AI narrative, constrained) --------
-  const evidenceBlock = allowed_claims.length
-    ? allowed_claims
-        .map(
-          (c) =>
-            `- ${c.tradeoff} (${c.supporting_choices}/${c.tested_total} relevant matchups, confidence ${c.confidence}). Examples: ${c.examples.map((e) => `${e.chosen} > ${e.rejected}`).join("; ") || "—"}`,
-        )
-        .join("\n")
-    : "- (no claims cleared the evidence threshold)";
-  const counterBlock = counterarguments.length
-    ? counterarguments.map((c) => `- ${c.claim} (${c.impact} impact — ${c.notes})`).join("\n")
-    : "- (none)";
-
-  // Pick the confidence tier from the winning cosine score. Each archetype
-  // ships its own phrasings for 20/50/80/95, so the critic's opening hedge
-  // tracks the actual evidence instead of always sounding equally sure.
   const bestScore = assignment?.score ?? 0;
-  const tier = bestScore >= 0.95 ? "95" : bestScore >= 0.8 ? "80" : bestScore >= 0.5 ? "50" : "20";
-  const thresholds = (bestRow?.confidence_thresholds ?? {}) as Record<string, string>;
-  const openingHedge = thresholds[tier] ?? null;
-  const keywords = (bestRow?.commentary_keywords ?? []) as string[];
-  const coreQuestion = bestRow?.core_question ?? null;
-
-  const archetypeVoiceBlock = bestRow
-    ? `\nARCHETYPE (aesthetic, not personality): ${bestRow.name}${coreQuestion ? ` — core question: "${coreQuestion}"` : ""}. Cosine confidence: ${Math.round(bestScore * 100)}%.
-Opening hedge for this confidence tier (use as your first move; do not quote verbatim if it doesn't fit the flow): "${openingHedge ?? ""}"
-Draw from this archetype's vocabulary where natural (do not list, do not overuse, no more than 3-4 of these across the write-up): ${keywords.slice(0, 24).join(", ") || "(none)"}.`
-    : "";
-
-  const criticPrompt = `Write 3-4 sentences about this listener. Use ONLY the allowed claims below. \
-Cite the evidence inline (e.g. "across 7 of 12 matchups"). If a strong counter-hypothesis exists, name it. \
-If no claims cleared the threshold, say so plainly — do not invent. \
-Frame the archetype as what this listener SEEKS from music, not who they are as a person.
-${archetypeVoiceBlock}
-
-ALLOWED CLAIMS:
-${evidenceBlock}
-
-COUNTER-HYPOTHESES TO ACKNOWLEDGE:
-${counterBlock}
-
-Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
+  const tier = String(fitTier(bestScore));
 
   const criticStart = Date.now();
-  let narrative = "";
-  let criticStatus: "ok" | "error" = "ok";
-  let criticError: string | null = null;
-  try {
-    narrative = await ai([
+  const narrated = await narrateEvidence(ledger, DIM_LABEL, (prompt) =>
+    ai([
       { role: "system", content: CRITIC_VOICE },
-      { role: "user", content: criticPrompt },
-    ]);
-  } catch (e) {
-    criticStatus = "error";
-    criticError = e instanceof Error ? e.message : String(e);
-  }
+      { role: "user", content: prompt },
+    ]),
+  );
+  const narrative = narrated.text;
+  const criticStatus =
+    narrated.status === "invalid_generation" || narrated.status === "narrator_failure"
+      ? "error"
+      : "ok";
+  const criticError = criticStatus === "error" ? narrated.status : null;
   const criticLatency = Date.now() - criticStart;
 
   await supabase.from("llm_calls").insert({
@@ -2671,7 +1927,7 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
     session_id: data.sessionId,
     role: "critic",
     model: MODEL,
-    prompt_version: "critic.v1",
+    prompt_version: CLAIM_LANGUAGE_VERSION,
     status: criticStatus,
     latency_ms: criticLatency,
     error_message: criticError,
@@ -2682,18 +1938,9 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
       fit_tier: tier,
       cosine_score: Math.round(bestScore * 1000) / 1000,
     },
-    output: { length: narrative.length } as never,
+    output: { length: narrative.length, narration_status: narrated.status } as never,
     narrative: narrative || null,
   });
-
-  // If the critic AI failed, don't strand the user — fall back to a
-  // deterministic narrative built from the allowed claims. The error is
-  // already logged to llm_calls above.
-  if (criticStatus === "error" || !narrative.trim()) {
-    narrative = allowed_claims.length
-      ? `Across these matchups you kept choosing ${allowed_claims[0].tradeoff} (${allowed_claims[0].supporting_choices} of ${allowed_claims[0].tested_total} relevant picks). The shape's there — consistent, if not loud.`
-      : `Nothing cleared the evidence threshold this round. Either you're harder to read than most, or the matchups didn't catch you. Worth another pass.`;
-  }
 
   // -------- Persist --------
   const reasoningRow = {
@@ -2705,6 +1952,8 @@ Archetype assigned by cosine match: ${best.name || "Unassigned"}.`;
     allowed_claims,
     blocked_claims,
     evidence_thresholds: {
+      snapshot: "choice-evidence-v1",
+      unavailable_choices: ledger.unavailable,
       ledger: LEDGER_VERSION,
       policy: CLAIM_POLICY_VERSION,
       supporting_choices: CLAIM_MIN_SUPPORT,
@@ -2780,34 +2029,20 @@ export async function getMyResultImpl(supabase: AuthedSupabase, userId: string) 
   } | null = null;
 
   if (latest) {
-    const [choicesRes, reasoningRes] = await Promise.all([
-      supabase
-        .from("choices")
-        .select(
-          "created_at, ms_to_decide, chosen:chosen_song_id(title,artist), rejected:rejected_song_id(title,artist)",
-        )
-        .eq("session_id", latest.id)
-        .order("ms_to_decide", { ascending: true, nullsFirst: false })
-        .limit(5),
+    const [publicEvidence, reasoningRes] = await Promise.all([
+      loadPublicDefiningChoices(supabase, latest.id, 5),
       supabase
         .from("session_reasoning")
         .select("allowed_claims, blocked_claims, counterarguments, patterns")
         .eq("session_id", latest.id)
         .maybeSingle(),
     ]);
-    definingChoices = (
-      (choicesRes.data ?? []) as unknown as Array<{
-        chosen: { title: string; artist: string } | null;
-        rejected: { title: string; artist: string } | null;
-      }>
-    )
-      .filter((c) => c.chosen && c.rejected)
-      .map((c) => ({
-        chosen: c.chosen!.title,
-        chosenArtist: c.chosen!.artist,
-        rejected: c.rejected!.title,
-        rejectedArtist: c.rejected!.artist,
-      }));
+    definingChoices = publicEvidence.map((c) => ({
+      chosen: c.chosen_title,
+      chosenArtist: c.chosen_artist,
+      rejected: c.rejected_title,
+      rejectedArtist: c.rejected_artist,
+    }));
     reasoning = (reasoningRes.data as unknown as typeof reasoning) ?? null;
   }
   return { profile, sessions: sessions ?? [], definingChoices, reasoning };
@@ -3477,35 +2712,26 @@ export const refineWithTwoMore = createServerFn({ method: "POST" })
       /* keep still-learning defaults */
     }
 
-    // Threshold rule (enforced in code, not by the model):
-    //   ship a claim only if ≥3 supporting picks AND 0 contradictions.
-    //   ship at most one.
+    // Opener songs are self-report priors, not independent pairing votes.
+    // Retain valid candidates for audit, but never promote them using a
+    // second, song-count-based claim threshold.
+    candidateClaims = candidateClaims.filter(
+      (c) =>
+        c.supporting_songs.length > 0 &&
+        c.competing_explanations.length > 0 &&
+        new Set(c.supporting_songs).size === c.supporting_songs.length &&
+        new Set(c.contradicting_songs).size === c.contradicting_songs.length &&
+        [...c.supporting_songs, ...c.contradicting_songs].every((s) => allFive.includes(s)) &&
+        !c.supporting_songs.some((s) => c.contradicting_songs.includes(s)),
+    );
     const shipped: ShippedClaim[] = [];
-    for (const c of candidateClaims) {
-      if (shipped.length >= 1) break;
-      const supports = c.supporting_songs.length;
-      const contradicts = c.contradicting_songs.length;
-      if (supports < 3 || contradicts !== 0) continue;
-      const status: ShippedClaim["status"] =
-        supports >= 5 ? "stable" : supports === 4 ? "strengthening" : "tentative";
-      shipped.push({
-        text: c.text,
-        status,
-        competing_explanation: c.competing_explanations[0] ?? "Or the sample is still too small.",
-        supporting_count: supports,
-      });
-    }
+    reaction = "Five starting points. The matchups still have to test the read.";
 
     const stillLearning = shipped.length === 0;
     // For back-compat with older consumers of this function.
-    const hypothesis = shipped[0]?.text ?? "Not enough evidence yet — still listening.";
-    const confidence = shipped[0]
-      ? shipped[0].status === "stable"
-        ? 0.8
-        : shipped[0].status === "strengthening"
-          ? 0.6
-          : 0.4
-      : 0.2;
+    const hypothesis =
+      "These are opener priors, not a supported pattern. Let's test them with matchups.";
+    const confidence = 0.2; // legacy lane/flow DTO, never a probability of a claim
 
     // Fallback lane from per_song majority if the model went "general" but the picks agree.
     if (lane === "general") {
@@ -3784,15 +3010,7 @@ const INSIGHT_KINDS = ["observation", "challenge", "refinement"] as const;
 type InsightKind = (typeof INSIGHT_KINDS)[number];
 
 const INSIGHT_VOICE = `${PERSONA}
-Mode: between-matchup aside. Drop ONE sharp observation, challenge, or counter-hypothesis. This is where the product earns its keep — the listener should feel seen, then slightly called out.
-You are given the listener's running axis vector (positive = high pole, negative = low pole) and their most recent choices. Pick the SHARPEST thing you can defend from this evidence. If a clear pattern is there, NAME it. If not, challenge or refine.
-
-Return STRICT JSON:
-{
-  "kind": "observation" | "challenge" | "refinement",
-  "text": "ONE or TWO sentences, max 32 words total. Specific. Defendable from the evidence. Examples: 'You keep choosing the song that takes longer to arrive.' 'Not patience exactly. Patience that pays off.' 'Let's test that — this next one's the opposite.'"
-}
-No prose, no markdown fences.`;
+Mode: grounded between-matchup selection. Choose only supplied eligible claims and choice IDs. Return only the requested structured selection JSON, no prose. Do not infer taste or decisiveness from timing or opener priors.`;
 
 export const roundInsight = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -3811,70 +3029,14 @@ export const roundInsight = createServerFn({ method: "POST" })
     const session = sessionRes.data as { vector: Record<string, number>; user_id: string } | null;
     if (!session || session.user_id !== userId) return null;
 
-    const vector = session.vector ?? {};
-    // Top 3 strongest axes so far.
-    const ranked = (DIMS as readonly string[])
-      .map((d) => ({ d, v: vector[d] ?? 0 }))
-      .filter((x) => Math.abs(x.v) >= 8)
-      .sort((a, b) => Math.abs(b.v) - Math.abs(a.v))
-      .slice(0, 3);
-
-    if (!ranked.length) {
-      return {
-        kind: data.round === 6 ? "challenge" : "observation",
-        text: "Nothing's locked in yet. Keep choosing — the pattern will out itself.",
-      };
-    }
-
-    // Pull the last 4 choices for grounding.
-    const choicesRes = await supabase
-      .from("choices")
-      .select(
-        "ms_to_decide,chosen:chosen_song_id(title,artist),rejected:rejected_song_id(title,artist)",
-      )
-      .eq("session_id", data.sessionId)
-      .order("created_at", { ascending: false })
-      .limit(4);
-    type Row = {
-      ms_to_decide: number | null;
-      chosen: { title: string; artist: string } | null;
-      rejected: { title: string; artist: string } | null;
-    };
-    const recent = ((choicesRes.data ?? []) as unknown as Row[])
-      .filter((r) => r.chosen && r.rejected)
-      .map(
-        (r) =>
-          `${r.chosen!.title} > ${r.rejected!.title}${r.ms_to_decide != null ? ` (${r.ms_to_decide}ms)` : ""}`,
-      );
-
-    const axisBlock = ranked
-      .map(({ d, v }) => {
-        const label = DIM_LABEL[d];
-        const pole = v >= 0 ? label?.hi : label?.lo;
-        return `- ${d}: ${v >= 0 ? "+" : ""}${Math.round(v)} (${pole})`;
-      })
-      .join("\n");
-
-    const kindHint =
-      data.round === 3 ? "observation" : data.round === 6 ? "challenge" : "refinement";
-    const prompt = `Round ${data.round}. Vector so far:\n${axisBlock}\n\nRecent picks:\n${recent.join("\n") || "(none)"}\n\nPreferred kind for this round: ${kindHint}. But override if the evidence demands the other.\n\nReturn the JSON now.`;
-
-    try {
-      const txt = await ai([
+    const { ledger } = await loadChoiceEvidence(supabase, data.sessionId);
+    const narrated = await narrateEvidence(ledger, DIM_LABEL, (prompt) =>
+      ai([
         { role: "system", content: INSIGHT_VOICE },
         { role: "user", content: prompt },
-      ]);
-      const cleaned = txt.replace(/```json\s*|```/g, "").trim();
-      const parsed = JSON.parse(cleaned) as { kind?: string; text?: string };
-      const kind = (INSIGHT_KINDS as readonly string[]).includes(parsed.kind ?? "")
-        ? (parsed.kind as InsightKind)
-        : (kindHint as InsightKind);
-      const text = typeof parsed.text === "string" && parsed.text.trim() ? parsed.text.trim() : "";
-      if (!text) return null;
-      return { kind, text };
-    } catch {
-      return null;
-    }
+      ]),
+    );
+    return { kind: data.round === 6 ? "challenge" : "observation", text: narrated.text };
   });
 
 // ============================================================
@@ -3884,25 +3046,12 @@ export const roundInsight = createServerFn({ method: "POST" })
 // ============================================================
 
 const SYNTH_VOICE = `${PERSONA}
-Mode: final synthesis. You are a music critic, not a therapist. You name songs. You quote choices back. You write like a smart friend who's been listening over their shoulder.
-
-You are given:
-- a list of tradeoff patterns the listener actually displayed (each with named song examples)
-- counter-explanations that might be doing the work instead (e.g. "they just like Stone Roses")
-
-Your job: write 2–4 sentences that connect 2–3 of the strongest patterns into ONE specific reading. NAME at least two of the songs from the evidence in the prose. Use contrast moves: "It's not X. It's Y." Be defensible.
-
-If NO patterns are provided, the evidence is insufficient. Say so plainly: not enough consistent choices to support a read yet. Do NOT call this broad taste, eclectic, inconsistent, or any identity. Reference only songs they actually chose, and invite them to keep going.
-
-Return STRICT JSON:
-{
-  "synthesis": "2-4 sentences. Names at least one specific song. Ends on the thesis."
-}
-No prose, no markdown fences.`;
+Mode: evidence-bounded final synthesis selection. Choose supplied eligible claim and choice IDs only. Return only the requested structured selection JSON, no prose. The renderer preserves exceptions; never invent songs or supported tendencies.`;
 
 type SynthEvidence = { tradeoff: string; examples: string[]; supporting: number; tested: number };
 type SynthCounter = { claim: string; impact: string; notes: string };
 type SynthPayload = {
+  narration_status?: "ok" | "insufficient" | "invalid_generation" | "narrator_failure";
   synthesis: string;
   kept_choosing: SynthEvidence[];
   counter_reads: SynthCounter[];
@@ -3936,23 +3085,16 @@ export async function finalSynthesisImpl(
   if (saved?.content && (saved.content as SynthPayload).synthesis) {
     return { ...(saved.content as SynthPayload), result_version: saved.version };
   }
-  const fresh = await computeFinalSynthesis(supabase, userId, data);
+  const { ledger: savedLedger } = await loadChoiceEvidence(supabase, data.sessionId);
+  const fresh = await computeFinalSynthesis(supabase, userId, data, savedLedger);
   if (!fresh.synthesis) return fresh;
-  const { data: reasoning } = await supabase
-    .from("session_reasoning")
-    .select("allowed_claims, counterarguments")
-    .eq("session_id", data.sessionId)
-    .maybeSingle();
   const { error } = await supabase.from("session_results").insert({
     session_id: data.sessionId,
     user_id: userId,
     version: 1,
     source: "pairings",
     content: fresh as never,
-    evidence: {
-      allowed_claims: reasoning?.allowed_claims ?? [],
-      counterarguments: reasoning?.counterarguments ?? [],
-    } as never,
+    evidence: savedLedger as never,
     ledger_version: LEDGER_VERSION,
     policy_version: CLAIM_POLICY_VERSION,
     engine_version: ENGINE_VERSION,
@@ -3986,6 +3128,7 @@ async function computeFinalSynthesis(
   supabase: AuthedSupabase,
   userId: string,
   data: { sessionId: string },
+  ledger: Ledger,
 ): Promise<SynthPayload> {
   const sessionRes = await supabase
     .from("sessions")
@@ -3999,29 +3142,19 @@ async function computeFinalSynthesis(
   } | null;
   const empty: SynthPayload = { synthesis: "", kept_choosing: [], counter_reads: [] };
   if (!session || session.user_id !== userId) return empty;
-  const derivedMoods = deriveDescriptors(session.vector ?? {});
-
-  // Pull the Analyst's stored reasoning — that's the evidence. Don't re-derive.
-  const reasoningRes = await supabase
-    .from("session_reasoning")
-    .select("allowed_claims, counterarguments, observations")
-    .eq("session_id", data.sessionId)
-    .maybeSingle();
-  const reasoning = reasoningRes.data as {
-    allowed_claims?: Array<{
-      tradeoff?: string;
-      supporting_choices?: number;
-      tested_total?: number;
-      examples?: Array<{ chosen: string; rejected: string }>;
-    }>;
-    counterarguments?: Array<{ claim: string; impact: string; notes: string }>;
-    observations?: Array<{ chosen: string; rejected: string }>;
-  } | null;
-
-  const allowed = reasoning?.allowed_claims ?? [];
-  const counters = reasoning?.counterarguments ?? [];
-  const observations = reasoning?.observations ?? [];
-
+  const allowed = ledger.axes
+    .filter((a) => a.eligible)
+    .map((a) => ({
+      tradeoff: `${a.direction === "hi" ? DIM_LABEL[a.axis]?.hi : DIM_LABEL[a.axis]?.lo} over ${a.direction === "hi" ? DIM_LABEL[a.axis]?.lo : DIM_LABEL[a.axis]?.hi}`,
+      supporting_choices: a.supporting,
+      tested_total: a.tested,
+      examples: a.supporting_examples,
+    }));
+  const counters = ledger.confounds.map((c) => ({
+    claim: `${c.kind} concentration (${c.value})`,
+    impact: "medium",
+    notes: `${c.count} of ${c.total} frozen choices; a possible confound, not an identity claim.`,
+  }));
   const kept_choosing: SynthEvidence[] = allowed
     .slice(0, 4)
     .map((c) => ({
@@ -4041,81 +3174,17 @@ async function computeFinalSynthesis(
     }))
     .filter((c) => c.claim);
 
-  // Build the prompt — evidence-first, songs named explicitly.
-  const evidenceBlock = kept_choosing.length
-    ? kept_choosing
-        .map(
-          (e) =>
-            `- ${e.tradeoff} (${e.supporting}/${e.tested} matchups). Songs: ${e.examples.join("; ") || "—"}`,
-        )
-        .join("\n")
-    : "(none cleared the threshold)";
-  const counterBlock = counter_reads.length
-    ? counter_reads.map((c) => `- ${c.claim} — ${c.notes}`).join("\n")
-    : "(none)";
-  const songsPicked =
-    observations
-      .slice(0, 12)
-      .map((o) => o.chosen)
-      .join(", ") || "—";
-
-  let synthesis = "";
-  // RES03: when nothing cleared the claim policy, the ending is written
-  // deterministically and says WHY — no model, so no trait guesses from
-  // one or two picks.
-  const answeredN = observations.length;
-  const skippedN = session.probe_state?.skipped_pairing_ids?.length ?? 0;
-  const named = observations
-    .slice(0, 3)
-    .map((o) => `${o.chosen} over ${o.rejected}`)
-    .join("; ");
-  if (kept_choosing.length === 0) {
-    synthesis =
-      answeredN === 0
-        ? "No read yet. None of these matchups landed on songs you know — that's on the catalog, not you. Start over with different openers and we'll find your lane."
-        : skippedN >= 3
-          ? `These weren't your songs. You knew ${answeredN === 1 ? "one matchup" : `${answeredN} matchups`} (${named}) and skipped ${skippedN}. That's not enough to say anything true about how you listen — so I won't.`
-          : answeredN < 3
-            ? `${answeredN === 1 ? "One pick" : "Two picks"} isn't a pattern. ${named} — noted, not decoded. Give me a few more and I'll commit to something.`
-            : `Not enough consistent evidence for a read yet. ${named} pulled in different directions, and these matchups can't settle which one is you. Push back or keep going.`;
-  }
-  if (!synthesis)
-    try {
-      const txt = await ai([
-        { role: "system", content: SYNTH_VOICE },
-        {
-          role: "user",
-          content: `SONGS THEY PICKED (in order):
-${songsPicked}
-
-PATTERNS WITH EVIDENCE:
-${evidenceBlock}
-
-COUNTER-EXPLANATIONS YOU MAY ACKNOWLEDGE:
-${counterBlock}
-
-DERIVED MOODS (read off their tradeoffs — you MAY call them this if the evidence supports it, never as a label, only as flavor):
-${derivedMoods.length ? derivedMoods.join(", ") : "(none earned)"}
-
-Return the JSON now.`,
-        },
-      ]);
-      const cleaned = txt.replace(/```json\s*|```/g, "").trim();
-      const parsed = JSON.parse(cleaned) as { synthesis?: string };
-      synthesis = typeof parsed.synthesis === "string" ? parsed.synthesis.trim() : "";
-    } catch {
-      // fall through to deterministic fallback below
-    }
-
-  if (!synthesis) {
-    synthesis = kept_choosing.length
-      ? `Across these matchups you kept choosing ${kept_choosing[0].tradeoff}. The shape's there — it's not loud yet, but it's consistent.`
-      : `Not enough consistent evidence for a read yet. Your picks — ${songsPicked.split(",").slice(0, 3).join(",")} — pulled in different directions, and six matchups can't settle which one is you. Push back or keep going.`;
-  }
+  const narrated = await narrateEvidence(ledger, DIM_LABEL, (prompt) =>
+    ai([
+      { role: "system", content: SYNTH_VOICE },
+      { role: "user", content: prompt },
+    ]),
+  );
+  const synthesis = narrated.text;
 
   await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
 
-  return { synthesis, kept_choosing, counter_reads };
+  return { synthesis, kept_choosing, counter_reads, narration_status: narrated.status };
 }
 
 // ============================================================
@@ -4125,9 +3194,7 @@ Return the JSON now.`,
 // ============================================================
 
 const CHAT_VOICE = `${PERSONA}
-Mode: ongoing critic-interview. You already know this listener: their opener songs, your working hypothesis, and the dimensions they've leaned into. Your job now is to keep digging — observations, challenges, counter-hypotheses, the occasional pointed question. Never play DJ. Never recommend songs unless they ask. Stay in critic-of-the-listener mode.
-
-Hard rules: 1–4 sentences per turn. No bullet lists. No headers. No emoji. No therapy-speak. No "great question". When you ask something, ask ONE thing and make it sharp. Reference their actual choices by name when relevant. If they push back, take it seriously — refine or break your own read out loud.`;
+Mode: grounded critic-interview selection. Respond by selecting supplied claims and one allowed follow-up question. Return only the requested structured JSON, no prose. Opener priors and conversation are self-report, never corroborating votes. Do not invent song or choice references.`;
 
 // ---------- Per-user critic profile (tone + tactic memory) ----------
 type CriticProfileRow = {
@@ -4509,34 +3576,25 @@ No prose, no markdown fences.`;
         // Extraction is best-effort; chat continues with the prior vector.
       }
 
-    const topAxes = (DIMS as readonly string[])
-      .map((d) => ({ d, v: vector[d] ?? 0 }))
-      .filter((x) => Math.abs(x.v) >= 8)
-      .sort((a, b) => Math.abs(b.v) - Math.abs(a.v))
-      .slice(0, 5);
+    const { ledger: chatLedger } = await loadChoiceEvidence(supabase, sessionId);
 
     const ctxLines: string[] = [];
     if (profile?.opening_songs?.length) {
       ctxLines.push(
-        `Opener songs (ranked):\n${(profile.opening_songs as string[]).map((s, i) => `${i + 1}. ${s}`).join("\n")}`,
+        `Opener priors, NOT pairing evidence (ranked):\n${(profile.opening_songs as string[]).map((s, i) => `${i + 1}. ${s}`).join("\n")}`,
       );
     }
     if (profile?.opening_hypothesis) {
-      ctxLines.push(`Working hypothesis: "${profile.opening_hypothesis}"`);
+      ctxLines.push(
+        `Unverified opener self-report hypothesis, not a supported claim: "${profile.opening_hypothesis}"`,
+      );
     }
     if (profile?.opening_lane) {
       ctxLines.push(`Lane: ${profile.opening_lane}`);
     }
-    if (topAxes.length) {
-      ctxLines.push(
-        `Strongest leans so far:\n${topAxes
-          .map(({ d, v }) => {
-            const lbl = DIM_LABEL[d];
-            return `- ${d}: ${v >= 0 ? "+" : ""}${Math.round(v)} (${v >= 0 ? lbl?.hi : lbl?.lo})`;
-          })
-          .join("\n")}`,
-      );
-    }
+    ctxLines.push(`Authoritative pairing ledger (${chatLedger.version}): ${JSON.stringify(chatLedger)}.
+Only eligible axes support tendencies. Other axes are provisional, mixed or insufficient.
+Reactions, skips, opener priors and conversation are separate self-report, never corroborating votes.`);
     const contextBlock = ctxLines.length
       ? `Listener context:\n${ctxLines.join("\n\n")}`
       : "No prior context yet.";
@@ -4554,15 +3612,27 @@ No prose, no markdown fences.`;
         messages.push({ role: m.role, content: m.content });
       }
     }
+    messages.push({
+      role: "system",
+      content: `Return only JSON, never prose:
+{"claims":[],"question_id":"preference|familiarity|context|exception|correction","acknowledge_self_report":true}.
+Optional claims (maximum two) must be objects {"axis":"<supplied axis>","direction":"hi|lo","choice_ids":["<supporting id>"]}.
+Use only these eligible claims: ${JSON.stringify(narrationOptions(chatLedger))}.
+Only choose exception if the evidence has a contradiction. Self-report never adds a supporting choice.`,
+    });
 
     let reply = "";
     try {
-      reply = await ai(messages);
+      const raw = await ai(messages);
+      const previousReply =
+        [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
+      reply =
+        validatedChat(JSON.parse(raw), chatLedger, DIM_LABEL, data.message, previousReply) ??
+        fallbackChat(chatLedger);
     } catch {
-      reply = "I lost the thread for a second. Say that again?";
+      reply = fallbackChat(chatLedger);
     }
-    reply = (reply || "").trim() || "Mm. Keep going.";
-    if (reply.length > 1200) reply = reply.slice(0, 1197) + "…";
+    // Never truncate away the exception or qualification from a supported claim.
 
     await supabase.from("chat_messages").insert({
       session_id: sessionId,
@@ -4637,317 +3707,81 @@ export const listChat = createServerFn({ method: "GET" })
 // ============================================================
 // Per-round running read — the "detective board" line.
 //
-// Tiered, never blank. Templated (no LLM):
-//   tier "observation" (1-2 answered) — a concrete note about the choice the
-//     user just made. No personality claim, no axis names.
-//   tier "theory" (3-4, or weak evidence) — a hedged thread, revised only
-//     when the evidence actually changed.
-//   tier "read" (>= 3 supporting choices, 0 contradicting) — the claim.
-//
-// Evidence is recomputed from the real choices every time (chosen vs rejected
-// song axis values), so a revision reflects changed evidence rather than
-// rotating copy.
+// Pure projection enforces D01 and language ceilings. Frozen choices decide
+// revisions; complete stored results support sequential replay.
 // ============================================================
-type ReadEvidence = {
-  supporting: number;
-  contradicting: number;
-  tested: number;
-  examples: { chosen: string; rejected: string }[];
-};
-export type CurrentReadResult = {
-  thesis: string;
-  hook: string;
-  topDim: string | null;
-  strength: number;
-  tier: "observation" | "theory" | "read";
-  direction: "forming" | "holding" | "contested" | "revising";
-  evidence: ReadEvidence;
-  question: string;
-  revision?: {
-    previous_claim: string;
-    previous_axis: string;
-    changed_by: { chosen: string; rejected: string } | null;
-    new_interpretation: string;
-  } | null;
-};
+export type { CurrentReadResult } from "@/musicdna/engine/read";
 
 export async function currentReadImpl(
   supabase: AuthedSupabase,
   userId: string,
   data: { sessionId: string },
 ): Promise<CurrentReadResult> {
-  const emptyEvidence: ReadEvidence = { supporting: 0, contradicting: 0, tested: 0, examples: [] };
-  const axisCols = (DIMS as readonly string[]).join(",");
-  const [sessionRes, choicesRes] = await Promise.all([
-    supabase.from("sessions").select("vector,user_id").eq("id", data.sessionId).single(),
-    supabase
-      .from("choices")
-      .select(
-        `created_at, pairing_id, evidence, pairing:pairing_id(tests, diagnostic_weight), chosen:chosen_song_id(title,artist,${axisCols}), rejected:rejected_song_id(title,artist,${axisCols})`,
-      )
-      .eq("session_id", data.sessionId)
-      .order("created_at", { ascending: true }),
-  ]);
-  const s = sessionRes.data as { vector: Record<string, number>; user_id: string } | null;
-  if (!s || s.user_id !== userId) {
-    return {
-      thesis: "Nothing to read yet.",
-      hook: "",
-      topDim: null,
-      strength: 0,
-      tier: "observation",
-      direction: "forming",
-      evidence: emptyEvidence,
-      question: "",
-    };
-  }
-
-  type SongRow = Record<string, unknown> & { title?: string; artist?: string };
-  type ChoiceRow = {
-    pairing_id: string | null;
-    pairing: { tests: string[] | null; diagnostic_weight: number | null } | null;
-    chosen: SongRow | null;
-    rejected: SongRow | null;
-  };
-  const choices = (choicesRes.data ?? []) as unknown as ChoiceRow[];
-  const answered = choices.length;
-  const num = (row: SongRow | null, dim: string) => {
-    const v = row?.[dim];
-    return typeof v === "number" ? v : 0;
-  };
-  const label = (row: SongRow | null) =>
-    row?.title ? `${row.title}${row.artist ? ` (${row.artist})` : ""}` : "that one";
-
-  const vector = s.vector ?? {};
-  const ranked = (DIMS as readonly string[])
-    .map((d) => ({ d, v: vector[d] ?? 0 }))
-    .sort((a, b) => Math.abs(b.v) - Math.abs(a.v));
-  const top = ranked[0];
-
-  // ---- Tier 1: too little evidence for a thread. Talk about the choice. ----
-  const latest = choices[answered - 1];
-  if (!top || answered < 3) {
-    if (!latest) {
-      return {
-        thesis: "First one's yours to call.",
-        hook: "Pick the one you'd actually put on.",
-        topDim: null,
-        strength: 0,
-        tier: "observation",
-        direction: "forming",
-        evidence: emptyEvidence,
-        question: "",
-      };
-    }
-    // Biggest gap in the choice they just made — that's the real tradeoff.
-    // Same shared ledger, declared tests only, frozen snapshot (TGA-304).
-    const latestLedger = buildLedger(
-      [ledgerChoiceFromRow(latest as never)],
-      DIMS as readonly string[],
-    );
-    const g = latestLedger.entries
-      .map((e) => ({ d: e.axis, delta: e.delta }))
-      .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))[0];
-    const pole = g ? POLES[g.d]?.[g.delta >= 0 ? "hi" : "lo"] : undefined;
-    const line = pickByHash(pole?.observations, answered + dimSeed(g?.d ?? "x"));
-    const obsThesis = `${label(latest.chosen)} over ${label(latest.rejected)}. ${line ?? "Noted."}`;
-    // Save early observations too, so a resumed session shows them (READ03).
-    {
-      const { data: prev } = await supabase
-        .from("event_log")
-        .select("props")
-        .eq("session_id", data.sessionId)
-        .eq("event_type", "read_shown")
-        .order("created_at", { ascending: false })
-        .limit(1);
-      const prevAnswered = (prev?.[0]?.props as { answered?: number } | null)?.answered;
-      if (prevAnswered !== answered) {
-        await (
-          await trustedEventLog()
-        ).insert({
-          user_id: userId,
-          session_id: data.sessionId,
-          event_type: "read_shown",
-          props: {
-            axis: g?.d ?? null,
-            direction: g && g.delta >= 0 ? "hi" : "lo",
-            tier: "observation",
-            answered,
-            thesis: obsThesis,
-            revised: false,
-          } as never,
-        });
-      }
-    }
-    return {
-      thesis: obsThesis,
-      hook:
-        answered === 1
-          ? "One data point. Let's get another."
-          : "Twice now. Could still be a coincidence.",
-      topDim: g?.d ?? null,
-      strength: g ? Math.abs(g.delta) : 0,
-      tier: "observation",
-      direction: "forming",
-      evidence: { supporting: 0, contradicting: 0, tested: answered, examples: [] },
-      question: "Does that hold when the other side is a song you love?",
-    };
-  }
-
-  // ---- Evidence from the shared ledger (same builder as the final read). ----
-  const ledger = buildLedger(
-    choices.map((c) => ledgerChoiceFromRow(c as never)),
-    DIMS as readonly string[],
-  );
-  const lead = ledger.axes[0];
-  if (!lead) {
-    return {
-      thesis: "Your picks so far don't line up on anything yet.",
-      hook: "Let's find the tradeoff that does.",
-      topDim: null,
-      strength: 0,
-      tier: "theory",
-      direction: "forming",
-      evidence: emptyEvidence,
-      question: "",
-      revision: null,
-    };
-  }
-  const fmt = (e: {
-    chosen: string;
-    chosen_artist: string;
-    rejected: string;
-    rejected_artist: string;
-  }) => ({
-    chosen: e.chosen_artist ? `${e.chosen} (${e.chosen_artist})` : e.chosen,
-    rejected: e.rejected_artist ? `${e.rejected} (${e.rejected_artist})` : e.rejected,
-  });
-  const ev: ReadEvidence = {
-    supporting: lead.supporting,
-    contradicting: lead.contradicting,
-    tested: lead.tested,
-    examples: lead.supporting_examples.slice(0, 2).map(fmt),
-  };
-
-  // ---- Revision: compare against the last read the user actually saw. ----
-  const { data: priorRows } = await supabase
+  const { data: session, error: sessionError } = await supabase
+    .from("sessions")
+    .select("user_id")
+    .eq("id", data.sessionId)
+    .maybeSingle();
+  if (sessionError) throw new Error(sessionError.message);
+  if (!session || session.user_id !== userId) throw new Error("forbidden");
+  const { ledger } = await loadChoiceEvidence(supabase, data.sessionId);
+  const { data: rows, error: readError } = await supabase
     .from("event_log")
     .select("props")
     .eq("session_id", data.sessionId)
     .eq("event_type", "read_shown")
     .order("created_at", { ascending: false })
     .limit(1);
-  const priorProps = (priorRows?.[0]?.props ?? null) as {
+  if (readError) throw new Error(readError.message);
+  const priorProps = (rows?.[0]?.props ?? null) as {
     axis?: string;
     direction?: "hi" | "lo";
     tier?: string;
     answered?: number;
     thesis?: string;
+    language?: string;
+    result?: CurrentReadResult;
   } | null;
-  const prior: PriorRead =
+  if (
+    priorProps?.answered === ledger.answered &&
+    priorProps.language === CLAIM_LANGUAGE_VERSION &&
+    priorProps.result
+  )
+    return priorProps.result;
+  const prior =
     priorProps?.axis && priorProps.direction
       ? {
           axis: priorProps.axis,
           direction: priorProps.direction,
           tier: priorProps.tier ?? "theory",
+          thesis: priorProps.thesis,
         }
       : null;
-  const rev = detectRevision(prior, ledger);
-
-  const direction: CurrentReadResult["direction"] = rev.revised
-    ? "revising"
-    : lead.contradicting > 0
-      ? "contested"
-      : lead.supporting >= 2
-        ? "holding"
-        : "forming";
-
-  const hi = lead.direction === "hi";
-  const variantSeed = answered + dimSeed(lead.axis) + (hi ? 0 : 1);
-  const beat = BEAT[lead.axis];
-  const pole = pickVariant(hi ? beat?.hi : beat?.lo, variantSeed);
-  const fallback = POLES[lead.axis]?.[hi ? "hi" : "lo"];
-  const claimLine =
-    pole?.thesis ?? pickByHash(fallback?.observations, variantSeed) ?? "There's a thread here.";
-  const axisLabel = fallback?.axis_label ?? "something";
-  const priorLabel = prior ? (POLES[prior.axis]?.[prior.direction]?.axis_label ?? "one thing") : "";
-  const changed = rev.changed_by ? fmt(rev.changed_by) : null;
-
-  const revision =
-    rev.revised && prior
-      ? {
-          previous_claim: priorProps?.thesis ?? priorLabel,
-          previous_axis: prior.axis,
-          changed_by: changed,
-          new_interpretation: lead.eligible ? claimLine : `Maybe ${axisLabel}.`,
-        }
-      : null;
-
-  let result: CurrentReadResult;
-  if (lead.eligible && !rev.revised) {
-    // ---- Tier 3: earned claim under D01 (3+ support, >= 0.65, support > contra). ----
-    result = {
-      thesis: lead.status === "qualified" ? `${claimLine} Mostly.` : claimLine,
-      hook: pole?.hook ?? "That one's not a coincidence anymore.",
-      topDim: lead.axis,
-      strength: lead.magnitude,
-      tier: "read",
-      direction,
-      evidence: ev,
-      question: "",
-      revision: null,
-    };
-  } else {
-    const hedged = rev.revised
-      ? changed
-        ? `I had you on ${priorLabel}. Then you took ${changed.chosen} over ${changed.rejected}. Rethinking.`
-        : `I had you on ${priorLabel}. The evidence moved. Now it might be ${axisLabel}.`
-      : direction === "contested"
-        ? `${claimLine} Except once, where you went the other way.`
-        : `Might be ${axisLabel}. One more would tell me.`;
-    result = {
-      thesis: hedged,
-      hook: rev.revised
-        ? "Let me start that thread over."
-        : direction === "contested"
-          ? "So which was the exception?"
-          : "Let's test it properly.",
-      topDim: lead.axis,
-      strength: lead.magnitude,
-      tier: "theory",
-      direction,
-      evidence: ev,
-      question:
-        direction === "contested"
-          ? "Was that one a mood, or is my read wrong?"
-          : "Does it hold against something you already love?",
-      revision,
-    };
-  }
-
-  // Record what was shown so the next read can detect a real revision.
-  if (priorProps?.answered !== answered) {
-    await (
-      await trustedEventLog()
-    ).insert({
-      user_id: userId,
-      session_id: data.sessionId,
-      event_type: "read_shown",
-      props: {
-        axis: lead.axis,
-        direction: lead.direction,
-        tier: result.tier,
-        answered,
-        thesis: result.thesis,
-        supporting: lead.supporting,
-        contradicting: lead.contradicting,
-        ledger: ledger.version,
-        policy: ledger.policy,
-        revised: rev.revised,
-        revision: result.revision,
-      } as never,
-    });
-  }
+  const result = projectRead(ledger, DIM_LABEL, prior);
+  const lead = ledger.axes[0];
+  const { error } = await (
+    await trustedEventLog()
+  ).insert({
+    user_id: userId,
+    session_id: data.sessionId,
+    event_type: "read_shown",
+    props: {
+      axis: lead?.axis ?? null,
+      direction: lead?.direction ?? null,
+      tier: result.tier,
+      answered: ledger.answered,
+      thesis: result.thesis,
+      supporting: lead?.supporting ?? 0,
+      contradicting: lead?.contradicting ?? 0,
+      ledger: ledger.version,
+      policy: ledger.policy,
+      language: CLAIM_LANGUAGE_VERSION,
+      result,
+      revised: !!result.revision,
+      revision: result.revision,
+    } as never,
+  });
+  if (error) throw new Error(`read_persistence_failed: ${error.message}`);
   return result;
 }
 

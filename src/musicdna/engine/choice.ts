@@ -22,6 +22,7 @@ export type ApplyChoiceInput = {
   tests: string[];
   diagnostic_weight: number | null; // 0..100, defaults to 50
   fallback_dims: readonly string[];
+  strict_axes?: boolean;
 };
 
 export type ApplyChoiceResult = {
@@ -35,11 +36,20 @@ export function applyChoice(input: ApplyChoiceInput): ApplyChoiceResult {
   const w = (input.diagnostic_weight ?? 50) / 100;
   const priorVec: Vector = { ...input.prior_vector };
   const vec: Vector = { ...priorVec };
-  const tests = input.tests?.length ? input.tests : (input.fallback_dims.slice() as string[]);
+  const tests = input.strict_axes
+    ? [...new Set(input.tests.filter((d) => input.fallback_dims.includes(d)))]
+    : input.tests?.length
+      ? input.tests
+      : (input.fallback_dims.slice() as string[]);
   let top_dim = tests[0] ?? "movement";
   let top_delta = 0;
   const delta_vector: Vector = {};
   for (const dim of tests) {
+    if (
+      input.strict_axes &&
+      (!Number.isFinite(input.winner?.[dim]) || !Number.isFinite(input.loser?.[dim]))
+    )
+      continue;
     const a = input.winner?.[dim] ?? 50;
     const b = input.loser?.[dim] ?? 50;
     const delta = a - b;
