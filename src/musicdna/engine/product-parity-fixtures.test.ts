@@ -203,7 +203,7 @@ describe("requirement and gap traceability", () => {
       ),
     );
 
-  it("maps every PRD v1.1 requirement, including ARC06, exactly once", () => {
+  it("maps every PRD v1.2 requirement, including CAT06-CAT08, exactly once", () => {
     const prd = readFileSync(
       resolve(process.cwd(), "docs/musicdna/product-requirements.md"),
       "utf8",

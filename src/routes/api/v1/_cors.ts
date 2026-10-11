@@ -31,7 +31,8 @@ export function errorResponse(
     | "FORBIDDEN"
     | "INVALID_INPUT"
     | "INTERNAL"
-    | "UPSTREAM",
+    | "UPSTREAM"
+    | "CHAT_TURN_PENDING",
   message: string,
   status: number,
 ): Response {

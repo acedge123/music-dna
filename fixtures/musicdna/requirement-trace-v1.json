@@ -1,6 +1,6 @@
 {
   "version": "musicdna-requirement-trace-v1",
-  "prd_version": "1.1",
+  "prd_version": "1.2",
   "source_web_sha": "8352e32",
   "requirements": [
     {
@@ -770,7 +770,7 @@
     },
     {
       "id": "CAT05",
-      "priority": "P1",
+      "priority": "P0",
       "title": "Coverage audit.",
       "criteria": "Report active songs and pairings by lane, axis, recognition level, artist concentration, missing values, and skip rate. Do not publish a fixed catalog count in the product without checking the live catalog. Controlled fixture catalogs remain stable even as the production catalog grows.",
       "tickets": [
@@ -781,6 +781,51 @@
         "status": "pending",
         "method": "manual_or_integration",
         "procedure": "Execute CAT05 (Coverage audit.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CAT06",
+      "priority": "P0",
+      "title": "2000–2026 coverage.",
+      "criteria": "Expand the song and pairing catalogs so listeners whose three favorites come from 2000–2026 can receive a useful first session. Audit 2000–2009, 2010–2019, and 2020–2026 separately, through the latest verified released music at curation time. Preserve older coverage. Inventory usable approved pairings as well as songs by active lane, era, artist, declared axis, recognition, and missing metadata. Release-year coverage alone does not establish listener recognition or diagnostic quality.",
+      "tickets": [
+        "TGA-324"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CAT06 (2000–2026 coverage.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CAT07",
+      "priority": "P0",
+      "title": "Familiarity and era confounds.",
+      "criteria": "Prefer credible, recognizable choices for the listener's musical territory using the opening context and observed familiarity. Treat opener era as a soft context signal; never infer age from taste or force a narrow era filter from three songs. Distinguish an unknown-song skip from a preference vote. Use comparable-era, different-artist pairings to test a tendency before claiming that a preference for newer production reveals an emotional or personality trait. Cross-era pairings need a clear diagnostic purpose and a plausible familiarity match.",
+      "tickets": [
+        "TGA-324"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CAT07 (Familiarity and era confounds.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
+      }
+    },
+    {
+      "id": "CAT08",
+      "priority": "P0",
+      "title": "Modern-catalog acceptance.",
+      "criteria": "For each lane/era scenario advertised as supported, demonstrate a server-selected path of up to six valid answered pairings plus exercised skip/retest alternatives, without repeating a pairing or relaxing lane, recognition, artist, or evidence safeguards. Verify 2000s-heavy, 2010s-heavy, 2020–2026-heavy, mixed-era, unfamiliar-song, and artist-concentrated sessions on web and Flutter. Report routing success, catalog-related early endings, skip rate, axis/artist concentration, and result specificity by scenario. Establish pilot baselines before setting numeric success targets.",
+      "tickets": [
+        "TGA-324"
+      ],
+      "fixtures": [],
+      "acceptance": {
+        "status": "pending",
+        "method": "manual_or_integration",
+        "procedure": "Execute CAT08 (Modern-catalog acceptance.) against its criteria above using pinned web/API/mobile revisions. Attach applicable authenticated route/persistence assertions or equal-viewport/device recordings to the listed tickets. Review actual failures and exceptions; helper/fixture tests alone do not accept the requirement."
       }
     },
     {

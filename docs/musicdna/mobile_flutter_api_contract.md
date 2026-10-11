@@ -327,11 +327,36 @@ Request: `{ "publish": true }` to publish, `{ "publish": false }` to revoke
 Response:
 
 ```json
-{ "contract": 1, "is_public": true, "share_token": "public-share-token" }
+{ "contract": 1, "is_public": true, "share_token": "public-share-token",
+  "share_url": "https://www.musicdna.fm/s/public-share-token", "result_version": 1 }
 ```
 
-Then read the public reveal via `GET /api/v1/share/{token}`. A token alone
+`share_url` is the canonical public URL (`null` after revoke);
+`result_version` is the latest saved result version being published. Then
+read the public reveal via `GET /api/v1/share/{token}`. A token alone
 never grants access — public lookups require `is_public = true`.
+
+### 5c. Chat (CHAT01/02, D04)
+
+`POST /api/v1/session/{sessionId}/chat` with `{ "message", "mutation_id" }`
+returns `{ contract, reply, session_id, replayed, user_message_id,
+assistant_message_id }`. A retry with the same `mutation_id` replays the exact
+committed reply (stored under `<mutation_id>:reply`). If the user turn
+committed but the reply did not, the server returns `409 CHAT_TURN_PENDING` —
+retry the same `mutation_id`.
+
+`GET /api/v1/session/{sessionId}/chat` returns the latest 200 messages in
+chronological order (with stable `id` and `mutation_id`) plus
+`result_versions` including full `content` and `self_report` per version.
+
+### 5d. Result feedback (RES06)
+
+`POST /api/v1/session/{sessionId}/feedback` with `{ accuracy?, rating?,
+comment?, target?, most_accurate_sentence?, least_accurate_sentence?,
+result_version?, mutation_id? }` → `{ contract, id, updated, replayed }`.
+`result_version` binds feedback to the exact result version shown. One row per
+(user, session, target); resubmitting updates it, and a repeated `mutation_id`
+replays the saved row. `GET` on the same path returns the caller's rows.
 
 ### 6. Public Share
 

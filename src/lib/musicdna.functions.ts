@@ -2102,81 +2102,103 @@ export const recordEvent = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+const FeedbackInput = z.object({
+  session_id: z.string().uuid(),
+  // "partly" is the plan's three-way accuracy label; kept alongside
+  // the pre-existing "mixed" alias so older UI paths still submit.
+  accuracy: z
+    .enum(["accurate", "not_accurate", "mixed", "partly", "wrong"])
+    .nullable()
+    .optional(),
+  rating: z.number().int().min(-1).max(1).nullable().optional(),
+  comment: z.string().max(2000).nullable().optional(),
+  target: z.string().max(120).nullable().optional(),
+  // Reveal-sentence-level feedback (see docs/musicdna/instrumentation.md).
+  most_accurate_sentence: z.string().max(1000).nullable().optional(),
+  least_accurate_sentence: z.string().max(1000).nullable().optional(),
+  // RES06: bind feedback to the exact result version the listener saw.
+  result_version: z.number().int().min(1).nullable().optional(),
+  // Retry key: a resubmitted form replays the saved row instead of duplicating.
+  mutation_id: z.string().max(80).optional(),
+});
+
+// Shared by the web server function and the v1 REST feedback endpoint, so
+// both clients get identical validation, version binding and retry semantics.
+export async function submitFeedbackImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: z.infer<typeof FeedbackInput>,
+): Promise<{ id: string; updated: boolean; replayed?: boolean }> {
+  // Normalize accuracy aliases so downstream analysis has a single vocabulary.
+  const accuracy =
+    data.accuracy === "partly"
+      ? "mixed"
+      : data.accuracy === "wrong"
+        ? "not_accurate"
+        : (data.accuracy ?? null);
+  // Replay safety: same mutation_id returns the already-committed row.
+  if (data.mutation_id) {
+    const { data: prior } = await supabase
+      .from("result_feedback")
+      .select("id")
+      .eq("session_id", data.session_id)
+      .eq("user_id", userId)
+      .eq("mutation_id", data.mutation_id)
+      .maybeSingle();
+    if (prior?.id) return { id: prior.id, updated: false, replayed: true };
+  }
+  // Only include the sentence columns when the client actually sent them —
+  // keeps the write payload valid against pre-migration schemas.
+  const sentenceCols: Record<string, string | null> = {};
+  if (data.most_accurate_sentence !== undefined)
+    sentenceCols.most_accurate_sentence = data.most_accurate_sentence;
+  if (data.least_accurate_sentence !== undefined)
+    sentenceCols.least_accurate_sentence = data.least_accurate_sentence;
+  const row = {
+    user_id: userId,
+    session_id: data.session_id,
+    accuracy,
+    rating: data.rating ?? null,
+    comment: data.comment ?? null,
+    target: data.target ?? null,
+    result_version: data.result_version ?? null,
+    mutation_id: data.mutation_id ?? null,
+    ...sentenceCols,
+  };
+  // One feedback row per (user, session, target)
+  const q = supabase
+    .from("result_feedback")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("session_id", data.session_id);
+  const { data: existing } = await (
+    data.target ? q.eq("target", data.target) : q.is("target", null)
+  ).maybeSingle();
+  if (existing?.id) {
+    const { error } = await supabase.from("result_feedback").update(row).eq("id", existing.id);
+    if (error) throw new Error(error.message);
+    return { id: existing.id, updated: true as const };
+  }
+  const { data: inserted, error } = await supabase
+    .from("result_feedback")
+    .insert(row)
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+  // Nudge the per-user critic profile from explicit feedback.
+  // Defined later in this file; safe to call via hoisted function declarations.
+  try {
+    await nudgeCriticFromFeedback(supabase as never, userId, { ...data, accuracy });
+  } catch {
+    /* best-effort */
+  }
+  return { id: inserted.id, updated: false as const };
+}
+
 export const submitFeedback = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z
-      .object({
-        session_id: z.string().uuid(),
-        // "partly" is the plan's three-way accuracy label; kept alongside
-        // the pre-existing "mixed" alias so older UI paths still submit.
-        accuracy: z
-          .enum(["accurate", "not_accurate", "mixed", "partly", "wrong"])
-          .nullable()
-          .optional(),
-        rating: z.number().int().min(-1).max(1).nullable().optional(),
-        comment: z.string().max(2000).nullable().optional(),
-        target: z.string().max(120).nullable().optional(),
-        // Reveal-sentence-level feedback (see docs/musicdna/instrumentation.md).
-        most_accurate_sentence: z.string().max(1000).nullable().optional(),
-        least_accurate_sentence: z.string().max(1000).nullable().optional(),
-      })
-      .parse(d),
-  )
-  .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
-    // Normalize accuracy aliases so downstream analysis has a single vocabulary.
-    const accuracy =
-      data.accuracy === "partly"
-        ? "mixed"
-        : data.accuracy === "wrong"
-          ? "not_accurate"
-          : (data.accuracy ?? null);
-    // Only include the new sentence columns when the client actually sent
-    // them — keeps the write payload valid against pre-migration schemas.
-    const sentenceCols: Record<string, string | null> = {};
-    if (data.most_accurate_sentence !== undefined)
-      sentenceCols.most_accurate_sentence = data.most_accurate_sentence;
-    if (data.least_accurate_sentence !== undefined)
-      sentenceCols.least_accurate_sentence = data.least_accurate_sentence;
-    const row = {
-      user_id: userId,
-      session_id: data.session_id,
-      accuracy,
-      rating: data.rating ?? null,
-      comment: data.comment ?? null,
-      target: data.target ?? null,
-      ...sentenceCols,
-    };
-    // One feedback row per (user, session, target)
-    const q = supabase
-      .from("result_feedback")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("session_id", data.session_id);
-    const { data: existing } = await (
-      data.target ? q.eq("target", data.target) : q.is("target", null)
-    ).maybeSingle();
-    if (existing?.id) {
-      const { error } = await supabase.from("result_feedback").update(row).eq("id", existing.id);
-      if (error) throw new Error(error.message);
-      return { id: existing.id, updated: true as const };
-    }
-    const { data: inserted, error } = await supabase
-      .from("result_feedback")
-      .insert(row)
-      .select("id")
-      .single();
-    if (error) throw new Error(error.message);
-    // Nudge the per-user critic profile from explicit feedback.
-    // Defined later in this file; safe to call via hoisted function declarations.
-    try {
-      await nudgeCriticFromFeedback(supabase as never, userId, { ...data, accuracy });
-    } catch {
-      /* best-effort */
-    }
-    return { id: inserted.id, updated: false as const };
-  });
+  .inputValidator((d: unknown) => FeedbackInput.parse(d))
+  .handler(async ({ data, context }) => submitFeedbackImpl(context.supabase, context.userId, data));
 
 // Apply explicit thumb/accuracy/comment to the per-user critic_profile.
 async function nudgeCriticFromFeedback(
@@ -3441,12 +3463,24 @@ export async function chatTurnImpl(
   supabase: AuthedSupabase,
   userId: string,
   data: { message: string; sessionId?: string; mutationId?: string },
-): Promise<{ reply: string; sessionId: string; replayed?: boolean }> {
+): Promise<{
+  reply: string;
+  sessionId: string;
+  replayed?: boolean;
+  pending?: boolean;
+  userMessageId?: string;
+  assistantMessageId?: string;
+}> {
+    // The assistant reply is stored with mutation_id `<mutationId>:reply`, so a
+    // retry looks up the exact reply row instead of guessing by timestamp.
+    const replyMutationId = data.mutationId ? `${data.mutationId}:reply` : null;
 
     let sessionId = data.sessionId ?? null;
     let profile: OpenerProfile = null;
 
-    // Retry safety: a resubmitted turn replays its saved reply.
+    // Retry safety: a resubmitted turn replays its saved reply. If the user
+    // turn committed but the reply never did (crash between writes), report
+    // the turn as pending instead of returning an empty "successful" replay.
     if (data.mutationId && sessionId) {
       const { data: prior } = await supabase
         .from("chat_messages")
@@ -3459,14 +3493,21 @@ export async function chatTurnImpl(
       if (prior) {
         const { data: replyRow } = await supabase
           .from("chat_messages")
-          .select("content")
+          .select("id, content")
           .eq("session_id", sessionId)
           .eq("role", "assistant")
-          .gt("created_at", prior.created_at)
-          .order("created_at", { ascending: true })
-          .limit(1)
+          .eq("mutation_id", replyMutationId!)
           .maybeSingle();
-        return { reply: replyRow?.content ?? "", sessionId, replayed: true };
+        if (!replyRow) {
+          return { reply: "", sessionId, replayed: true, pending: true, userMessageId: prior.id };
+        }
+        return {
+          reply: replyRow.content,
+          sessionId,
+          replayed: true,
+          userMessageId: prior.id,
+          assistantMessageId: replyRow.id,
+        };
       }
     }
 
@@ -3498,22 +3539,58 @@ export async function chatTurnImpl(
       profile = p as OpenerProfile;
     }
 
-    // Save the user turn first so it shows up even if AI fails.
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      user_id: userId,
-      role: "user",
-      content: data.message,
-      mutation_id: data.mutationId ?? null,
-    });
+    // Save the user turn first so it shows up even if AI fails. A unique
+    // violation on (session_id, mutation_id) means a concurrent retry already
+    // committed the turn — fall through to the replay path.
+    const { data: userRow, error: userInsertErr } = await supabase
+      .from("chat_messages")
+      .insert({
+        session_id: sessionId,
+        user_id: userId,
+        role: "user",
+        content: data.message,
+        mutation_id: data.mutationId ?? null,
+      })
+      .select("id")
+      .single();
+    if (userInsertErr) {
+      if (data.mutationId && userInsertErr.code === "23505") {
+        const { data: prior } = await supabase
+          .from("chat_messages")
+          .select("id")
+          .eq("session_id", sessionId)
+          .eq("role", "user")
+          .eq("mutation_id", data.mutationId)
+          .maybeSingle();
+        const { data: replyRow } = await supabase
+          .from("chat_messages")
+          .select("id, content")
+          .eq("session_id", sessionId)
+          .eq("role", "assistant")
+          .eq("mutation_id", replyMutationId!)
+          .maybeSingle();
+        return {
+          reply: replyRow?.content ?? "",
+          sessionId,
+          replayed: true,
+          pending: !replyRow,
+          userMessageId: prior?.id,
+          assistantMessageId: replyRow?.id,
+        };
+      }
+      throw new Error(userInsertErr.message);
+    }
 
-    // Pull recent history (last 20 messages) for context.
-    const { data: history } = await supabase
+    // Pull the MOST RECENT history (up to 40 messages) for context — an
+    // ascending scan with a limit returns the earliest messages and silently
+    // drops the latest exchange, which is what the critic must react to.
+    const { data: historyDesc } = await supabase
       .from("chat_messages")
       .select("role, content, created_at")
       .eq("session_id", sessionId)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(40);
+    const history = (historyDesc ?? []).reverse();
 
     // Pull session vector for current lean.
     const { data: sessionRow } = await supabase
@@ -3670,12 +3747,17 @@ Only choose exception if the evidence has a contradiction. Self-report never add
     }
     // Never truncate away the exception or qualification from a supported claim.
 
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      user_id: userId,
-      role: "assistant",
-      content: reply,
-    });
+    const { data: assistantRow } = await supabase
+      .from("chat_messages")
+      .insert({
+        session_id: sessionId,
+        user_id: userId,
+        role: "assistant",
+        content: reply,
+        mutation_id: replyMutationId,
+      })
+      .select("id")
+      .single();
 
     // -------- Update critic profile from this exchange --------
     // The user's reply is feedback on the critic's PRIOR assistant turn (the
@@ -3697,7 +3779,12 @@ Only choose exception if the evidence has a contradiction. Self-report never add
         // Profile update is best-effort.
       }
 
-    return { reply, sessionId };
+    return {
+      reply,
+      sessionId,
+      userMessageId: userRow?.id,
+      assistantMessageId: assistantRow?.id,
+    };
   }
 
 export const listChat = createServerFn({ method: "GET" })
@@ -3720,23 +3807,39 @@ export const listChat = createServerFn({ method: "GET" })
     if (!sessionId)
       return {
         sessionId: null,
-        messages: [] as Array<{ role: ChatRole; content: string; created_at: string }>,
+        messages: [] as Array<{
+          id: string;
+          role: ChatRole;
+          content: string;
+          created_at: string;
+          mutation_id: string | null;
+        }>,
       };
-    const { data: rows } = await supabase
+    // Latest 200 messages, returned chronologically.
+    const { data: rowsDesc } = await supabase
       .from("chat_messages")
-      .select("role, content, created_at")
+      .select("id, role, content, created_at, mutation_id")
       .eq("session_id", sessionId)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(200);
+    const rows = (rowsDesc ?? []).reverse();
     return {
       sessionId,
-      messages: ((rows ?? []) as Array<{ role: string; content: string; created_at: string }>).map(
-        (r) => ({
-          role: r.role as ChatRole,
-          content: r.content,
-          created_at: r.created_at,
-        }),
-      ),
+      messages: (
+        rows as Array<{
+          id: string;
+          role: string;
+          content: string;
+          created_at: string;
+          mutation_id: string | null;
+        }>
+      ).map((r) => ({
+        id: r.id,
+        role: r.role as ChatRole,
+        content: r.content,
+        created_at: r.created_at,
+        mutation_id: r.mutation_id,
+      })),
     };
   });
 
