@@ -140,6 +140,22 @@ Response:
 }
 ```
 
+Note: reveal never auto-publishes a reading (D03). To share, the client
+must explicitly publish:
+
+### `POST /api/v1/session/:id/share`
+
+Body: `{ "publish": true }` to publish, `{ "publish": false }` to revoke.
+Revocation rotates the token, so previously copied links stop working.
+Publishing a reading that has not completed returns 400.
+
+```json
+{ "contract": 1, "is_public": true, "share_token": "…" }
+```
+
+The returned token is then used with `GET /api/v1/share/:token`. A token
+alone never grants access: public lookups require `is_public = true`.
+
 ### `GET /api/v1/share/:token`
 
 Public read of a completed, shared session. Accepts either the opaque

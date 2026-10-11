@@ -110,7 +110,7 @@ d("REST v1 end-to-end", () => {
       if (next.body.done || !next.body.pairing) break;
 
       const pairing = next.body.pairing as {
-        pairing_id: string;
+        id: string;
         song_a: { id: string };
         song_b: { id: string };
       };
@@ -121,7 +121,7 @@ d("REST v1 end-to-end", () => {
         {
           method: "POST",
           body: JSON.stringify({
-            pairing_id: pairing.pairing_id,
+            pairing_id: pairing.id,
             chosen_song_id: chosen,
             ms_to_decide: 1500 + i * 100,
           }),
@@ -136,11 +136,20 @@ d("REST v1 end-to-end", () => {
     expect(lastReveal).not.toBeNull();
 
     // 6. POST /api/v1/session/:id/reveal — assign archetype + synthesis.
+    // D03: reveal never auto-publishes. Sharing is an explicit publish step.
     const reveal = await v1(`/api/v1/session/${sessionId}/reveal`, { method: "POST" }, token);
     expect(reveal.status).toBe(200);
-    const shareToken = reveal.body.share_token as string | null;
+    expect(reveal.body.archetypeName).toBeTypeOf("string");
+
+    // 6b. POST /api/v1/session/:id/share — explicit publish returns the token.
+    const publish = await v1(
+      `/api/v1/session/${sessionId}/share`,
+      { method: "POST", body: JSON.stringify({ publish: true }) },
+      token,
+    );
+    expect(publish.status).toBe(200);
+    const shareToken = publish.body.share_token as string | null;
     expect(shareToken).toBeTruthy();
-    expect((reveal.body.archetype as Json | null)?.name).toBeTypeOf("string");
 
     // 7. GET /api/v1/share/:token — public, no auth.
     const share = await v1(`/api/v1/share/${shareToken}`, { method: "GET" });
@@ -149,10 +158,22 @@ d("REST v1 end-to-end", () => {
     expect(share.body.share_token).toBe(shareToken);
     expect(Array.isArray(share.body.defining_choices)).toBe(true);
 
-    // 8. CORS preflight — share route is cross-origin.
-    const preflight = await fetch(`${BASE_URL}/api/v1/share/${shareToken}`, { method: "OPTIONS" });
+    // 8. CORS preflight — share route is cross-origin. Production serves
+    // Access-Control-Allow-Origin: * from the route's OPTIONS handler; the
+    // Vite dev server's own CORS middleware intercepts OPTIONS first and
+    // echoes only localhost origins, so accept either echo form here.
+    const preflight = await fetch(`${BASE_URL}/api/v1/share/${shareToken}`, {
+      method: "OPTIONS",
+      headers: {
+        Origin: new URL(BASE_URL ?? "http://localhost:8080").origin,
+        "Access-Control-Request-Method": "GET",
+      },
+    });
     expect(preflight.status).toBe(204);
-    expect(preflight.headers.get("access-control-allow-origin")).toBe("*");
+    const acao = preflight.headers.get("access-control-allow-origin");
+    expect(
+      acao === "*" || acao === new URL(BASE_URL ?? "http://localhost:8080").origin,
+    ).toBe(true);
   }, 180_000);
 
   it.runIf(shouldRun)("rejects malformed share tokens with a typed error envelope", async () => {

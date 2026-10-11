@@ -311,10 +311,27 @@ Response example:
     "atmosphere": 18
   },
   "allowed_claims": [],
-  "counterarguments": [],
-  "share_token": "public-share-token"
+  "counterarguments": []
 }
 ```
+
+### 5b. Explicit Publish / Revoke (D03)
+
+Reveal never auto-publishes. To share, call:
+
+`POST /api/v1/session/{sessionId}/share`
+
+Request: `{ "publish": true }` to publish, `{ "publish": false }` to revoke
+(revocation rotates the token, killing copied links).
+
+Response:
+
+```json
+{ "contract": 1, "is_public": true, "share_token": "public-share-token" }
+```
+
+Then read the public reveal via `GET /api/v1/share/{token}`. A token alone
+never grants access — public lookups require `is_public = true`.
 
 ### 6. Public Share
 
@@ -351,14 +368,16 @@ Response example:
 }
 ```
 
-## Not Yet Exposed As REST
+## Session History, Resume & Reactions
 
-These flows still appear to live outside the current `/api/v1` surface:
+Session history and resume ARE exposed as REST:
 
-- session history / resume endpoints
-
-Flutter should not assume those routes exist until they are added to the API
-and documented in [`docs/musicdna/api-v1.md`](/Users/rastakit/tga-workspace/idea-builder/docs/musicdna/api-v1.md).
+- `GET /api/v1/sessions` — list the caller's sessions (most-recent-first).
+- `GET /api/v1/session/:id` — resume state for one session
+  (`in_progress` → keep looping `next` + `choice` then `reveal`;
+  `completed` → jump to reveal/share).
+- `POST /api/v1/session/:id/react` — record a reaction on the running read.
+- `POST /api/v1/session/:id/skip` — skip the current pairing.
 
 ## Flutter Integration Notes
 
