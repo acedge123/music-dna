@@ -165,7 +165,7 @@ d("REST v1 end-to-end", () => {
     const preflight = await fetch(`${BASE_URL}/api/v1/share/${shareToken}`, {
       method: "OPTIONS",
       headers: {
-        Origin: new URL(BASE_URL).origin,
+        Origin: new URL(BASE_URL ?? "http://localhost:8080").origin,
         "Access-Control-Request-Method": "GET",
       },
     });
