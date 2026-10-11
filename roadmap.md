@@ -20,4 +20,4 @@
 - Signed-in walkthrough: this project's Supabase is user-managed, so no account can be minted here.
 - D06 implementation: deferred until launch.
 
-- [ ] 2000–2026 catalog (CAT06–08): scope in docs/musicdna/catalog-2000-2026-scope.md — awaiting lane/curation decisions
+- [ ] 2000–2026 catalog (CAT06–08): scope in docs/musicdna/catalog-2000-2026-scope.md — next: draft alternative pilot sheet for review
