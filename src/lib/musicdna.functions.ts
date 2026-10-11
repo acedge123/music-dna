@@ -3427,14 +3427,49 @@ export const chatTurn = createServerFn({ method: "POST" })
       .object({
         message: z.string().trim().min(1).max(2000),
         sessionId: z.string().uuid().optional(),
+        mutationId: z.string().max(80).optional(),
       })
       .parse(d),
   )
-  .handler(async ({ data, context }): Promise<{ reply: string; sessionId: string }> => {
-    const { supabase, userId } = context;
+  .handler(async ({ data, context }): Promise<{ reply: string; sessionId: string }> =>
+    chatTurnImpl(context.supabase, context.userId, data),
+  );
+
+// Shared by the web server function and the v1 REST chat endpoint, so both
+// clients get identical turns, self-report versioning and retry semantics.
+export async function chatTurnImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { message: string; sessionId?: string; mutationId?: string },
+): Promise<{ reply: string; sessionId: string; replayed?: boolean }> {
 
     let sessionId = data.sessionId ?? null;
     let profile: OpenerProfile = null;
+
+    // Retry safety: a resubmitted turn replays its saved reply.
+    if (data.mutationId && sessionId) {
+      const { data: prior } = await supabase
+        .from("chat_messages")
+        .select("id, created_at")
+        .eq("session_id", sessionId)
+        .eq("user_id", userId)
+        .eq("role", "user")
+        .eq("mutation_id", data.mutationId)
+        .maybeSingle();
+      if (prior) {
+        const { data: replyRow } = await supabase
+          .from("chat_messages")
+          .select("content")
+          .eq("session_id", sessionId)
+          .eq("role", "assistant")
+          .gt("created_at", prior.created_at)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        return { reply: replyRow?.content ?? "", sessionId, replayed: true };
+      }
+    }
+
     if (!sessionId) {
       const anchor = await ensureChatSessionForUser(supabase as never, userId);
       if (!anchor) {
@@ -3469,6 +3504,7 @@ export const chatTurn = createServerFn({ method: "POST" })
       user_id: userId,
       role: "user",
       content: data.message,
+      mutation_id: data.mutationId ?? null,
     });
 
     // Pull recent history (last 20 messages) for context.
@@ -3662,7 +3698,7 @@ Only choose exception if the evidence has a contradiction. Self-report never add
       }
 
     return { reply, sessionId };
-  });
+  }
 
 export const listChat = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
