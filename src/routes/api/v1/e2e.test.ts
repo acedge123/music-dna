@@ -136,11 +136,20 @@ d("REST v1 end-to-end", () => {
     expect(lastReveal).not.toBeNull();
 
     // 6. POST /api/v1/session/:id/reveal — assign archetype + synthesis.
+    // D03: reveal never auto-publishes. Sharing is an explicit publish step.
     const reveal = await v1(`/api/v1/session/${sessionId}/reveal`, { method: "POST" }, token);
     expect(reveal.status).toBe(200);
-    const shareToken = reveal.body.share_token as string | null;
-    expect(shareToken).toBeTruthy();
     expect((reveal.body.archetype as Json | null)?.name).toBeTypeOf("string");
+
+    // 6b. POST /api/v1/session/:id/share — explicit publish returns the token.
+    const publish = await v1(
+      `/api/v1/session/${sessionId}/share`,
+      { method: "POST", body: JSON.stringify({ publish: true }) },
+      token,
+    );
+    expect(publish.status).toBe(200);
+    const shareToken = publish.body.share_token as string | null;
+    expect(shareToken).toBeTruthy();
 
     // 7. GET /api/v1/share/:token — public, no auth.
     const share = await v1(`/api/v1/share/${shareToken}`, { method: "GET" });
