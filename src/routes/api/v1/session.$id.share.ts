@@ -29,7 +29,22 @@ export const Route = createFileRoute("/api/v1/session/$id/share")({
           const { supabase, userId } = await verifyBearer(request);
           try {
             const out = await setSharePublication(supabase, userId, sid.data, body.data.publish);
-            return jsonResponse({ contract: 1, ...out });
+            // Canonical URL + the result version being published, so mobile
+            // clients never have to guess either (SHR01, TGA-311).
+            const origin = new URL(request.url).origin;
+            const { data: latest } = await supabase
+              .from("session_results")
+              .select("version")
+              .eq("session_id", sid.data)
+              .order("version", { ascending: false })
+              .limit(1)
+              .maybeSingle();
+            return jsonResponse({
+              contract: 1,
+              ...out,
+              share_url: out.share_token ? `${origin}/s/${out.share_token}` : null,
+              result_version: latest?.version ?? null,
+            });
           } catch (e) {
             const msg = e instanceof Error ? e.message : "Share update failed";
             return errorResponse(

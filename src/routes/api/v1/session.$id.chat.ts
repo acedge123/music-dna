@@ -90,17 +90,20 @@ export const Route = createFileRoute("/api/v1/session/$id/chat")({
           if (!owned) return errorResponse("NOT_FOUND", "Session not found", 404);
           if (owned.user_id !== userId) return errorResponse("FORBIDDEN", "forbidden", 403);
 
-          const { data: rows, error: msgErr } = await supabase
+          // Latest 200 messages, returned chronologically. An ascending scan
+          // with a limit would silently drop the newest exchanges.
+          const { data: rowsDesc, error: msgErr } = await supabase
             .from("chat_messages")
-            .select("role, content, created_at")
+            .select("id, role, content, created_at, mutation_id")
             .eq("session_id", sid.data)
-            .order("created_at", { ascending: true })
+            .order("created_at", { ascending: false })
             .limit(200);
           if (msgErr) return errorResponse("INTERNAL", msgErr.message, 500);
+          const rows = (rowsDesc ?? []).reverse();
 
           const { data: versions, error: verErr } = await supabase
             .from("session_results")
-            .select("version, source, base_version, created_at")
+            .select("version, source, base_version, content, self_report, created_at")
             .eq("session_id", sid.data)
             .order("version", { ascending: true });
           if (verErr) return errorResponse("INTERNAL", verErr.message, 500);
@@ -108,16 +111,20 @@ export const Route = createFileRoute("/api/v1/session/$id/chat")({
           return jsonResponse({
             contract: 1,
             session_id: sid.data,
-            messages: (rows ?? []).map((m) => ({
+            messages: rows.map((m) => ({
+              id: m.id,
               role: m.role,
               content: m.content,
               created_at: m.created_at,
+              mutation_id: m.mutation_id,
             })),
             result_versions: (versions ?? []).map((v) => ({
               version: v.version,
               source: v.source,
               base_version: v.base_version,
               created_at: v.created_at,
+              content: v.content,
+              self_report: v.self_report,
             })),
           });
         } catch (e) {
