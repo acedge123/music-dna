@@ -24,6 +24,10 @@ This means `Ceremony` can remain `post_punk_new_wave`, `A Forest` can remain `go
 
 ## Current Structure
 
+- [Flutter backend parity requirements](flutter-backend-parity-requirements.md):
+  verified integration gaps, Lovable-owned chat/feedback/publication requirements,
+  proposed contract additions, and cross-client acceptance gates.
+
 - `docs/musicdna/ontology.md`: 15-dimension taste ontology, candidate dimension expansion, and pairing standards.
 - `docs/musicdna/project_learnings_v1.md`: living synthesis of the project thesis, major discoveries, and MVP assumptions.
 - `docs/musicdna/canon_workflow.md`: step-by-step curation process.
