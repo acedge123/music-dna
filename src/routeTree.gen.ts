@@ -34,6 +34,7 @@ import { Route as ApiV1SessionIdRevealRouteImport } from './routes/api/v1/sessio
 import { Route as ApiV1SessionIdReactRouteImport } from './routes/api/v1/session.$id.react'
 import { Route as ApiV1SessionIdNextRouteImport } from './routes/api/v1/session.$id.next'
 import { Route as ApiV1SessionIdChoiceRouteImport } from './routes/api/v1/session.$id.choice'
+import { Route as ApiV1SessionIdChatRouteImport } from './routes/api/v1/session.$id.chat'
 
 const TermsRoute = TermsRouteImport.update({
   id: '/terms',
@@ -159,6 +160,11 @@ const ApiV1SessionIdChoiceRoute = ApiV1SessionIdChoiceRouteImport.update({
   path: '/choice',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
+const ApiV1SessionIdChatRoute = ApiV1SessionIdChatRouteImport.update({
+  id: '/chat',
+  path: '/chat',
+  getParentRoute: () => ApiV1SessionIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
+  '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
@@ -205,6 +212,7 @@ export interface FileRoutesByTo {
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
+  '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
@@ -233,6 +241,7 @@ export interface FileRoutesById {
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
+  '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
@@ -261,6 +270,7 @@ export interface FileRouteTypes {
     | '/api/v1/onboarding/react'
     | '/api/v1/session/$id'
     | '/api/v1/share/$token'
+    | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/react'
@@ -287,6 +297,7 @@ export interface FileRouteTypes {
     | '/api/v1/onboarding/react'
     | '/api/v1/session/$id'
     | '/api/v1/share/$token'
+    | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/react'
@@ -314,6 +325,7 @@ export interface FileRouteTypes {
     | '/api/v1/onboarding/react'
     | '/api/v1/session/$id'
     | '/api/v1/share/$token'
+    | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/react'
@@ -517,6 +529,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionIdChoiceRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
+    '/api/v1/session/$id/chat': {
+      id: '/api/v1/session/$id/chat'
+      path: '/chat'
+      fullPath: '/api/v1/session/$id/chat'
+      preLoaderRoute: typeof ApiV1SessionIdChatRouteImport
+      parentRoute: typeof ApiV1SessionIdRoute
+    }
   }
 }
 
@@ -536,6 +555,7 @@ const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
 interface ApiV1SessionIdRouteChildren {
+  ApiV1SessionIdChatRoute: typeof ApiV1SessionIdChatRoute
   ApiV1SessionIdChoiceRoute: typeof ApiV1SessionIdChoiceRoute
   ApiV1SessionIdNextRoute: typeof ApiV1SessionIdNextRoute
   ApiV1SessionIdReactRoute: typeof ApiV1SessionIdReactRoute
@@ -545,6 +565,7 @@ interface ApiV1SessionIdRouteChildren {
 }
 
 const ApiV1SessionIdRouteChildren: ApiV1SessionIdRouteChildren = {
+  ApiV1SessionIdChatRoute: ApiV1SessionIdChatRoute,
   ApiV1SessionIdChoiceRoute: ApiV1SessionIdChoiceRoute,
   ApiV1SessionIdNextRoute: ApiV1SessionIdNextRoute,
   ApiV1SessionIdReactRoute: ApiV1SessionIdReactRoute,
