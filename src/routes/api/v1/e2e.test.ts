@@ -162,7 +162,13 @@ d("REST v1 end-to-end", () => {
     // Access-Control-Allow-Origin: * from the route's OPTIONS handler; the
     // Vite dev server's own CORS middleware intercepts OPTIONS first and
     // echoes only localhost origins, so accept either echo form here.
-    const preflight = await fetch(`${BASE_URL}/api/v1/share/${shareToken}`, { method: "OPTIONS" });
+    const preflight = await fetch(`${BASE_URL}/api/v1/share/${shareToken}`, {
+      method: "OPTIONS",
+      headers: {
+        Origin: new URL(BASE_URL).origin,
+        "Access-Control-Request-Method": "GET",
+      },
+    });
     expect(preflight.status).toBe(204);
     const acao = preflight.headers.get("access-control-allow-origin");
     expect(acao === "*" || acao === new URL(BASE_URL).origin).toBe(true);
