@@ -368,6 +368,8 @@ Response example:
 }
 ```
 
+## Session History, Resume & Reactions
+
 Session history and resume ARE exposed as REST:
 
 - `GET /api/v1/sessions` — list the caller's sessions (most-recent-first).
