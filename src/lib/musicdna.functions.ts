@@ -3517,22 +3517,58 @@ export async function chatTurnImpl(
       profile = p as OpenerProfile;
     }
 
-    // Save the user turn first so it shows up even if AI fails.
-    await supabase.from("chat_messages").insert({
-      session_id: sessionId,
-      user_id: userId,
-      role: "user",
-      content: data.message,
-      mutation_id: data.mutationId ?? null,
-    });
+    // Save the user turn first so it shows up even if AI fails. A unique
+    // violation on (session_id, mutation_id) means a concurrent retry already
+    // committed the turn — fall through to the replay path.
+    const { data: userRow, error: userInsertErr } = await supabase
+      .from("chat_messages")
+      .insert({
+        session_id: sessionId,
+        user_id: userId,
+        role: "user",
+        content: data.message,
+        mutation_id: data.mutationId ?? null,
+      })
+      .select("id")
+      .single();
+    if (userInsertErr) {
+      if (data.mutationId && userInsertErr.code === "23505") {
+        const { data: prior } = await supabase
+          .from("chat_messages")
+          .select("id")
+          .eq("session_id", sessionId)
+          .eq("role", "user")
+          .eq("mutation_id", data.mutationId)
+          .maybeSingle();
+        const { data: replyRow } = await supabase
+          .from("chat_messages")
+          .select("id, content")
+          .eq("session_id", sessionId)
+          .eq("role", "assistant")
+          .eq("mutation_id", replyMutationId!)
+          .maybeSingle();
+        return {
+          reply: replyRow?.content ?? "",
+          sessionId,
+          replayed: true,
+          pending: !replyRow,
+          userMessageId: prior?.id,
+          assistantMessageId: replyRow?.id,
+        };
+      }
+      throw new Error(userInsertErr.message);
+    }
 
-    // Pull recent history (last 20 messages) for context.
-    const { data: history } = await supabase
+    // Pull the MOST RECENT history (up to 40 messages) for context — an
+    // ascending scan with a limit returns the earliest messages and silently
+    // drops the latest exchange, which is what the critic must react to.
+    const { data: historyDesc } = await supabase
       .from("chat_messages")
       .select("role, content, created_at")
       .eq("session_id", sessionId)
-      .order("created_at", { ascending: true })
+      .order("created_at", { ascending: false })
       .limit(40);
+    const history = (historyDesc ?? []).reverse();
 
     // Pull session vector for current lean.
     const { data: sessionRow } = await supabase
