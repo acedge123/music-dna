@@ -2102,81 +2102,103 @@ export const recordEvent = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+const FeedbackInput = z.object({
+  session_id: z.string().uuid(),
+  // "partly" is the plan's three-way accuracy label; kept alongside
+  // the pre-existing "mixed" alias so older UI paths still submit.
+  accuracy: z
+    .enum(["accurate", "not_accurate", "mixed", "partly", "wrong"])
+    .nullable()
+    .optional(),
+  rating: z.number().int().min(-1).max(1).nullable().optional(),
+  comment: z.string().max(2000).nullable().optional(),
+  target: z.string().max(120).nullable().optional(),
+  // Reveal-sentence-level feedback (see docs/musicdna/instrumentation.md).
+  most_accurate_sentence: z.string().max(1000).nullable().optional(),
+  least_accurate_sentence: z.string().max(1000).nullable().optional(),
+  // RES06: bind feedback to the exact result version the listener saw.
+  result_version: z.number().int().min(1).nullable().optional(),
+  // Retry key: a resubmitted form replays the saved row instead of duplicating.
+  mutation_id: z.string().max(80).optional(),
+});
+
+// Shared by the web server function and the v1 REST feedback endpoint, so
+// both clients get identical validation, version binding and retry semantics.
+export async function submitFeedbackImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: z.infer<typeof FeedbackInput>,
+): Promise<{ id: string; updated: boolean; replayed?: boolean }> {
+  // Normalize accuracy aliases so downstream analysis has a single vocabulary.
+  const accuracy =
+    data.accuracy === "partly"
+      ? "mixed"
+      : data.accuracy === "wrong"
+        ? "not_accurate"
+        : (data.accuracy ?? null);
+  // Replay safety: same mutation_id returns the already-committed row.
+  if (data.mutation_id) {
+    const { data: prior } = await supabase
+      .from("result_feedback")
+      .select("id")
+      .eq("session_id", data.session_id)
+      .eq("user_id", userId)
+      .eq("mutation_id", data.mutation_id)
+      .maybeSingle();
+    if (prior?.id) return { id: prior.id, updated: false, replayed: true };
+  }
+  // Only include the sentence columns when the client actually sent them —
+  // keeps the write payload valid against pre-migration schemas.
+  const sentenceCols: Record<string, string | null> = {};
+  if (data.most_accurate_sentence !== undefined)
+    sentenceCols.most_accurate_sentence = data.most_accurate_sentence;
+  if (data.least_accurate_sentence !== undefined)
+    sentenceCols.least_accurate_sentence = data.least_accurate_sentence;
+  const row = {
+    user_id: userId,
+    session_id: data.session_id,
+    accuracy,
+    rating: data.rating ?? null,
+    comment: data.comment ?? null,
+    target: data.target ?? null,
+    result_version: data.result_version ?? null,
+    mutation_id: data.mutation_id ?? null,
+    ...sentenceCols,
+  };
+  // One feedback row per (user, session, target)
+  const q = supabase
+    .from("result_feedback")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("session_id", data.session_id);
+  const { data: existing } = await (
+    data.target ? q.eq("target", data.target) : q.is("target", null)
+  ).maybeSingle();
+  if (existing?.id) {
+    const { error } = await supabase.from("result_feedback").update(row).eq("id", existing.id);
+    if (error) throw new Error(error.message);
+    return { id: existing.id, updated: true as const };
+  }
+  const { data: inserted, error } = await supabase
+    .from("result_feedback")
+    .insert(row)
+    .select("id")
+    .single();
+  if (error) throw new Error(error.message);
+  // Nudge the per-user critic profile from explicit feedback.
+  // Defined later in this file; safe to call via hoisted function declarations.
+  try {
+    await nudgeCriticFromFeedback(supabase as never, userId, { ...data, accuracy });
+  } catch {
+    /* best-effort */
+  }
+  return { id: inserted.id, updated: false as const };
+}
+
 export const submitFeedback = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) =>
-    z
-      .object({
-        session_id: z.string().uuid(),
-        // "partly" is the plan's three-way accuracy label; kept alongside
-        // the pre-existing "mixed" alias so older UI paths still submit.
-        accuracy: z
-          .enum(["accurate", "not_accurate", "mixed", "partly", "wrong"])
-          .nullable()
-          .optional(),
-        rating: z.number().int().min(-1).max(1).nullable().optional(),
-        comment: z.string().max(2000).nullable().optional(),
-        target: z.string().max(120).nullable().optional(),
-        // Reveal-sentence-level feedback (see docs/musicdna/instrumentation.md).
-        most_accurate_sentence: z.string().max(1000).nullable().optional(),
-        least_accurate_sentence: z.string().max(1000).nullable().optional(),
-      })
-      .parse(d),
-  )
-  .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
-    // Normalize accuracy aliases so downstream analysis has a single vocabulary.
-    const accuracy =
-      data.accuracy === "partly"
-        ? "mixed"
-        : data.accuracy === "wrong"
-          ? "not_accurate"
-          : (data.accuracy ?? null);
-    // Only include the new sentence columns when the client actually sent
-    // them — keeps the write payload valid against pre-migration schemas.
-    const sentenceCols: Record<string, string | null> = {};
-    if (data.most_accurate_sentence !== undefined)
-      sentenceCols.most_accurate_sentence = data.most_accurate_sentence;
-    if (data.least_accurate_sentence !== undefined)
-      sentenceCols.least_accurate_sentence = data.least_accurate_sentence;
-    const row = {
-      user_id: userId,
-      session_id: data.session_id,
-      accuracy,
-      rating: data.rating ?? null,
-      comment: data.comment ?? null,
-      target: data.target ?? null,
-      ...sentenceCols,
-    };
-    // One feedback row per (user, session, target)
-    const q = supabase
-      .from("result_feedback")
-      .select("id")
-      .eq("user_id", userId)
-      .eq("session_id", data.session_id);
-    const { data: existing } = await (
-      data.target ? q.eq("target", data.target) : q.is("target", null)
-    ).maybeSingle();
-    if (existing?.id) {
-      const { error } = await supabase.from("result_feedback").update(row).eq("id", existing.id);
-      if (error) throw new Error(error.message);
-      return { id: existing.id, updated: true as const };
-    }
-    const { data: inserted, error } = await supabase
-      .from("result_feedback")
-      .insert(row)
-      .select("id")
-      .single();
-    if (error) throw new Error(error.message);
-    // Nudge the per-user critic profile from explicit feedback.
-    // Defined later in this file; safe to call via hoisted function declarations.
-    try {
-      await nudgeCriticFromFeedback(supabase as never, userId, { ...data, accuracy });
-    } catch {
-      /* best-effort */
-    }
-    return { id: inserted.id, updated: false as const };
-  });
+  .inputValidator((d: unknown) => FeedbackInput.parse(d))
+  .handler(async ({ data, context }) => submitFeedbackImpl(context.supabase, context.userId, data));
 
 // Apply explicit thumb/accuracy/comment to the per-user critic_profile.
 async function nudgeCriticFromFeedback(
