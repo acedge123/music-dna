@@ -302,6 +302,12 @@ function Onboarding() {
           });
         }
         setPhase("playing");
+        if (resumed.completed) {
+          // Finished reading (e.g. browser Back from chat): show the result.
+          await loadFinalRead(resumed.sessionId);
+          setPhase("done");
+          return;
+        }
         const nx = (await nextFn({ data: { sessionId: resumed.sessionId } })) as {
           pairing: Pairing | null;
           round: number;
