@@ -45,8 +45,12 @@ Title, artist, original release year/version, metadata source + access date, sub
 - Staged via existing catalog admin; D01 thresholds never lowered.
 - Measured with real listeners: opener routing, skip rate, pool exhaustion, result specificity.
 
-## Open decisions
+## Decisions (Oct 11 2026)
 
-1. Which new lanes, and in what order (R&B / country / Latin / metal)?
-2. Who curates scores — AI draft + human review, or human-only?
-3. Phase A first, or a single lane end-to-end as a pilot?
+1. **Pilot:** Alternative lane, 2000–2026, end-to-end (draft → review → stage → fixtures → listener check) before Phase A expands.
+2. **Curation:** AI drafts candidates and scores calibrated to reviewed alternative anchors; Alan reviews and approves before anything is activated.
+3. **New lanes, in order:** R&B/soul, then country. Each needs a lane/routing decision with backend first; routing stays in shadow.
+
+## Next step
+
+Draft ~45 alternative candidates (15 per decade bucket) plus ~24 pairings as an inactive review sheet. Nothing goes live without approval.
