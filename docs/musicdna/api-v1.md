@@ -150,11 +150,50 @@ Revocation rotates the token, so previously copied links stop working.
 Publishing a reading that has not completed returns 400.
 
 ```json
-{ "contract": 1, "is_public": true, "share_token": "…" }
+{ "contract": 1, "is_public": true, "share_token": "…", "share_url": "https://www.musicdna.fm/s/…", "result_version": 1 }
 ```
 
-The returned token is then used with `GET /api/v1/share/:token`. A token
+`share_url` is the canonical public URL (`null` after revoke);
+`result_version` is the latest saved result version being published. The
+returned token is then used with `GET /api/v1/share/:token`. A token
 alone never grants access: public lookups require `is_public = true`.
+
+### `POST /api/v1/session/:id/chat`
+
+Body: `{ "message": "…", "mutation_id": "…" }`. Submits one chat turn and
+returns the critic's reply. A retry with the same `mutation_id` replays the
+exact committed reply (`replayed: true`) — the reply row is stored under
+`<mutation_id>:reply`, never guessed by timestamp. If the user turn committed
+but the reply did not, the server returns `409 CHAT_TURN_PENDING`; retry the
+same `mutation_id`.
+
+```json
+{ "contract": 1, "reply": "…", "session_id": "…", "replayed": false,
+  "user_message_id": "…", "assistant_message_id": "…" }
+```
+
+### `GET /api/v1/session/:id/chat`
+
+Returns the latest 200 messages in chronological order (each with `id`,
+`role`, `content`, `created_at`, `mutation_id`) plus `result_versions` with
+full `content` and `self_report` per version, so a client can restore the
+conversation and every revision exactly as saved.
+
+### `POST /api/v1/session/:id/feedback`
+
+Body: `{ accuracy?, rating?, comment?, target?, most_accurate_sentence?,
+least_accurate_sentence?, result_version?, mutation_id? }`. Records result
+feedback bound to the exact `result_version` the listener saw (RES06). One
+row per (user, session, target): resubmitting updates it. A retry with the
+same `mutation_id` replays the saved row (`replayed: true`).
+
+```json
+{ "contract": 1, "id": "…", "updated": false, "replayed": false }
+```
+
+### `GET /api/v1/session/:id/feedback`
+
+Returns the caller's feedback rows for the session.
 
 ### `GET /api/v1/share/:token`
 
