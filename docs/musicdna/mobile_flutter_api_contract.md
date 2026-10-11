@@ -311,10 +311,27 @@ Response example:
     "atmosphere": 18
   },
   "allowed_claims": [],
-  "counterarguments": [],
-  "share_token": "public-share-token"
+  "counterarguments": []
 }
 ```
+
+### 5b. Explicit Publish / Revoke (D03)
+
+Reveal never auto-publishes. To share, call:
+
+`POST /api/v1/session/{sessionId}/share`
+
+Request: `{ "publish": true }` to publish, `{ "publish": false }` to revoke
+(revocation rotates the token, killing copied links).
+
+Response:
+
+```json
+{ "contract": 1, "is_public": true, "share_token": "public-share-token" }
+```
+
+Then read the public reveal via `GET /api/v1/share/{token}`. A token alone
+never grants access — public lookups require `is_public = true`.
 
 ### 6. Public Share
 
