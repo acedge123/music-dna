@@ -368,14 +368,14 @@ Response example:
 }
 ```
 
-## Not Yet Exposed As REST
+Session history and resume ARE exposed as REST:
 
-These flows still appear to live outside the current `/api/v1` surface:
-
-- session history / resume endpoints
-
-Flutter should not assume those routes exist until they are added to the API
-and documented in [`docs/musicdna/api-v1.md`](/Users/rastakit/tga-workspace/idea-builder/docs/musicdna/api-v1.md).
+- `GET /api/v1/sessions` — list the caller's sessions (most-recent-first).
+- `GET /api/v1/session/:id` — resume state for one session
+  (`in_progress` → keep looping `next` + `choice` then `reveal`;
+  `completed` → jump to reveal/share).
+- `POST /api/v1/session/:id/react` — record a reaction on the running read.
+- `POST /api/v1/session/:id/skip` — skip the current pairing.
 
 ## Flutter Integration Notes
 
