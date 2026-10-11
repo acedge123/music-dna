@@ -3757,7 +3757,12 @@ Only choose exception if the evidence has a contradiction. Self-report never add
         // Profile update is best-effort.
       }
 
-    return { reply, sessionId };
+    return {
+      reply,
+      sessionId,
+      userMessageId: userRow?.id,
+      assistantMessageId: assistantRow?.id,
+    };
   }
 
 export const listChat = createServerFn({ method: "GET" })
