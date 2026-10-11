@@ -100,6 +100,7 @@ export type Database = {
           content: string
           created_at: string
           id: string
+          mutation_id: string | null
           role: string
           session_id: string
           user_id: string
@@ -108,6 +109,7 @@ export type Database = {
           content: string
           created_at?: string
           id?: string
+          mutation_id?: string | null
           role: string
           session_id: string
           user_id: string
@@ -116,6 +118,7 @@ export type Database = {
           content?: string
           created_at?: string
           id?: string
+          mutation_id?: string | null
           role?: string
           session_id?: string
           user_id?: string
