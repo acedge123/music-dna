@@ -2,8 +2,9 @@ import { createServerFn } from "@tanstack/react-start";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { loadSessionHistory, type Exchange } from "@/musicdna/adapters/session-history";
 
-// Web resume: the caller's most recent unfinished interview (last 24h) with
-// its full conversation, so a refresh lands back mid-session.
+// Web resume: the caller's most recent interview (last 24h) with its full
+// conversation, so a refresh lands back mid-session — and browser Back from
+// chat lands on the finished result instead of a blank start screen.
 export const resumeLatestSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
@@ -11,9 +12,8 @@ export const resumeLatestSession = createServerFn({ method: "POST" })
     const since = new Date(Date.now() - 24 * 3600 * 1000).toISOString();
     const { data: s } = await supabase
       .from("sessions")
-      .select("id, started_at")
+      .select("id, started_at, completed_at")
       .eq("user_id", userId)
-      .is("completed_at", null)
       .gte("started_at", since)
       .order("started_at", { ascending: false })
       .limit(1)
@@ -28,6 +28,7 @@ export const resumeLatestSession = createServerFn({ method: "POST" })
       .maybeSingle();
     return {
       sessionId: s.id,
+      completed: s.completed_at != null,
       exchanges,
       opener: profile
         ? { hypothesis: profile.opening_hypothesis ?? "", lane: profile.opening_lane ?? "" }
