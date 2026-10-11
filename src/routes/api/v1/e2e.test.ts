@@ -158,10 +158,14 @@ d("REST v1 end-to-end", () => {
     expect(share.body.share_token).toBe(shareToken);
     expect(Array.isArray(share.body.defining_choices)).toBe(true);
 
-    // 8. CORS preflight — share route is cross-origin.
+    // 8. CORS preflight — share route is cross-origin. Production serves
+    // Access-Control-Allow-Origin: * from the route's OPTIONS handler; the
+    // Vite dev server's own CORS middleware intercepts OPTIONS first and
+    // echoes only localhost origins, so accept either echo form here.
     const preflight = await fetch(`${BASE_URL}/api/v1/share/${shareToken}`, { method: "OPTIONS" });
     expect(preflight.status).toBe(204);
-    expect(preflight.headers.get("access-control-allow-origin")).toBe("*");
+    const acao = preflight.headers.get("access-control-allow-origin");
+    expect(acao === "*" || acao === new URL(BASE_URL).origin).toBe(true);
   }, 180_000);
 
   it.runIf(shouldRun)("rejects malformed share tokens with a typed error envelope", async () => {
