@@ -3445,6 +3445,31 @@ export async function chatTurnImpl(
 
     let sessionId = data.sessionId ?? null;
     let profile: OpenerProfile = null;
+
+    // Retry safety: a resubmitted turn replays its saved reply.
+    if (data.mutationId && sessionId) {
+      const { data: prior } = await supabase
+        .from("chat_messages")
+        .select("id, created_at")
+        .eq("session_id", sessionId)
+        .eq("user_id", userId)
+        .eq("role", "user")
+        .eq("mutation_id", data.mutationId)
+        .maybeSingle();
+      if (prior) {
+        const { data: replyRow } = await supabase
+          .from("chat_messages")
+          .select("content")
+          .eq("session_id", sessionId)
+          .eq("role", "assistant")
+          .gt("created_at", prior.created_at)
+          .order("created_at", { ascending: true })
+          .limit(1)
+          .maybeSingle();
+        return { reply: replyRow?.content ?? "", sessionId, replayed: true };
+      }
+    }
+
     if (!sessionId) {
       const anchor = await ensureChatSessionForUser(supabase as never, userId);
       if (!anchor) {
@@ -3479,6 +3504,7 @@ export async function chatTurnImpl(
       user_id: userId,
       role: "user",
       content: data.message,
+      mutation_id: data.mutationId ?? null,
     });
 
     // Pull recent history (last 20 messages) for context.
