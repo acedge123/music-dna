@@ -58,6 +58,58 @@ describe("createLovableLlmGateway", () => {
     const gw = createLovableLlmGateway({ apiKey: "k", fetchImpl: impl });
     await expect(gw.complete({ model: "m", prompt: "x" })).rejects.toThrow(/AI 429/);
   });
+
+  it("routes to OpenAI when OPENAI_API_KEY is set and maps the default model", async () => {
+    const { impl, calls } = mockFetch({
+      choices: [{ message: { content: "hi there" } }],
+    });
+    const prevOpenai = process.env.OPENAI_API_KEY;
+    const prevLovable = process.env.LOVABLE_API_KEY;
+    const prevOpenaiModel = process.env.OPENAI_MODEL;
+    process.env.OPENAI_API_KEY = "sk-openai-test";
+    delete process.env.LOVABLE_API_KEY;
+    delete process.env.OPENAI_MODEL;
+    try {
+      const gw = createLovableLlmGateway({ fetchImpl: impl });
+      const out = await gw.complete({ model: DEFAULT_MODEL, prompt: "q" });
+      expect(out.text).toBe("hi there");
+      expect(calls).toHaveLength(1);
+      expect(calls[0].url).toContain("api.openai.com");
+      const headers = calls[0].init.headers as Record<string, string>;
+      expect(headers.Authorization).toBe("Bearer sk-openai-test");
+      const body = JSON.parse(calls[0].init.body as string);
+      expect(body.model).toBe("gpt-4o-mini");
+    } finally {
+      if (prevOpenai !== undefined) process.env.OPENAI_API_KEY = prevOpenai;
+      else delete process.env.OPENAI_API_KEY;
+      if (prevLovable !== undefined) process.env.LOVABLE_API_KEY = prevLovable;
+      else delete process.env.LOVABLE_API_KEY;
+      if (prevOpenaiModel !== undefined) process.env.OPENAI_MODEL = prevOpenaiModel;
+    }
+  });
+
+  it("honors OPENAI_MODEL on the OpenAI path", async () => {
+    const { impl, calls } = mockFetch({ choices: [{ message: { content: "ok" } }] });
+    const prevOpenai = process.env.OPENAI_API_KEY;
+    const prevOpenaiModel = process.env.OPENAI_MODEL;
+    const prevLovable = process.env.LOVABLE_API_KEY;
+    process.env.OPENAI_API_KEY = "sk-openai-test";
+    process.env.OPENAI_MODEL = "gpt-4o";
+    delete process.env.LOVABLE_API_KEY;
+    try {
+      const text = await callLovableAi([{ role: "user", content: "q" }], { fetchImpl: impl });
+      expect(text).toBe("ok");
+      const body = JSON.parse(calls[0].init.body as string);
+      expect(body.model).toBe("gpt-4o");
+    } finally {
+      if (prevOpenai !== undefined) process.env.OPENAI_API_KEY = prevOpenai;
+      else delete process.env.OPENAI_API_KEY;
+      if (prevOpenaiModel !== undefined) process.env.OPENAI_MODEL = prevOpenaiModel;
+      else delete process.env.OPENAI_MODEL;
+      if (prevLovable !== undefined) process.env.LOVABLE_API_KEY = prevLovable;
+      else delete process.env.LOVABLE_API_KEY;
+    }
+  });
 });
 
 describe("callLovableAi", () => {
