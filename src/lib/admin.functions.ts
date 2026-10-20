@@ -46,6 +46,7 @@ export const adminList = createServerFn({ method: "POST" })
         table: z.enum(ADMIN_TABLES),
         search: z.string().max(120).optional(),
         lane: z.string().max(40).optional(),
+        status: z.enum(["all", "active", "inactive"]).optional(),
       })
       .parse(d),
   )
@@ -60,6 +61,9 @@ export const adminList = createServerFn({ method: "POST" })
     const readSource = table === "pairings" ? "pairings_with_songs" : table;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     let q: any = (admin as any).from(readSource).select("*").limit(500);
+    if (table !== "archetypes" && data.status && data.status !== "all") {
+      q = q.eq("active", data.status === "active");
+    }
     if (table === "songs") {
       q = q.order("artist", { ascending: true }).order("title", { ascending: true });
       if (data.search) {
