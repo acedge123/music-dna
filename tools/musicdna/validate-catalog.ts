@@ -52,7 +52,7 @@ export function validateCatalog(songs: CatalogSong[], pairings: CatalogPair[]) {
       )
         errors.push(`${song.id}: invalid ${axis}`);
     if (DIMS.filter((axis) => Number(song[axis]) < 35 || Number(song[axis]) > 65).length < 3)
-      errors.push(`${song.id}: fewer than three non-neutral axes`);
+      warnings.push(`${song.id}: fewer than three non-neutral axes; activation review required`);
     if (
       !song.primary_dimensions?.length ||
       song.primary_dimensions.length > 3 ||
