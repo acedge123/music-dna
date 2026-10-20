@@ -36,7 +36,9 @@ describe("Inactive modern catalog recalibration", () => {
     expect(pairs).toHaveLength(30);
   });
   it("rejects an unsupported test rather than silently counting it", () => {
-    const mutated = pairs.map((p, i) => (i === 0 ? { ...p, tests: ["movement"] } : p));
+    const mutated = pairs.map((p) =>
+      p.id === "2d8b5a62-ab7a-481f-b9b1-b08734fc4b10" ? { ...p, tests: ["movement"] } : p,
+    );
     expect(
       validateCatalog(songs, mutated).errors.some((e) => e.includes("contrast below 20")),
     ).toBe(true);
