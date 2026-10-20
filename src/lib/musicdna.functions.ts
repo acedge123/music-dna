@@ -1,3 +1,4 @@
+import { requireVisibleSession } from "@/musicdna/adapters/session-access";
 import { persistenceRpc, PersistenceError } from "@/musicdna/adapters/persistence";
 import { loadChatPage } from "@/musicdna/adapters/chat-history";
 import { createServerFn } from "@tanstack/react-start";
@@ -669,18 +670,18 @@ export async function nextPairingImpl(
       .eq("id", data.sessionId)
       .maybeSingle(),
   ]);
-  const sessionLane = (sessionRes.data?.lane as Lane | null) ?? "general";
-  const laneConfidence = Number(sessionRes.data?.lane_confidence ?? 0);
-  const probeCandidates = (sessionRes.data?.probe_candidate_lanes as Lane[] | null) ?? [];
-  const probeState = (sessionRes.data?.probe_state ?? {}) as ProbeState;
+  const session = requireVisibleSession(sessionRes);
+  const sessionLane = (session?.lane as Lane | null) ?? "general";
+  const laneConfidence = Number(session?.lane_confidence ?? 0);
+  const probeCandidates = (session?.probe_candidate_lanes as Lane[] | null) ?? [];
+  const probeState = (session?.probe_state ?? {}) as ProbeState;
   probeState.probes_shown = probeState.probes_shown ?? [];
   probeState.pending = probeState.pending ?? {};
   probeState.lane_alignment = probeState.lane_alignment ?? {};
   probeState.flips = probeState.flips ?? [];
   const bootstrapChoices =
-    ((sessionRes.data as { bootstrap_choices_json?: unknown } | null)?.bootstrap_choices_json as
-      | BootstrapChoiceEntry[]
-      | null) ?? [];
+    ((session as { bootstrap_choices_json?: unknown } | null)?.bootstrap_choices_json as
+      BootstrapChoiceEntry[] | null) ?? [];
 
   // Extract the set of lanes the opener songs actually landed in. Used by
   // the bootstrap phase to keep probe pairings inside the user's stated
@@ -710,7 +711,7 @@ export async function nextPairingImpl(
   // Skipped pairings are excluded from every future selection in this session.
   for (const pid of probeState.skipped_pairing_ids ?? []) usedIds.add(pid);
   const round = usedIds.size;
-  const vector = (sessionRes.data?.vector ?? {}) as Record<string, number>;
+  const vector = (session?.vector ?? {}) as Record<string, number>;
   // Answered rounds are choices only. Skips are never preferences, so they
   // don't advance the budget — they only bound the session via skip_bound.
   const answered = new Set((usedRes.data ?? []).map((c) => c.pairing_id)).size;
@@ -836,7 +837,7 @@ export async function nextPairingImpl(
       await (
         await trustedEventLog()
       ).insert({
-        user_id: sessionRes.data?.user_id ?? null,
+        user_id: session?.user_id ?? null,
         session_id: data.sessionId,
         pairing_id: pairingId,
         event_type: "regime_recommended",
@@ -3133,9 +3134,8 @@ type SynthPayload = {
 export const finalSynthesis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
-  .handler(
-    async ({ data, context }): Promise<SynthPayload> =>
-      finalSynthesisImpl(context.supabase, context.userId, data),
+  .handler(async ({ data, context }): Promise<SynthPayload> =>
+    finalSynthesisImpl(context.supabase, context.userId, data),
   );
 
 // RES04: the first pairing-based result is saved once and replayed verbatim
@@ -3502,9 +3502,8 @@ export const chatTurn = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(
-    async ({ data, context }): Promise<{ reply: string; sessionId: string }> =>
-      chatTurnImpl(context.supabase, context.userId, data),
+  .handler(async ({ data, context }): Promise<{ reply: string; sessionId: string }> =>
+    chatTurnImpl(context.supabase, context.userId, data),
   );
 
 // Shared by the web server function and the v1 REST chat endpoint, so both
