@@ -14,11 +14,13 @@ export async function setSharePublication(
     .eq("id", sessionId)
     .maybeSingle();
   if (error || !owned || owned.user_id !== userId) throw new Error("Session not found");
-  if (process.env.MUSICDNA_BACKEND_PERSISTENCE_V2 !== "1")
+  if (process.env.MUSICDNA_BACKEND_PERSISTENCE_V2 !== "1") {
+    const {data:latest}=await client.from("session_results").select("version").eq("session_id",sessionId).order("version",{ascending:false}).limit(1).maybeSingle();
     return {
       ...(await legacySetSharePublication(client, userId, sessionId, publish)),
-      result_version: null,
+      result_version: latest?.version ?? null,
     };
+  }
   return persistenceRpc<{
     is_public: boolean;
     share_token: string | null;

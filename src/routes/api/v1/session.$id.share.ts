@@ -6,6 +6,7 @@ import { z } from "zod";
 import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
 import { setSharePublication } from "@/musicdna/adapters/share-publication";
+import { PersistenceError } from "@/musicdna/adapters/persistence";
 
 const UUID = z.string().uuid();
 const Body = z.object({ publish: z.boolean(), result_version: z.number().int().min(1).optional() });
@@ -44,6 +45,7 @@ export const Route = createFileRoute("/api/v1/session/$id/share")({
               share_url: out.share_token ? `${origin}/s/${out.share_token}` : null,
             });
           } catch (e) {
+            if(e instanceof PersistenceError) return errorResponse(e.code,e.message,e.status);
             const msg = e instanceof Error ? e.message : "Share update failed";
             return errorResponse(
               msg === "Session not found" ? "NOT_FOUND" : "INVALID_INPUT",
