@@ -72,11 +72,12 @@ END $$;
 CREATE FUNCTION public.complete_chat_turn(p_session_id uuid,p_mutation_id text,p_lease_token uuid,p_reply text,p_refinement jsonb) RETURNS jsonb
 LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$
 DECLARE u uuid:=auth.uid(); t public.chat_turns; a public.chat_messages; base public.session_results; latest public.session_results;
- v integer; report jsonb; revised jsonb;
+ v integer; report jsonb; revised jsonb; cumulative jsonb; correction text;
 BEGIN
  PERFORM 1 FROM sessions WHERE id=p_session_id AND user_id=u FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'forbidden' USING ERRCODE='42501'; END IF;
  SELECT * INTO t FROM chat_turns WHERE session_id=p_session_id AND mutation_id=p_mutation_id FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'CHAT_LEASE_LOST' USING ERRCODE='40001'; END IF;
  IF t.assistant_message_id IS NOT NULL THEN RETURN to_jsonb(t)||jsonb_build_object('replayed',true); END IF;
  IF t.lease_token IS DISTINCT FROM p_lease_token THEN RAISE EXCEPTION 'CHAT_LEASE_LOST' USING ERRCODE='40001'; END IF;
  IF nullif(trim(p_reply),'') IS NULL THEN RAISE EXCEPTION 'EMPTY_REPLY'; END IF;
@@ -84,11 +85,29 @@ BEGIN
  SELECT * INTO latest FROM session_results WHERE session_id=p_session_id ORDER BY version DESC LIMIT 1;
  IF base.id IS NOT NULL AND p_refinement IS NOT NULL AND p_refinement<>'{}'::jsonb THEN
  v:=latest.version+1;
+ SELECT coalesce(jsonb_object_agg(axis,total),'{}'::jsonb) INTO cumulative FROM (
+ SELECT axis,sum(delta)::integer total FROM (
+ SELECT key axis,value::text::numeric delta FROM jsonb_each(coalesce(latest.self_report->'deltas','{}'::jsonb))
+ UNION ALL SELECT key,value::text::numeric FROM jsonb_each(p_refinement)
+ ) values_by_axis GROUP BY axis) totals;
+ SELECT string_agg(CASE key
+ WHEN 'movement' THEN CASE WHEN value::text::numeric>0 THEN 'forward motion rather than stillness' ELSE 'stillness rather than forward motion' END
+ WHEN 'atmosphere' THEN CASE WHEN value::text::numeric>0 THEN 'immersive mood rather than statement' ELSE 'statement rather than immersive mood' END
+ WHEN 'immersion' THEN CASE WHEN value::text::numeric>0 THEN 'slow reveal rather than immediacy' ELSE 'immediacy rather than slow reveal' END
+ WHEN 'scale' THEN CASE WHEN value::text::numeric>0 THEN 'vastness rather than intimacy' ELSE 'intimacy rather than vastness' END
+ WHEN 'community' THEN CASE WHEN value::text::numeric>0 THEN 'communal rather than solitary listening' ELSE 'solitary rather than communal listening' END
+ WHEN 'perspective' THEN CASE WHEN value::text::numeric>0 THEN 'witness rather than feeling' ELSE 'feeling rather than witness' END
+ WHEN 'confidence' THEN CASE WHEN value::text::numeric>0 THEN 'command rather than vulnerability' ELSE 'vulnerability rather than command' END
+ WHEN 'tension' THEN CASE WHEN value::text::numeric>0 THEN 'danger rather than release' ELSE 'release rather than danger' END
+ WHEN 'texture' THEN CASE WHEN value::text::numeric>0 THEN 'refinement rather than rawness' ELSE 'rawness rather than refinement' END
+ WHEN 'transformation' THEN CASE WHEN value::text::numeric>0 THEN 'music that takes you somewhere rather than holds its shape' ELSE 'music that holds its shape rather than takes you somewhere' END
+ END, '; ' ORDER BY key) INTO correction FROM jsonb_each(cumulative) WHERE value::text::numeric<>0;
  report:=jsonb_build_object('originating_mutation_id',p_mutation_id,'user_message_id',t.user_message_id,
- 'message',t.message,'applied_deltas',p_refinement,'previous_version',latest.version,'kind','explicit_self_report',
+ 'message',t.message,'applied_deltas',p_refinement,'deltas',cumulative,'previous_version',latest.version,'kind','explicit_self_report',
+ 'renderer_version','self-report-revision-v1',
  'turns',coalesce((latest.self_report->>'turns')::integer,0)+1);
  -- Never turn self-report into corroborating votes: preserve the frozen evidence and qualify the revision.
- revised:=latest.content||jsonb_build_object('synthesis',coalesce(latest.content->>'synthesis','')||E'\n\nListener correction (self-report, not another vote): '||t.message,
+ revised:=base.content||jsonb_build_object('synthesis',coalesce(base.content->>'synthesis','')||E'\n\nYour own account changes the angle: '||coalesce(correction,'your earlier correction is now mixed')||'. That qualifies the reading above; it does not erase what the picks showed. This is self-report, not another supporting vote.',
  'refinement',report);
  INSERT INTO session_results(session_id,user_id,version,source,base_version,content,evidence,self_report,ledger_version,policy_version,engine_version)
  VALUES(p_session_id,u,v,'chat_self_report',base.version,revised,base.evidence,report,base.ledger_version,base.policy_version,base.engine_version);
