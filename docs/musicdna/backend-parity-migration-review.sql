@@ -117,9 +117,9 @@ BEGIN
  snapshot:=jsonb_build_object('session_id',s.id,'completed_at',s.completed_at,'lane',s.lane,'result_version',r.version,
  'content',r.content,'evidence',r.evidence,'interpretation',r.content->>'synthesis',
  'archetype',(SELECT jsonb_build_object('id',id,'name',name,'tagline',tagline,'description',description) FROM archetypes WHERE id=s.archetype_id));
- UPDATE sessions SET is_public=true,share_token=coalesce(share_token,encode(gen_random_bytes(12),'hex')),published_read=snapshot WHERE id=p_session_id RETURNING * INTO s;
+ UPDATE sessions SET is_public=true,share_token=coalesce(share_token,replace(gen_random_uuid()::text,'-','')),published_read=snapshot WHERE id=p_session_id RETURNING * INTO s;
  ELSE
- UPDATE sessions SET is_public=false,share_token=encode(gen_random_bytes(12),'hex'),published_read=NULL WHERE id=p_session_id RETURNING * INTO s;
+ UPDATE sessions SET is_public=false,share_token=replace(gen_random_uuid()::text,'-',''),published_read=NULL WHERE id=p_session_id RETURNING * INTO s;
  END IF;
  RETURN jsonb_build_object('is_public',s.is_public,'share_token',CASE WHEN p_publish THEN s.share_token END,'result_version',CASE WHEN p_publish THEN r.version END);
 END $$;

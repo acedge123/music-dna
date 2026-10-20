@@ -33,7 +33,7 @@ beforeAll(async()=>{
  INSERT INTO session_results(session_id,user_id,version,source,content,evidence,ledger_version,policy_version,engine_version)
  VALUES('${SID}','${OWNER}',1,'pairings','{"synthesis":"Frozen original","kept_choosing":[]}','{"axes":[]}','ledger-v2','policy','engine');`);
  // PGlite does not bundle pgcrypto; token entropy is still 128-bit via core UUID.
- await db.exec(await readFile("supabase/migrations/20261020040000_backend_parity_acceptance.sql","utf8"));
+ await db.exec(await readFile("docs/musicdna/backend-parity-migration-review.sql","utf8"));
  await asUser(OWNER);
 },20000);
 afterAll(async()=>{await db.close();});
