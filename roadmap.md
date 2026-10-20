@@ -6,7 +6,8 @@
 - [x] Recalibrated all 37 vectors and metadata independently; lane moves remain proposals and rows stay inactive.
 - [x] Rebuilt 23 matchups plus 7 new repeat/counterexample candidates; verified 30 saved pairs and unchanged evidence/results.
 - [x] Documented before/after scores, sources, coverage and editorial gaps in docs/musicdna/cat06-recalibration-2026-10-20.md; added catalog/selector/evidence regressions.
-- [ ] Activation acceptance: awaits Alan's review, recording/year reconciliation, four calibration-breadth warnings, movement/scale coverage additions and real-listener testing. No batch activation authorized.
+- [ ] Activate Alan's approved 31-song subset and its 23 mutual matchups; retain six flagged songs inactive and verify the saved flags.
+- [ ] Predictive validation: recording/year reconciliation, broader movement/scale coverage and real-listener testing remain pending; activation does not establish these.
 
 ## Current verification — merged PR #11
 
