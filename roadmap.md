@@ -1,5 +1,9 @@
 # Roadmap
 
+## Current verification — merged PR #11
+- [x] Audit merged idea-builder PR #11 and backend source; report: docs/musicdna/backend-pr11-verification-2026-10-20.md. All five acceptance items have source gaps; 194 regression tests pass, not production acceptance.
+- [ ] Authenticated production acceptance for all five items: blocked by implementation gaps and rejected production harness key; current custom-domain serving SHA also unverified. Recorded successful production deployment SHA: 1015b28fe965b15f77f13e3b199c9f0e0145831b. No production migrations authorized.
+
 ## Done
 - D06 retention: policy decided, implementation deferred until launch (docs/musicdna/data-retention-d06.md).
 - Live anonymous walkthrough: interview, pushback, resume, share, revoke.
