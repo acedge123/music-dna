@@ -45,7 +45,7 @@ export const Route = createFileRoute("/api/v1/session/$id/share")({
               share_url: out.share_token ? `${origin}/s/${out.share_token}` : null,
             });
           } catch (e) {
-            if(e instanceof PersistenceError) return errorResponse(e.code,e.message,e.status);
+            if (e instanceof PersistenceError) return errorResponse(e.code, e.message, e.status);
             const msg = e instanceof Error ? e.message : "Share update failed";
             return errorResponse(
               msg === "Session not found" ? "NOT_FOUND" : "INVALID_INPUT",

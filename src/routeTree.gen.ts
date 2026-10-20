@@ -20,6 +20,7 @@ import { Route as Authenticated1980RouteImport } from './routes/_authenticated/1
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as SSessionIdRouteImport } from './routes/s.$sessionId'
+import { Route as ApiPublicVersionRouteImport } from './routes/api/public/version'
 import { Route as ApiV1AccountRouteImport } from './routes/api/v1/account'
 import { Route as ApiV1SessionRouteImport } from './routes/api/v1/session'
 import { Route as ApiV1SessionsRouteImport } from './routes/api/v1/sessions'
@@ -89,6 +90,11 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
 const SSessionIdRoute = SSessionIdRouteImport.update({
   id: '/s/$sessionId',
   path: '/s/$sessionId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicVersionRoute = ApiPublicVersionRouteImport.update({
+  id: '/api/public/version',
+  path: '/api/public/version',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1AccountRoute = ApiV1AccountRouteImport.update({
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/admin': typeof AuthenticatedAdminRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/s/$sessionId': typeof SSessionIdRoute
+  '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/session': typeof ApiV1SessionRouteWithChildren
   '/api/v1/sessions': typeof ApiV1SessionsRoute
@@ -211,6 +218,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AuthenticatedAdminRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/s/$sessionId': typeof SSessionIdRoute
+  '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/session': typeof ApiV1SessionRouteWithChildren
   '/api/v1/sessions': typeof ApiV1SessionsRoute
@@ -241,6 +249,7 @@ export interface FileRoutesById {
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/s/$sessionId': typeof SSessionIdRoute
+  '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/session': typeof ApiV1SessionRouteWithChildren
   '/api/v1/sessions': typeof ApiV1SessionsRoute
@@ -271,6 +280,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/profile'
     | '/s/$sessionId'
+    | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/session'
     | '/api/v1/sessions'
@@ -299,6 +309,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/profile'
     | '/s/$sessionId'
+    | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/session'
     | '/api/v1/sessions'
@@ -328,6 +339,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin'
     | '/_authenticated/profile'
     | '/s/$sessionId'
+    | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/session'
     | '/api/v1/sessions'
@@ -355,6 +367,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   TermsRoute: typeof TermsRoute
   SSessionIdRoute: typeof SSessionIdRoute
+  ApiPublicVersionRoute: typeof ApiPublicVersionRoute
   ApiV1AccountRoute: typeof ApiV1AccountRoute
   ApiV1SessionRoute: typeof ApiV1SessionRouteWithChildren
   ApiV1SessionsRoute: typeof ApiV1SessionsRoute
@@ -441,6 +454,13 @@ declare module '@tanstack/react-router' {
       path: '/s/$sessionId'
       fullPath: '/s/$sessionId'
       preLoaderRoute: typeof SSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/version': {
+      id: '/api/public/version'
+      path: '/api/public/version'
+      fullPath: '/api/public/version'
+      preLoaderRoute: typeof ApiPublicVersionRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/account': {
@@ -620,6 +640,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   TermsRoute: TermsRoute,
   SSessionIdRoute: SSessionIdRoute,
+  ApiPublicVersionRoute: ApiPublicVersionRoute,
   ApiV1AccountRoute: ApiV1AccountRoute,
   ApiV1SessionRoute: ApiV1SessionRouteWithChildren,
   ApiV1SessionsRoute: ApiV1SessionsRoute,
