@@ -14,6 +14,11 @@ export async function setSharePublication(
     .eq("id", sessionId)
     .maybeSingle();
   if (error || !owned || owned.user_id !== userId) throw new Error("Session not found");
+  if (process.env.MUSICDNA_BACKEND_PERSISTENCE_V2 !== "1")
+    return {
+      ...(await legacySetSharePublication(client, userId, sessionId, publish)),
+      result_version: null,
+    };
   return persistenceRpc<{
     is_public: boolean;
     share_token: string | null;
@@ -23,4 +28,37 @@ export async function setSharePublication(
     p_publish: publish,
     p_version: resultVersion ?? null,
   });
+}
+
+function newToken(): string {
+  const b = new Uint8Array(12);
+  crypto.getRandomValues(b);
+  return Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
+}
+
+async function legacySetSharePublication(
+  supabase: SupabaseClient<Database>,
+  userId: string,
+  sessionId: string,
+  publish: boolean,
+): Promise<{ is_public: boolean; share_token: string | null }> {
+  const { data: s, error } = await supabase
+    .from("sessions")
+    .select("user_id, completed_at, share_token")
+    .eq("id", sessionId)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if (!s || s.user_id !== userId) throw new Error("Session not found");
+  if (publish && !s.completed_at) throw new Error("Finish the reading before sharing it.");
+
+  const patch = publish
+    ? { is_public: true, share_token: s.share_token ?? newToken() }
+    : { is_public: false, share_token: newToken() };
+  const { error: upErr } = await supabase
+    .from("sessions")
+    .update(patch)
+    .eq("id", sessionId)
+    .eq("user_id", userId);
+  if (upErr) throw new Error(upErr.message);
+  return { is_public: patch.is_public, share_token: publish ? patch.share_token : null };
 }
