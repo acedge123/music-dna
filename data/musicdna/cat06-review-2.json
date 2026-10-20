@@ -1,0 +1,3685 @@
+{
+  "version": "cat06-review-2",
+  "reviewed_at": "2026-10-20T16:51:00Z",
+  "empirically_validated": false,
+  "activation_approved": false,
+  "songs": [
+    {
+      "id": "cc669ae2-34b5-4149-818b-8b44dc8ce661",
+      "lane": "manchester_indie_dance",
+      "year": 2005,
+      "scale": 60,
+      "title": "Banquet",
+      "active": false,
+      "artist": "Bloc Party",
+      "tension": 65,
+      "texture": 50,
+      "movement": 82,
+      "sub_lane": "dance_punk",
+      "community": 72,
+      "immersion": 25,
+      "longevity": 6,
+      "rationale": "Clipped guitars and urgent interlocking rhythm attack immediately; the narrator is implicated, not a detached witness.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 40,
+      "confidence": 72,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_dance", "post_punk"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 78,
+      "perspective": 32,
+      "polarization": 17,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 85,
+      "transformation": 32,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 67,
+      "archetype_signals": [],
+      "tradeoff_richness": 12,
+      "identity_signaling": 12,
+      "primary_dimensions": ["movement", "tension", "immersion"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "community": {
+            "before": 78,
+            "after": 72,
+            "reason": "Clipped guitars and urgent interlocking rhythm attack immediately; the narrator is implicated, not a detached witness."
+          },
+          "perspective": {
+            "before": 55,
+            "after": 32,
+            "reason": "Clipped guitars and urgent interlocking rhythm attack immediately; the narrator is implicated, not a detached witness."
+          },
+          "confidence": {
+            "before": 85,
+            "after": 72,
+            "reason": "Clipped guitars and urgent interlocking rhythm attack immediately; the narrator is implicated, not a detached witness."
+          },
+          "texture": {
+            "before": 55,
+            "after": 50,
+            "reason": "Clipped guitars and urgent interlocking rhythm attack immediately; the narrator is implicated, not a detached witness."
+          },
+          "transformation": {
+            "before": 45,
+            "after": 32,
+            "reason": "Clipped guitars and urgent interlocking rhythm attack immediately; the narrator is implicated, not a detached witness."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "c5422dfe-091c-4d3e-9d89-11b6c754d45b",
+      "lane": "britpop_indiepop",
+      "year": 2024,
+      "scale": 85,
+      "title": "Beautiful Things",
+      "active": false,
+      "artist": "Benson Boone",
+      "tension": 60,
+      "texture": 70,
+      "movement": 62,
+      "sub_lane": "arena_pop_ballad",
+      "community": 75,
+      "immersion": 45,
+      "longevity": 4,
+      "rationale": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 60,
+      "confidence": 40,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 76,
+      "perspective": 22,
+      "polarization": 18,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 40,
+      "transformation": 80,
+      "pairing_density": 9,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 62,
+      "archetype_signals": [],
+      "tradeoff_richness": 10,
+      "identity_signaling": 11,
+      "primary_dimensions": ["confidence", "scale", "transformation"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "proposed_pop",
+        "score_notes": {
+          "atmosphere": {
+            "before": 65,
+            "after": 60,
+            "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
+          },
+          "immersion": {
+            "before": 50,
+            "after": 45,
+            "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
+          },
+          "community": {
+            "before": 85,
+            "after": 75,
+            "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
+          },
+          "perspective": {
+            "before": 55,
+            "after": 22,
+            "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
+          },
+          "confidence": {
+            "before": 80,
+            "after": 40,
+            "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
+          },
+          "tension": {
+            "before": 55,
+            "after": 60,
+            "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
+          },
+          "texture": {
+            "before": 55,
+            "after": 70,
+            "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
+          },
+          "transformation": {
+            "before": 55,
+            "after": 80,
+            "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "e47be745-166e-4542-be82-089ce9f3fec2",
+      "lane": "electronic_crossover",
+      "year": 2012,
+      "scale": 55,
+      "title": "Breezeblocks",
+      "active": false,
+      "artist": "alt-J",
+      "tension": 85,
+      "texture": 68,
+      "movement": 55,
+      "sub_lane": "art_rock",
+      "community": 40,
+      "immersion": 60,
+      "longevity": 6,
+      "rationale": "Fractured rhythm and possessive intimacy sustain menace; eccentric details are not automatically glossy refinement.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 68,
+      "confidence": 45,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["art_rock", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 77,
+      "perspective": 30,
+      "polarization": 20,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 80,
+      "transformation": 55,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 73,
+      "archetype_signals": [],
+      "tradeoff_richness": 14,
+      "identity_signaling": 13,
+      "primary_dimensions": ["tension", "atmosphere", "community"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "community": {
+            "before": 65,
+            "after": 40,
+            "reason": "Fractured rhythm and possessive intimacy sustain menace; eccentric details are not automatically glossy refinement."
+          },
+          "perspective": {
+            "before": 65,
+            "after": 30,
+            "reason": "Fractured rhythm and possessive intimacy sustain menace; eccentric details are not automatically glossy refinement."
+          },
+          "confidence": {
+            "before": 70,
+            "after": 45,
+            "reason": "Fractured rhythm and possessive intimacy sustain menace; eccentric details are not automatically glossy refinement."
+          },
+          "tension": {
+            "before": 60,
+            "after": 85,
+            "reason": "Fractured rhythm and possessive intimacy sustain menace; eccentric details are not automatically glossy refinement."
+          },
+          "texture": {
+            "before": 85,
+            "after": 68,
+            "reason": "Fractured rhythm and possessive intimacy sustain menace; eccentric details are not automatically glossy refinement."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "6ba8346a-5e96-44bb-8858-fd8912ef40ef",
+      "lane": "britpop_indiepop",
+      "year": 2014,
+      "scale": 55,
+      "title": "Budapest",
+      "active": false,
+      "artist": "George Ezra",
+      "tension": 20,
+      "texture": 45,
+      "movement": 66,
+      "sub_lane": "indie_folk_pop",
+      "community": 65,
+      "immersion": 20,
+      "longevity": 5,
+      "rationale": "Relaxed baritone and a repeating acoustic hook make an accessible, low-pressure control rather than a journey.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 50,
+      "confidence": 58,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 72,
+      "perspective": 28,
+      "polarization": 16,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 60,
+      "transformation": 28,
+      "pairing_density": 8,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 56,
+      "archetype_signals": [],
+      "tradeoff_richness": 8,
+      "identity_signaling": 10,
+      "primary_dimensions": ["tension", "immersion", "transformation"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "scale": {
+            "before": 60,
+            "after": 55,
+            "reason": "Relaxed baritone and a repeating acoustic hook make an accessible, low-pressure control rather than a journey."
+          },
+          "community": {
+            "before": 80,
+            "after": 65,
+            "reason": "Relaxed baritone and a repeating acoustic hook make an accessible, low-pressure control rather than a journey."
+          },
+          "perspective": {
+            "before": 50,
+            "after": 28,
+            "reason": "Relaxed baritone and a repeating acoustic hook make an accessible, low-pressure control rather than a journey."
+          },
+          "confidence": {
+            "before": 78,
+            "after": 58,
+            "reason": "Relaxed baritone and a repeating acoustic hook make an accessible, low-pressure control rather than a journey."
+          },
+          "texture": {
+            "before": 40,
+            "after": 45,
+            "reason": "Relaxed baritone and a repeating acoustic hook make an accessible, low-pressure control rather than a journey."
+          },
+          "transformation": {
+            "before": 40,
+            "after": 28,
+            "reason": "Relaxed baritone and a repeating acoustic hook make an accessible, low-pressure control rather than a journey."
+          }
+        }
+      },
+      "cross_genre_mapping": 9,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "f0effd72-6c77-4529-872a-548cd95340e2",
+      "lane": "electronic_crossover",
+      "year": 2015,
+      "scale": 75,
+      "title": "Clearest Blue",
+      "active": false,
+      "artist": "CHVRCHES",
+      "tension": 55,
+      "texture": 80,
+      "movement": 82,
+      "sub_lane": "indie_synth_pop",
+      "community": 75,
+      "immersion": 80,
+      "longevity": 7,
+      "rationale": "A withheld instrumental payoff changes the track rather than merely lifting a chorus; the vocal stance remains uncertain.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 70,
+      "confidence": 50,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["synth_pop", "indie_dance"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 72,
+      "perspective": 35,
+      "polarization": 19,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 75,
+      "transformation": 90,
+      "pairing_density": 12,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 79,
+      "archetype_signals": [],
+      "tradeoff_richness": 16,
+      "identity_signaling": 13,
+      "primary_dimensions": ["immersion", "transformation", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 55,
+            "after": 80,
+            "reason": "A withheld instrumental payoff changes the track rather than merely lifting a chorus; the vocal stance remains uncertain."
+          },
+          "scale": {
+            "before": 70,
+            "after": 75,
+            "reason": "A withheld instrumental payoff changes the track rather than merely lifting a chorus; the vocal stance remains uncertain."
+          },
+          "perspective": {
+            "before": 50,
+            "after": 35,
+            "reason": "A withheld instrumental payoff changes the track rather than merely lifting a chorus; the vocal stance remains uncertain."
+          },
+          "confidence": {
+            "before": 80,
+            "after": 50,
+            "reason": "A withheld instrumental payoff changes the track rather than merely lifting a chorus; the vocal stance remains uncertain."
+          },
+          "texture": {
+            "before": 75,
+            "after": 80,
+            "reason": "A withheld instrumental payoff changes the track rather than merely lifting a chorus; the vocal stance remains uncertain."
+          },
+          "transformation": {
+            "before": 60,
+            "after": 90,
+            "reason": "A withheld instrumental payoff changes the track rather than merely lifting a chorus; the vocal stance remains uncertain."
+          }
+        }
+      },
+      "cross_genre_mapping": 12,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "15f5b02d-0efa-4683-bff8-32b006aeea7a",
+      "lane": "electronic_crossover",
+      "year": 2023,
+      "scale": 65,
+      "title": "De Selby (Part 2)",
+      "active": false,
+      "artist": "Hozier",
+      "tension": 55,
+      "texture": 72,
+      "movement": 80,
+      "sub_lane": "indie_soul_art_rock",
+      "community": 55,
+      "immersion": 65,
+      "longevity": 5,
+      "rationale": "A driving bass-led arrangement wraps intimate desire in an enveloping groove; neither soulful delivery nor metaphor makes an outside witness.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 75,
+      "confidence": 62,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["art_rock", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 61,
+      "perspective": 30,
+      "polarization": 16,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 60,
+      "transformation": 60,
+      "pairing_density": 9,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 66,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 12,
+      "primary_dimensions": ["movement", "atmosphere", "immersion"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "alternative_crossover_pending",
+        "score_notes": {
+          "movement": {
+            "before": 66,
+            "after": 80,
+            "reason": "A driving bass-led arrangement wraps intimate desire in an enveloping groove; neither soulful delivery nor metaphor makes an outside witness."
+          },
+          "community": {
+            "before": 70,
+            "after": 55,
+            "reason": "A driving bass-led arrangement wraps intimate desire in an enveloping groove; neither soulful delivery nor metaphor makes an outside witness."
+          },
+          "perspective": {
+            "before": 70,
+            "after": 30,
+            "reason": "A driving bass-led arrangement wraps intimate desire in an enveloping groove; neither soulful delivery nor metaphor makes an outside witness."
+          },
+          "confidence": {
+            "before": 80,
+            "after": 62,
+            "reason": "A driving bass-led arrangement wraps intimate desire in an enveloping groove; neither soulful delivery nor metaphor makes an outside witness."
+          },
+          "texture": {
+            "before": 75,
+            "after": 72,
+            "reason": "A driving bass-led arrangement wraps intimate desire in an enveloping groove; neither soulful delivery nor metaphor makes an outside witness."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "4d12cf5e-402d-47d5-bb60-697a3beea007",
+      "lane": "grunge_altrock",
+      "year": 2013,
+      "scale": 75,
+      "title": "Do I Wanna Know?",
+      "active": false,
+      "artist": "Arctic Monkeys",
+      "tension": 72,
+      "texture": 65,
+      "movement": 58,
+      "sub_lane": "blues_indie_rock",
+      "community": 58,
+      "immersion": 55,
+      "longevity": 8,
+      "rationale": "The stalking riff carries swagger while the question exposes uncertainty; slow pressure matters more than command.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 70,
+      "confidence": 50,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 87,
+      "perspective": 22,
+      "polarization": 16,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 88,
+      "transformation": 35,
+      "pairing_density": 12,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 70,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 11,
+      "primary_dimensions": ["tension", "confidence", "immersion"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "scale": {
+            "before": 80,
+            "after": 75,
+            "reason": "The stalking riff carries swagger while the question exposes uncertainty; slow pressure matters more than command."
+          },
+          "community": {
+            "before": 82,
+            "after": 58,
+            "reason": "The stalking riff carries swagger while the question exposes uncertainty; slow pressure matters more than command."
+          },
+          "perspective": {
+            "before": 60,
+            "after": 22,
+            "reason": "The stalking riff carries swagger while the question exposes uncertainty; slow pressure matters more than command."
+          },
+          "confidence": {
+            "before": 85,
+            "after": 50,
+            "reason": "The stalking riff carries swagger while the question exposes uncertainty; slow pressure matters more than command."
+          },
+          "transformation": {
+            "before": 40,
+            "after": 35,
+            "reason": "The stalking riff carries swagger while the question exposes uncertainty; slow pressure matters more than command."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "9bb1081d-3ca4-4e1c-b6a0-5a39e43a5682",
+      "lane": "britpop_indiepop",
+      "year": 2008,
+      "scale": 85,
+      "title": "Dog Days Are Over",
+      "active": false,
+      "artist": "Florence + the Machine",
+      "tension": 32,
+      "texture": 65,
+      "movement": 80,
+      "sub_lane": "baroque_indie_pop",
+      "community": 90,
+      "immersion": 55,
+      "longevity": 8,
+      "rationale": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 65,
+      "confidence": 72,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["art_rock", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 86,
+      "perspective": 42,
+      "polarization": 15,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 82,
+      "transformation": 90,
+      "pairing_density": 12,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 75,
+      "archetype_signals": [],
+      "tradeoff_richness": 16,
+      "identity_signaling": 12,
+      "primary_dimensions": ["transformation", "community", "scale"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "atmosphere": {
+            "before": 70,
+            "after": 65,
+            "reason": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth."
+          },
+          "community": {
+            "before": 88,
+            "after": 90,
+            "reason": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth."
+          },
+          "perspective": {
+            "before": 50,
+            "after": 42,
+            "reason": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth."
+          },
+          "confidence": {
+            "before": 85,
+            "after": 72,
+            "reason": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth."
+          },
+          "tension": {
+            "before": 45,
+            "after": 32,
+            "reason": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth."
+          },
+          "texture": {
+            "before": 70,
+            "after": 65,
+            "reason": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth."
+          },
+          "transformation": {
+            "before": 75,
+            "after": 90,
+            "reason": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth."
+          }
+        }
+      },
+      "cross_genre_mapping": 12,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "7a26a4be-30af-49f9-9c37-1f733c2eea7f",
+      "lane": "britpop_indiepop",
+      "year": 2017,
+      "scale": 60,
+      "title": "Feel It Still",
+      "active": false,
+      "artist": "Portugal. The Man",
+      "tension": 30,
+      "texture": 65,
+      "movement": 74,
+      "sub_lane": "retro_indie_pop",
+      "community": 75,
+      "immersion": 15,
+      "longevity": 6,
+      "rationale": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 50,
+      "confidence": 80,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop", "alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 78,
+      "perspective": 38,
+      "polarization": 15,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 60,
+      "transformation": 22,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 63,
+      "archetype_signals": [],
+      "tradeoff_richness": 11,
+      "identity_signaling": 10,
+      "primary_dimensions": ["immersion", "confidence", "transformation"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 25,
+            "after": 15,
+            "reason": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control."
+          },
+          "scale": {
+            "before": 70,
+            "after": 60,
+            "reason": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control."
+          },
+          "community": {
+            "before": 84,
+            "after": 75,
+            "reason": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control."
+          },
+          "perspective": {
+            "before": 60,
+            "after": 38,
+            "reason": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control."
+          },
+          "confidence": {
+            "before": 85,
+            "after": 80,
+            "reason": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control."
+          },
+          "texture": {
+            "before": 60,
+            "after": 65,
+            "reason": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control."
+          },
+          "transformation": {
+            "before": 45,
+            "after": 22,
+            "reason": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "cf569731-a5a9-440a-b4f0-aba8fec94c1e",
+      "lane": "britpop_indiepop",
+      "year": 2004,
+      "scale": 65,
+      "title": "Float On",
+      "active": false,
+      "artist": "Modest Mouse",
+      "tension": 30,
+      "texture": 42,
+      "movement": 68,
+      "sub_lane": "indie_rock",
+      "community": 80,
+      "immersion": 25,
+      "longevity": 8,
+      "rationale": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 50,
+      "confidence": 72,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop", "alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 83,
+      "perspective": 38,
+      "polarization": 15,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 85,
+      "transformation": 32,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 65,
+      "archetype_signals": [],
+      "tradeoff_richness": 12,
+      "identity_signaling": 11,
+      "primary_dimensions": ["community", "tension", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "atmosphere": {
+            "before": 55,
+            "after": 50,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          },
+          "immersion": {
+            "before": 30,
+            "after": 25,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          },
+          "scale": {
+            "before": 70,
+            "after": 65,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          },
+          "community": {
+            "before": 82,
+            "after": 80,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          },
+          "perspective": {
+            "before": 60,
+            "after": 38,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          },
+          "confidence": {
+            "before": 80,
+            "after": 72,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          },
+          "tension": {
+            "before": 35,
+            "after": 30,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          },
+          "texture": {
+            "before": 50,
+            "after": 42,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          },
+          "transformation": {
+            "before": 60,
+            "after": 32,
+            "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
+          }
+        }
+      },
+      "cross_genre_mapping": 9,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "8be528c8-a73c-4cc0-bebd-2706161d480a",
+      "lane": "electronic_crossover",
+      "year": 2020,
+      "scale": 62,
+      "title": "Heat Waves",
+      "active": false,
+      "artist": "Glass Animals",
+      "tension": 35,
+      "texture": 80,
+      "movement": 60,
+      "sub_lane": "psychedelic_indie_pop",
+      "community": 58,
+      "immersion": 42,
+      "longevity": 7,
+      "rationale": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 80,
+      "confidence": 42,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop", "electronica"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 84,
+      "perspective": 22,
+      "polarization": 15,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 60,
+      "transformation": 40,
+      "pairing_density": 11,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 67,
+      "archetype_signals": [],
+      "tradeoff_richness": 12,
+      "identity_signaling": 11,
+      "primary_dimensions": ["atmosphere", "confidence", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 65,
+            "after": 42,
+            "reason": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale."
+          },
+          "scale": {
+            "before": 85,
+            "after": 62,
+            "reason": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale."
+          },
+          "community": {
+            "before": 86,
+            "after": 58,
+            "reason": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale."
+          },
+          "perspective": {
+            "before": 60,
+            "after": 22,
+            "reason": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale."
+          },
+          "confidence": {
+            "before": 70,
+            "after": 42,
+            "reason": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale."
+          },
+          "texture": {
+            "before": 78,
+            "after": 80,
+            "reason": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale."
+          },
+          "transformation": {
+            "before": 50,
+            "after": 40,
+            "reason": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "6a4e523f-3616-4c40-9e90-92464655b749",
+      "lane": "britpop_indiepop",
+      "year": 2012,
+      "scale": 65,
+      "title": "Ho Hey",
+      "active": false,
+      "artist": "The Lumineers",
+      "tension": 20,
+      "texture": 35,
+      "movement": 65,
+      "sub_lane": "indie_folk_pop",
+      "community": 90,
+      "immersion": 20,
+      "longevity": 6,
+      "rationale": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 45,
+      "confidence": 52,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 77,
+      "perspective": 28,
+      "polarization": 21,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 70,
+      "transformation": 28,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 71,
+      "archetype_signals": [],
+      "tradeoff_richness": 10,
+      "identity_signaling": 13,
+      "primary_dimensions": ["community", "immersion", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "atmosphere": {
+            "before": 50,
+            "after": 45,
+            "reason": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple."
+          },
+          "immersion": {
+            "before": 25,
+            "after": 20,
+            "reason": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple."
+          },
+          "scale": {
+            "before": 70,
+            "after": 65,
+            "reason": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple."
+          },
+          "perspective": {
+            "before": 45,
+            "after": 28,
+            "reason": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple."
+          },
+          "confidence": {
+            "before": 80,
+            "after": 52,
+            "reason": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple."
+          },
+          "texture": {
+            "before": 40,
+            "after": 35,
+            "reason": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple."
+          },
+          "transformation": {
+            "before": 45,
+            "after": 28,
+            "reason": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "a3e0dcd6-ab13-4ac8-9817-0c49e2d5991f",
+      "lane": "grunge_altrock",
+      "year": 2005,
+      "scale": 62,
+      "title": "I Bet You Look Good on the Dancefloor",
+      "active": false,
+      "artist": "Arctic Monkeys",
+      "tension": 60,
+      "texture": 28,
+      "movement": 88,
+      "sub_lane": "garage_indie_rock",
+      "community": 82,
+      "immersion": 10,
+      "longevity": 8,
+      "rationale": "Abrupt, abrasive guitar rush and conversational flirtation reward attack over polish; it does not slowly unveil itself.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 30,
+      "confidence": 80,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 86,
+      "perspective": 55,
+      "polarization": 17,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 90,
+      "transformation": 28,
+      "pairing_density": 11,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 68,
+      "archetype_signals": [],
+      "tradeoff_richness": 11,
+      "identity_signaling": 12,
+      "primary_dimensions": ["movement", "immersion", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "community": {
+            "before": 85,
+            "after": 82,
+            "reason": "Abrupt, abrasive guitar rush and conversational flirtation reward attack over polish; it does not slowly unveil itself."
+          },
+          "perspective": {
+            "before": 70,
+            "after": 55,
+            "reason": "Abrupt, abrasive guitar rush and conversational flirtation reward attack over polish; it does not slowly unveil itself."
+          },
+          "confidence": {
+            "before": 92,
+            "after": 80,
+            "reason": "Abrupt, abrasive guitar rush and conversational flirtation reward attack over polish; it does not slowly unveil itself."
+          },
+          "texture": {
+            "before": 40,
+            "after": 28,
+            "reason": "Abrupt, abrasive guitar rush and conversational flirtation reward attack over polish; it does not slowly unveil itself."
+          },
+          "transformation": {
+            "before": 40,
+            "after": 28,
+            "reason": "Abrupt, abrasive guitar rush and conversational flirtation reward attack over polish; it does not slowly unveil itself."
+          }
+        }
+      },
+      "cross_genre_mapping": 9,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "438c1d74-5fb0-4aab-839d-62494db6dafa",
+      "lane": "electronic_crossover",
+      "year": 2007,
+      "scale": 75,
+      "title": "Kids",
+      "active": false,
+      "artist": "MGMT",
+      "tension": 30,
+      "texture": 75,
+      "movement": 75,
+      "sub_lane": "psychedelic_synth_pop",
+      "community": 85,
+      "immersion": 45,
+      "longevity": 8,
+      "rationale": "Direct address and warning put the narrator outside the subject more than most confessionals; the synth hook is immediate despite its haze.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 65,
+      "confidence": 72,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["synth_pop", "indie_dance"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 85,
+      "perspective": 72,
+      "polarization": 16,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 80,
+      "transformation": 38,
+      "pairing_density": 11,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 72,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 12,
+      "primary_dimensions": ["perspective", "community", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 50,
+            "after": 45,
+            "reason": "Direct address and warning put the narrator outside the subject more than most confessionals; the synth hook is immediate despite its haze."
+          },
+          "community": {
+            "before": 86,
+            "after": 85,
+            "reason": "Direct address and warning put the narrator outside the subject more than most confessionals; the synth hook is immediate despite its haze."
+          },
+          "perspective": {
+            "before": 45,
+            "after": 72,
+            "reason": "Direct address and warning put the narrator outside the subject more than most confessionals; the synth hook is immediate despite its haze."
+          },
+          "confidence": {
+            "before": 75,
+            "after": 72,
+            "reason": "Direct address and warning put the narrator outside the subject more than most confessionals; the synth hook is immediate despite its haze."
+          },
+          "texture": {
+            "before": 70,
+            "after": 75,
+            "reason": "Direct address and warning put the narrator outside the subject more than most confessionals; the synth hook is immediate despite its haze."
+          },
+          "transformation": {
+            "before": 55,
+            "after": 38,
+            "reason": "Direct address and warning put the narrator outside the subject more than most confessionals; the synth hook is immediate despite its haze."
+          }
+        }
+      },
+      "cross_genre_mapping": 12,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "6f13c2ac-4b0f-425e-b814-3b55494ed96a",
+      "lane": "britpop_indiepop",
+      "year": 2020,
+      "scale": 55,
+      "title": "Kyoto",
+      "active": false,
+      "artist": "Phoebe Bridgers",
+      "tension": 55,
+      "texture": 58,
+      "movement": 62,
+      "sub_lane": "indie_rock",
+      "community": 62,
+      "immersion": 38,
+      "longevity": 7,
+      "rationale": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 65,
+      "confidence": 50,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop", "dream_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 78,
+      "perspective": 35,
+      "polarization": 18,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 85,
+      "transformation": 50,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 72,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 14,
+      "primary_dimensions": ["perspective", "confidence", "immersion"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "atmosphere": {
+            "before": 70,
+            "after": 65,
+            "reason": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness."
+          },
+          "immersion": {
+            "before": 60,
+            "after": 38,
+            "reason": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness."
+          },
+          "community": {
+            "before": 72,
+            "after": 62,
+            "reason": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness."
+          },
+          "perspective": {
+            "before": 85,
+            "after": 35,
+            "reason": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness."
+          },
+          "confidence": {
+            "before": 75,
+            "after": 50,
+            "reason": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness."
+          },
+          "texture": {
+            "before": 60,
+            "after": 58,
+            "reason": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness."
+          },
+          "transformation": {
+            "before": 55,
+            "after": 50,
+            "reason": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "07ebce3b-4698-409f-a5ef-f56e1e399683",
+      "lane": "grunge_altrock",
+      "year": 2001,
+      "scale": 60,
+      "title": "Last Nite",
+      "active": false,
+      "artist": "The Strokes",
+      "tension": 45,
+      "texture": 32,
+      "movement": 72,
+      "sub_lane": "garage_indie_rock",
+      "community": 75,
+      "immersion": 20,
+      "longevity": 9,
+      "rationale": "Scratchy, direct garage rock repeats a tight form; cultivated cool should not be mistaken for polished production.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 40,
+      "confidence": 78,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock", "college_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 90,
+      "perspective": 40,
+      "polarization": 18,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 95,
+      "transformation": 28,
+      "pairing_density": 12,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 73,
+      "archetype_signals": [],
+      "tradeoff_richness": 12,
+      "identity_signaling": 13,
+      "primary_dimensions": ["texture", "immersion", "transformation"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "community": {
+            "before": 80,
+            "after": 75,
+            "reason": "Scratchy, direct garage rock repeats a tight form; cultivated cool should not be mistaken for polished production."
+          },
+          "perspective": {
+            "before": 45,
+            "after": 40,
+            "reason": "Scratchy, direct garage rock repeats a tight form; cultivated cool should not be mistaken for polished production."
+          },
+          "confidence": {
+            "before": 90,
+            "after": 78,
+            "reason": "Scratchy, direct garage rock repeats a tight form; cultivated cool should not be mistaken for polished production."
+          },
+          "texture": {
+            "before": 55,
+            "after": 32,
+            "reason": "Scratchy, direct garage rock repeats a tight form; cultivated cool should not be mistaken for polished production."
+          },
+          "transformation": {
+            "before": 45,
+            "after": 28,
+            "reason": "Scratchy, direct garage rock repeats a tight form; cultivated cool should not be mistaken for polished production."
+          }
+        }
+      },
+      "cross_genre_mapping": 9,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "d97250cc-50e2-444f-b6a6-54dff776b7be",
+      "lane": "grunge_altrock",
+      "year": 2011,
+      "scale": 65,
+      "title": "Lonely Boy",
+      "active": false,
+      "artist": "The Black Keys",
+      "tension": 40,
+      "texture": 32,
+      "movement": 78,
+      "sub_lane": "garage_blues_rock",
+      "community": 75,
+      "immersion": 15,
+      "longevity": 7,
+      "rationale": "Grainy riff propulsion lands immediately; performance strut, not slow musical development, supplies the hook.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 35,
+      "confidence": 82,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 78,
+      "perspective": 35,
+      "polarization": 15,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 85,
+      "transformation": 22,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 60,
+      "archetype_signals": [],
+      "tradeoff_richness": 9,
+      "identity_signaling": 10,
+      "primary_dimensions": ["confidence", "texture", "immersion"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "scale": {
+            "before": 70,
+            "after": 65,
+            "reason": "Grainy riff propulsion lands immediately; performance strut, not slow musical development, supplies the hook."
+          },
+          "community": {
+            "before": 80,
+            "after": 75,
+            "reason": "Grainy riff propulsion lands immediately; performance strut, not slow musical development, supplies the hook."
+          },
+          "perspective": {
+            "before": 40,
+            "after": 35,
+            "reason": "Grainy riff propulsion lands immediately; performance strut, not slow musical development, supplies the hook."
+          },
+          "confidence": {
+            "before": 92,
+            "after": 82,
+            "reason": "Grainy riff propulsion lands immediately; performance strut, not slow musical development, supplies the hook."
+          },
+          "texture": {
+            "before": 45,
+            "after": 32,
+            "reason": "Grainy riff propulsion lands immediately; performance strut, not slow musical development, supplies the hook."
+          },
+          "transformation": {
+            "before": 35,
+            "after": 22,
+            "reason": "Grainy riff propulsion lands immediately; performance strut, not slow musical development, supplies the hook."
+          }
+        }
+      },
+      "cross_genre_mapping": 9,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "fd16e83c-9f44-430e-87f9-608d6d4917ca",
+      "lane": "grunge_altrock",
+      "year": 2003,
+      "scale": 60,
+      "title": "Maps",
+      "active": false,
+      "artist": "Yeah Yeah Yeahs",
+      "tension": 72,
+      "texture": 55,
+      "movement": 48,
+      "sub_lane": "art_indie_rock",
+      "community": 45,
+      "immersion": 65,
+      "longevity": 8,
+      "rationale": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 68,
+      "confidence": 28,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock", "art_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 92,
+      "perspective": 22,
+      "polarization": 19,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 90,
+      "transformation": 55,
+      "pairing_density": 11,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 76,
+      "archetype_signals": [],
+      "tradeoff_richness": 15,
+      "identity_signaling": 12,
+      "primary_dimensions": ["confidence", "community", "tension"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "movement": {
+            "before": 55,
+            "after": 48,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          },
+          "atmosphere": {
+            "before": 65,
+            "after": 68,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          },
+          "immersion": {
+            "before": 70,
+            "after": 65,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          },
+          "scale": {
+            "before": 65,
+            "after": 60,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          },
+          "community": {
+            "before": 70,
+            "after": 45,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          },
+          "perspective": {
+            "before": 55,
+            "after": 22,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          },
+          "confidence": {
+            "before": 85,
+            "after": 28,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          },
+          "tension": {
+            "before": 75,
+            "after": 72,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          },
+          "texture": {
+            "before": 60,
+            "after": 55,
+            "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "ceb5d0a6-450d-469e-a8b9-11868047751a",
+      "lane": "britpop_indiepop",
+      "year": 2024,
+      "scale": 65,
+      "title": "Messy",
+      "active": false,
+      "artist": "Lola Young",
+      "tension": 65,
+      "texture": 42,
+      "movement": 55,
+      "sub_lane": "pop_soul",
+      "community": 58,
+      "immersion": 40,
+      "longevity": 4,
+      "rationale": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 65,
+      "confidence": 55,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop", "alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 65,
+      "perspective": 22,
+      "polarization": 17,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 40,
+      "transformation": 45,
+      "pairing_density": 9,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 64,
+      "archetype_signals": [],
+      "tradeoff_richness": 12,
+      "identity_signaling": 12,
+      "primary_dimensions": ["perspective", "texture", "confidence"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "proposed_pop",
+        "score_notes": {
+          "atmosphere": {
+            "before": 68,
+            "after": 65,
+            "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
+          },
+          "immersion": {
+            "before": 55,
+            "after": 40,
+            "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
+          },
+          "scale": {
+            "before": 70,
+            "after": 65,
+            "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
+          },
+          "community": {
+            "before": 80,
+            "after": 58,
+            "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
+          },
+          "perspective": {
+            "before": 80,
+            "after": 22,
+            "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
+          },
+          "confidence": {
+            "before": 75,
+            "after": 55,
+            "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
+          },
+          "texture": {
+            "before": 60,
+            "after": 42,
+            "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
+          },
+          "transformation": {
+            "before": 55,
+            "after": 45,
+            "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "6a2f760c-2d69-417f-9f99-356b768ff45e",
+      "lane": "britpop_indiepop",
+      "year": 2004,
+      "scale": 85,
+      "title": "Mr. Brightside",
+      "active": false,
+      "artist": "The Killers",
+      "tension": 75,
+      "texture": 72,
+      "movement": 78,
+      "sub_lane": "anthemic_indie_rock",
+      "community": 92,
+      "immersion": 35,
+      "longevity": 10,
+      "rationale": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 45,
+      "confidence": 45,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock", "new_wave"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 96,
+      "perspective": 22,
+      "polarization": 14,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 90,
+      "transformation": 38,
+      "pairing_density": 13,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 68,
+      "archetype_signals": [],
+      "tradeoff_richness": 11,
+      "identity_signaling": 9,
+      "primary_dimensions": ["community", "confidence", "tension"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 40,
+            "after": 35,
+            "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
+          },
+          "scale": {
+            "before": 88,
+            "after": 85,
+            "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
+          },
+          "community": {
+            "before": 90,
+            "after": 92,
+            "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
+          },
+          "perspective": {
+            "before": 65,
+            "after": 22,
+            "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
+          },
+          "confidence": {
+            "before": 85,
+            "after": 45,
+            "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
+          },
+          "tension": {
+            "before": 70,
+            "after": 75,
+            "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
+          },
+          "texture": {
+            "before": 50,
+            "after": 72,
+            "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
+          },
+          "transformation": {
+            "before": 45,
+            "after": 38,
+            "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "36eb9016-e0b6-4127-af0a-c14dd6840882",
+      "lane": "britpop_indiepop",
+      "year": 2008,
+      "scale": 75,
+      "title": "Nine in the Afternoon",
+      "active": false,
+      "artist": "Panic! at the Disco",
+      "tension": 30,
+      "texture": 80,
+      "movement": 70,
+      "sub_lane": "baroque_pop_rock",
+      "community": 75,
+      "immersion": 35,
+      "longevity": 5,
+      "rationale": "Arranged piano-and-brass theatricality is refined and expansive, but recurring hooks are not wholesale transformation.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 60,
+      "confidence": 75,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop", "alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 70,
+      "perspective": 48,
+      "polarization": 20,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 70,
+      "transformation": 38,
+      "pairing_density": 8,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 66,
+      "archetype_signals": [],
+      "tradeoff_richness": 11,
+      "identity_signaling": 13,
+      "primary_dimensions": ["texture", "scale", "tension"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "scale": {
+            "before": 60,
+            "after": 75,
+            "reason": "Arranged piano-and-brass theatricality is refined and expansive, but recurring hooks are not wholesale transformation."
+          },
+          "perspective": {
+            "before": 55,
+            "after": 48,
+            "reason": "Arranged piano-and-brass theatricality is refined and expansive, but recurring hooks are not wholesale transformation."
+          },
+          "confidence": {
+            "before": 80,
+            "after": 75,
+            "reason": "Arranged piano-and-brass theatricality is refined and expansive, but recurring hooks are not wholesale transformation."
+          },
+          "texture": {
+            "before": 65,
+            "after": 80,
+            "reason": "Arranged piano-and-brass theatricality is refined and expansive, but recurring hooks are not wholesale transformation."
+          },
+          "transformation": {
+            "before": 55,
+            "after": 38,
+            "reason": "Arranged piano-and-brass theatricality is refined and expansive, but recurring hooks are not wholesale transformation."
+          }
+        }
+      },
+      "cross_genre_mapping": 9,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "f77a1c66-af97-4291-baa2-031d6fe3033a",
+      "lane": "britpop_indiepop",
+      "year": 2023,
+      "scale": 65,
+      "title": "Not Strong Enough",
+      "active": false,
+      "artist": "boygenius",
+      "tension": 60,
+      "texture": 65,
+      "movement": 58,
+      "sub_lane": "indie_rock",
+      "community": 68,
+      "immersion": 60,
+      "longevity": 6,
+      "rationale": "Layered confessions remain inside feeling; the repeated bridge and ensemble build deepen self-doubt rather than supply detached observation.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 72,
+      "confidence": 38,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop", "dream_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 77,
+      "perspective": 22,
+      "polarization": 18,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 85,
+      "transformation": 72,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 71,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 14,
+      "primary_dimensions": ["confidence", "perspective", "transformation"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 65,
+            "after": 60,
+            "reason": "Layered confessions remain inside feeling; the repeated bridge and ensemble build deepen self-doubt rather than supply detached observation."
+          },
+          "community": {
+            "before": 78,
+            "after": 68,
+            "reason": "Layered confessions remain inside feeling; the repeated bridge and ensemble build deepen self-doubt rather than supply detached observation."
+          },
+          "perspective": {
+            "before": 85,
+            "after": 22,
+            "reason": "Layered confessions remain inside feeling; the repeated bridge and ensemble build deepen self-doubt rather than supply detached observation."
+          },
+          "confidence": {
+            "before": 70,
+            "after": 38,
+            "reason": "Layered confessions remain inside feeling; the repeated bridge and ensemble build deepen self-doubt rather than supply detached observation."
+          },
+          "transformation": {
+            "before": 55,
+            "after": 72,
+            "reason": "Layered confessions remain inside feeling; the repeated bridge and ensemble build deepen self-doubt rather than supply detached observation."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "00e86d67-b353-4ead-867b-bff658957466",
+      "lane": "britpop_indiepop",
+      "year": 2025,
+      "scale": 85,
+      "title": "Ordinary",
+      "active": false,
+      "artist": "Alex Warren",
+      "tension": 40,
+      "texture": 80,
+      "movement": 58,
+      "sub_lane": "arena_pop_ballad",
+      "community": 82,
+      "immersion": 45,
+      "longevity": 3,
+      "rationale": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 65,
+      "confidence": 50,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 70,
+      "perspective": 22,
+      "polarization": 18,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 40,
+      "transformation": 65,
+      "pairing_density": 9,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 61,
+      "archetype_signals": [],
+      "tradeoff_richness": 10,
+      "identity_signaling": 11,
+      "primary_dimensions": ["perspective", "scale", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "proposed_pop",
+        "score_notes": {
+          "atmosphere": {
+            "before": 70,
+            "after": 65,
+            "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
+          },
+          "immersion": {
+            "before": 55,
+            "after": 45,
+            "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
+          },
+          "scale": {
+            "before": 88,
+            "after": 85,
+            "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
+          },
+          "community": {
+            "before": 88,
+            "after": 82,
+            "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
+          },
+          "perspective": {
+            "before": 60,
+            "after": 22,
+            "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
+          },
+          "confidence": {
+            "before": 75,
+            "after": 50,
+            "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
+          },
+          "texture": {
+            "before": 55,
+            "after": 80,
+            "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
+          },
+          "transformation": {
+            "before": 55,
+            "after": 65,
+            "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "dbb70a54-533b-44c2-a661-d247de7fb08e",
+      "lane": "britpop_indiepop",
+      "year": 2010,
+      "scale": 60,
+      "title": "Pumped Up Kicks",
+      "active": false,
+      "artist": "Foster the People",
+      "tension": 45,
+      "texture": 60,
+      "movement": 72,
+      "sub_lane": "indie_pop",
+      "community": 75,
+      "immersion": 25,
+      "longevity": 7,
+      "rationale": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 55,
+      "confidence": 68,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop", "alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 85,
+      "perspective": 72,
+      "polarization": 18,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 75,
+      "transformation": 28,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 69,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 11,
+      "primary_dimensions": ["perspective", "immersion", "transformation"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 30,
+            "after": 25,
+            "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
+          },
+          "scale": {
+            "before": 65,
+            "after": 60,
+            "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
+          },
+          "community": {
+            "before": 84,
+            "after": 75,
+            "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
+          },
+          "perspective": {
+            "before": 75,
+            "after": 72,
+            "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
+          },
+          "confidence": {
+            "before": 75,
+            "after": 68,
+            "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
+          },
+          "tension": {
+            "before": 55,
+            "after": 45,
+            "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
+          },
+          "texture": {
+            "before": 55,
+            "after": 60,
+            "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
+          },
+          "transformation": {
+            "before": 40,
+            "after": 28,
+            "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "ad7cfe1b-f058-4543-aa6b-47fbbd34354b",
+      "lane": "grunge_altrock",
+      "year": 2004,
+      "scale": 85,
+      "title": "Rebellion (Lies)",
+      "active": false,
+      "artist": "Arcade Fire",
+      "tension": 65,
+      "texture": 48,
+      "movement": 74,
+      "sub_lane": "chamber_indie_rock",
+      "community": 90,
+      "immersion": 60,
+      "longevity": 9,
+      "rationale": "Repeated warnings address an audience as the ensemble gathers force; accumulation and communal invitation are genuine, not just popularity.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 62,
+      "confidence": 72,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["art_rock", "alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 90,
+      "perspective": 70,
+      "polarization": 19,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 90,
+      "transformation": 72,
+      "pairing_density": 12,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 80,
+      "archetype_signals": [],
+      "tradeoff_richness": 15,
+      "identity_signaling": 14,
+      "primary_dimensions": ["community", "transformation", "perspective"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "scale": {
+            "before": 88,
+            "after": 85,
+            "reason": "Repeated warnings address an audience as the ensemble gathers force; accumulation and communal invitation are genuine, not just popularity."
+          },
+          "perspective": {
+            "before": 55,
+            "after": 70,
+            "reason": "Repeated warnings address an audience as the ensemble gathers force; accumulation and communal invitation are genuine, not just popularity."
+          },
+          "confidence": {
+            "before": 85,
+            "after": 72,
+            "reason": "Repeated warnings address an audience as the ensemble gathers force; accumulation and communal invitation are genuine, not just popularity."
+          },
+          "texture": {
+            "before": 60,
+            "after": 48,
+            "reason": "Repeated warnings address an audience as the ensemble gathers force; accumulation and communal invitation are genuine, not just popularity."
+          },
+          "transformation": {
+            "before": 70,
+            "after": 72,
+            "reason": "Repeated warnings address an audience as the ensemble gathers force; accumulation and communal invitation are genuine, not just popularity."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "e90493ec-ad1b-481b-a77b-212f38993cdb",
+      "lane": "britpop_indiepop",
+      "year": 2013,
+      "scale": 55,
+      "title": "Riptide",
+      "active": false,
+      "artist": "Vance Joy",
+      "tension": 25,
+      "texture": 40,
+      "movement": 62,
+      "sub_lane": "indie_folk_pop",
+      "community": 72,
+      "immersion": 25,
+      "longevity": 6,
+      "rationale": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 55,
+      "confidence": 52,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 78,
+      "perspective": 35,
+      "polarization": 17,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 65,
+      "transformation": 28,
+      "pairing_density": 9,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 61,
+      "archetype_signals": [],
+      "tradeoff_richness": 9,
+      "identity_signaling": 11,
+      "primary_dimensions": ["immersion", "texture", "transformation"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "atmosphere": {
+            "before": 60,
+            "after": 55,
+            "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
+          },
+          "immersion": {
+            "before": 30,
+            "after": 25,
+            "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
+          },
+          "scale": {
+            "before": 65,
+            "after": 55,
+            "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
+          },
+          "community": {
+            "before": 85,
+            "after": 72,
+            "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
+          },
+          "perspective": {
+            "before": 55,
+            "after": 35,
+            "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
+          },
+          "confidence": {
+            "before": 70,
+            "after": 52,
+            "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
+          },
+          "texture": {
+            "before": 45,
+            "after": 40,
+            "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
+          },
+          "transformation": {
+            "before": 40,
+            "after": 28,
+            "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
+          }
+        }
+      },
+      "cross_genre_mapping": 9,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "d3853ea6-6040-4347-b207-bb1d593f17c1",
+      "lane": "grunge_altrock",
+      "year": 2003,
+      "scale": 68,
+      "title": "Seven Nation Army",
+      "active": false,
+      "artist": "The White Stripes",
+      "tension": 60,
+      "texture": 32,
+      "movement": 70,
+      "sub_lane": "garage_blues_rock",
+      "community": 88,
+      "immersion": 25,
+      "longevity": 10,
+      "rationale": "A sparse gritty riff invites chanting without becoming cathedral-scale; defiant delivery is a clearer command anchor than Maps.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 45,
+      "confidence": 85,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 97,
+      "perspective": 48,
+      "polarization": 12,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 88,
+      "transformation": 28,
+      "pairing_density": 12,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 62,
+      "archetype_signals": [],
+      "tradeoff_richness": 9,
+      "identity_signaling": 8,
+      "primary_dimensions": ["confidence", "community", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 30,
+            "after": 25,
+            "reason": "A sparse gritty riff invites chanting without becoming cathedral-scale; defiant delivery is a clearer command anchor than Maps."
+          },
+          "scale": {
+            "before": 92,
+            "after": 68,
+            "reason": "A sparse gritty riff invites chanting without becoming cathedral-scale; defiant delivery is a clearer command anchor than Maps."
+          },
+          "perspective": {
+            "before": 50,
+            "after": 48,
+            "reason": "A sparse gritty riff invites chanting without becoming cathedral-scale; defiant delivery is a clearer command anchor than Maps."
+          },
+          "confidence": {
+            "before": 95,
+            "after": 85,
+            "reason": "A sparse gritty riff invites chanting without becoming cathedral-scale; defiant delivery is a clearer command anchor than Maps."
+          },
+          "texture": {
+            "before": 50,
+            "after": 32,
+            "reason": "A sparse gritty riff invites chanting without becoming cathedral-scale; defiant delivery is a clearer command anchor than Maps."
+          },
+          "transformation": {
+            "before": 45,
+            "after": 28,
+            "reason": "A sparse gritty riff invites chanting without becoming cathedral-scale; defiant delivery is a clearer command anchor than Maps."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "6ff8e3f7-c5d9-4f54-9e6d-9e76658265f6",
+      "lane": "manchester_indie_dance",
+      "year": 2014,
+      "scale": 75,
+      "title": "Shut Up and Dance",
+      "active": false,
+      "artist": "Walk the Moon",
+      "tension": 25,
+      "texture": 82,
+      "movement": 88,
+      "sub_lane": "dance_indie_pop",
+      "community": 90,
+      "immersion": 15,
+      "longevity": 6,
+      "rationale": "Polished drums and instant chorus release throw the door open immediately; excitement is not a delayed structural reveal.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 40,
+      "confidence": 85,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_dance", "new_wave"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 76,
+      "perspective": 35,
+      "polarization": 19,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 65,
+      "transformation": 28,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 65,
+      "archetype_signals": [],
+      "tradeoff_richness": 9,
+      "identity_signaling": 11,
+      "primary_dimensions": ["movement", "community", "immersion"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "community": {
+            "before": 88,
+            "after": 90,
+            "reason": "Polished drums and instant chorus release throw the door open immediately; excitement is not a delayed structural reveal."
+          },
+          "confidence": {
+            "before": 90,
+            "after": 85,
+            "reason": "Polished drums and instant chorus release throw the door open immediately; excitement is not a delayed structural reveal."
+          },
+          "texture": {
+            "before": 50,
+            "after": 82,
+            "reason": "Polished drums and instant chorus release throw the door open immediately; excitement is not a delayed structural reveal."
+          },
+          "transformation": {
+            "before": 40,
+            "after": 28,
+            "reason": "Polished drums and instant chorus release throw the door open immediately; excitement is not a delayed structural reveal."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "85a72d6b-e319-4e23-adc9-0e9c550276ba",
+      "lane": "britpop_indiepop",
+      "year": 2021,
+      "scale": 55,
+      "title": "Solar Power",
+      "active": false,
+      "artist": "Lorde",
+      "tension": 15,
+      "texture": 58,
+      "movement": 42,
+      "sub_lane": "psychedelic_indie_pop",
+      "community": 62,
+      "immersion": 40,
+      "longevity": 4,
+      "rationale": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 75,
+      "confidence": 65,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 60,
+      "perspective": 50,
+      "polarization": 20,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 40,
+      "transformation": 55,
+      "pairing_density": 8,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 65,
+      "archetype_signals": [],
+      "tradeoff_richness": 12,
+      "identity_signaling": 12,
+      "primary_dimensions": ["movement", "tension", "atmosphere"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "alternative_crossover_pending",
+        "score_notes": {
+          "movement": {
+            "before": 50,
+            "after": 42,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          },
+          "atmosphere": {
+            "before": 72,
+            "after": 75,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          },
+          "scale": {
+            "before": 60,
+            "after": 55,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          },
+          "community": {
+            "before": 70,
+            "after": 62,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          },
+          "perspective": {
+            "before": 70,
+            "after": 50,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          },
+          "confidence": {
+            "before": 70,
+            "after": 65,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          },
+          "tension": {
+            "before": 20,
+            "after": 15,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          },
+          "texture": {
+            "before": 55,
+            "after": 58,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          },
+          "transformation": {
+            "before": 60,
+            "after": 55,
+            "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
+          }
+        }
+      },
+      "cross_genre_mapping": 9,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "1deb5d08-9c2c-4a18-b94f-98ff2e74de0e",
+      "lane": "electronic_crossover",
+      "year": 2011,
+      "scale": 48,
+      "title": "Somebody That I Used to Know",
+      "active": false,
+      "artist": "Gotye",
+      "tension": 68,
+      "texture": 72,
+      "movement": 50,
+      "sub_lane": "art_indie_pop",
+      "community": 50,
+      "immersion": 55,
+      "longevity": 7,
+      "rationale": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 72,
+      "confidence": 50,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["art_rock", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 89,
+      "perspective": 30,
+      "polarization": 15,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 50,
+      "transformation": 60,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 66,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 10,
+      "primary_dimensions": ["scale", "confidence", "tension"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "alternative_crossover_pending",
+        "score_notes": {
+          "immersion": {
+            "before": 60,
+            "after": 55,
+            "reason": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses."
+          },
+          "scale": {
+            "before": 85,
+            "after": 48,
+            "reason": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses."
+          },
+          "community": {
+            "before": 88,
+            "after": 50,
+            "reason": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses."
+          },
+          "perspective": {
+            "before": 80,
+            "after": 30,
+            "reason": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses."
+          },
+          "confidence": {
+            "before": 70,
+            "after": 50,
+            "reason": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses."
+          },
+          "texture": {
+            "before": 75,
+            "after": 72,
+            "reason": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses."
+          },
+          "transformation": {
+            "before": 55,
+            "after": 60,
+            "reason": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "c034ee2f-65ef-486f-a446-5165fb21c4da",
+      "lane": "electronic_crossover",
+      "year": 2003,
+      "scale": 45,
+      "title": "Such Great Heights",
+      "active": false,
+      "artist": "The Postal Service",
+      "tension": 25,
+      "texture": 85,
+      "movement": 74,
+      "sub_lane": "indietronica",
+      "community": 50,
+      "immersion": 38,
+      "longevity": 8,
+      "rationale": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 75,
+      "confidence": 58,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["electronica", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 88,
+      "perspective": 22,
+      "polarization": 18,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 80,
+      "transformation": 48,
+      "pairing_density": 11,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 76,
+      "archetype_signals": [],
+      "tradeoff_richness": 14,
+      "identity_signaling": 13,
+      "primary_dimensions": ["scale", "texture", "atmosphere"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "movement": {
+            "before": 45,
+            "after": 74,
+            "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
+          },
+          "immersion": {
+            "before": 65,
+            "after": 38,
+            "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
+          },
+          "scale": {
+            "before": 50,
+            "after": 45,
+            "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
+          },
+          "community": {
+            "before": 72,
+            "after": 50,
+            "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
+          },
+          "perspective": {
+            "before": 60,
+            "after": 22,
+            "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
+          },
+          "confidence": {
+            "before": 60,
+            "after": 58,
+            "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
+          },
+          "texture": {
+            "before": 80,
+            "after": 85,
+            "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
+          },
+          "transformation": {
+            "before": 50,
+            "after": 48,
+            "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
+          }
+        }
+      },
+      "cross_genre_mapping": 12,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "bc53aee1-55d7-4e54-82bd-50f547e33ca2",
+      "lane": "electronic_crossover",
+      "year": 2012,
+      "scale": 65,
+      "title": "Take a Walk",
+      "active": false,
+      "artist": "Passion Pit",
+      "tension": 45,
+      "texture": 78,
+      "movement": 80,
+      "sub_lane": "indie_synth_pop",
+      "community": 75,
+      "immersion": 25,
+      "longevity": 5,
+      "rationale": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 55,
+      "confidence": 52,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["synth_pop", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 73,
+      "perspective": 35,
+      "polarization": 15,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 70,
+      "transformation": 32,
+      "pairing_density": 9,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 62,
+      "archetype_signals": [],
+      "tradeoff_richness": 12,
+      "identity_signaling": 11,
+      "primary_dimensions": ["movement", "texture", "perspective"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 30,
+            "after": 25,
+            "reason": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience."
+          },
+          "scale": {
+            "before": 60,
+            "after": 65,
+            "reason": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience."
+          },
+          "community": {
+            "before": 78,
+            "after": 75,
+            "reason": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience."
+          },
+          "perspective": {
+            "before": 70,
+            "after": 35,
+            "reason": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience."
+          },
+          "confidence": {
+            "before": 75,
+            "after": 52,
+            "reason": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience."
+          },
+          "texture": {
+            "before": 70,
+            "after": 78,
+            "reason": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience."
+          },
+          "transformation": {
+            "before": 50,
+            "after": 32,
+            "reason": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "c176b6a9-8d68-452c-b8cb-cdab7acad5b9",
+      "lane": "manchester_indie_dance",
+      "year": 2004,
+      "scale": 65,
+      "title": "Take Me Out",
+      "active": false,
+      "artist": "Franz Ferdinand",
+      "tension": 55,
+      "texture": 45,
+      "movement": 85,
+      "sub_lane": "dance_punk",
+      "community": 80,
+      "immersion": 20,
+      "longevity": 9,
+      "rationale": "The early tempo-and-riff switch meaningfully changes the track; the stylish command is real but not absolute.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 35,
+      "confidence": 72,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["indie_dance", "alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 91,
+      "perspective": 35,
+      "polarization": 18,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 92,
+      "transformation": 80,
+      "pairing_density": 12,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 75,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 12,
+      "primary_dimensions": ["transformation", "movement", "texture"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 15,
+            "after": 20,
+            "reason": "The early tempo-and-riff switch meaningfully changes the track; the stylish command is real but not absolute."
+          },
+          "community": {
+            "before": 84,
+            "after": 80,
+            "reason": "The early tempo-and-riff switch meaningfully changes the track; the stylish command is real but not absolute."
+          },
+          "perspective": {
+            "before": 50,
+            "after": 35,
+            "reason": "The early tempo-and-riff switch meaningfully changes the track; the stylish command is real but not absolute."
+          },
+          "confidence": {
+            "before": 92,
+            "after": 72,
+            "reason": "The early tempo-and-riff switch meaningfully changes the track; the stylish command is real but not absolute."
+          },
+          "transformation": {
+            "before": 40,
+            "after": 80,
+            "reason": "The early tempo-and-riff switch meaningfully changes the track; the stylish command is real but not absolute."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "a4462070-3027-4955-888d-0b8acb80631f",
+      "lane": "grunge_altrock",
+      "year": 2020,
+      "scale": 60,
+      "title": "The Adults Are Talking",
+      "active": false,
+      "artist": "The Strokes",
+      "tension": 50,
+      "texture": 65,
+      "movement": 68,
+      "sub_lane": "indie_rock",
+      "community": 60,
+      "immersion": 62,
+      "longevity": 6,
+      "rationale": "Cool guitars gradually develop into strained falsetto; outward social address is mixed with private distress, not pure detachment.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 60,
+      "confidence": 62,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock", "college_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 79,
+      "perspective": 62,
+      "polarization": 17,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 80,
+      "transformation": 62,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 69,
+      "archetype_signals": [],
+      "tradeoff_richness": 13,
+      "identity_signaling": 13,
+      "primary_dimensions": ["immersion", "transformation", "confidence"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "atmosphere": {
+            "before": 55,
+            "after": 60,
+            "reason": "Cool guitars gradually develop into strained falsetto; outward social address is mixed with private distress, not pure detachment."
+          },
+          "immersion": {
+            "before": 40,
+            "after": 62,
+            "reason": "Cool guitars gradually develop into strained falsetto; outward social address is mixed with private distress, not pure detachment."
+          },
+          "community": {
+            "before": 70,
+            "after": 60,
+            "reason": "Cool guitars gradually develop into strained falsetto; outward social address is mixed with private distress, not pure detachment."
+          },
+          "perspective": {
+            "before": 65,
+            "after": 62,
+            "reason": "Cool guitars gradually develop into strained falsetto; outward social address is mixed with private distress, not pure detachment."
+          },
+          "confidence": {
+            "before": 85,
+            "after": 62,
+            "reason": "Cool guitars gradually develop into strained falsetto; outward social address is mixed with private distress, not pure detachment."
+          },
+          "transformation": {
+            "before": 45,
+            "after": 62,
+            "reason": "Cool guitars gradually develop into strained falsetto; outward social address is mixed with private distress, not pure detachment."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "d00eadbe-1ef8-44e0-b410-10b8eae4cab2",
+      "lane": "electronic_crossover",
+      "year": 2012,
+      "scale": 65,
+      "title": "The Mother We Share",
+      "active": false,
+      "artist": "CHVRCHES",
+      "tension": 35,
+      "texture": 80,
+      "movement": 76,
+      "sub_lane": "indie_synth_pop",
+      "community": 78,
+      "immersion": 42,
+      "longevity": 6,
+      "rationale": "Glossy synth layers support direct emotional appeal with a quickly accessible hook, not a patient transformation.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 65,
+      "confidence": 62,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["synth_pop", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 79,
+      "perspective": 32,
+      "polarization": 16,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 75,
+      "transformation": 32,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 67,
+      "archetype_signals": [],
+      "tradeoff_richness": 12,
+      "identity_signaling": 12,
+      "primary_dimensions": ["texture", "atmosphere", "confidence"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 45,
+            "after": 42,
+            "reason": "Glossy synth layers support direct emotional appeal with a quickly accessible hook, not a patient transformation."
+          },
+          "community": {
+            "before": 80,
+            "after": 78,
+            "reason": "Glossy synth layers support direct emotional appeal with a quickly accessible hook, not a patient transformation."
+          },
+          "perspective": {
+            "before": 55,
+            "after": 32,
+            "reason": "Glossy synth layers support direct emotional appeal with a quickly accessible hook, not a patient transformation."
+          },
+          "confidence": {
+            "before": 78,
+            "after": 62,
+            "reason": "Glossy synth layers support direct emotional appeal with a quickly accessible hook, not a patient transformation."
+          },
+          "texture": {
+            "before": 68,
+            "after": 80,
+            "reason": "Glossy synth layers support direct emotional appeal with a quickly accessible hook, not a patient transformation."
+          },
+          "transformation": {
+            "before": 50,
+            "after": 32,
+            "reason": "Glossy synth layers support direct emotional appeal with a quickly accessible hook, not a patient transformation."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "b9c2e9db-de85-4e4e-952e-7ac4b45feec5",
+      "lane": "electronic_crossover",
+      "year": 2007,
+      "scale": 75,
+      "title": "Time to Pretend",
+      "active": false,
+      "artist": "MGMT",
+      "tension": 40,
+      "texture": 78,
+      "movement": 72,
+      "sub_lane": "psychedelic_synth_pop",
+      "community": 78,
+      "immersion": 50,
+      "longevity": 7,
+      "rationale": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 70,
+      "confidence": 68,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["synth_pop", "indie_pop"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 88,
+      "perspective": 50,
+      "polarization": 17,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 85,
+      "transformation": 42,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 72,
+      "archetype_signals": [],
+      "tradeoff_richness": 14,
+      "identity_signaling": 13,
+      "primary_dimensions": ["texture", "atmosphere", "perspective"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "atmosphere": {
+            "before": 68,
+            "after": 70,
+            "reason": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength."
+          },
+          "immersion": {
+            "before": 55,
+            "after": 50,
+            "reason": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength."
+          },
+          "scale": {
+            "before": 70,
+            "after": 75,
+            "reason": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength."
+          },
+          "perspective": {
+            "before": 70,
+            "after": 50,
+            "reason": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength."
+          },
+          "confidence": {
+            "before": 80,
+            "after": 68,
+            "reason": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength."
+          },
+          "texture": {
+            "before": 72,
+            "after": 78,
+            "reason": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength."
+          },
+          "transformation": {
+            "before": 60,
+            "after": 42,
+            "reason": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength."
+          }
+        }
+      },
+      "cross_genre_mapping": 11,
+      "diagnostic_power_confidence": 0.0
+    },
+    {
+      "id": "6b2b3e84-86ab-4bc5-ae09-1c56541d8b50",
+      "lane": "grunge_altrock",
+      "year": 2008,
+      "scale": 88,
+      "title": "Use Somebody",
+      "active": false,
+      "artist": "Kings of Leon",
+      "tension": 50,
+      "texture": 68,
+      "movement": 60,
+      "sub_lane": "anthemic_indie_rock",
+      "community": 85,
+      "immersion": 42,
+      "longevity": 7,
+      "rationale": "Wide, polished guitars enlarge a needy confession; arena dimensions do not erase vulnerability.",
+      "scored_at": "2026-10-20T16:51:00Z",
+      "atmosphere": 60,
+      "confidence": 45,
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "subculture": ["alternative_rock"],
+      "updated_at": "2026-10-20T16:09:06.679529+00:00",
+      "canon_score": 82,
+      "perspective": 22,
+      "polarization": 19,
+      "primary_lane": "alternative",
+      "curator_count": 0,
+      "routing_power": 78,
+      "transformation": 45,
+      "pairing_density": 10,
+      "scoring_version": "cat06-review-2",
+      "diagnostic_power": 67,
+      "archetype_signals": [],
+      "tradeoff_richness": 10,
+      "identity_signaling": 11,
+      "primary_dimensions": ["scale", "confidence", "community"],
+      "scoring_provenance": {
+        "source": "ai_editorial_recalibration",
+        "review": "pending",
+        "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
+        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording_status": "catalog identity checked; full audio audition not performed",
+        "scorer": "Lovable editorial review",
+        "empirically_validated": false,
+        "lane_review": "retain_alternative",
+        "score_notes": {
+          "immersion": {
+            "before": 45,
+            "after": 42,
+            "reason": "Wide, polished guitars enlarge a needy confession; arena dimensions do not erase vulnerability."
+          },
+          "scale": {
+            "before": 90,
+            "after": 88,
+            "reason": "Wide, polished guitars enlarge a needy confession; arena dimensions do not erase vulnerability."
+          },
+          "perspective": {
+            "before": 40,
+            "after": 22,
+            "reason": "Wide, polished guitars enlarge a needy confession; arena dimensions do not erase vulnerability."
+          },
+          "confidence": {
+            "before": 80,
+            "after": 45,
+            "reason": "Wide, polished guitars enlarge a needy confession; arena dimensions do not erase vulnerability."
+          },
+          "texture": {
+            "before": 45,
+            "after": 68,
+            "reason": "Wide, polished guitars enlarge a needy confession; arena dimensions do not erase vulnerability."
+          },
+          "transformation": {
+            "before": 50,
+            "after": 45,
+            "reason": "Wide, polished guitars enlarge a needy confession; arena dimensions do not erase vulnerability."
+          }
+        }
+      },
+      "cross_genre_mapping": 10,
+      "diagnostic_power_confidence": 0.0
+    }
+  ],
+  "pairings": [
+    {
+      "id": "2d8b5a62-ab7a-481f-b9b1-b08734fc4b10",
+      "lane": "alternative",
+      "tests": ["atmosphere", "texture"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Clipped guitar attack versus synthetic haze. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "cc669ae2-34b5-4149-818b-8b44dc8ce661",
+      "song_b_id": "438c1d74-5fb0-4aab-839d-62494db6dafa",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Clipped guitar attack versus synthetic haze",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 76,
+      "user_facing_tradeoff": "Maybe you reward guitar bite over the bright synthetic fog; both move, so speed is not the question.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "f14c7eb6-f0fd-4fd7-b32c-27bac226cbdf",
+      "lane": "alternative",
+      "tests": ["immersion", "transformation"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Withheld release versus instant invitation. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "f0effd72-6c77-4529-872a-548cd95340e2",
+      "song_b_id": "6ff8e3f7-c5d9-4f54-9e6d-9e76658265f6",
+      "created_at": "2026-10-20T16:02:29.432126+00:00",
+      "difficulty": null,
+      "hypothesis": "Withheld release versus instant invitation",
+      "updated_at": "2026-10-20T16:02:29.432126+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 84,
+      "user_facing_tradeoff": "The question is whether you want the payoff now or want the track to earn it the long way.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "ff4743b7-c06e-4e76-841a-526e673478f6",
+      "lane": "alternative",
+      "tests": ["tension", "immersion", "confidence"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Uncertain slow pressure versus immediate strut. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "4d12cf5e-402d-47d5-bb60-697a3beea007",
+      "song_b_id": "d97250cc-50e2-444f-b6a6-54dff776b7be",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Uncertain slow pressure versus immediate strut",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 79,
+      "user_facing_tradeoff": "Maybe you prefer a riff that worries the wound over one that kicks the door open.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "15611643-1366-45b2-a62d-d015be77e351",
+      "lane": "alternative",
+      "tests": ["immersion", "transformation"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Compact reward versus gradual development. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "7a26a4be-30af-49f9-9c37-1f733c2eea7f",
+      "song_b_id": "a4462070-3027-4955-888d-0b8acb80631f",
+      "created_at": "2026-10-20T16:02:29.432126+00:00",
+      "difficulty": null,
+      "hypothesis": "Compact reward versus gradual development",
+      "updated_at": "2026-10-20T16:02:29.432126+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 74,
+      "user_facing_tradeoff": "A quick hook against a track that keeps opening up: early read, you may be choosing when the reward arrives.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "84d4d55e-da6c-4ab2-95ce-f19ea099690e",
+      "lane": "alternative",
+      "tests": ["texture", "immersion"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Dry reassurance versus synthetic fantasy. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "cf569731-a5a9-440a-b4f0-aba8fec94c1e",
+      "song_b_id": "b9c2e9db-de85-4e4e-952e-7ac4b45feec5",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Dry reassurance versus synthetic fantasy",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 78,
+      "user_facing_tradeoff": "Maybe the dry, direct reassurance wins over the more lacquered fantasy; patience and polish both change here.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "e8c2beba-80e9-42af-b99d-d299e52fbf75",
+      "lane": "alternative",
+      "tests": ["texture", "atmosphere"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Abrasive attack versus theatrical refinement. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "a3e0dcd6-ab13-4ac8-9817-0c49e2d5991f",
+      "song_b_id": "36eb9016-e0b6-4127-af0a-c14dd6840882",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Abrasive attack versus theatrical refinement",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 75,
+      "user_facing_tradeoff": "Raw guitar rush or carefully arranged theatre? That is the fork, not whether you enjoy moving.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "a6c70546-b353-42ed-a962-451853bcd00a",
+      "lane": "alternative",
+      "tests": ["transformation"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Stable garage hook versus structural switch. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "07ebce3b-4698-409f-a5ef-f56e1e399683",
+      "song_b_id": "c176b6a9-8d68-452c-b8cb-cdab7acad5b9",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Stable garage hook versus structural switch",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 82,
+      "user_facing_tradeoff": "Maybe you reward the turn in the road rather than a perfect riff holding its line.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "02b34595-0e90-4437-be74-7c3085efb0da",
+      "lane": "alternative",
+      "tests": ["confidence", "community"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Exposed pleading versus defiant chant. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "fd16e83c-9f44-430e-87f9-608d6d4917ca",
+      "song_b_id": "d3853ea6-6040-4347-b207-bb1d593f17c1",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Exposed pleading versus defiant chant",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 83,
+      "user_facing_tradeoff": "A private plea against a communal strut: tell me if I am mistaking emotional exposure for what hooked you.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "6b0d107a-ea7a-48df-a4b8-70ba6304b449",
+      "lane": "alternative",
+      "tests": ["tension"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Jealous pressure versus open yearning. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "6a2f760c-2d69-417f-9f99-356b768ff45e",
+      "song_b_id": "6b2b3e84-86ab-4bc5-ae09-1c56541d8b50",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Jealous pressure versus open yearning",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 71,
+      "user_facing_tradeoff": "Both fill a room; the sharper question is how much nervous pressure you want inside the anthem.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "ebe9af8d-c12b-468c-aac8-238c6c66f244",
+      "lane": "alternative",
+      "tests": ["tension", "perspective"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Outward warning versus escape into release. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "ad7cfe1b-f058-4543-aa6b-47fbbd34354b",
+      "song_b_id": "9bb1081d-3ca4-4e1c-b6a0-5a39e43a5682",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Outward warning versus escape into release",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 77,
+      "user_facing_tradeoff": "Maybe you want the gathering chorus to keep an edge rather than dissolve into escape.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "40496048-6640-4a97-8490-6f6388be4746",
+      "lane": "alternative",
+      "tests": ["texture", "immersion"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Sparse layered breakup versus direct garage grain. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "1deb5d08-9c2c-4a18-b94f-98ff2e74de0e",
+      "song_b_id": "07ebce3b-4698-409f-a5ef-f56e1e399683",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Sparse layered breakup versus direct garage grain",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 68,
+      "user_facing_tradeoff": "Maybe patient, precise breakup detail beats the scratchy direct guitar hook; recognition and emotional stance may also matter.",
+      "review_action": "replace"
+    },
+    {
+      "id": "a63ef7bf-811e-4fb1-9e80-3ef2eda6456b",
+      "lane": "alternative",
+      "tests": ["scale", "atmosphere"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Electronic intimacy versus room-filling anthem. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "c034ee2f-65ef-486f-a446-5165fb21c4da",
+      "song_b_id": "6a2f760c-2d69-417f-9f99-356b768ff45e",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Electronic intimacy versus room-filling anthem",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 82,
+      "user_facing_tradeoff": "Maybe you would rather hold a song close than have the whole room shout it back; mood changes too.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "f5c7add9-3a80-45d0-a41f-1bc99d06d8dc",
+      "lane": "alternative",
+      "tests": ["tension"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Cool strain versus stalking pressure. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "a4462070-3027-4955-888d-0b8acb80631f",
+      "song_b_id": "4d12cf5e-402d-47d5-bb60-697a3beea007",
+      "created_at": "2026-10-20T16:02:29.432126+00:00",
+      "difficulty": null,
+      "hypothesis": "Cool strain versus stalking pressure",
+      "updated_at": "2026-10-20T16:02:29.432126+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 74,
+      "user_facing_tradeoff": "The guitars can stay cool or keep tightening the screw. How much pressure earns your attention?",
+      "review_action": "retarget"
+    },
+    {
+      "id": "54a0f925-17e4-4a8a-a608-a60ba1f6aa8b",
+      "lane": "alternative",
+      "tests": ["atmosphere", "immersion", "confidence"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Emotional synth layers versus instant command. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "d00eadbe-1ef8-44e0-b410-10b8eae4cab2",
+      "song_b_id": "6ff8e3f7-c5d9-4f54-9e6d-9e76658265f6",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Emotional synth layers versus instant command",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 72,
+      "user_facing_tradeoff": "Maybe synth warmth and some hesitation beat an immediate, commanding dance-floor invitation.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "41f9c9d1-9ffe-4f73-ae26-48877ccfa254",
+      "lane": "alternative",
+      "tests": ["tension", "community", "immersion"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Relaxed familiarity versus unsettling patience. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "6ba8346a-5e96-44bb-8858-fd8912ef40ef",
+      "song_b_id": "e47be745-166e-4542-be82-089ce9f3fec2",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Relaxed familiarity versus unsettling patience",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 68,
+      "user_facing_tradeoff": "An easy welcome against a track that makes you uneasy: recognition may matter here, so this is only a tentative read.",
+      "review_action": "replace"
+    },
+    {
+      "id": "4308b4ff-4777-48c3-945c-2155095e46a0",
+      "lane": "alternative",
+      "tests": ["community", "texture"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Shared acoustic shout versus private electronic precision. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "6a4e523f-3616-4c40-9e90-92464655b749",
+      "song_b_id": "c034ee2f-65ef-486f-a446-5165fb21c4da",
+      "created_at": "2026-10-20T16:02:29.432126+00:00",
+      "difficulty": null,
+      "hypothesis": "Shared acoustic shout versus private electronic precision",
+      "updated_at": "2026-10-20T16:02:29.432126+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 77,
+      "user_facing_tradeoff": "Maybe you want everyone in the chorus rather than a precise little world built for two.",
+      "review_action": "replace"
+    },
+    {
+      "id": "5be289e0-0332-4d17-845b-6498c4aa2fd5",
+      "lane": "alternative",
+      "tests": ["immersion", "transformation"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Bright directness versus confessional accumulation. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "6f13c2ac-4b0f-425e-b814-3b55494ed96a",
+      "song_b_id": "f77a1c66-af97-4291-baa2-031d6fe3033a",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Bright directness versus confessional accumulation",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 78,
+      "user_facing_tradeoff": "Both expose feeling; maybe you want it delivered directly rather than deepened through the build.",
+      "review_action": "replace"
+    },
+    {
+      "id": "e9d4d08e-c417-4a84-b3a1-bfb650368127",
+      "lane": "alternative",
+      "tests": ["perspective"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Outward portrait versus lived-in character. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "dbb70a54-533b-44c2-a661-d247de7fb08e",
+      "song_b_id": "bc53aee1-55d7-4e54-82bd-50f547e33ca2",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Outward portrait versus lived-in character",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 73,
+      "user_facing_tradeoff": "Both hide weight under a bright hook; this test is narrative distance, not cheerful versus dark.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "a844d609-db59-40ef-bde7-35395a8687c9",
+      "lane": "alternative",
+      "tests": ["movement", "tension", "atmosphere"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Loose sway versus angular urgency. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "85a72d6b-e319-4e23-adc9-0e9c550276ba",
+      "song_b_id": "cc669ae2-34b5-4149-818b-8b44dc8ce661",
+      "created_at": "2026-10-20T16:02:29.432126+00:00",
+      "difficulty": null,
+      "hypothesis": "Loose sway versus angular urgency",
+      "updated_at": "2026-10-20T16:02:29.432126+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 69,
+      "user_facing_tradeoff": "Maybe you want the air left in the song rather than the guitar insisting you get moving.",
+      "review_action": "replace"
+    },
+    {
+      "id": "757caf6e-b7cd-406f-891a-e9144452505d",
+      "lane": "alternative",
+      "tests": ["movement", "tension"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Enveloping drive versus possessive menace. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "15f5b02d-0efa-4683-bff8-32b006aeea7a",
+      "song_b_id": "e47be745-166e-4542-be82-089ce9f3fec2",
+      "created_at": "2026-10-20T16:02:29.432126+00:00",
+      "difficulty": null,
+      "hypothesis": "Enveloping drive versus possessive menace",
+      "updated_at": "2026-10-20T16:02:29.432126+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 74,
+      "user_facing_tradeoff": "A bass-led push against a knot of uneasy rhythm: maybe forward drive matters more than danger.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "e1cae0e3-a3ee-4f0c-b84e-2da17423f695",
+      "lane": "alternative",
+      "tests": ["texture", "tension"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Glossy recollection versus exposed pressure. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "8be528c8-a73c-4cc0-bebd-2706161d480a",
+      "song_b_id": "fd16e83c-9f44-430e-87f9-608d6d4917ca",
+      "created_at": "2026-10-20T15:27:12.849439+00:00",
+      "difficulty": null,
+      "hypothesis": "Glossy recollection versus exposed pressure",
+      "updated_at": "2026-10-20T15:27:12.849439+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "diagnostic_weight": 77,
+      "user_facing_tradeoff": "Maybe polish softens the ache for you, rather than leaving every nerve exposed; the pressure changes too.",
+      "review_action": "replace"
+    },
+    {
+      "id": "fb6e4ee2-101b-41ea-8daf-3db44a1bf9ec",
+      "lane": "alternative",
+      "tests": ["scale", "immersion", "perspective"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Close acoustic immediacy versus accumulating warning. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "e90493ec-ad1b-481b-a77b-212f38993cdb",
+      "song_b_id": "ad7cfe1b-f058-4543-aa6b-47fbbd34354b",
+      "created_at": "2026-10-20T16:02:29.432126+00:00",
+      "difficulty": null,
+      "hypothesis": "Close acoustic immediacy versus accumulating warning",
+      "updated_at": "2026-10-20T16:02:29.432126+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 68,
+      "user_facing_tradeoff": "Maybe the small, immediate story earns more than the expanding collective warning; this is a broad fork, not one isolated cause.",
+      "review_action": "replace"
+    },
+    {
+      "id": "9ac673b7-872e-4c5e-b79d-1ded48ce72e9",
+      "lane": "alternative",
+      "tests": ["atmosphere", "movement"],
+      "active": false,
+      "why_good": "cat06-review-2; pending editorial approval. Direct easy pulse versus loose atmospheric sway. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "song_a_id": "6ba8346a-5e96-44bb-8858-fd8912ef40ef",
+      "song_b_id": "85a72d6b-e319-4e23-adc9-0e9c550276ba",
+      "created_at": "2026-10-20T16:02:29.432126+00:00",
+      "difficulty": null,
+      "hypothesis": "Direct easy pulse versus loose atmospheric sway",
+      "updated_at": "2026-10-20T16:02:29.432126+00:00",
+      "is_bootstrap": false,
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "diagnostic_weight": 62,
+      "user_facing_tradeoff": "Maybe even at low pressure you prefer a direct pulse to loose, hazy space; both crossover placements need review.",
+      "review_action": "retarget"
+    },
+    {
+      "id": "1fde2373-49e1-5dd4-b916-2b327b81fa20",
+      "active": false,
+      "lane": "alternative",
+      "difficulty": null,
+      "is_bootstrap": false,
+      "song_a_id": "fd16e83c-9f44-430e-87f9-608d6d4917ca",
+      "song_b_id": "438c1d74-5fb0-4aab-839d-62494db6dafa",
+      "tests": ["community", "perspective", "confidence"],
+      "diagnostic_weight": 78,
+      "hypothesis": "Private vulnerability versus outward synth invitation",
+      "user_facing_tradeoff": "Maybe exposed feeling beats a communal, outward-looking hook; several attributes move together, so I will keep the read tentative.",
+      "why_good": "cat06-review-2; pending editorial approval. Private vulnerability versus outward synth invitation. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "review_action": "add"
+    },
+    {
+      "id": "8af4e1fc-dbb1-516d-8650-8d8a17718f3c",
+      "active": false,
+      "lane": "alternative",
+      "difficulty": null,
+      "is_bootstrap": false,
+      "song_a_id": "c034ee2f-65ef-486f-a446-5165fb21c4da",
+      "song_b_id": "9bb1081d-3ca4-4e1c-b6a0-5a39e43a5682",
+      "tests": ["scale", "community", "transformation"],
+      "diagnostic_weight": 80,
+      "hypothesis": "Intimate precision versus collective escalation",
+      "user_facing_tradeoff": "Maybe you prefer the small, finely built world over a song that expands into collective release.",
+      "why_good": "cat06-review-2; pending editorial approval. Intimate precision versus collective escalation. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "review_action": "add"
+    },
+    {
+      "id": "26f16cfc-6a01-5f15-a69c-1e5446930aec",
+      "active": false,
+      "lane": "alternative",
+      "difficulty": null,
+      "is_bootstrap": false,
+      "song_a_id": "f77a1c66-af97-4291-baa2-031d6fe3033a",
+      "song_b_id": "dbb70a54-533b-44c2-a661-d247de7fb08e",
+      "tests": ["perspective", "confidence", "transformation"],
+      "diagnostic_weight": 76,
+      "hypothesis": "Developing self-doubt versus outward hook portrait",
+      "user_facing_tradeoff": "Maybe you reward an unfolding confession rather than the detached portrait; certainty and structure change with it.",
+      "why_good": "cat06-review-2; pending editorial approval. Developing self-doubt versus outward hook portrait. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "review_action": "add"
+    },
+    {
+      "id": "03ff12f3-5d48-5751-bc06-8ba1a9e9acf3",
+      "active": false,
+      "lane": "alternative",
+      "difficulty": null,
+      "is_bootstrap": false,
+      "song_a_id": "85a72d6b-e319-4e23-adc9-0e9c550276ba",
+      "song_b_id": "c176b6a9-8d68-452c-b8cb-cdab7acad5b9",
+      "tests": ["movement", "tension", "transformation"],
+      "diagnostic_weight": 70,
+      "hypothesis": "Unhurried sway versus dramatic turn",
+      "user_facing_tradeoff": "Maybe space to drift beats a hard rhythmic turn; energy and pressure change too, so this is not a pure tempo test.",
+      "why_good": "cat06-review-2; pending editorial approval. Unhurried sway versus dramatic turn. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "review_action": "add"
+    },
+    {
+      "id": "68695be4-5b37-5a86-a1b1-16c8797b6a95",
+      "active": false,
+      "lane": "alternative",
+      "difficulty": null,
+      "is_bootstrap": false,
+      "song_a_id": "8be528c8-a73c-4cc0-bebd-2706161d480a",
+      "song_b_id": "d3853ea6-6040-4347-b207-bb1d593f17c1",
+      "tests": ["confidence", "texture", "community"],
+      "diagnostic_weight": 72,
+      "hypothesis": "Glossy private ache versus grainy collective command",
+      "user_facing_tradeoff": "Maybe you want the vulnerability cushioned in polish rather than a rough chant taking charge.",
+      "why_good": "cat06-review-2; pending editorial approval. Glossy private ache versus grainy collective command. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "review_action": "add"
+    },
+    {
+      "id": "b0d47a36-69f8-5200-9aad-0ad67dfafe9a",
+      "active": false,
+      "lane": "alternative",
+      "difficulty": null,
+      "is_bootstrap": false,
+      "song_a_id": "6f13c2ac-4b0f-425e-b814-3b55494ed96a",
+      "song_b_id": "438c1d74-5fb0-4aab-839d-62494db6dafa",
+      "tests": ["perspective", "confidence", "community"],
+      "diagnostic_weight": 75,
+      "hypothesis": "Personal conflict versus outward address",
+      "user_facing_tradeoff": "Maybe personal friction beats the outward-facing synth invitation; this may be about intimacy as much as narration.",
+      "why_good": "cat06-review-2; pending editorial approval. Personal conflict versus outward address. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "expected_split": "Editorial estimate, not observed: 55-45",
+      "review_action": "add"
+    },
+    {
+      "id": "625b9593-1337-5f01-aafd-0ec4222e2f58",
+      "active": false,
+      "lane": "alternative",
+      "difficulty": null,
+      "is_bootstrap": false,
+      "song_a_id": "7a26a4be-30af-49f9-9c37-1f733c2eea7f",
+      "song_b_id": "15f5b02d-0efa-4683-bff8-32b006aeea7a",
+      "tests": ["immersion", "community"],
+      "diagnostic_weight": 67,
+      "hypothesis": "Instant group hook versus enveloping development",
+      "user_facing_tradeoff": "Maybe the compact communal hook wins over the slower enveloping pull; familiarity could still be doing some work.",
+      "why_good": "cat06-review-2; pending editorial approval. Instant group hook versus enveloping development. Each declared test clears 20 points. Other-axis differences may confound attribution.",
+      "expected_split": "Editorial estimate, not observed: 60-40",
+      "review_action": "add"
+    }
+  ],
+  "replacements": [
+    {
+      "id": "40496048-6640-4a97-8490-6f6388be4746",
+      "old_song_a_id": "1deb5d08-9c2c-4a18-b94f-98ff2e74de0e",
+      "old_song_b_id": "e47be745-166e-4542-be82-089ce9f3fec2",
+      "new_song_a": "Somebody That I Used to Know",
+      "new_song_b": "Last Nite"
+    },
+    {
+      "id": "41f9c9d1-9ffe-4f73-ae26-48877ccfa254",
+      "old_song_a_id": "c5422dfe-091c-4d3e-9d89-11b6c754d45b",
+      "old_song_b_id": "00e86d67-b353-4ead-867b-bff658957466",
+      "new_song_a": "Budapest",
+      "new_song_b": "Breezeblocks"
+    },
+    {
+      "id": "4308b4ff-4777-48c3-945c-2155095e46a0",
+      "old_song_a_id": "6ba8346a-5e96-44bb-8858-fd8912ef40ef",
+      "old_song_b_id": "6a4e523f-3616-4c40-9e90-92464655b749",
+      "new_song_a": "Ho Hey",
+      "new_song_b": "Such Great Heights"
+    },
+    {
+      "id": "5be289e0-0332-4d17-845b-6498c4aa2fd5",
+      "old_song_a_id": "6f13c2ac-4b0f-425e-b814-3b55494ed96a",
+      "old_song_b_id": "ceb5d0a6-450d-469e-a8b9-11868047751a",
+      "new_song_a": "Kyoto",
+      "new_song_b": "Not Strong Enough"
+    },
+    {
+      "id": "a844d609-db59-40ef-bde7-35395a8687c9",
+      "old_song_a_id": "85a72d6b-e319-4e23-adc9-0e9c550276ba",
+      "old_song_b_id": "cf569731-a5a9-440a-b4f0-aba8fec94c1e",
+      "new_song_a": "Solar Power",
+      "new_song_b": "Banquet"
+    },
+    {
+      "id": "e1cae0e3-a3ee-4f0c-b84e-2da17423f695",
+      "old_song_a_id": "6a4e523f-3616-4c40-9e90-92464655b749",
+      "old_song_b_id": "e90493ec-ad1b-481b-a77b-212f38993cdb",
+      "new_song_a": "Heat Waves",
+      "new_song_b": "Maps"
+    },
+    {
+      "id": "fb6e4ee2-101b-41ea-8daf-3db44a1bf9ec",
+      "old_song_a_id": "8be528c8-a73c-4cc0-bebd-2706161d480a",
+      "old_song_b_id": "c034ee2f-65ef-486f-a446-5165fb21c4da",
+      "new_song_a": "Riptide",
+      "new_song_b": "Rebellion (Lies)"
+    }
+  ],
+  "baseline_integrity": {
+    "choices": 249,
+    "results": 18,
+    "evidence_digest": "4f3dda58463faedd7a39f22902ed2f7f",
+    "result_digest": "3d95a079c768d7ceead0434da698a021"
+  }
+}
