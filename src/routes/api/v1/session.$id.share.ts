@@ -8,7 +8,7 @@ import { HttpError, verifyBearer } from "./_auth";
 import { setSharePublication } from "@/musicdna/adapters/share-publication";
 
 const UUID = z.string().uuid();
-const Body = z.object({ publish: z.boolean() });
+const Body = z.object({ publish: z.boolean(), result_version: z.number().int().min(1).optional() });
 
 export const Route = createFileRoute("/api/v1/session/$id/share")({
   server: {
@@ -28,22 +28,20 @@ export const Route = createFileRoute("/api/v1/session/$id/share")({
           if (!body.success) return errorResponse("INVALID_INPUT", body.error.message, 400);
           const { supabase, userId } = await verifyBearer(request);
           try {
-            const out = await setSharePublication(supabase, userId, sid.data, body.data.publish);
+            const out = await setSharePublication(
+              supabase,
+              userId,
+              sid.data,
+              body.data.publish,
+              body.data.result_version,
+            );
             // Canonical URL + the result version being published, so mobile
             // clients never have to guess either (SHR01, TGA-311).
             const origin = new URL(request.url).origin;
-            const { data: latest } = await supabase
-              .from("session_results")
-              .select("version")
-              .eq("session_id", sid.data)
-              .order("version", { ascending: false })
-              .limit(1)
-              .maybeSingle();
             return jsonResponse({
               contract: 1,
               ...out,
               share_url: out.share_token ? `${origin}/s/${out.share_token}` : null,
-              result_version: latest?.version ?? null,
             });
           } catch (e) {
             const msg = e instanceof Error ? e.message : "Share update failed";

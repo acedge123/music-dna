@@ -3,7 +3,7 @@
 // POST { accuracy?, rating?, comment?, target?, most_accurate_sentence?,
 //        least_accurate_sentence?, result_version?, mutation_id? }
 // records feedback bound to the exact result version the listener saw.
-// One row per (user, session, target): resubmitting updates it. A retry with
+// Immutable operation per owner/session/version/mutation; a retry with
 // the same mutation_id replays the saved row (`replayed: true`).
 //
 // GET returns the caller's feedback rows for the session.
@@ -12,21 +12,19 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
+import { PersistenceError } from "@/musicdna/adapters/persistence";
 import { submitFeedbackImpl } from "@/lib/musicdna.functions";
 
 const UUID = z.string().uuid();
 const BodySchema = z.object({
-  accuracy: z
-    .enum(["accurate", "not_accurate", "mixed", "partly", "wrong"])
-    .nullable()
-    .optional(),
+  accuracy: z.enum(["accurate", "not_accurate", "mixed", "partly", "wrong"]).nullable().optional(),
   rating: z.number().int().min(-1).max(1).nullable().optional(),
   comment: z.string().max(2000).nullable().optional(),
   target: z.string().max(120).nullable().optional(),
   most_accurate_sentence: z.string().max(1000).nullable().optional(),
   least_accurate_sentence: z.string().max(1000).nullable().optional(),
-  result_version: z.number().int().min(1).nullable().optional(),
-  mutation_id: z.string().max(80).optional(),
+  result_version: z.number().int().min(1),
+  mutation_id: z.string().min(1).max(80),
 });
 
 export const Route = createFileRoute("/api/v1/session/$id/feedback")({
@@ -67,6 +65,7 @@ export const Route = createFileRoute("/api/v1/session/$id/feedback")({
             replayed: r.replayed === true,
           });
         } catch (e) {
+          if (e instanceof PersistenceError) return errorResponse(e.code, e.message, e.status);
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);
           return errorResponse("INTERNAL", msg, 500);
@@ -77,10 +76,18 @@ export const Route = createFileRoute("/api/v1/session/$id/feedback")({
           const sid = UUID.safeParse(params.id);
           if (!sid.success) return errorResponse("INVALID_INPUT", "Invalid session id", 400);
           const { supabase, userId } = await verifyBearer(request);
+          const { data: owned, error: ownErr } = await supabase
+            .from("sessions")
+            .select("user_id")
+            .eq("id", sid.data)
+            .maybeSingle();
+          if (ownErr) throw ownErr;
+          if (!owned || owned.user_id !== userId)
+            return errorResponse("FORBIDDEN", "forbidden", 403);
           const { data: rows, error } = await supabase
             .from("result_feedback")
             .select(
-              "id, accuracy, rating, comment, target, result_version, most_accurate_sentence, least_accurate_sentence, created_at",
+              "id, accuracy, rating, comment, target, result_version, most_accurate_sentence, least_accurate_sentence, mutation_id, created_at",
             )
             .eq("user_id", userId)
             .eq("session_id", sid.data)
@@ -88,6 +95,7 @@ export const Route = createFileRoute("/api/v1/session/$id/feedback")({
           if (error) return errorResponse("INTERNAL", error.message, 500);
           return jsonResponse({ contract: 1, session_id: sid.data, feedback: rows ?? [] });
         } catch (e) {
+          if (e instanceof PersistenceError) return errorResponse(e.code, e.message, e.status);
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);
           return errorResponse("INTERNAL", msg, 500);
