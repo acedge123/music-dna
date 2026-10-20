@@ -3,6 +3,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       { title: "MusicDNA — Why do you love the songs you love?" },
       {
         name: "description",
@@ -14,11 +16,9 @@ export const Route = createFileRoute("/")({
         property: "og:description",
         content: "Choose between songs. Discover the hidden patterns in your taste.",
       },
-      { property: "og:image", content: "/og-image.jpg" },
       { property: "og:image:width", content: "1216" },
       { property: "og:image:height", content: "640" },
       { property: "og:url", content: "/" },
-      { name: "twitter:image", content: "/og-image.jpg" },
       { name: "twitter:title", content: "MusicDNA — Why do you love the songs you love?" },
       {
         name: "twitter:description",

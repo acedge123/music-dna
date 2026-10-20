@@ -9,6 +9,13 @@ import { toast } from "sonner";
 export const Route = createFileRoute("/_authenticated/1980")({
   head: () => ({
     meta: [
+      { property: "og:title", content: "MusicDNA — The 1980s" },
+      {
+        property: "og:description",
+        content: "A MusicDNA critic interview through the songs of the 1980s.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
       { title: "MusicDNA — The 1980s" },
       { name: "description", content: "Five songs from the '80s. One read on you." },
     ],

@@ -14,11 +14,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
+import { loadChatPage } from "@/musicdna/adapters/chat-history";
+import { PersistenceError } from "@/musicdna/adapters/persistence";
 import { chatTurnImpl } from "@/lib/musicdna.functions";
 
 const BodySchema = z.object({
   message: z.string().trim().min(1).max(2000),
-  mutation_id: z.string().max(80).optional(),
+  mutation_id: z.string().min(1).max(80).optional(),
 });
 const UUID = z.string().uuid();
 
@@ -70,6 +72,7 @@ export const Route = createFileRoute("/api/v1/session/$id/chat")({
             assistant_message_id: r.assistantMessageId ?? null,
           });
         } catch (e) {
+          if (e instanceof PersistenceError) return errorResponse(e.code, e.message, e.status);
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);
           return errorResponse("INTERNAL", msg, 500);
@@ -90,16 +93,21 @@ export const Route = createFileRoute("/api/v1/session/$id/chat")({
           if (!owned) return errorResponse("NOT_FOUND", "Session not found", 404);
           if (owned.user_id !== userId) return errorResponse("FORBIDDEN", "forbidden", 403);
 
-          // Latest 200 messages, returned chronologically. An ascending scan
-          // with a limit would silently drop the newest exchanges.
-          const { data: rowsDesc, error: msgErr } = await supabase
-            .from("chat_messages")
-            .select("id, role, content, created_at, mutation_id")
-            .eq("session_id", sid.data)
-            .order("created_at", { ascending: false })
-            .limit(200);
-          if (msgErr) return errorResponse("INTERNAL", msgErr.message, 500);
-          const rows = (rowsDesc ?? []).reverse();
+          const url = new URL(request.url);
+          const limit = z.coerce
+            .number()
+            .int()
+            .min(1)
+            .max(200)
+            .parse(url.searchParams.get("limit") ?? 200);
+          const page = await loadChatPage(
+            supabase,
+            userId,
+            sid.data,
+            url.searchParams.get("cursor"),
+            limit,
+          );
+          const rows = page.messages;
 
           const { data: versions, error: verErr } = await supabase
             .from("session_results")
@@ -111,6 +119,8 @@ export const Route = createFileRoute("/api/v1/session/$id/chat")({
           return jsonResponse({
             contract: 1,
             session_id: sid.data,
+            next_cursor: page.next_cursor,
+            has_more: page.has_more,
             messages: rows.map((m) => ({
               id: m.id,
               role: m.role,
@@ -128,6 +138,7 @@ export const Route = createFileRoute("/api/v1/session/$id/chat")({
             })),
           });
         } catch (e) {
+          if (e instanceof PersistenceError) return errorResponse(e.code, e.message, e.status);
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);
           return errorResponse("INTERNAL", msg, 500);

@@ -14,6 +14,9 @@ CREATE POLICY owner_chat_turn ON public.chat_turns FOR SELECT TO authenticated
  USING (user_id=auth.uid() AND EXISTS(SELECT 1 FROM public.sessions s WHERE s.id=session_id AND s.user_id=auth.uid()));
 CREATE INDEX chat_history_cursor ON public.chat_messages(session_id, created_at DESC, id DESC);
 ALTER TABLE public.sessions ADD COLUMN published_read jsonb;
+-- Fail review/apply on duplicates; never silently delete feedback history.
+CREATE UNIQUE INDEX IF NOT EXISTS result_feedback_mutation_unique
+ ON public.result_feedback(session_id,mutation_id) WHERE mutation_id IS NOT NULL;
 
 CREATE FUNCTION public.save_result_feedback(p_session_id uuid, p_payload jsonb) RETURNS jsonb
 LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$
@@ -23,6 +26,11 @@ DECLARE u uuid:=auth.uid(); s public.sessions; r public.result_feedback; v integ
 BEGIN
  SELECT * INTO s FROM sessions WHERE id=p_session_id AND user_id=u FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'forbidden' USING ERRCODE='42501'; END IF;
+ v:=(payload->>'result_version')::integer;
+ IF v IS NULL THEN SELECT max(version) INTO v FROM session_results WHERE session_id=p_session_id AND user_id=u; END IF;
+ payload:=jsonb_build_object('accuracy',payload->>'accuracy','rating',(payload->>'rating')::smallint,
+ 'comment',payload->>'comment','target',payload->>'target','result_version',v,
+ 'most_accurate_sentence',payload->>'most_accurate_sentence','least_accurate_sentence',payload->>'least_accurate_sentence');
  SELECT * INTO r FROM result_feedback WHERE session_id=p_session_id AND user_id=u AND mutation_id=key;
  IF FOUND THEN
    IF jsonb_build_object('accuracy',r.accuracy,'rating',r.rating,'comment',r.comment,'target',r.target,
@@ -72,23 +80,51 @@ END $$;
 CREATE FUNCTION public.complete_chat_turn(p_session_id uuid,p_mutation_id text,p_lease_token uuid,p_reply text,p_refinement jsonb) RETURNS jsonb
 LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$
 DECLARE u uuid:=auth.uid(); t public.chat_turns; a public.chat_messages; base public.session_results; latest public.session_results;
- v integer; report jsonb; revised jsonb;
+ v integer; report jsonb; revised jsonb; cumulative jsonb; correction text;
 BEGIN
  PERFORM 1 FROM sessions WHERE id=p_session_id AND user_id=u FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'forbidden' USING ERRCODE='42501'; END IF;
  SELECT * INTO t FROM chat_turns WHERE session_id=p_session_id AND mutation_id=p_mutation_id FOR UPDATE;
+ IF NOT FOUND THEN RAISE EXCEPTION 'CHAT_LEASE_LOST' USING ERRCODE='40001'; END IF;
  IF t.assistant_message_id IS NOT NULL THEN RETURN to_jsonb(t)||jsonb_build_object('replayed',true); END IF;
  IF t.lease_token IS DISTINCT FROM p_lease_token THEN RAISE EXCEPTION 'CHAT_LEASE_LOST' USING ERRCODE='40001'; END IF;
  IF nullif(trim(p_reply),'') IS NULL THEN RAISE EXCEPTION 'EMPTY_REPLY'; END IF;
+ IF p_refinement IS NOT NULL THEN
+ IF jsonb_typeof(p_refinement)<>'object' THEN RAISE EXCEPTION 'INVALID_REFINEMENT' USING ERRCODE='22023'; END IF;
+ IF (SELECT count(*) FROM jsonb_each(p_refinement))>5 OR EXISTS(
+ SELECT 1 FROM jsonb_each(p_refinement) WHERE key NOT IN
+ ('movement','atmosphere','immersion','scale','community','perspective','confidence','tension','texture','transformation')
+ OR jsonb_typeof(value)<>'number') THEN RAISE EXCEPTION 'INVALID_REFINEMENT' USING ERRCODE='22023'; END IF;
+ IF EXISTS(SELECT 1 FROM jsonb_each(p_refinement) WHERE abs(value::text::numeric)>10
+ OR value::text::numeric<>trunc(value::text::numeric)) THEN RAISE EXCEPTION 'INVALID_REFINEMENT' USING ERRCODE='22023'; END IF;
+ END IF;
  SELECT * INTO base FROM session_results WHERE session_id=p_session_id AND source='pairings' ORDER BY version LIMIT 1;
  SELECT * INTO latest FROM session_results WHERE session_id=p_session_id ORDER BY version DESC LIMIT 1;
  IF base.id IS NOT NULL AND p_refinement IS NOT NULL AND p_refinement<>'{}'::jsonb THEN
  v:=latest.version+1;
+ SELECT coalesce(jsonb_object_agg(axis,total),'{}'::jsonb) INTO cumulative FROM (
+ SELECT axis,sum(delta)::integer total FROM (
+ SELECT key axis,value::text::numeric delta FROM jsonb_each(coalesce(latest.self_report->'deltas','{}'::jsonb))
+ UNION ALL SELECT key,value::text::numeric FROM jsonb_each(p_refinement)
+ ) values_by_axis GROUP BY axis) totals;
+ SELECT string_agg(CASE key
+ WHEN 'movement' THEN CASE WHEN value::text::numeric>0 THEN 'forward motion rather than stillness' ELSE 'stillness rather than forward motion' END
+ WHEN 'atmosphere' THEN CASE WHEN value::text::numeric>0 THEN 'immersive mood rather than statement' ELSE 'statement rather than immersive mood' END
+ WHEN 'immersion' THEN CASE WHEN value::text::numeric>0 THEN 'slow reveal rather than immediacy' ELSE 'immediacy rather than slow reveal' END
+ WHEN 'scale' THEN CASE WHEN value::text::numeric>0 THEN 'vastness rather than intimacy' ELSE 'intimacy rather than vastness' END
+ WHEN 'community' THEN CASE WHEN value::text::numeric>0 THEN 'communal rather than solitary listening' ELSE 'solitary rather than communal listening' END
+ WHEN 'perspective' THEN CASE WHEN value::text::numeric>0 THEN 'witness rather than feeling' ELSE 'feeling rather than witness' END
+ WHEN 'confidence' THEN CASE WHEN value::text::numeric>0 THEN 'command rather than vulnerability' ELSE 'vulnerability rather than command' END
+ WHEN 'tension' THEN CASE WHEN value::text::numeric>0 THEN 'danger rather than release' ELSE 'release rather than danger' END
+ WHEN 'texture' THEN CASE WHEN value::text::numeric>0 THEN 'refinement rather than rawness' ELSE 'rawness rather than refinement' END
+ WHEN 'transformation' THEN CASE WHEN value::text::numeric>0 THEN 'music that takes you somewhere rather than holds its shape' ELSE 'music that holds its shape rather than takes you somewhere' END
+ END, '; ' ORDER BY key) INTO correction FROM jsonb_each(cumulative) WHERE value::text::numeric<>0;
  report:=jsonb_build_object('originating_mutation_id',p_mutation_id,'user_message_id',t.user_message_id,
- 'message',t.message,'applied_deltas',p_refinement,'previous_version',latest.version,'kind','explicit_self_report',
+ 'message',t.message,'applied_deltas',p_refinement,'deltas',cumulative,'previous_version',latest.version,'kind','explicit_self_report',
+ 'renderer_version','self-report-revision-v1',
  'turns',coalesce((latest.self_report->>'turns')::integer,0)+1);
  -- Never turn self-report into corroborating votes: preserve the frozen evidence and qualify the revision.
- revised:=latest.content||jsonb_build_object('synthesis',coalesce(latest.content->>'synthesis','')||E'\n\nListener correction (self-report, not another vote): '||t.message,
+ revised:=base.content||jsonb_build_object('synthesis',coalesce(base.content->>'synthesis','')||E'\n\nYour own account changes the angle: '||coalesce(correction,'your earlier correction is now mixed')||'. That qualifies the reading above; it does not erase what the picks showed. This is self-report, not another supporting vote.',
  'refinement',report);
  INSERT INTO session_results(session_id,user_id,version,source,base_version,content,evidence,self_report,ledger_version,policy_version,engine_version)
  VALUES(p_session_id,u,v,'chat_self_report',base.version,revised,base.evidence,report,base.ledger_version,base.policy_version,base.engine_version);
@@ -117,9 +153,9 @@ BEGIN
  snapshot:=jsonb_build_object('session_id',s.id,'completed_at',s.completed_at,'lane',s.lane,'result_version',r.version,
  'content',r.content,'evidence',r.evidence,'interpretation',r.content->>'synthesis',
  'archetype',(SELECT jsonb_build_object('id',id,'name',name,'tagline',tagline,'description',description) FROM archetypes WHERE id=s.archetype_id));
- UPDATE sessions SET is_public=true,share_token=coalesce(share_token,encode(gen_random_bytes(12),'hex')),published_read=snapshot WHERE id=p_session_id RETURNING * INTO s;
+ UPDATE sessions SET is_public=true,share_token=coalesce(share_token,replace(gen_random_uuid()::text,'-','')),published_read=snapshot WHERE id=p_session_id RETURNING * INTO s;
  ELSE
- UPDATE sessions SET is_public=false,share_token=encode(gen_random_bytes(12),'hex'),published_read=NULL WHERE id=p_session_id RETURNING * INTO s;
+ UPDATE sessions SET is_public=false,share_token=replace(gen_random_uuid()::text,'-',''),published_read=NULL WHERE id=p_session_id RETURNING * INTO s;
  END IF;
  RETURN jsonb_build_object('is_public',s.is_public,'share_token',CASE WHEN p_publish THEN s.share_token END,'result_version',CASE WHEN p_publish THEN r.version END);
 END $$;
@@ -127,7 +163,7 @@ CREATE FUNCTION public.lookup_published_read(p_token text) RETURNS jsonb
 LANGUAGE sql SECURITY DEFINER SET search_path=public AS $$
  SELECT published_read||jsonb_build_object('share_token',share_token) FROM sessions
  WHERE is_public AND completed_at IS NOT NULL AND published_read IS NOT NULL
- AND (share_token=p_token OR id::text=p_token) LIMIT 1;
+ AND share_token=p_token LIMIT 1;
 $$;
 -- Only trusted publication transactions can alter consent/snapshot fields.
 CREATE FUNCTION public.guard_publication_snapshot() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$

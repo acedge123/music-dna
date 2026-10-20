@@ -432,3 +432,15 @@ Recommended mobile layering:
 `TGA-274` should align Flutter contract/types to the already-shipped REST API,
 not introduce a second mobile-specific wrapper. If new endpoints are needed
 later, they should extend the same `/api/v1` surface used by every client.
+
+
+### PR #11 backend acceptance amendment (pending deployment)
+
+The authoritative pending persistence semantics are in `experience-contract-v1.md`; they supersede the older update-in-place feedback/latest-200/pending-forever descriptions above.
+
+- Feedback POST requires `result_version` and `mutation_id`; each operation is immutable, GET returns the mutation ID, and conflicting reuse is 409. Earlier-version feedback is preserved.
+- Chat GET accepts `limit` (1–200) and opaque `cursor`, returns `next_cursor`/`has_more`; prepend older pages until exhausted. Chat retries recover after a 60-second generation lease and atomically save reply plus actual self-report reading revision/provenance.
+- Publish accepts an exact `result_version` and freezes returned public content; continued chat does not change the link.
+- Keep Flutter `MUSICDNA_EXPERIENCE_V1` disabled. The backend now also default-denies V1 until acceptance. Private acceptance keys belong only in approved test tooling, never in the app.
+
+None of these source changes constitute deployed parity acceptance.

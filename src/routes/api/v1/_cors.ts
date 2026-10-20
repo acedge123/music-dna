@@ -17,6 +17,7 @@ export function jsonResponse(body: unknown, init: ResponseInit = {}): Response {
     ...init,
     headers: {
       "Content-Type": "application/json",
+      "Cache-Control": "no-store",
       ...V1_CORS_HEADERS,
       ...(init.headers ?? {}),
     },
@@ -32,6 +33,9 @@ export function errorResponse(
     | "INVALID_INPUT"
     | "INTERNAL"
     | "UPSTREAM"
+    | "MUTATION_CONFLICT"
+    | "INVALID_RESULT_VERSION"
+    | "PERSISTENCE_FAILED"
     | "CHAT_TURN_PENDING",
   message: string,
   status: number,

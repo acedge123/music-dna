@@ -1,9 +1,42 @@
-// Explicit publication consent (D03 / TGA-311). A share token alone never
-// makes a reading public: public lookups require is_public = true, which only
-// the owner sets by publishing. Revoking unpublishes AND rotates the token so
-// any copied link dies immediately.
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { persistenceRpc } from "./persistence";
+export async function setSharePublication(
+  client: SupabaseClient<Database>,
+  userId: string,
+  sessionId: string,
+  publish: boolean,
+  resultVersion?: number,
+) {
+  const { data: owned, error } = await client
+    .from("sessions")
+    .select("user_id")
+    .eq("id", sessionId)
+    .maybeSingle();
+  if (error || !owned || owned.user_id !== userId) throw new Error("Session not found");
+  if (process.env.MUSICDNA_BACKEND_PERSISTENCE_V2 !== "1") {
+    const { data: latest } = await client
+      .from("session_results")
+      .select("version")
+      .eq("session_id", sessionId)
+      .order("version", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    return {
+      ...(await legacySetSharePublication(client, userId, sessionId, publish)),
+      result_version: latest?.version ?? null,
+    };
+  }
+  return persistenceRpc<{
+    is_public: boolean;
+    share_token: string | null;
+    result_version: number | null;
+  }>(client, "publish_saved_read", {
+    p_session_id: sessionId,
+    p_publish: publish,
+    p_version: resultVersion ?? null,
+  });
+}
 
 function newToken(): string {
   const b = new Uint8Array(12);
@@ -11,7 +44,7 @@ function newToken(): string {
   return Array.from(b, (x) => x.toString(16).padStart(2, "0")).join("");
 }
 
-export async function setSharePublication(
+async function legacySetSharePublication(
   supabase: SupabaseClient<Database>,
   userId: string,
   sessionId: string,

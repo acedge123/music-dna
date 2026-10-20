@@ -4,7 +4,22 @@ import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/auth")({
-  head: () => ({ meta: [{ title: "Sign in — MusicDNA" }] }),
+  head: () => ({
+    meta: [
+      { title: "Sign in — MusicDNA" },
+      {
+        name: "description",
+        content: "Sign in to keep your MusicDNA readings and critic conversations.",
+      },
+      { property: "og:title", content: "Sign in — MusicDNA" },
+      {
+        property: "og:description",
+        content: "Sign in to keep your MusicDNA readings and critic conversations.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: AuthPage,
 });
 

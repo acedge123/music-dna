@@ -1,3 +1,5 @@
+import { persistenceRpc, PersistenceError } from "@/musicdna/adapters/persistence";
+import { loadChatPage } from "@/musicdna/adapters/chat-history";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
@@ -2106,10 +2108,7 @@ const FeedbackInput = z.object({
   session_id: z.string().uuid(),
   // "partly" is the plan's three-way accuracy label; kept alongside
   // the pre-existing "mixed" alias so older UI paths still submit.
-  accuracy: z
-    .enum(["accurate", "not_accurate", "mixed", "partly", "wrong"])
-    .nullable()
-    .optional(),
+  accuracy: z.enum(["accurate", "not_accurate", "mixed", "partly", "wrong"]).nullable().optional(),
   rating: z.number().int().min(-1).max(1).nullable().optional(),
   comment: z.string().max(2000).nullable().optional(),
   target: z.string().max(120).nullable().optional(),
@@ -2124,7 +2123,7 @@ const FeedbackInput = z.object({
 
 // Shared by the web server function and the v1 REST feedback endpoint, so
 // both clients get identical validation, version binding and retry semantics.
-export async function submitFeedbackImpl(
+async function legacySubmitFeedbackImpl(
   supabase: AuthedSupabase,
   userId: string,
   data: z.infer<typeof FeedbackInput>,
@@ -2193,6 +2192,56 @@ export async function submitFeedbackImpl(
     /* best-effort */
   }
   return { id: inserted.id, updated: false as const };
+}
+
+export async function submitFeedbackImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: z.infer<typeof FeedbackInput>,
+): Promise<{ id: string; updated: boolean; replayed?: boolean }> {
+  if (process.env.MUSICDNA_BACKEND_PERSISTENCE_V2 !== "1")
+    return legacySubmitFeedbackImpl(supabase, userId, data);
+  // Normalize accuracy aliases so downstream analysis has a single vocabulary.
+  const accuracy =
+    data.accuracy === "partly"
+      ? "mixed"
+      : data.accuracy === "wrong"
+        ? "not_accurate"
+        : (data.accuracy ?? null);
+  const { data: owned, error: ownershipError } = await supabase
+    .from("sessions")
+    .select("user_id")
+    .eq("id", data.session_id)
+    .maybeSingle();
+  if (ownershipError || !owned || owned.user_id !== userId)
+    throw new PersistenceError("FORBIDDEN", 403, "forbidden");
+  let version = data.result_version;
+  // Resolve legacy web submissions before the atomic boundary; v1 REST requires a version.
+  if (!version) version = (await latestResultVersion(supabase, data.session_id))?.version;
+  const out = await persistenceRpc<{ id: string; updated: boolean; replayed: boolean }>(
+    supabase,
+    "save_result_feedback",
+    {
+      p_session_id: data.session_id,
+      p_payload: {
+        accuracy,
+        rating: data.rating ?? null,
+        comment: data.comment ?? null,
+        target: data.target ?? null,
+        result_version: version ?? null,
+        mutation_id: data.mutation_id ?? crypto.randomUUID(),
+        most_accurate_sentence: data.most_accurate_sentence ?? null,
+        least_accurate_sentence: data.least_accurate_sentence ?? null,
+      },
+    },
+  );
+  if (!out.replayed)
+    try {
+      await nudgeCriticFromFeedback(supabase, userId, { ...data, accuracy });
+    } catch {
+      /* best effort */
+    }
+  return out;
 }
 
 export const submitFeedback = createServerFn({ method: "POST" })
@@ -3453,12 +3502,341 @@ export const chatTurn = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data, context }): Promise<{ reply: string; sessionId: string }> =>
-    chatTurnImpl(context.supabase, context.userId, data),
+  .handler(
+    async ({ data, context }): Promise<{ reply: string; sessionId: string }> =>
+      chatTurnImpl(context.supabase, context.userId, data),
   );
 
 // Shared by the web server function and the v1 REST chat endpoint, so both
 // clients get identical turns, self-report versioning and retry semantics.
+async function legacyChatTurnImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { message: string; sessionId?: string; mutationId?: string },
+): Promise<{
+  reply: string;
+  sessionId: string;
+  replayed?: boolean;
+  pending?: boolean;
+  userMessageId?: string;
+  assistantMessageId?: string;
+}> {
+  // The assistant reply is stored with mutation_id `<mutationId>:reply`, so a
+  // retry looks up the exact reply row instead of guessing by timestamp.
+  const replyMutationId = data.mutationId ? `${data.mutationId}:reply` : null;
+
+  let sessionId = data.sessionId ?? null;
+  let profile: OpenerProfile = null;
+
+  // Retry safety: a resubmitted turn replays its saved reply. If the user
+  // turn committed but the reply never did (crash between writes), report
+  // the turn as pending instead of returning an empty "successful" replay.
+  if (data.mutationId && sessionId) {
+    const { data: prior } = await supabase
+      .from("chat_messages")
+      .select("id, created_at")
+      .eq("session_id", sessionId)
+      .eq("user_id", userId)
+      .eq("role", "user")
+      .eq("mutation_id", data.mutationId)
+      .maybeSingle();
+    if (prior) {
+      const { data: replyRow } = await supabase
+        .from("chat_messages")
+        .select("id, content")
+        .eq("session_id", sessionId)
+        .eq("role", "assistant")
+        .eq("mutation_id", replyMutationId ?? "")
+        .maybeSingle();
+      if (!replyRow) {
+        return { reply: "", sessionId, replayed: true, pending: true, userMessageId: prior.id };
+      }
+      return {
+        reply: replyRow.content,
+        sessionId,
+        replayed: true,
+        userMessageId: prior.id,
+        assistantMessageId: replyRow.id,
+      };
+    }
+  }
+
+  if (!sessionId) {
+    const anchor = await ensureChatSessionForUser(supabase as never, userId);
+    if (!anchor) {
+      return {
+        reply: "Name three songs first — I need somewhere to start.",
+        sessionId: "",
+      };
+    }
+    sessionId = anchor.sessionId;
+    profile = anchor.profile;
+  } else {
+    // Caller-supplied sessionId — verify it actually belongs to this user
+    // before we write any chat rows against it.
+    const { data: owned, error: ownErr } = await supabase
+      .from("sessions")
+      .select("user_id")
+      .eq("id", sessionId)
+      .maybeSingle();
+    if (ownErr) throw new Error(ownErr.message);
+    if (!owned || owned.user_id !== userId) throw new Error("forbidden");
+    const { data: p } = await supabase
+      .from("profiles")
+      .select("opening_songs, opening_hypothesis, opening_lane, opening_analysis_json")
+      .eq("user_id", userId)
+      .maybeSingle();
+    profile = p as OpenerProfile;
+  }
+
+  // Save the user turn first so it shows up even if AI fails. A unique
+  // violation on (session_id, mutation_id) means a concurrent retry already
+  // committed the turn — fall through to the replay path.
+  const { data: userRow, error: userInsertErr } = await supabase
+    .from("chat_messages")
+    .insert({
+      session_id: sessionId,
+      user_id: userId,
+      role: "user",
+      content: data.message,
+      mutation_id: data.mutationId ?? null,
+    })
+    .select("id")
+    .single();
+  if (userInsertErr) {
+    if (data.mutationId && userInsertErr.code === "23505") {
+      const { data: prior } = await supabase
+        .from("chat_messages")
+        .select("id")
+        .eq("session_id", sessionId)
+        .eq("role", "user")
+        .eq("mutation_id", data.mutationId)
+        .maybeSingle();
+      const { data: replyRow } = await supabase
+        .from("chat_messages")
+        .select("id, content")
+        .eq("session_id", sessionId)
+        .eq("role", "assistant")
+        .eq("mutation_id", replyMutationId ?? "")
+        .maybeSingle();
+      return {
+        reply: replyRow?.content ?? "",
+        sessionId,
+        replayed: true,
+        pending: !replyRow,
+        userMessageId: prior?.id,
+        assistantMessageId: replyRow?.id,
+      };
+    }
+    throw new Error(userInsertErr.message);
+  }
+
+  // Pull the MOST RECENT history (up to 40 messages) for context — an
+  // ascending scan with a limit returns the earliest messages and silently
+  // drops the latest exchange, which is what the critic must react to.
+  const { data: historyDesc } = await supabase
+    .from("chat_messages")
+    .select("role, content, created_at")
+    .eq("session_id", sessionId)
+    .order("created_at", { ascending: false })
+    .limit(40);
+  const history = (historyDesc ?? []).reverse();
+
+  // Pull session vector for current lean.
+  const { data: sessionRow } = await supabase
+    .from("sessions")
+    .select("vector, lane")
+    .eq("id", sessionId)
+    .maybeSingle();
+  const vector = (sessionRow?.vector ?? {}) as Record<string, number>;
+
+  // -------- Chat-driven dimension extraction --------
+  // The user's reply is evidence too. Run a tight LLM pass to pull signed
+  // deltas per dimension from the latest user turn (with brief recent
+  // history for context). Cap per-turn movement so pairings stay primary.
+  const PER_TURN_CAP = 10; // max |delta| applied to any one axis per turn
+  const VECTOR_BOUND = 200; // overall clamp on |vector[axis]|
+  // Skip the extractor pass on short / trivial replies ("ok", "yeah", "lol").
+  // Saves an LLM call and avoids feeding noise into the vector.
+  const EXTRACTOR_MIN_CHARS = 12;
+  const trimmedMsg = data.message.trim();
+  const recentTurns = (history ?? [])
+    .slice(-8)
+    .map((m) => `${m.role}: ${m.content}`)
+    .join("\n");
+  const extractorVoice = `You read a listener's chat reply and score it along 10 taste dimensions: ${(DIMS as readonly string[]).join(", ")}.
+Return STRICT JSON: {"deltas": {"<dimension>": <integer between -10 and 10>, ...}}.
+Only include dimensions the message clearly speaks to. Positive = high pole, negative = low pole, using these poles:
+${(DIMS as readonly string[]).map((d) => `- ${d}: +${DIM_LABEL[d]?.hi} / -${DIM_LABEL[d]?.lo}`).join("\n")}
+Rules: at most 5 dimensions per reply. Skip dimensions the reply doesn't actually address. If the reply is empty, hostile filler, or off-topic, return {"deltas": {}}.
+No prose, no markdown fences.`;
+  if (trimmedMsg.length >= EXTRACTOR_MIN_CHARS)
+    try {
+      const extractTxt = await ai([
+        { role: "system", content: extractorVoice },
+        {
+          role: "user",
+          content: `Recent turns:\n${recentTurns || "(none)"}\n\nLatest user reply:\n${data.message}\n\nReturn the JSON now.`,
+        },
+      ]);
+      const cleaned = extractTxt.replace(/```json\s*|```/g, "").trim();
+      const parsed = JSON.parse(cleaned) as { deltas?: Record<string, unknown> };
+      const deltas = parsed?.deltas ?? {};
+      const applied: Record<string, number> = {};
+      for (const dim of DIMS as readonly string[]) {
+        const raw = deltas[dim];
+        if (typeof raw !== "number" || !Number.isFinite(raw)) continue;
+        const capped = Math.max(-PER_TURN_CAP, Math.min(PER_TURN_CAP, Math.round(raw)));
+        if (capped === 0) continue;
+        const next = Math.max(-VECTOR_BOUND, Math.min(VECTOR_BOUND, (vector[dim] ?? 0) + capped));
+        if (next !== (vector[dim] ?? 0)) applied[dim] = capped;
+        vector[dim] = next;
+      }
+      if (Object.keys(applied).length) {
+        // D04: chat is self-report, not pairing evidence. The session vector
+        // and the original result stay frozen; the refinement is recorded
+        // separately and produces a new result version with provenance.
+        await (
+          await trustedEventLog()
+        ).insert({
+          user_id: userId,
+          session_id: sessionId,
+          event_type: "self_report",
+          props: { deltas: applied, message_chars: trimmedMsg.length } as never,
+          client: "server",
+        });
+        const latest = await latestResultVersion(supabase, sessionId);
+        if (latest) {
+          const prior = (latest.self_report ?? {}) as {
+            deltas?: Record<string, number>;
+            turns?: number;
+          };
+          const cum: Record<string, number> = { ...(prior.deltas ?? {}) };
+          for (const [d, v] of Object.entries(applied)) cum[d] = (cum[d] ?? 0) + v;
+          const base = await supabase
+            .from("session_results")
+            .select("version, content")
+            .eq("session_id", sessionId)
+            .eq("source", "pairings")
+            .order("version")
+            .limit(1)
+            .maybeSingle();
+          await supabase.from("session_results").insert({
+            session_id: sessionId,
+            user_id: userId,
+            version: latest.version + 1,
+            source: "chat_self_report",
+            base_version: base.data?.version ?? null,
+            content: (base.data?.content ?? {}) as never,
+            self_report: { deltas: cum, turns: (prior.turns ?? 0) + 1 } as never,
+            ledger_version: LEDGER_VERSION,
+            policy_version: CLAIM_POLICY_VERSION,
+            engine_version: ENGINE_VERSION,
+          });
+        }
+      }
+    } catch {
+      // Extraction is best-effort; chat continues with the prior vector.
+    }
+
+  const { ledger: chatLedger } = await loadChoiceEvidence(supabase, sessionId);
+
+  const ctxLines: string[] = [];
+  if (profile?.opening_songs?.length) {
+    ctxLines.push(
+      `Opener priors, NOT pairing evidence (ranked):\n${(profile.opening_songs as string[]).map((s, i) => `${i + 1}. ${s}`).join("\n")}`,
+    );
+  }
+  if (profile?.opening_hypothesis) {
+    ctxLines.push(
+      `Unverified opener self-report hypothesis, not a supported claim: "${profile.opening_hypothesis}"`,
+    );
+  }
+  if (profile?.opening_lane) {
+    ctxLines.push(`Lane: ${profile.opening_lane}`);
+  }
+  ctxLines.push(`Authoritative pairing ledger (${chatLedger.version}): ${JSON.stringify(chatLedger)}.
+Only eligible axes support tendencies. Other axes are provisional, mixed or insufficient.
+Reactions, skips, opener priors and conversation are separate self-report, never corroborating votes.`);
+  const contextBlock = ctxLines.length
+    ? `Listener context:\n${ctxLines.join("\n\n")}`
+    : "No prior context yet.";
+
+  const criticProfile = await loadCriticProfile(supabase as never, userId);
+  const voiceMod = buildVoiceModulation(criticProfile);
+
+  const messages: Array<{ role: string; content: string }> = [
+    { role: "system", content: CHAT_VOICE },
+    ...(voiceMod ? [{ role: "system" as const, content: voiceMod }] : []),
+    { role: "system", content: contextBlock },
+  ];
+  for (const m of history ?? []) {
+    if (m.role === "user" || m.role === "assistant") {
+      messages.push({ role: m.role, content: m.content });
+    }
+  }
+  messages.push({
+    role: "system",
+    content: `Return only JSON, never prose:
+{"claims":[],"question_id":"preference|familiarity|context|exception|correction","acknowledge_self_report":true}.
+Optional claims (maximum two) must be objects {"axis":"<supplied axis>","direction":"hi|lo","choice_ids":["<supporting id>"]}.
+Use only these eligible claims: ${JSON.stringify(narrationOptions(chatLedger))}.
+Only choose exception if the evidence has a contradiction. Self-report never adds a supporting choice.`,
+  });
+
+  let reply = "";
+  try {
+    const raw = await ai(messages);
+    const previousReply =
+      [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
+    reply =
+      validatedChat(JSON.parse(raw), chatLedger, DIM_LABEL, data.message, previousReply) ??
+      fallbackChat(chatLedger);
+  } catch {
+    reply = fallbackChat(chatLedger);
+  }
+  // Never truncate away the exception or qualification from a supported claim.
+
+  const { data: assistantRow } = await supabase
+    .from("chat_messages")
+    .insert({
+      session_id: sessionId,
+      user_id: userId,
+      role: "assistant",
+      content: reply,
+      mutation_id: replyMutationId,
+    })
+    .select("id")
+    .single();
+
+  // -------- Update critic profile from this exchange --------
+  // The user's reply is feedback on the critic's PRIOR assistant turn (the
+  // one before this new reply). Note: `history` was fetched AFTER we inserted
+  // the new user message but BEFORE the new assistant reply, so the last
+  // assistant entry in it is correctly the one the user just reacted to —
+  // don't reorder those statements.
+  // Skip on short / trivial replies — no real signal, just LLM spend.
+  if (trimmedMsg.length >= EXTRACTOR_MIN_CHARS)
+    try {
+      const priorAssistant = [...(history ?? [])].reverse().find((m) => m.role === "assistant")
+        ?.content as string | undefined;
+      const signals = await extractToneSignals(priorAssistant ?? null, data.message);
+      if (signals) {
+        const next = applyToneSignals(criticProfile, signals);
+        await persistCriticProfile(supabase as never, userId, next);
+      }
+    } catch {
+      // Profile update is best-effort.
+    }
+
+  return {
+    reply,
+    sessionId,
+    userMessageId: userRow?.id,
+    assistantMessageId: assistantRow?.id,
+  };
+}
+
 export async function chatTurnImpl(
   supabase: AuthedSupabase,
   userId: string,
@@ -3471,116 +3849,65 @@ export async function chatTurnImpl(
   userMessageId?: string;
   assistantMessageId?: string;
 }> {
-    // The assistant reply is stored with mutation_id `<mutationId>:reply`, so a
-    // retry looks up the exact reply row instead of guessing by timestamp.
-    const replyMutationId = data.mutationId ? `${data.mutationId}:reply` : null;
+  if (process.env.MUSICDNA_BACKEND_PERSISTENCE_V2 !== "1")
+    return legacyChatTurnImpl(supabase, userId, data);
+  const mutationId = data.mutationId ?? crypto.randomUUID();
+  let sessionId = data.sessionId ?? null;
+  let profile: OpenerProfile = null;
 
-    let sessionId = data.sessionId ?? null;
-    let profile: OpenerProfile = null;
-
-    // Retry safety: a resubmitted turn replays its saved reply. If the user
-    // turn committed but the reply never did (crash between writes), report
-    // the turn as pending instead of returning an empty "successful" replay.
-    if (data.mutationId && sessionId) {
-      const { data: prior } = await supabase
-        .from("chat_messages")
-        .select("id, created_at")
-        .eq("session_id", sessionId)
-        .eq("user_id", userId)
-        .eq("role", "user")
-        .eq("mutation_id", data.mutationId)
-        .maybeSingle();
-      if (prior) {
-        const { data: replyRow } = await supabase
-          .from("chat_messages")
-          .select("id, content")
-          .eq("session_id", sessionId)
-          .eq("role", "assistant")
-          .eq("mutation_id", replyMutationId!)
-          .maybeSingle();
-        if (!replyRow) {
-          return { reply: "", sessionId, replayed: true, pending: true, userMessageId: prior.id };
-        }
-        return {
-          reply: replyRow.content,
-          sessionId,
-          replayed: true,
-          userMessageId: prior.id,
-          assistantMessageId: replyRow.id,
-        };
-      }
+  if (!sessionId) {
+    const anchor = await ensureChatSessionForUser(supabase as never, userId);
+    if (!anchor) {
+      return {
+        reply: "Name three songs first — I need somewhere to start.",
+        sessionId: "",
+      };
     }
+    sessionId = anchor.sessionId;
+    profile = anchor.profile;
+  } else {
+    // Caller-supplied sessionId — verify it actually belongs to this user
+    // before we write any chat rows against it.
+    const { data: owned, error: ownErr } = await supabase
+      .from("sessions")
+      .select("user_id")
+      .eq("id", sessionId)
+      .maybeSingle();
+    if (ownErr) throw new Error(ownErr.message);
+    if (!owned || owned.user_id !== userId) throw new Error("forbidden");
+    const { data: p } = await supabase
+      .from("profiles")
+      .select("opening_songs, opening_hypothesis, opening_lane, opening_analysis_json")
+      .eq("user_id", userId)
+      .maybeSingle();
+    profile = p as OpenerProfile;
+  }
 
-    if (!sessionId) {
-      const anchor = await ensureChatSessionForUser(supabase as never, userId);
-      if (!anchor) {
-        return {
-          reply: "Name three songs first — I need somewhere to start.",
-          sessionId: "",
-        };
-      }
-      sessionId = anchor.sessionId;
-      profile = anchor.profile;
-    } else {
-      // Caller-supplied sessionId — verify it actually belongs to this user
-      // before we write any chat rows against it.
-      const { data: owned, error: ownErr } = await supabase
-        .from("sessions")
-        .select("user_id")
-        .eq("id", sessionId)
-        .maybeSingle();
-      if (ownErr) throw new Error(ownErr.message);
-      if (!owned || owned.user_id !== userId) throw new Error("forbidden");
-      const { data: p } = await supabase
-        .from("profiles")
-        .select("opening_songs, opening_hypothesis, opening_lane, opening_analysis_json")
-        .eq("user_id", userId)
-        .maybeSingle();
-      profile = p as OpenerProfile;
-    }
-
-    // Save the user turn first so it shows up even if AI fails. A unique
-    // violation on (session_id, mutation_id) means a concurrent retry already
-    // committed the turn — fall through to the replay path.
-    const { data: userRow, error: userInsertErr } = await supabase
-      .from("chat_messages")
-      .insert({
-        session_id: sessionId,
-        user_id: userId,
-        role: "user",
-        content: data.message,
-        mutation_id: data.mutationId ?? null,
-      })
-      .select("id")
-      .single();
-    if (userInsertErr) {
-      if (data.mutationId && userInsertErr.code === "23505") {
-        const { data: prior } = await supabase
-          .from("chat_messages")
-          .select("id")
-          .eq("session_id", sessionId)
-          .eq("role", "user")
-          .eq("mutation_id", data.mutationId)
-          .maybeSingle();
-        const { data: replyRow } = await supabase
-          .from("chat_messages")
-          .select("id, content")
-          .eq("session_id", sessionId)
-          .eq("role", "assistant")
-          .eq("mutation_id", replyMutationId!)
-          .maybeSingle();
-        return {
-          reply: replyRow?.content ?? "",
-          sessionId,
-          replayed: true,
-          pending: !replyRow,
-          userMessageId: prior?.id,
-          assistantMessageId: replyRow?.id,
-        };
-      }
-      throw new Error(userInsertErr.message);
-    }
-
+  type Turn = {
+    lease_token?: string;
+    user_message_id: string;
+    assistant_message_id?: string;
+    reply?: string;
+    pending?: boolean;
+    replayed?: boolean;
+  };
+  const turn = await persistenceRpc<Turn>(supabase, "begin_chat_turn", {
+    p_session_id: sessionId,
+    p_mutation_id: mutationId,
+    p_message: data.message,
+  });
+  if (turn.assistant_message_id && turn.reply)
+    return {
+      reply: turn.reply,
+      sessionId,
+      replayed: true,
+      userMessageId: turn.user_message_id,
+      assistantMessageId: turn.assistant_message_id,
+    };
+  if (turn.pending || !turn.lease_token)
+    return { reply: "", sessionId, pending: true, userMessageId: turn.user_message_id };
+  const leaseToken = turn.lease_token;
+  try {
     // Pull the MOST RECENT history (up to 40 messages) for context — an
     // ascending scan with a limit returns the earliest messages and silently
     // drops the latest exchange, which is what the critic must react to.
@@ -3589,23 +3916,15 @@ export async function chatTurnImpl(
       .select("role, content, created_at")
       .eq("session_id", sessionId)
       .order("created_at", { ascending: false })
+      .order("id", { ascending: false })
       .limit(40);
     const history = (historyDesc ?? []).reverse();
-
-    // Pull session vector for current lean.
-    const { data: sessionRow } = await supabase
-      .from("sessions")
-      .select("vector, lane")
-      .eq("id", sessionId)
-      .maybeSingle();
-    const vector = (sessionRow?.vector ?? {}) as Record<string, number>;
 
     // -------- Chat-driven dimension extraction --------
     // The user's reply is evidence too. Run a tight LLM pass to pull signed
     // deltas per dimension from the latest user turn (with brief recent
     // history for context). Cap per-turn movement so pairings stay primary.
     const PER_TURN_CAP = 10; // max |delta| applied to any one axis per turn
-    const VECTOR_BOUND = 200; // overall clamp on |vector[axis]|
     // Skip the extractor pass on short / trivial replies ("ok", "yeah", "lol").
     // Saves an LLM call and avoids feeding noise into the vector.
     const EXTRACTOR_MIN_CHARS = 12;
@@ -3620,73 +3939,27 @@ Only include dimensions the message clearly speaks to. Positive = high pole, neg
 ${(DIMS as readonly string[]).map((d) => `- ${d}: +${DIM_LABEL[d]?.hi} / -${DIM_LABEL[d]?.lo}`).join("\n")}
 Rules: at most 5 dimensions per reply. Skip dimensions the reply doesn't actually address. If the reply is empty, hostile filler, or off-topic, return {"deltas": {}}.
 No prose, no markdown fences.`;
+    let refinement: Record<string, number> = {};
     if (trimmedMsg.length >= EXTRACTOR_MIN_CHARS)
       try {
         const extractTxt = await ai([
           { role: "system", content: extractorVoice },
           {
             role: "user",
-            content: `Recent turns:\n${recentTurns || "(none)"}\n\nLatest user reply:\n${data.message}\n\nReturn the JSON now.`,
+            content: `Recent turns:\n${recentTurns}\nLatest reply:\n${data.message}`,
           },
         ]);
-        const cleaned = extractTxt.replace(/```json\s*|```/g, "").trim();
-        const parsed = JSON.parse(cleaned) as { deltas?: Record<string, unknown> };
-        const deltas = parsed?.deltas ?? {};
-        const applied: Record<string, number> = {};
-        for (const dim of DIMS as readonly string[]) {
-          const raw = deltas[dim];
+        const parsed = JSON.parse(extractTxt.replace(/```json\s*|```/g, "").trim()) as {
+          deltas?: Record<string, unknown>;
+        };
+        for (const dim of DIMS) {
+          const raw = parsed.deltas?.[dim];
           if (typeof raw !== "number" || !Number.isFinite(raw)) continue;
           const capped = Math.max(-PER_TURN_CAP, Math.min(PER_TURN_CAP, Math.round(raw)));
-          if (capped === 0) continue;
-          const next = Math.max(-VECTOR_BOUND, Math.min(VECTOR_BOUND, (vector[dim] ?? 0) + capped));
-          if (next !== (vector[dim] ?? 0)) applied[dim] = capped;
-          vector[dim] = next;
-        }
-        if (Object.keys(applied).length) {
-          // D04: chat is self-report, not pairing evidence. The session vector
-          // and the original result stay frozen; the refinement is recorded
-          // separately and produces a new result version with provenance.
-          await (
-            await trustedEventLog()
-          ).insert({
-            user_id: userId,
-            session_id: sessionId,
-            event_type: "self_report",
-            props: { deltas: applied, message_chars: trimmedMsg.length } as never,
-            client: "server",
-          });
-          const latest = await latestResultVersion(supabase, sessionId);
-          if (latest) {
-            const prior = (latest.self_report ?? {}) as {
-              deltas?: Record<string, number>;
-              turns?: number;
-            };
-            const cum: Record<string, number> = { ...(prior.deltas ?? {}) };
-            for (const [d, v] of Object.entries(applied)) cum[d] = (cum[d] ?? 0) + v;
-            const base = await supabase
-              .from("session_results")
-              .select("version, content")
-              .eq("session_id", sessionId)
-              .eq("source", "pairings")
-              .order("version")
-              .limit(1)
-              .maybeSingle();
-            await supabase.from("session_results").insert({
-              session_id: sessionId,
-              user_id: userId,
-              version: latest.version + 1,
-              source: "chat_self_report",
-              base_version: base.data?.version ?? null,
-              content: (base.data?.content ?? {}) as never,
-              self_report: { deltas: cum, turns: (prior.turns ?? 0) + 1 } as never,
-              ledger_version: LEDGER_VERSION,
-              policy_version: CLAIM_POLICY_VERSION,
-              engine_version: ENGINE_VERSION,
-            });
-          }
+          if (capped && Object.keys(refinement).length < 5) refinement[dim] = capped;
         }
       } catch {
-        // Extraction is best-effort; chat continues with the prior vector.
+        refinement = {};
       }
 
     const { ledger: chatLedger } = await loadChoiceEvidence(supabase, sessionId);
@@ -3747,17 +4020,13 @@ Only choose exception if the evidence has a contradiction. Self-report never add
     }
     // Never truncate away the exception or qualification from a supported claim.
 
-    const { data: assistantRow } = await supabase
-      .from("chat_messages")
-      .insert({
-        session_id: sessionId,
-        user_id: userId,
-        role: "assistant",
-        content: reply,
-        mutation_id: replyMutationId,
-      })
-      .select("id")
-      .single();
+    const committed = await persistenceRpc<Turn>(supabase, "complete_chat_turn", {
+      p_session_id: sessionId,
+      p_mutation_id: mutationId,
+      p_lease_token: leaseToken,
+      p_reply: reply,
+      p_refinement: Object.keys(refinement).length ? refinement : null,
+    });
 
     // -------- Update critic profile from this exchange --------
     // The user's reply is feedback on the critic's PRIOR assistant turn (the
@@ -3780,17 +4049,28 @@ Only choose exception if the evidence has a contradiction. Self-report never add
       }
 
     return {
-      reply,
+      reply: committed.reply ?? reply,
       sessionId,
-      userMessageId: userRow?.id,
-      assistantMessageId: assistantRow?.id,
+      userMessageId: committed.user_message_id,
+      assistantMessageId: committed.assistant_message_id,
+      replayed: committed.replayed,
     };
+  } catch (error) {
+    await persistenceRpc(supabase, "release_chat_turn", {
+      p_session_id: sessionId,
+      p_mutation_id: mutationId,
+      p_lease_token: leaseToken,
+    }).catch(() => undefined);
+    throw error;
   }
+}
 
 export const listChat = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ sessionId: z.string().uuid().optional() }).parse(d ?? {}),
+    z
+      .object({ sessionId: z.string().uuid().optional(), cursor: z.string().optional() })
+      .parse(d ?? {}),
   )
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
@@ -3815,32 +4095,7 @@ export const listChat = createServerFn({ method: "GET" })
           mutation_id: string | null;
         }>,
       };
-    // Latest 200 messages, returned chronologically.
-    const { data: rowsDesc } = await supabase
-      .from("chat_messages")
-      .select("id, role, content, created_at, mutation_id")
-      .eq("session_id", sessionId)
-      .order("created_at", { ascending: false })
-      .limit(200);
-    const rows = (rowsDesc ?? []).reverse();
-    return {
-      sessionId,
-      messages: (
-        rows as Array<{
-          id: string;
-          role: string;
-          content: string;
-          created_at: string;
-          mutation_id: string | null;
-        }>
-      ).map((r) => ({
-        id: r.id,
-        role: r.role as ChatRole,
-        content: r.content,
-        created_at: r.created_at,
-        mutation_id: r.mutation_id,
-      })),
-    };
+    return { sessionId, ...(await loadChatPage(supabase, userId, sessionId, data.cursor)) };
   });
 
 // ============================================================
