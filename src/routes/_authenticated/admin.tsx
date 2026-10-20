@@ -202,11 +202,19 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
   const setWeight = useServerFn(adminSetDiagnosticWeight);
   const [search, setSearch] = useState("");
   const [lane, setLane] = useState("");
+  const [status, setStatus] = useState<"all" | "active" | "inactive">("all");
 
   const query = useQuery({
-    queryKey: ["admin", entity, search, lane],
+    queryKey: ["admin", entity, search, lane, status],
     queryFn: () =>
-      list({ data: { table: entity, search: search || undefined, lane: lane || undefined } }),
+      list({
+        data: {
+          table: entity,
+          search: search || undefined,
+          lane: lane || undefined,
+          status: entity === "archetypes" ? undefined : status,
+        },
+      }),
   });
 
   const columns = useMemo(() => columnsFor(entity), [entity]);
@@ -244,6 +252,18 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
                 {l}
               </option>
             ))}
+          </select>
+        )}
+        {(entity === "songs" || entity === "pairings") && (
+          <select
+            value={status}
+            onChange={(e) => setStatus(e.target.value as "all" | "active" | "inactive")}
+            className="border hairline rounded-sm bg-background px-3 py-1.5 text-sm"
+            aria-label="Status filter"
+          >
+            <option value="all">Active + inactive</option>
+            <option value="active">Active only</option>
+            <option value="inactive">Inactive only</option>
           </select>
         )}
         <span className="text-xs text-muted-foreground ml-auto">
