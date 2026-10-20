@@ -2,6 +2,12 @@
 
 Local working folder for the MusicDNA product thesis, ontology, diagnostic canon, and future pairing graph.
 
+## Current catalog handoff
+
+Start with [Inactive catalog review and Lovable correction instructions](inactive-catalog-review-2026-10-20.md) for the CAT06 correction pass. It contains the 37-song review, 23-pairing audit, original scores, calibration guidance, and acceptance checklist. Re-query current data before applying proposals; keep the batch inactive until reviewed and approved.
+
+For current axis definitions use [catalog-expansion-spec.md](catalog-expansion-spec.md) and [`src/musicdna/engine/axes.ts`](../../src/musicdna/engine/axes.ts). Legacy ontology and scoring documents contain obsolete dimension lists; their axis lists must not drive new scoring. The six-component diagnostic-power formula remains useful.
+
 ## Principle
 
 We are not building a catalog of songs. We are building a catalog of revealing decisions.
@@ -10,7 +16,7 @@ The pairing is the IP. MusicDNA should not begin by generating thousands of medi
 
 The app is not learning songs. It is learning tradeoffs.
 
-The current strongest candidate dimension expansion is `immersion`: immediacy vs slow reveal. Example: choosing `Breaking Into Heaven` over `She Bangs the Drums` may reveal immersion over immediacy, journey over anthem, and atmosphere over hook.
+`immersion` is an active diagnostic dimension: immediacy vs slow reveal. Example: choosing `Breaking Into Heaven` over `She Bangs the Drums` may reveal immersion over immediacy, journey over anthem, and atmosphere over hook.
 
 ## Lane Contract
 
@@ -24,12 +30,14 @@ This means `Ceremony` can remain `post_punk_new_wave`, `A Forest` can remain `go
 
 ## Current Structure
 
-- `docs/musicdna/ontology.md`: 15-dimension taste ontology, candidate dimension expansion, and pairing standards.
+- `docs/musicdna/catalog-expansion-spec.md`: current ten-axis song and pairing curation contract.
+- `docs/musicdna/inactive-catalog-review-2026-10-20.md`: dated CAT06 audit and Lovable correction workflow.
+- `docs/musicdna/ontology.md`: historical 15-dimension ontology and product thesis; its dimension list is superseded.
 - `docs/musicdna/project_learnings_v1.md`: living synthesis of the project thesis, major discoveries, and MVP assumptions.
 - `docs/musicdna/canon_workflow.md`: step-by-step curation process.
 - `docs/musicdna/lovable_product_notes.md`: Lovable-facing notes for diagnostic tradeoff implementation.
 - `docs/musicdna/lovable_lane_engine_prompt.md`: decision-complete Lovable prompt for the multi-lane engine MVP.
-- `docs/musicdna/diagnostic_scoring_algorithm.md`: scoring model for diagnostic songs, axes, pairings, and future lane generation.
+- `docs/musicdna/diagnostic_scoring_algorithm.md`: six-component DPS model and historical pairing guidance; its active-axis list is superseded.
 - `docs/musicdna/product_gotchas.md`: standing risk checklist to keep product, data, and inference claims honest.
 - `docs/musicdna/multi_lane_pairings_seed.md`: notes for the Pop, Hip-Hop, Electronic, and Classic Rock pairing seed.
 - `docs/musicdna/intelligence_layer.md`: evidence-first AI reasoning framework for Analyst and Critic layers.
@@ -44,4 +52,4 @@ This means `Ceremony` can remain `post_punk_new_wave`, `A Forest` can remain `go
 
 ## Next Step
 
-Next implementation handoff: use `docs/musicdna/lovable_lane_engine_prompt.md` to have Lovable build the multi-lane engine MVP.
+Current catalog handoff: follow [the CAT06 review and correction workflow](inactive-catalog-review-2026-10-20.md). The older `lovable_lane_engine_prompt.md` describes the original multi-lane engine MVP and must be reconciled with current engine contracts before reuse.
