@@ -3956,7 +3956,7 @@ No prose, no markdown fences.`;
           const raw = parsed.deltas?.[dim];
           if (typeof raw !== "number" || !Number.isFinite(raw)) continue;
           const capped = Math.max(-PER_TURN_CAP, Math.min(PER_TURN_CAP, Math.round(raw)));
-          if (capped) refinement[dim] = capped;
+          if (capped && Object.keys(refinement).length < 5) refinement[dim] = capped;
         }
       } catch {
         refinement = {};
@@ -4049,7 +4049,7 @@ Only choose exception if the evidence has a contradiction. Self-report never add
       }
 
     return {
-      reply,
+      reply: committed.reply ?? reply,
       sessionId,
       userMessageId: committed.user_message_id,
       assistantMessageId: committed.assistant_message_id,

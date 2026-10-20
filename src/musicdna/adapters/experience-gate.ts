@@ -4,7 +4,8 @@ export function allowExperienceRequest(
   config: { enabled?: string; acceptance?: string; harnessKey?: string },
 ) {
   const path = new URL(request.url).pathname;
-  const needsV1 = path.startsWith("/api/v1/") &&
+  const needsV1 =
+    path.startsWith("/api/v1/") &&
     (request.headers.get("x-musicdna-experience") === "1" ||
       /\/session\/[^/]+\/(chat|feedback|share)$/.test(path));
   if (!needsV1 || config.enabled === "1") return true;

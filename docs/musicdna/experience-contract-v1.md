@@ -102,10 +102,16 @@ v1 adds:
 ## Fixtures
 `fixtures/musicdna/experience-v1/*.json`: stable, qualified_3_1, mixed_2_2, sparse, zero_answer_skip_bound, artist_confounded. Each holds the input choices plus the expected ledger outcome and completion. `src/musicdna/engine/experience-fixtures.test.ts` keeps them in sync with the engine.
 
+## Pending persistence rollout / parity release gate
+
+The behavior below for feedback operations, recoverable chat, revised content and publication snapshots requires the reviewed persistence SQL plus `MUSICDNA_BACKEND_PERSISTENCE_V2=1`. SQL remains review-only and must not be applied to production without separate approval.
+
+`MUSICDNA_EXPERIENCE_V1` defaults disabled at the server entry. V1 requests receive 503 `EXPERIENCE_DISABLED` until acceptance passes. Approved private verification uses `MUSICDNA_BACKEND_ACCEPTANCE=1` plus `X-MusicDNA-Acceptance-Key` matching the private harness key; bearer authentication and ownership checks still apply. Never embed this key in Flutter or distribute it to listeners. V0 and web behavior remain available.
+
 ## Sharing (D03)
 
-`POST /api/v1/session/:id/share` with `{ "publish": true | false }` → `{ contract: 1, is_public, share_token, share_url, result_version }`.
-- `share_url` is the canonical public URL (`/s/:token`); `null` after revoke. `result_version` is the latest saved result version being published.
+`POST /api/v1/session/:id/share` with `{ "publish": true | false, "result_version": 1 }` → `{ contract: 1, is_public, share_token, share_url, result_version }`.
+- `share_url` is the canonical public URL (`/s/:token`); `null` after revoke. `result_version` is the exact saved result version pinned by the publication transaction (latest if omitted). Public lookup returns that version, its frozen `content`, and ledger-derived choices; later chat cannot change this snapshot. Republishing explicitly replaces the snapshot.
 Public lookups (`/api/v1/share/:token`, `/s/:token`) return 404 unless the reading is published. Revoking rotates the token.
 
 ## Reactions
@@ -116,21 +122,21 @@ Public lookups (`/api/v1/share/:token`, `/s/:token`) return 404 unless the readi
 
 `POST /api/v1/session/:id/chat` with `{ "message": "…", "mutation_id": "…" }` → `{ contract: 1, reply, session_id, replayed, user_message_id, assistant_message_id }`.
 - `mutation_id` is optional but recommended: a retried submit with the same id replays the saved reply (`replayed: true`) instead of double-posting — the same retry contract as choices. The reply row is stored under `<mutation_id>:reply`, so replay returns the exact committed reply, never a timestamp guess.
-- If the user turn committed but the reply never did (crash between writes), the server returns `409 CHAT_TURN_PENDING`; retry the same `mutation_id` shortly.
-- Chat is self-report. It never changes the session's scores or the frozen version-1 result. Each refinement is saved as a new `chat_self_report` result version with `base_version` pointing at the original.
+- If the user turn committed but the reply never did (crash between writes), the server returns `409 CHAT_TURN_PENDING` only while a generation lease is active (60 seconds); retry the same `mutation_id` after expiry to recover. A write failure releases the lease. Old interrupted user turns are adopted. Reply and revision save atomically; conflicting message reuse returns 409 `MUTATION_CONFLICT`.
+- Chat is self-report. It never changes the session's scores or the frozen version-1 result. Each explicit self-report refinement produces changed, qualified synthesis in a new `chat_self_report` result version, with `base_version` pointing at the original. Provenance includes originating mutation ID, user message ID/text, applied/cumulative deltas, previous version and renderer version. This is not additional pairing support.
 
-`GET /api/v1/session/:id/chat` → `{ contract: 1, session_id, messages: [ { id, role, content, created_at, mutation_id } ], result_versions: [ { version, source, base_version, created_at, content, self_report } ] }`.
-- Returns the latest 200 messages in chronological order plus the session's result versions WITH their content, so a client can restore the conversation and every revision exactly as saved.
+`GET /api/v1/session/:id/chat?limit=200&cursor=<opaque>` → `{ contract: 1, session_id, next_cursor, has_more, messages: [ { id, role, content, created_at, mutation_id } ], result_versions: [ { version, source, base_version, created_at, content, self_report } ] }`.
+- Returns a latest-first page (1–200 messages) displayed chronologically, plus result versions WITH their content. Use `next_cursor` to load preceding pages, prepend them, and deduplicate by stable message ID. Continue until `has_more` is false; equal timestamps are ordered by ID so there is no 200-message total cap. Invalid cursors return 400.
 
 Both endpoints are owner-only (403 for another user's session, 404 when it doesn't exist). Web and REST share one server implementation (`chatTurnImpl`), so turns, self-report versioning and retry semantics are identical across clients.
 
 ## Result feedback (RES06)
 
-`POST /api/v1/session/:id/feedback` with `{ accuracy?, rating?, comment?, target?, most_accurate_sentence?, least_accurate_sentence?, result_version?, mutation_id? }` → `{ contract: 1, id, updated, replayed }`.
+`POST /api/v1/session/:id/feedback` with `{ accuracy?, rating?, comment?, target?, most_accurate_sentence?, least_accurate_sentence?, result_version, mutation_id }` → `{ contract: 1, id, updated, replayed }`.
 - `result_version` binds the feedback to the exact result version the listener saw.
-- One row per (user, session, target): resubmitting updates it. A retry with the same `mutation_id` replays the saved row (`replayed: true`).
+- One immutable operation per owner/session/mutation, bound to the exact saved result version. A new mutation adds a row without overwriting earlier-version feedback. Identical retries return the same ID (`replayed: true`); changed payload/version/target under a reused key returns 409 `MUTATION_CONFLICT`. Version and mutation ID are required on REST writes.
 - `accuracy` accepts `accurate | partly | not_accurate` (aliases `mixed`, `wrong` are normalized server-side). `rating` is -1, 0 or 1.
 
-`GET /api/v1/session/:id/feedback` → `{ contract: 1, session_id, feedback: [ … ] }` returns the caller's feedback rows for the session.
+`GET /api/v1/session/:id/feedback` → `{ contract: 1, session_id, feedback: [ … ] }` returns the caller's feedback rows for the session, including `mutation_id`, `result_version`, and row `id`, for lost-response recovery.
 
 Both are owner-only and share the web implementation (`submitFeedbackImpl`).

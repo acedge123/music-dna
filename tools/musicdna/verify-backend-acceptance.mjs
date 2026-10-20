@@ -14,6 +14,7 @@ async function request(path, method = "GET", body, token) {
     headers: {
       "Content-Type": "application/json",
       "X-MusicDNA-Experience": "1",
+      "X-MusicDNA-Acceptance-Key": key,
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     },
     body: body ? JSON.stringify(body) : undefined,
