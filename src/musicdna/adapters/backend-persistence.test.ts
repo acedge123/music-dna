@@ -177,7 +177,10 @@ describe.sequential(
         ])
       ).rows[0];
       expect(revised?.content.synthesis).not.toBe("Frozen original");
-      expect(revised?.self_report).toMatchObject({ deltas: { scale: -10, community: -7 }, renderer_version: "self-report-revision-v1" });
+      expect(revised?.self_report).toMatchObject({
+        deltas: { scale: -10, community: -7 },
+        renderer_version: "self-report-revision-v1",
+      });
       expect(revised?.self_report).toMatchObject({
         originating_mutation_id: "revise",
         user_message_id: t?.user_message_id,

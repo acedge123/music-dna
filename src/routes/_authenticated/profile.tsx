@@ -17,7 +17,19 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/profile")({
-  head: () => ({ meta: [{ title: "Your reading — MusicDNA" }] }),
+  head: () => ({
+    meta: [
+      { title: "Your reading — MusicDNA" },
+      { name: "description", content: "Your saved MusicDNA reading, song choices, and feedback." },
+      { property: "og:title", content: "Your reading — MusicDNA" },
+      {
+        property: "og:description",
+        content: "Your saved MusicDNA reading, song choices, and feedback.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   errorComponent: ({ error }) => (
     <div className="px-6 py-20 text-muted-foreground">
       Couldn't load: {error instanceof Error ? error.message : String(error)}

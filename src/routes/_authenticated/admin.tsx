@@ -26,7 +26,22 @@ import {
 } from "@/lib/decade-prompts.functions";
 
 export const Route = createFileRoute("/_authenticated/admin")({
-  head: () => ({ meta: [{ title: "Admin — MusicDNA" }] }),
+  head: () => ({
+    meta: [
+      { title: "Catalog administration — MusicDNA" },
+      {
+        name: "description",
+        content: "MusicDNA catalog curation, diagnostics, and shadow routing.",
+      },
+      { property: "og:title", content: "Catalog administration — MusicDNA" },
+      {
+        property: "og:description",
+        content: "MusicDNA catalog curation, diagnostics, and shadow routing.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
+    ],
+  }),
   component: AdminPage,
 });
 
