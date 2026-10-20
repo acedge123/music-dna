@@ -1,6 +1,7 @@
 # Roadmap
 
 ## Current — inactive catalog recalibration
+
 - [x] Compared all 37 draft songs and 23 pairings with the dated review; no later song edits found.
 - [x] Recalibrated all 37 vectors and metadata independently; lane moves remain proposals and rows stay inactive.
 - [x] Rebuilt 23 matchups plus 7 new repeat/counterexample candidates; verified 30 saved pairs and unchanged evidence/results.
@@ -8,6 +9,7 @@
 - [ ] Activation acceptance: awaits Alan's review, recording/year reconciliation, four calibration-breadth warnings, movement/scale coverage additions and real-listener testing. No batch activation authorized.
 
 ## Current verification — merged PR #11
+
 - [x] Explain the harness key: private access to dedicated test personas/bearer issuance; distinct from Supabase keys and migration approval.
 - [x] Implement five backend gaps behind default-off persistence rollout with review-only SQL and 16 focused regressions (210 suite checks): feedback recovery/isolation, chat recovery/pagination, revised content/provenance, frozen publication. Review summary: docs/musicdna/backend-parity-implementation-review.md.
 - [ ] Obtain approved matching production harness configuration and verify serving SHA before authenticated acceptance; keep MUSICDNA_EXPERIENCE_V1 disabled.
@@ -15,6 +17,7 @@
 - [ ] Authenticated production acceptance for all five items: blocked by unapplied review SQL, default-off persistence rollout, and unapproved/mismatched production harness key; current custom-domain serving SHA also unverified. Recorded successful production deployment SHA: 1015b28fe965b15f77f13e3b199c9f0e0145831b. No production migrations authorized.
 
 ## Done
+
 - D06 retention: policy decided, implementation deferred until launch (docs/musicdna/data-retention-d06.md).
 - Live anonymous walkthrough: interview, pushback, resume, share, revoke.
 - Flutter parity fixes (TGA-305/307/310/311/313): chat replay stores the reply under `<mutation_id>:reply`
@@ -24,6 +27,7 @@
   result_version, requirement trace refreshed to PRD v1.2 (CAT06–08).
 
 ## Open — found by the live walkthrough
+
 - Resume drops the three opening songs. Picks, reads and the round counter come back; the ranked
   #1/#2/#3 list does not. Fix in the web resume path (src/lib/resume.functions.ts + the resume
   restore block in src/routes/onboarding.tsx) so the openers render after a refresh.
@@ -34,6 +38,7 @@
   critic's voice without naming the machinery.
 
 ## Open — blocked on others
+
 - Vercel production env vars: musicdna.fm is live and serves the frontend + typed v1 errors, but every server function that touches the Supabase admin client (public share lookup, reveal, publish, onboarding) returns a 500 HTML page because `SB_SECRET_KEY` (and `SUPABASE_URL`) are not set in the Vercel dashboard. Add them there (plus `AGENT_TEST_HARNESS_KEY` if the REST e2e should run against prod) and redeploy; then rerun `MUSICDNA_E2E_BASE_URL=https://www.musicdna.fm` to confirm.
 - Flutter parity: Codex is adopting the v1 contract.
 - Signed-in walkthrough: this project's Supabase is user-managed, so no account can be minted here.
