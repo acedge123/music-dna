@@ -24,7 +24,10 @@
       "atmosphere": 40,
       "confidence": 72,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_dance", "post_punk"],
+      "subculture": [
+        "indie_dance",
+        "post_punk"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 78,
       "perspective": 32,
@@ -39,7 +42,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 12,
       "identity_signaling": 12,
-      "primary_dimensions": ["movement", "tension", "immersion"],
+      "primary_dimensions": [
+        "movement",
+        "tension",
+        "immersion"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -75,7 +82,12 @@
             "after": 32,
             "reason": "Clipped guitars and urgent interlocking rhythm attack immediately; the narrator is implicated, not a detached witness."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -100,7 +112,10 @@
       "atmosphere": 60,
       "confidence": 40,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock", "indie_pop"],
+      "subculture": [
+        "alternative_rock",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 76,
       "perspective": 22,
@@ -115,7 +130,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 10,
       "identity_signaling": 11,
-      "primary_dimensions": ["confidence", "scale", "transformation"],
+      "primary_dimensions": [
+        "confidence",
+        "scale",
+        "transformation"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -166,7 +185,12 @@
             "after": 80,
             "reason": "Anxious attachment opens exposed and explodes into a polished chorus; vocal force is not emotional command. Pop placement proposed."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://www.musicradar.com/news/benson-boone-beautiful-things"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -191,7 +215,10 @@
       "atmosphere": 68,
       "confidence": 45,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["art_rock", "indie_pop"],
+      "subculture": [
+        "art_rock",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 77,
       "perspective": 30,
@@ -206,7 +233,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 14,
       "identity_signaling": 13,
-      "primary_dimensions": ["tension", "atmosphere", "community"],
+      "primary_dimensions": [
+        "tension",
+        "atmosphere",
+        "community"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -242,7 +273,12 @@
             "after": 68,
             "reason": "Fractured rhythm and possessive intimacy sustain menace; eccentric details are not automatically glossy refinement."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -267,7 +303,9 @@
       "atmosphere": 50,
       "confidence": 58,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop"],
+      "subculture": [
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 72,
       "perspective": 28,
@@ -282,7 +320,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 8,
       "identity_signaling": 10,
-      "primary_dimensions": ["tension", "immersion", "transformation"],
+      "primary_dimensions": [
+        "tension",
+        "immersion",
+        "transformation"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -323,7 +365,12 @@
             "after": 28,
             "reason": "Relaxed baritone and a repeating acoustic hook make an accessible, low-pressure control rather than a journey."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 9,
       "diagnostic_power_confidence": 0.0
@@ -348,7 +395,10 @@
       "atmosphere": 70,
       "confidence": 50,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["synth_pop", "indie_dance"],
+      "subculture": [
+        "synth_pop",
+        "indie_dance"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 72,
       "perspective": 35,
@@ -363,7 +413,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 16,
       "identity_signaling": 13,
-      "primary_dimensions": ["immersion", "transformation", "texture"],
+      "primary_dimensions": [
+        "immersion",
+        "transformation",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -404,7 +458,12 @@
             "after": 90,
             "reason": "A withheld instrumental payoff changes the track rather than merely lifting a chorus; the vocal stance remains uncertain."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://songexploder.net/chvrches"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 12,
       "diagnostic_power_confidence": 0.0
@@ -429,7 +488,10 @@
       "atmosphere": 75,
       "confidence": 62,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["art_rock", "indie_pop"],
+      "subculture": [
+        "art_rock",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 61,
       "perspective": 30,
@@ -444,12 +506,16 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 12,
-      "primary_dimensions": ["movement", "atmosphere", "immersion"],
+      "primary_dimensions": [
+        "movement",
+        "atmosphere",
+        "immersion"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
         "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
-        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording": "2023 Part 2 studio recording alone, not Part 1 or combined suite",
         "recording_status": "catalog identity checked; full audio audition not performed",
         "scorer": "Lovable editorial review",
         "empirically_validated": false,
@@ -480,7 +546,12 @@
             "after": 72,
             "reason": "A driving bass-led arrangement wraps intimate desire in an enveloping groove; neither soulful delivery nor metaphor makes an outside witness."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://www.sonymusic.ca/press_release/hozier-shares-funky-new-song-de-selby-part-2-ahead-of-his-third-studio-album-unreal-unearth"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -505,7 +576,9 @@
       "atmosphere": 70,
       "confidence": 50,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock"],
+      "subculture": [
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 87,
       "perspective": 22,
@@ -520,7 +593,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 11,
-      "primary_dimensions": ["tension", "confidence", "immersion"],
+      "primary_dimensions": [
+        "tension",
+        "confidence",
+        "immersion"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -556,7 +633,12 @@
             "after": 35,
             "reason": "The stalking riff carries swagger while the question exposes uncertainty; slow pressure matters more than command."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -581,7 +663,10 @@
       "atmosphere": 65,
       "confidence": 72,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["art_rock", "indie_pop"],
+      "subculture": [
+        "art_rock",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 86,
       "perspective": 42,
@@ -596,7 +681,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 16,
       "identity_signaling": 12,
-      "primary_dimensions": ["transformation", "community", "scale"],
+      "primary_dimensions": [
+        "transformation",
+        "community",
+        "scale"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -642,7 +731,12 @@
             "after": 90,
             "reason": "Sparse beginnings accumulate into percussion-led collective release; escape is expressed through real arrangement growth."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 12,
       "diagnostic_power_confidence": 0.0
@@ -667,7 +761,10 @@
       "atmosphere": 50,
       "confidence": 80,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop", "alternative_rock"],
+      "subculture": [
+        "indie_pop",
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 78,
       "perspective": 38,
@@ -682,7 +779,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 11,
       "identity_signaling": 10,
-      "primary_dimensions": ["immersion", "confidence", "transformation"],
+      "primary_dimensions": [
+        "immersion",
+        "confidence",
+        "transformation"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -728,7 +829,12 @@
             "after": 22,
             "reason": "A compact bass-and-falsetto hook delivers its reward early and holds its shape; it is an immediacy control."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -753,7 +859,10 @@
       "atmosphere": 50,
       "confidence": 72,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop", "alternative_rock"],
+      "subculture": [
+        "indie_pop",
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 83,
       "perspective": 38,
@@ -768,7 +877,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 12,
       "identity_signaling": 11,
-      "primary_dimensions": ["community", "tension", "texture"],
+      "primary_dimensions": [
+        "community",
+        "tension",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -824,7 +937,12 @@
             "after": 32,
             "reason": "Dry guitar and personal mishaps turn into shared reassurance without a major structural transformation."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 9,
       "diagnostic_power_confidence": 0.0
@@ -849,7 +967,10 @@
       "atmosphere": 80,
       "confidence": 42,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop", "electronica"],
+      "subculture": [
+        "indie_pop",
+        "electronica"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 84,
       "perspective": 22,
@@ -864,7 +985,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 12,
       "identity_signaling": 11,
-      "primary_dimensions": ["atmosphere", "confidence", "texture"],
+      "primary_dimensions": [
+        "atmosphere",
+        "confidence",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -910,7 +1035,12 @@
             "after": 40,
             "reason": "Hazy, polished production surrounds an immediate hook and vulnerable recollection; chart reach is not musical scale."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -935,7 +1065,9 @@
       "atmosphere": 45,
       "confidence": 52,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop"],
+      "subculture": [
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 77,
       "perspective": 28,
@@ -950,7 +1082,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 10,
       "identity_signaling": 13,
-      "primary_dimensions": ["community", "immersion", "texture"],
+      "primary_dimensions": [
+        "community",
+        "immersion",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -996,7 +1132,12 @@
             "after": 28,
             "reason": "Call-and-response shouts invite participation while the underlying plea remains needy; the form stays simple."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -1021,7 +1162,10 @@
       "atmosphere": 30,
       "confidence": 80,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock", "indie_pop"],
+      "subculture": [
+        "alternative_rock",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 86,
       "perspective": 55,
@@ -1036,7 +1180,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 11,
       "identity_signaling": 12,
-      "primary_dimensions": ["movement", "immersion", "texture"],
+      "primary_dimensions": [
+        "movement",
+        "immersion",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1072,7 +1220,12 @@
             "after": 28,
             "reason": "Abrupt, abrasive guitar rush and conversational flirtation reward attack over polish; it does not slowly unveil itself."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 9,
       "diagnostic_power_confidence": 0.0
@@ -1097,7 +1250,10 @@
       "atmosphere": 65,
       "confidence": 72,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["synth_pop", "indie_dance"],
+      "subculture": [
+        "synth_pop",
+        "indie_dance"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 85,
       "perspective": 72,
@@ -1112,12 +1268,16 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 12,
-      "primary_dimensions": ["perspective", "community", "texture"],
+      "primary_dimensions": [
+        "perspective",
+        "community",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
         "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
-        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording": "Oracular Spectacular album rerecording, not earlier EP",
         "recording_status": "catalog identity checked; full audio audition not performed",
         "scorer": "Lovable editorial review",
         "empirically_validated": false,
@@ -1153,7 +1313,12 @@
             "after": 38,
             "reason": "Direct address and warning put the narrator outside the subject more than most confessionals; the synth hook is immediate despite its haze."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 12,
       "diagnostic_power_confidence": 0.0
@@ -1178,7 +1343,10 @@
       "atmosphere": 65,
       "confidence": 50,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop", "dream_pop"],
+      "subculture": [
+        "indie_pop",
+        "dream_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 78,
       "perspective": 35,
@@ -1193,7 +1361,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 14,
-      "primary_dimensions": ["perspective", "confidence", "immersion"],
+      "primary_dimensions": [
+        "perspective",
+        "confidence",
+        "immersion"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1239,7 +1411,12 @@
             "after": 50,
             "reason": "Bright horns and forward guitar disguise a personal father-daughter conflict; scene detail does not turn confession into detached witness."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -1264,7 +1441,10 @@
       "atmosphere": 40,
       "confidence": 78,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock", "college_rock"],
+      "subculture": [
+        "alternative_rock",
+        "college_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 90,
       "perspective": 40,
@@ -1279,7 +1459,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 12,
       "identity_signaling": 13,
-      "primary_dimensions": ["texture", "immersion", "transformation"],
+      "primary_dimensions": [
+        "texture",
+        "immersion",
+        "transformation"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1315,7 +1499,12 @@
             "after": 28,
             "reason": "Scratchy, direct garage rock repeats a tight form; cultivated cool should not be mistaken for polished production."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 9,
       "diagnostic_power_confidence": 0.0
@@ -1340,7 +1529,9 @@
       "atmosphere": 35,
       "confidence": 82,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock"],
+      "subculture": [
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 78,
       "perspective": 35,
@@ -1355,7 +1546,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 9,
       "identity_signaling": 10,
-      "primary_dimensions": ["confidence", "texture", "immersion"],
+      "primary_dimensions": [
+        "confidence",
+        "texture",
+        "immersion"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1396,7 +1591,12 @@
             "after": 22,
             "reason": "Grainy riff propulsion lands immediately; performance strut, not slow musical development, supplies the hook."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 9,
       "diagnostic_power_confidence": 0.0
@@ -1421,7 +1621,10 @@
       "atmosphere": 68,
       "confidence": 28,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock", "art_rock"],
+      "subculture": [
+        "alternative_rock",
+        "art_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 92,
       "perspective": 22,
@@ -1436,7 +1639,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 15,
       "identity_signaling": 12,
-      "primary_dimensions": ["confidence", "community", "tension"],
+      "primary_dimensions": [
+        "confidence",
+        "community",
+        "tension"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1492,7 +1699,12 @@
             "after": 55,
             "reason": "Exposed pleading and circling guitar leave the singer emotionally unguarded; intensity is vulnerability, not command."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://www.nme.com/news/music/yeah-yeah-yeahs-118-1342452"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -1517,7 +1729,10 @@
       "atmosphere": 65,
       "confidence": 55,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop", "alternative_rock"],
+      "subculture": [
+        "indie_pop",
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 65,
       "perspective": 22,
@@ -1532,12 +1747,16 @@
       "archetype_signals": [],
       "tradeoff_richness": 12,
       "identity_signaling": 12,
-      "primary_dimensions": ["perspective", "texture", "confidence"],
+      "primary_dimensions": [
+        "perspective",
+        "texture",
+        "confidence"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
         "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
-        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording": "Full 2024 album recording, not radio edit",
         "recording_status": "catalog identity checked; full audio audition not performed",
         "scorer": "Lovable editorial review",
         "empirically_validated": false,
@@ -1583,7 +1802,12 @@
             "after": 45,
             "reason": "Raw-edged self-reproach and defiance occupy the same first-person confession; pop/soul placement proposed, not a new R&B lane."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://mixwiththemasters.com/videos/jared-solomon-lola-young-manuka-lola-young-messy/part"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -1608,7 +1832,10 @@
       "atmosphere": 45,
       "confidence": 45,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock", "new_wave"],
+      "subculture": [
+        "alternative_rock",
+        "new_wave"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 96,
       "perspective": 22,
@@ -1623,7 +1850,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 11,
       "identity_signaling": 9,
-      "primary_dimensions": ["community", "confidence", "tension"],
+      "primary_dimensions": [
+        "community",
+        "confidence",
+        "tension"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1674,7 +1905,12 @@
             "after": 38,
             "reason": "The room can roar along while the narrator spirals in jealousy; polished anthem scale and private insecurity coexist."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -1699,7 +1935,10 @@
       "atmosphere": 60,
       "confidence": 75,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop", "alternative_rock"],
+      "subculture": [
+        "indie_pop",
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 70,
       "perspective": 48,
@@ -1714,7 +1953,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 11,
       "identity_signaling": 13,
-      "primary_dimensions": ["texture", "scale", "tension"],
+      "primary_dimensions": [
+        "texture",
+        "scale",
+        "tension"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1750,7 +1993,12 @@
             "after": 38,
             "reason": "Arranged piano-and-brass theatricality is refined and expansive, but recurring hooks are not wholesale transformation."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 9,
       "diagnostic_power_confidence": 0.0
@@ -1775,7 +2023,10 @@
       "atmosphere": 72,
       "confidence": 38,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop", "dream_pop"],
+      "subculture": [
+        "indie_pop",
+        "dream_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 77,
       "perspective": 22,
@@ -1790,7 +2041,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 14,
-      "primary_dimensions": ["confidence", "perspective", "transformation"],
+      "primary_dimensions": [
+        "confidence",
+        "perspective",
+        "transformation"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1826,7 +2081,12 @@
             "after": 72,
             "reason": "Layered confessions remain inside feeling; the repeated bridge and ensemble build deepen self-doubt rather than supply detached observation."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -1851,7 +2111,9 @@
       "atmosphere": 65,
       "confidence": 50,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop"],
+      "subculture": [
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 70,
       "perspective": 22,
@@ -1866,7 +2128,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 10,
       "identity_signaling": 11,
-      "primary_dimensions": ["perspective", "scale", "texture"],
+      "primary_dimensions": [
+        "perspective",
+        "scale",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -1917,7 +2183,12 @@
             "after": 65,
             "reason": "Glossy, devotional arena-pop enlarges an intimate first-person promise; fame is separate from musical scale. Pop placement proposed."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://www.soundonsound.com/techniques/inside-track-alex-warren-ordinary"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -1942,7 +2213,10 @@
       "atmosphere": 55,
       "confidence": 68,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop", "alternative_rock"],
+      "subculture": [
+        "indie_pop",
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 85,
       "perspective": 72,
@@ -1957,7 +2231,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 11,
-      "primary_dimensions": ["perspective", "immersion", "transformation"],
+      "primary_dimensions": [
+        "perspective",
+        "immersion",
+        "transformation"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2008,7 +2286,12 @@
             "after": 28,
             "reason": "A fictional outward-facing portrait rides a buoyant stable hook; the violent story alone does not justify maximum sonic tension."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -2033,7 +2316,10 @@
       "atmosphere": 62,
       "confidence": 72,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["art_rock", "alternative_rock"],
+      "subculture": [
+        "art_rock",
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 90,
       "perspective": 70,
@@ -2048,7 +2334,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 15,
       "identity_signaling": 14,
-      "primary_dimensions": ["community", "transformation", "perspective"],
+      "primary_dimensions": [
+        "community",
+        "transformation",
+        "perspective"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2084,7 +2374,12 @@
             "after": 72,
             "reason": "Repeated warnings address an audience as the ensemble gathers force; accumulation and communal invitation are genuine, not just popularity."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -2109,7 +2404,9 @@
       "atmosphere": 55,
       "confidence": 52,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop"],
+      "subculture": [
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 78,
       "perspective": 35,
@@ -2124,7 +2421,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 9,
       "identity_signaling": 11,
-      "primary_dimensions": ["immersion", "texture", "transformation"],
+      "primary_dimensions": [
+        "immersion",
+        "texture",
+        "transformation"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2175,7 +2476,12 @@
             "after": 28,
             "reason": "A close acoustic strum and immediately repeatable refrain are smaller and less collective than a shouted folk chorus."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 9,
       "diagnostic_power_confidence": 0.0
@@ -2200,7 +2506,9 @@
       "atmosphere": 45,
       "confidence": 85,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock"],
+      "subculture": [
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 97,
       "perspective": 48,
@@ -2215,7 +2523,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 9,
       "identity_signaling": 8,
-      "primary_dimensions": ["confidence", "community", "texture"],
+      "primary_dimensions": [
+        "confidence",
+        "community",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2256,7 +2568,12 @@
             "after": 28,
             "reason": "A sparse gritty riff invites chanting without becoming cathedral-scale; defiant delivery is a clearer command anchor than Maps."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -2281,7 +2598,10 @@
       "atmosphere": 40,
       "confidence": 85,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_dance", "new_wave"],
+      "subculture": [
+        "indie_dance",
+        "new_wave"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 76,
       "perspective": 35,
@@ -2296,7 +2616,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 9,
       "identity_signaling": 11,
-      "primary_dimensions": ["movement", "community", "immersion"],
+      "primary_dimensions": [
+        "movement",
+        "community",
+        "immersion"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2327,7 +2651,12 @@
             "after": 28,
             "reason": "Polished drums and instant chorus release throw the door open immediately; excitement is not a delayed structural reveal."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -2352,7 +2681,9 @@
       "atmosphere": 75,
       "confidence": 65,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_pop"],
+      "subculture": [
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 60,
       "perspective": 50,
@@ -2367,7 +2698,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 12,
       "identity_signaling": 12,
-      "primary_dimensions": ["movement", "tension", "atmosphere"],
+      "primary_dimensions": [
+        "movement",
+        "tension",
+        "atmosphere"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2423,7 +2758,12 @@
             "after": 55,
             "reason": "Loose acoustic sway and low pressure offer relative stillness, not total stasis; song-specific alternative crossover remains a review decision."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://www.rollingstone.com/music/music-news/lorde-solar-power-interview-zane-lowe-1182759/"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 9,
       "diagnostic_power_confidence": 0.0
@@ -2448,7 +2788,10 @@
       "atmosphere": 72,
       "confidence": 50,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["art_rock", "indie_pop"],
+      "subculture": [
+        "art_rock",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 89,
       "perspective": 30,
@@ -2463,12 +2806,16 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 10,
-      "primary_dimensions": ["scale", "confidence", "tension"],
+      "primary_dimensions": [
+        "scale",
+        "confidence",
+        "tension"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
         "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
-        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording": "2011 Making Mirrors studio duet featuring Kimbra",
         "recording_status": "catalog identity checked; full audio audition not performed",
         "scorer": "Lovable editorial review",
         "empirically_validated": false,
@@ -2509,7 +2856,12 @@
             "after": 60,
             "reason": "Sparse interlocking parts and competing first-person accounts keep the breakup intimate; two singers are not outside witnesses."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://www.soundonsound.com/techniques/mixing-gotyes-somebody-used-know-francois-tetaz"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -2534,7 +2886,10 @@
       "atmosphere": 75,
       "confidence": 58,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["electronica", "indie_pop"],
+      "subculture": [
+        "electronica",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 88,
       "perspective": 22,
@@ -2549,12 +2904,16 @@
       "archetype_signals": [],
       "tradeoff_richness": 14,
       "identity_signaling": 13,
-      "primary_dimensions": ["scale", "texture", "atmosphere"],
+      "primary_dimensions": [
+        "scale",
+        "texture",
+        "atmosphere"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
         "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
-        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording": "2003 Postal Service studio original, not Iron & Wine cover",
         "recording_status": "catalog identity checked; full audio audition not performed",
         "scorer": "Lovable editorial review",
         "empirically_validated": false,
@@ -2600,7 +2959,12 @@
             "after": 48,
             "reason": "The original Postal Service recording is brisk, electronically refined and intimately romantic; do not borrow stillness from the acoustic cover."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://www.subpop.com/releases/the_postal_service/such_great_heights"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 12,
       "diagnostic_power_confidence": 0.0
@@ -2625,7 +2989,10 @@
       "atmosphere": 55,
       "confidence": 52,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["synth_pop", "indie_pop"],
+      "subculture": [
+        "synth_pop",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 73,
       "perspective": 35,
@@ -2640,7 +3007,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 12,
       "identity_signaling": 11,
-      "primary_dimensions": ["movement", "texture", "perspective"],
+      "primary_dimensions": [
+        "movement",
+        "texture",
+        "perspective"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2686,7 +3057,12 @@
             "after": 32,
             "reason": "Bright, refined pulses carry a fictional first-person financial burden; adopting a character does not move the narration outside the experience."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -2711,7 +3087,10 @@
       "atmosphere": 35,
       "confidence": 72,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["indie_dance", "alternative_rock"],
+      "subculture": [
+        "indie_dance",
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 91,
       "perspective": 35,
@@ -2726,7 +3105,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 12,
-      "primary_dimensions": ["transformation", "movement", "texture"],
+      "primary_dimensions": [
+        "transformation",
+        "movement",
+        "texture"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2762,7 +3145,12 @@
             "after": 80,
             "reason": "The early tempo-and-riff switch meaningfully changes the track; the stylish command is real but not absolute."
           }
-        }
+        },
+        "metadata_sources": [
+          "https://www.soundonsound.com/people/recording-franz-ferdinand"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -2787,7 +3175,10 @@
       "atmosphere": 60,
       "confidence": 62,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock", "college_rock"],
+      "subculture": [
+        "alternative_rock",
+        "college_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 79,
       "perspective": 62,
@@ -2802,7 +3193,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 13,
       "identity_signaling": 13,
-      "primary_dimensions": ["immersion", "transformation", "confidence"],
+      "primary_dimensions": [
+        "immersion",
+        "transformation",
+        "confidence"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2843,7 +3238,12 @@
             "after": 62,
             "reason": "Cool guitars gradually develop into strained falsetto; outward social address is mixed with private distress, not pure detachment."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -2868,7 +3268,10 @@
       "atmosphere": 65,
       "confidence": 62,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["synth_pop", "indie_pop"],
+      "subculture": [
+        "synth_pop",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 79,
       "perspective": 32,
@@ -2883,7 +3286,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 12,
       "identity_signaling": 12,
-      "primary_dimensions": ["texture", "atmosphere", "confidence"],
+      "primary_dimensions": [
+        "texture",
+        "atmosphere",
+        "confidence"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -2924,7 +3331,12 @@
             "after": 32,
             "reason": "Glossy synth layers support direct emotional appeal with a quickly accessible hook, not a patient transformation."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -2949,7 +3361,10 @@
       "atmosphere": 70,
       "confidence": 68,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["synth_pop", "indie_pop"],
+      "subculture": [
+        "synth_pop",
+        "indie_pop"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 88,
       "perspective": 50,
@@ -2964,12 +3379,16 @@
       "archetype_signals": [],
       "tradeoff_richness": 14,
       "identity_signaling": 13,
-      "primary_dimensions": ["texture", "atmosphere", "perspective"],
+      "primary_dimensions": [
+        "texture",
+        "atmosphere",
+        "perspective"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
         "review_document": "docs/musicdna/inactive-catalog-review-2026-10-20.md",
-        "recording": "Original album/studio recording; not live, remix or acoustic cover",
+        "recording": "Oracular Spectacular album rerecording, not earlier EP",
         "recording_status": "catalog identity checked; full audio audition not performed",
         "scorer": "Lovable editorial review",
         "empirically_validated": false,
@@ -3010,7 +3429,12 @@
             "after": 42,
             "reason": "A first-person fantasy turns satirical, complicating rather than eliminating involvement; synthetic glamour is the sonic strength."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 11,
       "diagnostic_power_confidence": 0.0
@@ -3035,7 +3459,9 @@
       "atmosphere": 60,
       "confidence": 45,
       "created_at": "2026-10-20T15:27:12.849439+00:00",
-      "subculture": ["alternative_rock"],
+      "subculture": [
+        "alternative_rock"
+      ],
       "updated_at": "2026-10-20T16:09:06.679529+00:00",
       "canon_score": 82,
       "perspective": 22,
@@ -3050,7 +3476,11 @@
       "archetype_signals": [],
       "tradeoff_richness": 10,
       "identity_signaling": 11,
-      "primary_dimensions": ["scale", "confidence", "community"],
+      "primary_dimensions": [
+        "scale",
+        "confidence",
+        "community"
+      ],
       "scoring_provenance": {
         "source": "ai_editorial_recalibration",
         "review": "pending",
@@ -3091,7 +3521,12 @@
             "after": 45,
             "reason": "Wide, polished guitars enlarge a needy confession; arena dimensions do not erase vulnerability."
           }
-        }
+        },
+        "metadata_sources": [
+          "docs/musicdna/inactive-catalog-review-2026-10-20.md"
+        ],
+        "source_accessed": "2026-10-20",
+        "release_year_status": "pending recording-level verification; retained stored year"
       },
       "cross_genre_mapping": 10,
       "diagnostic_power_confidence": 0.0
@@ -3101,7 +3536,10 @@
     {
       "id": "2d8b5a62-ab7a-481f-b9b1-b08734fc4b10",
       "lane": "alternative",
-      "tests": ["atmosphere", "texture"],
+      "tests": [
+        "atmosphere",
+        "texture"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Clipped guitar attack versus synthetic haze. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "cc669ae2-34b5-4149-818b-8b44dc8ce661",
@@ -3119,7 +3557,10 @@
     {
       "id": "f14c7eb6-f0fd-4fd7-b32c-27bac226cbdf",
       "lane": "alternative",
-      "tests": ["immersion", "transformation"],
+      "tests": [
+        "immersion",
+        "transformation"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Withheld release versus instant invitation. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "f0effd72-6c77-4529-872a-548cd95340e2",
@@ -3137,7 +3578,11 @@
     {
       "id": "ff4743b7-c06e-4e76-841a-526e673478f6",
       "lane": "alternative",
-      "tests": ["tension", "immersion", "confidence"],
+      "tests": [
+        "tension",
+        "immersion",
+        "confidence"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Uncertain slow pressure versus immediate strut. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "4d12cf5e-402d-47d5-bb60-697a3beea007",
@@ -3155,7 +3600,10 @@
     {
       "id": "15611643-1366-45b2-a62d-d015be77e351",
       "lane": "alternative",
-      "tests": ["immersion", "transformation"],
+      "tests": [
+        "immersion",
+        "transformation"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Compact reward versus gradual development. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "7a26a4be-30af-49f9-9c37-1f733c2eea7f",
@@ -3173,7 +3621,10 @@
     {
       "id": "84d4d55e-da6c-4ab2-95ce-f19ea099690e",
       "lane": "alternative",
-      "tests": ["texture", "immersion"],
+      "tests": [
+        "texture",
+        "immersion"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Dry reassurance versus synthetic fantasy. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "cf569731-a5a9-440a-b4f0-aba8fec94c1e",
@@ -3191,7 +3642,10 @@
     {
       "id": "e8c2beba-80e9-42af-b99d-d299e52fbf75",
       "lane": "alternative",
-      "tests": ["texture", "atmosphere"],
+      "tests": [
+        "texture",
+        "atmosphere"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Abrasive attack versus theatrical refinement. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "a3e0dcd6-ab13-4ac8-9817-0c49e2d5991f",
@@ -3209,7 +3663,9 @@
     {
       "id": "a6c70546-b353-42ed-a962-451853bcd00a",
       "lane": "alternative",
-      "tests": ["transformation"],
+      "tests": [
+        "transformation"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Stable garage hook versus structural switch. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "07ebce3b-4698-409f-a5ef-f56e1e399683",
@@ -3227,7 +3683,10 @@
     {
       "id": "02b34595-0e90-4437-be74-7c3085efb0da",
       "lane": "alternative",
-      "tests": ["confidence", "community"],
+      "tests": [
+        "confidence",
+        "community"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Exposed pleading versus defiant chant. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "fd16e83c-9f44-430e-87f9-608d6d4917ca",
@@ -3245,7 +3704,9 @@
     {
       "id": "6b0d107a-ea7a-48df-a4b8-70ba6304b449",
       "lane": "alternative",
-      "tests": ["tension"],
+      "tests": [
+        "tension"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Jealous pressure versus open yearning. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "6a2f760c-2d69-417f-9f99-356b768ff45e",
@@ -3263,7 +3724,10 @@
     {
       "id": "ebe9af8d-c12b-468c-aac8-238c6c66f244",
       "lane": "alternative",
-      "tests": ["tension", "perspective"],
+      "tests": [
+        "tension",
+        "perspective"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Outward warning versus escape into release. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "ad7cfe1b-f058-4543-aa6b-47fbbd34354b",
@@ -3281,7 +3745,10 @@
     {
       "id": "40496048-6640-4a97-8490-6f6388be4746",
       "lane": "alternative",
-      "tests": ["texture", "immersion"],
+      "tests": [
+        "texture",
+        "immersion"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Sparse layered breakup versus direct garage grain. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "1deb5d08-9c2c-4a18-b94f-98ff2e74de0e",
@@ -3299,7 +3766,10 @@
     {
       "id": "a63ef7bf-811e-4fb1-9e80-3ef2eda6456b",
       "lane": "alternative",
-      "tests": ["scale", "atmosphere"],
+      "tests": [
+        "scale",
+        "atmosphere"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Electronic intimacy versus room-filling anthem. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "c034ee2f-65ef-486f-a446-5165fb21c4da",
@@ -3317,7 +3787,9 @@
     {
       "id": "f5c7add9-3a80-45d0-a41f-1bc99d06d8dc",
       "lane": "alternative",
-      "tests": ["tension"],
+      "tests": [
+        "tension"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Cool strain versus stalking pressure. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "a4462070-3027-4955-888d-0b8acb80631f",
@@ -3335,7 +3807,11 @@
     {
       "id": "54a0f925-17e4-4a8a-a608-a60ba1f6aa8b",
       "lane": "alternative",
-      "tests": ["atmosphere", "immersion", "confidence"],
+      "tests": [
+        "atmosphere",
+        "immersion",
+        "confidence"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Emotional synth layers versus instant command. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "d00eadbe-1ef8-44e0-b410-10b8eae4cab2",
@@ -3353,7 +3829,11 @@
     {
       "id": "41f9c9d1-9ffe-4f73-ae26-48877ccfa254",
       "lane": "alternative",
-      "tests": ["tension", "community", "immersion"],
+      "tests": [
+        "tension",
+        "community",
+        "immersion"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Relaxed familiarity versus unsettling patience. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "6ba8346a-5e96-44bb-8858-fd8912ef40ef",
@@ -3371,7 +3851,10 @@
     {
       "id": "4308b4ff-4777-48c3-945c-2155095e46a0",
       "lane": "alternative",
-      "tests": ["community", "texture"],
+      "tests": [
+        "community",
+        "texture"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Shared acoustic shout versus private electronic precision. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "6a4e523f-3616-4c40-9e90-92464655b749",
@@ -3389,7 +3872,10 @@
     {
       "id": "5be289e0-0332-4d17-845b-6498c4aa2fd5",
       "lane": "alternative",
-      "tests": ["immersion", "transformation"],
+      "tests": [
+        "immersion",
+        "transformation"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Bright directness versus confessional accumulation. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "6f13c2ac-4b0f-425e-b814-3b55494ed96a",
@@ -3407,7 +3893,9 @@
     {
       "id": "e9d4d08e-c417-4a84-b3a1-bfb650368127",
       "lane": "alternative",
-      "tests": ["perspective"],
+      "tests": [
+        "perspective"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Outward portrait versus lived-in character. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "dbb70a54-533b-44c2-a661-d247de7fb08e",
@@ -3425,7 +3913,11 @@
     {
       "id": "a844d609-db59-40ef-bde7-35395a8687c9",
       "lane": "alternative",
-      "tests": ["movement", "tension", "atmosphere"],
+      "tests": [
+        "movement",
+        "tension",
+        "atmosphere"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Loose sway versus angular urgency. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "85a72d6b-e319-4e23-adc9-0e9c550276ba",
@@ -3443,7 +3935,10 @@
     {
       "id": "757caf6e-b7cd-406f-891a-e9144452505d",
       "lane": "alternative",
-      "tests": ["movement", "tension"],
+      "tests": [
+        "movement",
+        "tension"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Enveloping drive versus possessive menace. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "15f5b02d-0efa-4683-bff8-32b006aeea7a",
@@ -3461,7 +3956,10 @@
     {
       "id": "e1cae0e3-a3ee-4f0c-b84e-2da17423f695",
       "lane": "alternative",
-      "tests": ["texture", "tension"],
+      "tests": [
+        "texture",
+        "tension"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Glossy recollection versus exposed pressure. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "8be528c8-a73c-4cc0-bebd-2706161d480a",
@@ -3479,7 +3977,11 @@
     {
       "id": "fb6e4ee2-101b-41ea-8daf-3db44a1bf9ec",
       "lane": "alternative",
-      "tests": ["scale", "immersion", "perspective"],
+      "tests": [
+        "scale",
+        "immersion",
+        "perspective"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Close acoustic immediacy versus accumulating warning. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "e90493ec-ad1b-481b-a77b-212f38993cdb",
@@ -3497,7 +3999,10 @@
     {
       "id": "9ac673b7-872e-4c5e-b79d-1ded48ce72e9",
       "lane": "alternative",
-      "tests": ["atmosphere", "movement"],
+      "tests": [
+        "atmosphere",
+        "movement"
+      ],
       "active": false,
       "why_good": "cat06-review-2; pending editorial approval. Direct easy pulse versus loose atmospheric sway. Each declared test clears 20 points. Other-axis differences may confound attribution.",
       "song_a_id": "6ba8346a-5e96-44bb-8858-fd8912ef40ef",
@@ -3520,7 +4025,11 @@
       "is_bootstrap": false,
       "song_a_id": "fd16e83c-9f44-430e-87f9-608d6d4917ca",
       "song_b_id": "438c1d74-5fb0-4aab-839d-62494db6dafa",
-      "tests": ["community", "perspective", "confidence"],
+      "tests": [
+        "community",
+        "perspective",
+        "confidence"
+      ],
       "diagnostic_weight": 78,
       "hypothesis": "Private vulnerability versus outward synth invitation",
       "user_facing_tradeoff": "Maybe exposed feeling beats a communal, outward-looking hook; several attributes move together, so I will keep the read tentative.",
@@ -3536,7 +4045,11 @@
       "is_bootstrap": false,
       "song_a_id": "c034ee2f-65ef-486f-a446-5165fb21c4da",
       "song_b_id": "9bb1081d-3ca4-4e1c-b6a0-5a39e43a5682",
-      "tests": ["scale", "community", "transformation"],
+      "tests": [
+        "scale",
+        "community",
+        "transformation"
+      ],
       "diagnostic_weight": 80,
       "hypothesis": "Intimate precision versus collective escalation",
       "user_facing_tradeoff": "Maybe you prefer the small, finely built world over a song that expands into collective release.",
@@ -3552,7 +4065,11 @@
       "is_bootstrap": false,
       "song_a_id": "f77a1c66-af97-4291-baa2-031d6fe3033a",
       "song_b_id": "dbb70a54-533b-44c2-a661-d247de7fb08e",
-      "tests": ["perspective", "confidence", "transformation"],
+      "tests": [
+        "perspective",
+        "confidence",
+        "transformation"
+      ],
       "diagnostic_weight": 76,
       "hypothesis": "Developing self-doubt versus outward hook portrait",
       "user_facing_tradeoff": "Maybe you reward an unfolding confession rather than the detached portrait; certainty and structure change with it.",
@@ -3568,7 +4085,11 @@
       "is_bootstrap": false,
       "song_a_id": "85a72d6b-e319-4e23-adc9-0e9c550276ba",
       "song_b_id": "c176b6a9-8d68-452c-b8cb-cdab7acad5b9",
-      "tests": ["movement", "tension", "transformation"],
+      "tests": [
+        "movement",
+        "tension",
+        "transformation"
+      ],
       "diagnostic_weight": 70,
       "hypothesis": "Unhurried sway versus dramatic turn",
       "user_facing_tradeoff": "Maybe space to drift beats a hard rhythmic turn; energy and pressure change too, so this is not a pure tempo test.",
@@ -3584,7 +4105,11 @@
       "is_bootstrap": false,
       "song_a_id": "8be528c8-a73c-4cc0-bebd-2706161d480a",
       "song_b_id": "d3853ea6-6040-4347-b207-bb1d593f17c1",
-      "tests": ["confidence", "texture", "community"],
+      "tests": [
+        "confidence",
+        "texture",
+        "community"
+      ],
       "diagnostic_weight": 72,
       "hypothesis": "Glossy private ache versus grainy collective command",
       "user_facing_tradeoff": "Maybe you want the vulnerability cushioned in polish rather than a rough chant taking charge.",
@@ -3600,7 +4125,11 @@
       "is_bootstrap": false,
       "song_a_id": "6f13c2ac-4b0f-425e-b814-3b55494ed96a",
       "song_b_id": "438c1d74-5fb0-4aab-839d-62494db6dafa",
-      "tests": ["perspective", "confidence", "community"],
+      "tests": [
+        "perspective",
+        "confidence",
+        "community"
+      ],
       "diagnostic_weight": 75,
       "hypothesis": "Personal conflict versus outward address",
       "user_facing_tradeoff": "Maybe personal friction beats the outward-facing synth invitation; this may be about intimacy as much as narration.",
@@ -3616,7 +4145,10 @@
       "is_bootstrap": false,
       "song_a_id": "7a26a4be-30af-49f9-9c37-1f733c2eea7f",
       "song_b_id": "15f5b02d-0efa-4683-bff8-32b006aeea7a",
-      "tests": ["immersion", "community"],
+      "tests": [
+        "immersion",
+        "community"
+      ],
       "diagnostic_weight": 67,
       "hypothesis": "Instant group hook versus enveloping development",
       "user_facing_tradeoff": "Maybe the compact communal hook wins over the slower enveloping pull; familiarity could still be doing some work.",
