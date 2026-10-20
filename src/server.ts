@@ -3,6 +3,7 @@ import "./lib/error-capture";
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
 import { V1_CORS_HEADERS } from "./routes/api/v1/_cors";
+import { allowExperienceRequest } from "./musicdna/adapters/experience-gate";
 
 type ServerEntry = {
   fetch: (request: Request, env: unknown, ctx: unknown) => Promise<Response> | Response;
@@ -54,6 +55,15 @@ export default {
     try {
       if (isV1Preflight(request)) {
         return new Response(null, { status: 204, headers: V1_CORS_HEADERS });
+      }
+      if (!allowExperienceRequest(request, {
+        enabled: process.env.MUSICDNA_EXPERIENCE_V1,
+        acceptance: process.env.MUSICDNA_BACKEND_ACCEPTANCE,
+        harnessKey: process.env.AGENT_TEST_HARNESS_KEY,
+      })) {
+        return new Response(JSON.stringify({error:{code:"EXPERIENCE_DISABLED",message:"V1 parity acceptance is pending."}}), {
+          status:503,headers:{...V1_CORS_HEADERS,"Content-Type":"application/json","Cache-Control":"no-store"},
+        });
       }
       const handler = await getServerEntry();
       const response = await handler.fetch(request, env, ctx);

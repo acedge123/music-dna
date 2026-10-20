@@ -5,6 +5,7 @@
 - The "next question" prompt is generated from the pairing actually selected (`engine/prompts.ts`), never from the prior read — so the critic can't promise a test the next matchup doesn't run.
 - Revisions are detected against the last `read_shown` event in `event_log`, not by comparing top axes client-side — so "revising" always means the evidence moved.
 - `/api/v1/*` opt-in contract v1 via `X-MusicDNA-Experience: 1` (shapes in `src/routes/api/v1/-experience.ts`, spec in `docs/musicdna/experience-contract-v1.md`); without the header routes return v0 — so shipped Flutter builds never break.
+- Public V1 is default-disabled by the server entry until deployed acceptance passes. Private acceptance additionally requires explicit acceptance mode plus the matching harness header; all normal bearer/ownership checks remain mandatory. This allows production verification without opening V1 to listeners.
 - A pick's vote, feedback and score update commit in one DB call (`record_choice_atomic`, guarded by the prior vector; stale → recompute once) — so a crash can't save a vote without its score.
 - Session history for any resume comes from `loadSessionHistory` (`src/musicdna/adapters/session-history.ts`) — so web and mobile restore the same conversation.
 - Picks are replay-safe: the committed feedback is stored on `choices.response` and returned on retry; a different song for the same pairing is a 409 — so retries can't double-count.

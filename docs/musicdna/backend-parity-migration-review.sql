@@ -14,6 +14,9 @@ CREATE POLICY owner_chat_turn ON public.chat_turns FOR SELECT TO authenticated
  USING (user_id=auth.uid() AND EXISTS(SELECT 1 FROM public.sessions s WHERE s.id=session_id AND s.user_id=auth.uid()));
 CREATE INDEX chat_history_cursor ON public.chat_messages(session_id, created_at DESC, id DESC);
 ALTER TABLE public.sessions ADD COLUMN published_read jsonb;
+-- Fail review/apply on duplicates; never silently delete feedback history.
+CREATE UNIQUE INDEX IF NOT EXISTS result_feedback_mutation_unique
+ ON public.result_feedback(session_id,mutation_id) WHERE mutation_id IS NOT NULL;
 
 CREATE FUNCTION public.save_result_feedback(p_session_id uuid, p_payload jsonb) RETURNS jsonb
 LANGUAGE plpgsql SECURITY DEFINER SET search_path=public AS $$
@@ -23,6 +26,11 @@ DECLARE u uuid:=auth.uid(); s public.sessions; r public.result_feedback; v integ
 BEGIN
  SELECT * INTO s FROM sessions WHERE id=p_session_id AND user_id=u FOR UPDATE;
  IF NOT FOUND THEN RAISE EXCEPTION 'forbidden' USING ERRCODE='42501'; END IF;
+ v:=(payload->>'result_version')::integer;
+ IF v IS NULL THEN SELECT max(version) INTO v FROM session_results WHERE session_id=p_session_id AND user_id=u; END IF;
+ payload:=jsonb_build_object('accuracy',payload->>'accuracy','rating',(payload->>'rating')::smallint,
+ 'comment',payload->>'comment','target',payload->>'target','result_version',v,
+ 'most_accurate_sentence',payload->>'most_accurate_sentence','least_accurate_sentence',payload->>'least_accurate_sentence');
  SELECT * INTO r FROM result_feedback WHERE session_id=p_session_id AND user_id=u AND mutation_id=key;
  IF FOUND THEN
    IF jsonb_build_object('accuracy',r.accuracy,'rating',r.rating,'comment',r.comment,'target',r.target,
@@ -81,6 +89,15 @@ BEGIN
  IF t.assistant_message_id IS NOT NULL THEN RETURN to_jsonb(t)||jsonb_build_object('replayed',true); END IF;
  IF t.lease_token IS DISTINCT FROM p_lease_token THEN RAISE EXCEPTION 'CHAT_LEASE_LOST' USING ERRCODE='40001'; END IF;
  IF nullif(trim(p_reply),'') IS NULL THEN RAISE EXCEPTION 'EMPTY_REPLY'; END IF;
+ IF p_refinement IS NOT NULL THEN
+ IF jsonb_typeof(p_refinement)<>'object' THEN RAISE EXCEPTION 'INVALID_REFINEMENT' USING ERRCODE='22023'; END IF;
+ IF (SELECT count(*) FROM jsonb_each(p_refinement))>5 OR EXISTS(
+ SELECT 1 FROM jsonb_each(p_refinement) WHERE key NOT IN
+ ('movement','atmosphere','immersion','scale','community','perspective','confidence','tension','texture','transformation')
+ OR jsonb_typeof(value)<>'number') THEN RAISE EXCEPTION 'INVALID_REFINEMENT' USING ERRCODE='22023'; END IF;
+ IF EXISTS(SELECT 1 FROM jsonb_each(p_refinement) WHERE abs(value::text::numeric)>10
+ OR value::text::numeric<>trunc(value::text::numeric)) THEN RAISE EXCEPTION 'INVALID_REFINEMENT' USING ERRCODE='22023'; END IF;
+ END IF;
  SELECT * INTO base FROM session_results WHERE session_id=p_session_id AND source='pairings' ORDER BY version LIMIT 1;
  SELECT * INTO latest FROM session_results WHERE session_id=p_session_id ORDER BY version DESC LIMIT 1;
  IF base.id IS NOT NULL AND p_refinement IS NOT NULL AND p_refinement<>'{}'::jsonb THEN
@@ -146,7 +163,7 @@ CREATE FUNCTION public.lookup_published_read(p_token text) RETURNS jsonb
 LANGUAGE sql SECURITY DEFINER SET search_path=public AS $$
  SELECT published_read||jsonb_build_object('share_token',share_token) FROM sessions
  WHERE is_public AND completed_at IS NOT NULL AND published_read IS NOT NULL
- AND (share_token=p_token OR id::text=p_token) LIMIT 1;
+ AND share_token=p_token LIMIT 1;
 $$;
 -- Only trusted publication transactions can alter consent/snapshot fields.
 CREATE FUNCTION public.guard_publication_snapshot() RETURNS trigger LANGUAGE plpgsql SET search_path=public AS $$
