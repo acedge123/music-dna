@@ -7,6 +7,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
+import { SessionUnavailableError } from "@/musicdna/adapters/session-access";
 import { nextPairingImpl } from "@/lib/musicdna.functions";
 import { experienceVersion, nextV0, nextV1 } from "./-experience";
 
@@ -31,6 +32,8 @@ export const Route = createFileRoute("/api/v1/session/$id/next")({
           const r = result as Parameters<typeof nextV1>[0];
           return jsonResponse(experienceVersion(request) === 1 ? nextV1(r) : nextV0(r));
         } catch (e) {
+          if (e instanceof SessionUnavailableError)
+            return errorResponse("NOT_FOUND", e.message, 404);
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);
           return errorResponse("INTERNAL", msg, 500);
