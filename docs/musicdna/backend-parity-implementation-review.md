@@ -1,4 +1,20 @@
-# Backend parity implementation — review, not production acceptance
+# Backend parity implementation and production verification
+
+## Production verification follow-up — October 19, 2026 (Pacific)
+
+The earlier review-only status below is historical. Authenticated production functional acceptance has now passed against `music-dna@e3b9468805ad47c4c54bc9135e962e07a24dd0db` on `https://www.musicdna.fm`, after the owner approved applying migration `20261020045842_fix_publish_saved_read_token_generation`.
+
+- Vercel Production has the OpenAI, Supabase and matching harness configuration. OpenAI generated both test openers and the final reading. `MUSICDNA_BACKEND_PERSISTENCE_V2=1` and `MUSICDNA_BACKEND_ACCEPTANCE=1`; public `MUSICDNA_EXPERIENCE_V1` remains unset/off.
+- Initial tests exposed publish/revoke HTTP 500s: the applied `publish_saved_read` still called unqualified `gen_random_bytes` under `search_path=public`, while that function exists in `extensions`. The approved migration uses core `gen_random_uuid` for fallback and revoke tokens. Ownership, snapshot behavior and grants are preserved. Anonymous callers still cannot execute publication.
+- `tools/musicdna/verify-backend-acceptance.mjs` completed successfully through normal bearer-protected routes with two dedicated synthetic listeners: feedback save/readback, exact replay, changed-payload conflict, version isolation, chat durable replies/replay/conflicts, saved revised content/provenance, original-result preservation, cursor restoration, pinned published content after chat, revoke-to-404, and cross-user read/write denial.
+- Additional production checks restored 205 equal-timestamp fixture messages across six cursor pages without gaps or duplicates. An abandoned turn with a committed user message and no reply recovered through the deployed chat route after its lease expired, then replayed the same saved reply.
+- Controlled transaction failure: a duplicate reply fixture forced the authenticated `complete_chat_turn` RPC to fail after attempting a revision; no revision for that mutation committed, and the before/after result-version count was unchanged. This is a hosted RPC rollback check, not a simulation of every network or process crash.
+- The 205 pagination rows and failed-write injection rows were removed afterward. The dedicated synthetic listeners and normal test reading remain private; the temporary published link was revoked. Existing listener readings were not modified.
+- Deployment with these settings: `https://idea-builder-icw5znnem-alan-edgetts-projects.vercel.app` (Vercel deployment `dpl_4b7eozU1urmPaav29XqXXbUvPAvZ`).
+
+These functional checks supersede the five source failures in the initial audit. They do not certify subjective reading quality under the new model, actual-iPhone UI/accessibility, native sharing, full cross-client parity, or a public release. Public V1 remains off. No Apple upload was performed.
+
+---
 
 ## Source and deployment identity
 

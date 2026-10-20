@@ -1,6 +1,8 @@
 # Backend acceptance audit against merged Flutter PR #11
 
-## Verdict
+> Historical initial audit. Later authenticated production functional checks passed after the approved sharing correction. See [the production follow-up](backend-parity-implementation-review.md#production-verification-follow-up--october-19-2026-pacific) for current evidence and remaining release limits.
+
+## Initial verdict
 
 **None of the five backend items is accepted.** All five have identifiable source gaps. Authenticated production persistence, recovery, and cross-user denial are **UNVERIFIED**, not passing.
 
