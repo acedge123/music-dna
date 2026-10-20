@@ -131,13 +131,14 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
   for (const e of (eventsRes.data ?? []) as ERow[]) {
     const p = e.props ?? {};
     if (e.event_type === "read_shown") {
+      const savedRead = p.result as { direction?: string; question?: string } | null;
       out.push({
         type: "read",
         at: e.created_at,
         answered: typeof p.answered === "number" ? p.answered : null,
         tier: (p.tier as string) ?? null,
         thesis: (p.thesis as string) ?? null,
-        direction: p.revised ? "revising" : null,
+        direction: savedRead?.direction ?? (p.revised ? "revising" : null),
         revised: !!p.revised,
         revision: (p.revision ?? null) as never,
       });

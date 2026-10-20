@@ -9,7 +9,7 @@ export const Route = createFileRoute("/")({
       {
         name: "description",
         content:
-          "Six song matchups. About three minutes. Discover what your taste reveals about you.",
+          "Three opening songs. Up to six answered choices. Explore the patterns your picks support.",
       },
       { property: "og:title", content: "MusicDNA — Why do you love the songs you love?" },
       {
@@ -49,21 +49,21 @@ function Nav() {
     <header className="border-b hairline">
       <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
         <Link to="/" className="flex items-center gap-3">
-          <img src="/music-dna-logo.png" alt="MusicDNA" className="h-28 w-auto" />
+          <img src="/music-dna-logo.png" alt="MusicDNA" className="h-14 w-auto sm:h-20" />
           <span className="sr-only">MusicDNA</span>
         </Link>
 
-        <nav className="flex items-center gap-6">
+        <nav className="flex items-center gap-3 sm:gap-6">
           <Link
             to="/"
             hash="how-it-works"
-            className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+            className="inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
           >
             How it works
           </Link>
           <Link
             to="/onboarding"
-            className="inline-flex items-center gap-2 rounded-sm border hairline-strong px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-secondary"
+            className="inline-flex min-h-11 items-center gap-2 rounded-sm border hairline-strong px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-secondary"
           >
             Start
             <ArrowRight />
@@ -119,7 +119,7 @@ function Reveal() {
   return (
     <section className="border-b hairline">
       <div className="mx-auto max-w-6xl px-6 py-24">
-        <p className="eyebrow mb-10">What your choices reveal</p>
+        <p className="eyebrow mb-10">What a matchup can explore</p>
         <div className="space-y-px overflow-hidden rounded-sm border hairline">
           {examples.map((ex, i) => (
             <div
@@ -130,8 +130,8 @@ function Reveal() {
                 {ex.a} <span className="text-muted-foreground/50">vs</span> {ex.b}
               </p>
               <p className="md:col-span-8 font-serif text-2xl leading-snug md:text-3xl text-foreground">
-                People who choose <span className="italic text-muted-foreground">{ex.a}</span> often
-                value <span className="text-primary">{ex.insight}</span>.
+                A matchup like this can explore <span className="text-primary">{ex.insight}</span>.
+                A single choice doesn’t establish a pattern.
               </p>
             </div>
           ))}
@@ -154,13 +154,13 @@ function HowItWorks() {
     },
     {
       n: "02",
-      title: "Make some impossible choices",
+      title: "Answer up to six song choices",
       body: "We'll put great songs head-to-head and ask you to choose. Some decisions take a second. Some will make you stare at the screen and argue with yourself. That's the point.",
     },
     {
       n: "03",
       title: "See what your choices reveal",
-      body: "Discover the hidden patterns in your taste. Hidden inside your choices are patterns you probably never noticed: what moves you, what you value, and why certain songs stay with you long after others fade away. Think of it as a personality test written by your record collection.",
+      body: "Discover the hidden patterns in your taste. Hidden inside your choices are patterns you probably never noticed: what moves you, what you value, and why certain songs stay with you long after others fade away. The reading follows the evidence in your picks, and says when the pattern is still unclear.",
     },
   ];
   return (
@@ -194,12 +194,13 @@ function Proof() {
           </div>
           <div className="md:col-span-6 md:col-start-7 flex flex-col gap-6">
             <p className="text-lg leading-relaxed text-muted-foreground">
-              That's the magic. Not "you listened to this 72 times." Instead: you consistently
-              choose songs that transform rather than console. You value movement over grandeur.
-              Atmosphere over verbal cleverness.
+              For example, a reading might find that you consistently choose songs that transform
+              rather than console. You value movement over grandeur. Atmosphere over verbal
+              cleverness.
             </p>
             <p className="text-lg leading-relaxed text-muted-foreground">
-              This thing understands you.
+              It is an interpretation of your choices. You can question it, add context, or leave it
+              unresolved.
             </p>
           </div>
         </div>
@@ -246,7 +247,7 @@ function Footer() {
             MusicDNA · v0 · 2026
           </span>
         </div>
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-3 sm:gap-6">
           <Link
             to="/privacy"
             className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground transition-colors hover:text-foreground"
