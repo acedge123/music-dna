@@ -15,6 +15,7 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PrivacyRouteImport } from './routes/privacy'
+import { Route as ReferenceRouteImport } from './routes/reference'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as Authenticated1980RouteImport } from './routes/_authenticated/1980'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -65,6 +66,11 @@ const OnboardingRoute = OnboardingRouteImport.update({
 const PrivacyRoute = PrivacyRouteImport.update({
   id: '/privacy',
   path: '/privacy',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReferenceRoute = ReferenceRouteImport.update({
+  id: '/reference',
+  path: '/reference',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -184,6 +190,7 @@ export interface FileRoutesByFullPath {
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
+  '/reference': typeof ReferenceRoute
   '/terms': typeof TermsRoute
   '/1980': typeof Authenticated1980Route
   '/admin': typeof AuthenticatedAdminRoute
@@ -213,6 +220,7 @@ export interface FileRoutesByTo {
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
+  '/reference': typeof ReferenceRoute
   '/terms': typeof TermsRoute
   '/1980': typeof Authenticated1980Route
   '/admin': typeof AuthenticatedAdminRoute
@@ -244,6 +252,7 @@ export interface FileRoutesById {
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
+  '/reference': typeof ReferenceRoute
   '/terms': typeof TermsRoute
   '/_authenticated/1980': typeof Authenticated1980Route
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -275,6 +284,7 @@ export interface FileRouteTypes {
     | '/me'
     | '/onboarding'
     | '/privacy'
+    | '/reference'
     | '/terms'
     | '/1980'
     | '/admin'
@@ -304,6 +314,7 @@ export interface FileRouteTypes {
     | '/me'
     | '/onboarding'
     | '/privacy'
+    | '/reference'
     | '/terms'
     | '/1980'
     | '/admin'
@@ -334,6 +345,7 @@ export interface FileRouteTypes {
     | '/me'
     | '/onboarding'
     | '/privacy'
+    | '/reference'
     | '/terms'
     | '/_authenticated/1980'
     | '/_authenticated/admin'
@@ -365,6 +377,7 @@ export interface RootRouteChildren {
   MeRoute: typeof MeRoute
   OnboardingRoute: typeof OnboardingRoute
   PrivacyRoute: typeof PrivacyRoute
+  ReferenceRoute: typeof ReferenceRoute
   TermsRoute: typeof TermsRoute
   SSessionIdRoute: typeof SSessionIdRoute
   ApiPublicVersionRoute: typeof ApiPublicVersionRoute
@@ -419,6 +432,13 @@ declare module '@tanstack/react-router' {
       path: '/privacy'
       fullPath: '/privacy'
       preLoaderRoute: typeof PrivacyRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reference': {
+      id: '/reference'
+      path: '/reference'
+      fullPath: '/reference'
+      preLoaderRoute: typeof ReferenceRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -638,6 +658,7 @@ const rootRouteChildren: RootRouteChildren = {
   MeRoute: MeRoute,
   OnboardingRoute: OnboardingRoute,
   PrivacyRoute: PrivacyRoute,
+  ReferenceRoute: ReferenceRoute,
   TermsRoute: TermsRoute,
   SSessionIdRoute: SSessionIdRoute,
   ApiPublicVersionRoute: ApiPublicVersionRoute,

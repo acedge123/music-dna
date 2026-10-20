@@ -1,27 +1,14 @@
-import { resumeLatestSession } from "@/lib/resume.functions";
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useRef, useState } from "react";
-import {
-  reactToOne,
-  commitOpeningThree,
-  recordEvent,
-  startSession,
-  nextPairing,
-  recordChoice,
-  skipPairing,
-  finalizeSession,
-  finalSynthesis,
-  currentRead,
-  reactToRead as reactToReadFn,
-} from "@/lib/musicdna.functions";
-import { setShared } from "@/lib/share-publish.functions";
-import { getOnboardingOpener, type OnboardingOpener } from "@/lib/onboarding-openers.functions";
-import { ensureAnonSession } from "@/lib/anon-auth";
-import { toast } from "sonner";
+import { z } from "zod";
+import { useInterview } from "@/hooks/use-interview";
+import { ReadingResult } from "@/components/musicdna/reading-result";
+import { InterviewHistory } from "@/components/musicdna/interview-history";
+import { OpeningSongInput as RankedInput } from "@/components/musicdna/opening-song-input";
+import { SongChoices } from "@/components/musicdna/song-choices";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
+  validateSearch: (search) => z.object({ session: z.string().uuid().optional() }).parse(search),
   head: () => ({
     meta: [
       { title: "MusicDNA — Interview" },
@@ -42,121 +29,16 @@ export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
 });
 
-const MAX_ROUNDS = 6;
-
 // LANE_LABEL removed — fork chip replaces the lane verdict.
 
 const SLOT_LABELS = ["The one at the top", "Now #2", "And the third"];
 const PLACEHOLDERS = ["Ceremony — New Order", "Pyramid Song — Radiohead", "Untrue — Burial"];
 
-// Rotating per-round prompts so the transition between pairings doesn't
-// read as a copy-pasted "Next one — go with your gut." every time.
-const ROUND_PROMPTS = [
-  "Next one — go with your gut.",
-  "Round two. First pull.",
-  "Alright, quick — which one.",
-  "Read once. Pick.",
-  "Instinct answer. Go.",
-  "Last look. Which one wins.",
-  "One more. First reaction.",
-  "Snap call — ready?",
-];
-
-type Phase = "slot1" | "slot2" | "slot3" | "playing" | "done";
-type Refined = {
-  reaction?: string;
-  hypothesis: string;
-  lane: string;
-  confidence: number;
-  secondary_lanes?: string[];
-  observation?: string;
-  fork?: string;
-  stakes?: string;
-};
-type Song = { id: string; title: string; artist: string; year: number | null; lane: string };
-type Pairing = {
-  id: string;
-  tests: string[];
-  hypothesis: string | null;
-  why_good: string | null;
-  diagnostic_weight: number;
-  song_a: Song;
-  song_b: Song;
-};
-type Entry = {
-  round: number;
-  pairing: Pairing;
-  chosenSongId: string;
-  reaction: string;
-  thesis: string;
-  hook: string;
-  direction: "forming" | "holding" | "contested" | "revising";
-  topDim: string | null;
-  tier: "observation" | "theory" | "read";
-  question: string;
-};
-
-// Respect the OS "reduce motion" setting: staged reveals collapse to one
-// frame, no decorative waiting.
-function usePrefersReducedMotion() {
-  const [reduced, setReduced] = useState(false);
-  useEffect(() => {
-    const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
-    setReduced(mq.matches);
-    const on = () => setReduced(mq.matches);
-    mq.addEventListener("change", on);
-    return () => mq.removeEventListener("change", on);
-  }, []);
-  return reduced;
-}
-
-function LineReveal({
-  lines,
-  animate,
-  intervalMs = 700,
-  startDelayMs = 0,
-  className,
-}: {
-  lines: string[];
-  animate: boolean;
-  intervalMs?: number;
-  startDelayMs?: number;
-  className?: string;
-}) {
-  const reduced = usePrefersReducedMotion();
-  const [shown, setShown] = useState(animate ? 0 : lines.length);
-  useEffect(() => {
-    if (!animate || reduced) {
-      setShown(lines.length);
-      return;
-    }
-    setShown(0);
-    const timers: ReturnType<typeof setTimeout>[] = [];
-    lines.forEach((_, idx) => {
-      timers.push(
-        setTimeout(() => setShown((s) => Math.max(s, idx + 1)), startDelayMs + idx * intervalMs),
-      );
-    });
-    return () => {
-      for (const t of timers) clearTimeout(t);
-    };
-  }, [animate, reduced, lines.length, intervalMs, startDelayMs]);
-  return (
-    <div className={className}>
-      {lines.slice(0, shown).map((line, i) => (
-        <p key={i} className="animate-in fade-in slide-in-from-bottom-1 duration-300">
-          {line}
-        </p>
-      ))}
-    </div>
-  );
-}
-
 function HomeLogo() {
   return (
     <Link
       to="/"
-      className="fixed top-4 left-4 z-50 flex items-center gap-2 opacity-80 hover:opacity-100 transition-opacity"
+      className="absolute top-4 left-5 z-10 flex min-h-11 items-center gap-2 opacity-80 transition-opacity hover:opacity-100"
       aria-label="MusicDNA — home / start over"
       title="Home / start over"
     >
@@ -166,598 +48,59 @@ function HomeLogo() {
 }
 
 function Onboarding() {
-  const reactOneFn = useServerFn(reactToOne);
-  const commitFn = useServerFn(commitOpeningThree);
-  const logEvent = useServerFn(recordEvent);
-  const getOpenerFn = useServerFn(getOnboardingOpener);
-  const startFn = useServerFn(startSession);
-  const nextFn = useServerFn(nextPairing);
-  const reactFn = useServerFn(reactToReadFn);
-  const shareFn = useServerFn(setShared);
-  const resumeFn = useServerFn(resumeLatestSession);
-  const chooseFn = useServerFn(recordChoice);
-  const skipFn = useServerFn(skipPairing);
-  const finalizeFn = useServerFn(finalizeSession);
-  const synthFn = useServerFn(finalSynthesis);
-  const readFn = useServerFn(currentRead);
+  const { session } = Route.useSearch();
   const navigate = useNavigate();
-
-  type EventInput = {
-    event_type:
-      | "onboarding_viewed"
-      | "onboarding_slot_submitted"
-      | "onboarding_three_submitted"
-      | "onboarding_classified"
-      | "pairing_shown"
-      | "choice_made"
-      | "reveal_shown"
-      | "reveal_continued"
-      | "session_completed"
-      | "result_viewed"
-      | "result_shared"
-      | "session_quit"
-      | "read_reaction";
-    session_id?: string | null;
-    pairing_id?: string | null;
-    choice_id?: string | null;
-    response_time_ms?: number | null;
-    props?: Record<string, unknown>;
-    variant?: string;
-  };
-  const track = (e: EventInput) => {
-    logEvent({ data: e } as never).catch(() => {});
-  };
-
-  // phase + slot state
-  const [phase, setPhase] = useState<Phase>("slot1");
-  const [songs, setSongs] = useState<string[]>([]); // submitted, locked
-  const [draft, setDraft] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [reactions, setReactions] = useState<string[]>([]); // per-slot reaction text
-  const [nextLabels, setNextLabels] = useState<(string | null)[]>([]); // personalized labels for slot 2 / slot 3
-  const [refined, setRefined] = useState<Refined | null>(null);
-  const [r5Step, setR5Step] = useState<0 | 1 | 2>(0);
-  const [opener, setOpener] = useState<OnboardingOpener | null>(null);
-
-  // play state
-  const [sessionId, setSessionId] = useState<string | null>(null);
-  const [pairing, setPairing] = useState<Pairing | null>(null);
-  const [pendingSongId, setPendingSongId] = useState<string | null>(null);
-  const [round, setRound] = useState(0);
-  // The engine owns the completion policy; the screen just displays what it
-  // reports instead of enforcing its own cap.
-  const [maxRounds, setMaxRounds] = useState(MAX_ROUNDS);
-  const [nextPrompt, setNextPrompt] = useState<string | null>(null);
-  const [reactedRounds, setReactedRounds] = useState<number[]>([]);
-  const [entries, setEntries] = useState<Entry[]>([]);
-  const [synthesis, setSynthesis] = useState<string | null>(null);
-  const [kept, setKept] = useState<
-    Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>
-  >([]);
-  const [counters, setCounters] = useState<Array<{ claim: string; notes: string }>>([]);
-  const startedAt = useRef<number>(Date.now());
-  const playStartedRef = useRef(false);
-  const prevTopDim = useRef<string | null>(null);
-  const slotAnchorRef = useRef<HTMLDivElement | null>(null);
-  const pairingAnchorRef = useRef<HTMLDivElement | null>(null);
-  const doneAnchorRef = useRef<HTMLDivElement | null>(null);
-
-  // boot
-  const [bootError, setBootError] = useState<string | null>(null);
-  useEffect(() => {
-    let cancelled = false;
-    (async () => {
-      try {
-        await ensureAnonSession();
-        const o = (await getOpenerFn()) as OnboardingOpener;
-        if (cancelled) return;
-        setOpener(o);
-        track({ event_type: "onboarding_viewed", variant: o.variant_key });
-
-        // Resume an unfinished interview with its full conversation.
-        const resumed = await resumeFn().catch(() => null);
-        if (cancelled || !resumed) return;
-        const ex = resumed.exchanges;
-        const restored: Entry[] = [];
-        ex.forEach((e, i) => {
-          if (e.type !== "choice" || !e.pairing || !e.chosen) return;
-          const after = ex.slice(i + 1);
-          const nextChoice = after.findIndex((x) => x.type === "choice");
-          const r = (nextChoice === -1 ? after : after.slice(0, nextChoice)).find(
-            (x) => x.type === "read",
-          );
-          const rr = r && r.type === "read" ? r : null;
-          restored.push({
-            round: restored.length + 1,
-            pairing: {
-              ...e.pairing,
-              hypothesis: null,
-              why_good: null,
-              song_a: { ...e.pairing.song_a, lane: e.pairing.song_a.lane ?? "" },
-              song_b: { ...e.pairing.song_b, lane: e.pairing.song_b.lane ?? "" },
-            } as Pairing,
-            chosenSongId: e.chosen.id,
-            reaction: e.feedback
-              ? e.feedback.why
-                ? `${e.feedback.verdict}\n${e.feedback.why}`
-                : e.feedback.verdict
-              : `${e.chosen.title}.`,
-            thesis: rr?.thesis ?? "",
-            hook: "",
-            direction: rr?.revised ? "revising" : "forming",
-            topDim: null,
-            tier: (rr?.tier as Entry["tier"]) ?? "observation",
-            question: "",
-          });
-        });
-        if (restored.length === 0) return;
-        playStartedRef.current = true;
-        setSessionId(resumed.sessionId);
-        setEntries(restored);
-        if (resumed.opener?.hypothesis) {
-          setRefined({
-            hypothesis: resumed.opener.hypothesis,
-            lane: resumed.opener.lane,
-            confidence: 0,
-          });
-        }
-        setPhase("playing");
-        if (resumed.completed) {
-          // Finished reading (e.g. browser Back from chat): show the result.
-          await loadFinalRead(resumed.sessionId);
-          setPhase("done");
-          return;
-        }
-        const nx = (await nextFn({ data: { sessionId: resumed.sessionId } })) as {
-          pairing: Pairing | null;
-          round: number;
-          done: boolean;
-          max_rounds?: number;
-          prompt?: string;
-        };
-        if (cancelled) return;
-        if (nx.max_rounds) setMaxRounds(nx.max_rounds);
-        if (nx.prompt) setNextPrompt(nx.prompt);
-        if (nx.done || !nx.pairing) {
-          try {
-            await finalizeFn({ data: { sessionId: resumed.sessionId } });
-          } catch {
-            /* shown on result */
-          }
-          await loadFinalRead(resumed.sessionId);
-          setPhase("done");
-          return;
-        }
-        setPairing(nx.pairing);
-        setRound(nx.round);
-        startedAt.current = Date.now();
-        toast("Picked up where you left off.");
-      } catch (e) {
-        setBootError(e instanceof Error ? e.message : String(e));
-      }
-    })();
-    return () => {
-      cancelled = true;
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  // reveal-final choreography (after slot 3)
-  useEffect(() => {
-    if (!refined) return;
-    setR5Step(0);
-    const t1 = setTimeout(() => setR5Step(1), 350);
-    const t2 = setTimeout(() => setR5Step(2), 1200);
-    return () => {
-      clearTimeout(t1);
-      clearTimeout(t2);
-    };
-  }, [refined]);
-
-  // After reveal lands, auto-start the side-by-sides
-  useEffect(() => {
-    if (r5Step !== 2 || phase !== "playing" || playStartedRef.current) return;
-    playStartedRef.current = true;
-    (async () => {
-      try {
-        const { sessionId } = await startFn({});
-        setSessionId(sessionId);
-        const { pairing, round, selection_reason } = (await nextFn({ data: { sessionId } })) as {
-          pairing: Pairing | null;
-          round: number;
-          selection_reason?: unknown;
-        };
-        setPairing(pairing as unknown as Pairing | null);
-        setRound(round);
-        startedAt.current = Date.now();
-        if (pairing) {
-          track({
-            event_type: "pairing_shown",
-            session_id: sessionId,
-            pairing_id: (pairing as unknown as Pairing).id,
-            props: { round, tests: (pairing as unknown as Pairing).tests, selection_reason },
-          });
-        }
-      } catch (err) {
-        toast.error(err instanceof Error ? err.message : "Could not start the side-by-sides.");
-      }
-    })();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [r5Step, phase]);
-
-  // scroll new active slot or pairing into view
-  useEffect(() => {
-    if ((phase === "slot2" || phase === "slot3") && slotAnchorRef.current) {
-      setTimeout(
-        () => slotAnchorRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }),
-        250,
-      );
-    }
-  }, [phase]);
-  useEffect(() => {
-    if (pairing && pairingAnchorRef.current) {
-      pairingAnchorRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-    setPendingSongId(null);
-  }, [pairing?.id]);
-  useEffect(() => {
-    if (phase === "done" && doneAnchorRef.current) {
-      doneAnchorRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [phase]);
-
-  async function submitSlot() {
-    if (busy) return;
-    const text = draft.trim();
-    if (text.length < 2) {
-      toast.error("Type a song first.");
-      return;
-    }
-    const rank = songs.length + 1; // 1, 2, or 3
-    setBusy(true);
-    try {
-      await ensureAnonSession();
-      const nextSongs = [...songs, text];
-
-      if (rank < 3) {
-        // Short reaction, then reveal next slot.
-        const r = (await reactOneFn({
-          data: { song: text, index: rank - 1, priorSongs: songs },
-        } as never)) as { text: string; nextLabel: string | null };
-        setSongs(nextSongs);
-        setDraft("");
-        setReactions((prev) => [...prev, r.text]);
-        setNextLabels((prev) => [...prev, r.nextLabel ?? null]);
-        setPhase(rank === 1 ? "slot2" : "slot3");
-        track({ event_type: "onboarding_slot_submitted", props: { rank } });
-      } else {
-        // Slot 3 — commit. Show a quick reaction first (from commit response),
-        // then synthesis/hypothesis, then auto-start pairings.
-        const r = (await commitFn({ data: { songs: nextSongs } } as never)) as {
-          reaction: string;
-          hypothesis: string;
-          lane: string;
-          confidence: number;
-          secondary_lanes?: string[];
-          observation?: string;
-          fork?: string;
-          stakes?: string;
-        };
-        setSongs(nextSongs);
-        setDraft("");
-        setReactions((prev) => [...prev, r.reaction]);
-        setRefined({
-          hypothesis: r.hypothesis,
-          lane: r.lane,
-          confidence: r.confidence,
-          secondary_lanes: r.secondary_lanes ?? [],
-          observation: r.observation,
-          fork: r.fork,
-          stakes: r.stakes,
-        });
-        setPhase("playing");
-        track({ event_type: "onboarding_slot_submitted", props: { rank: 3 } });
-        track({
-          event_type: "onboarding_three_submitted",
-          variant: opener?.variant_key ?? "fallback",
-        });
-        track({
-          event_type: "onboarding_classified",
-          props: { lane: r.lane, confidence: r.confidence, song_count: 3 },
-        });
-      }
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Couldn't read that.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  async function pick(songId: string) {
-    if (!pairing || !sessionId || busy) return;
-    setPendingSongId(songId);
-    setBusy(true);
-    const ms = Math.min(600000, Date.now() - startedAt.current);
-    const currentPairing = pairing;
-    const currentRound = round;
-    try {
-      const { verdict, why, dim, delta } = await chooseFn({
-        data: { sessionId, pairingId: currentPairing.id, chosenSongId: songId, msToDecide: ms },
-      });
-      const rejectedSongId =
-        songId === currentPairing.song_a.id ? currentPairing.song_b.id : currentPairing.song_a.id;
-      track({
-        event_type: "choice_made",
-        session_id: sessionId,
-        pairing_id: currentPairing.id,
-        response_time_ms: ms,
-        props: {
-          chosen_song_id: songId,
-          rejected_song_id: rejectedSongId,
-          top_dim: dim,
-          delta,
-          tests: currentPairing.tests,
-        },
-      });
-
-      let thesis = "Reading you now.";
-      let hook = "";
-      let topDim: string | null = null;
-      // The running read now comes with its own tier / direction / open
-      // question, derived from the real choices — no client-side guessing
-      // from "did the top axis change".
-      let tier: Entry["tier"] = "observation";
-      let direction: Entry["direction"] = "forming";
-      let question = "";
-      try {
-        const r = await readFn({ data: { sessionId } });
-        thesis = r.thesis;
-        hook = r.hook ?? "";
-        topDim = r.topDim;
-        tier = r.tier;
-        direction = r.direction;
-        question = r.question ?? "";
-      } catch {
-        /* keep default */
-      }
-      prevTopDim.current = topDim ?? prevTopDim.current;
-      setNextPrompt(hook || null);
-
-      const reaction = why ? `${verdict}\n${why}` : verdict;
-      const entry: Entry = {
-        round: currentRound,
-        pairing: currentPairing,
-        chosenSongId: songId,
-        reaction,
-        thesis,
-        hook,
-        direction,
-        topDim,
-        tier,
-        question,
-      };
-      setEntries((prev) => [...prev, entry]);
-      setPairing(null);
-
-      const {
-        pairing: nxt,
-        round: nr,
-        done: isDone,
-        max_rounds,
-        selection_reason,
-        prompt,
-      } = (await nextFn({ data: { sessionId } })) as {
-        pairing: Pairing | null;
-        round: number;
-        done: boolean;
-        max_rounds?: number;
-        selection_reason?: unknown;
-        prompt?: string;
-      };
-      if (max_rounds) setMaxRounds(max_rounds);
-      // The prompt comes from the pairing actually selected, so it always
-      // matches what the next matchup tests.
-      if (prompt) setNextPrompt(prompt);
-      if (isDone || !nxt) {
-        try {
-          await finalizeFn({ data: { sessionId } });
-        } catch (e) {
-          console.error("finalizeSession failed", e);
-        }
-        track({ event_type: "session_completed", session_id: sessionId, props: { rounds: nr } });
-        try {
-          const r = (await synthFn({ data: { sessionId } })) as {
-            synthesis: string;
-            kept_choosing: Array<{
-              tradeoff: string;
-              examples: string[];
-              supporting: number;
-              tested: number;
-            }>;
-            counter_reads: Array<{ claim: string; notes: string }>;
-          };
-          setSynthesis(r.synthesis);
-          setKept(r.kept_choosing ?? []);
-          setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
-        } catch (e) {
-          console.error("finalSynthesis failed", e);
-        }
-        setPhase("done");
-        setBusy(false);
-        return;
-      }
-      setPairing(nxt as unknown as Pairing);
-      setRound(nr);
-      startedAt.current = Date.now();
-      track({
-        event_type: "pairing_shown",
-        session_id: sessionId,
-        pairing_id: (nxt as unknown as Pairing).id,
-        props: { round: nr, tests: (nxt as unknown as Pairing).tests, selection_reason },
-      });
-      setBusy(false);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Choice failed.");
-      setBusy(false);
-    }
-  }
-
-  // Pulling the closing read is shared by the choice path and the
-  // repeated-skip path — a skipped-out session still gets an honest result.
-  async function loadFinalRead(sidOverride?: string) {
-    const sid = sidOverride ?? sessionId;
-    if (!sid) return;
-    try {
-      const r = (await synthFn({ data: { sessionId: sid } })) as {
-        synthesis: string;
-        kept_choosing: Array<{
-          tradeoff: string;
-          examples: string[];
-          supporting: number;
-          tested: number;
-        }>;
-        counter_reads: Array<{ claim: string; notes: string }>;
-      };
-      setSynthesis(r.synthesis);
-      setKept(r.kept_choosing ?? []);
-      setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
-    } catch (e) {
-      console.error("finalSynthesis failed", e);
-    }
-  }
-
-  // Reaction row. "That's me" is acknowledgement only. The other two change
-  // what gets asked next — they never touch the scores.
-  async function reactToRead(kind: "thats_me" | "not_quite" | "harder") {
-    if (!sessionId || busy) return;
-    const currentRound = round;
-    setReactedRounds((prev) => [...prev, currentRound]);
-    track({
-      event_type: "read_reaction",
-      session_id: sessionId,
-      props: { kind, round: currentRound },
-    });
-    setBusy(true);
-    try {
-      const r = (await reactFn({
-        data: {
-          sessionId,
-          kind,
-          pairingId: pairing?.id ?? null,
-          mutationId: `${sessionId}:${currentRound}:${kind}`,
-        },
-      })) as {
-        effect: string;
-        message: string;
-        next: {
-          pairing: Pairing | null;
-          round: number;
-          done: boolean;
-          max_rounds?: number;
-        } | null;
-      };
-      const nx = r.next;
-      if (nx?.max_rounds) setMaxRounds(nx.max_rounds);
-      if (nx && !nx.done && nx.pairing) {
-        setPairing(nx.pairing as unknown as Pairing);
-        setRound(nx.round);
-        startedAt.current = Date.now();
-      }
-      setNextPrompt(kind === "thats_me" ? "Good. Then let's push on it." : r.message);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Couldn't switch that up.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  // Share the read, not the conversation: /s/:id renders the public card and
-  // invites the recipient to run the same short challenge.
-  async function shareRead() {
-    if (!sessionId) return;
-    // Explicit publication (D03): sharing publishes; revoke lives on the profile.
-    let token: string | null = null;
-    try {
-      token = (await shareFn({ data: { sessionId, publish: true } })).share_token;
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Couldn't publish that reading.");
-      return;
-    }
-    if (!token) return;
-    const url = `${window.location.origin}/s/${token}`;
-    track({ event_type: "result_shared", session_id: sessionId });
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: "My MusicDNA read", url });
-        return;
-      }
-      await navigator.clipboard.writeText(url);
-      toast.success("Link copied — send it and let them try the same choices.");
-    } catch {
-      /* user dismissed the share sheet */
-    }
-  }
-
-  async function skip() {
-    if (!pairing || !sessionId || busy) return;
-    setBusy(true);
-    const ms = Math.min(600000, Date.now() - startedAt.current);
-    const currentPairing = pairing;
-    try {
-      await skipFn({ data: { sessionId, pairingId: currentPairing.id, msToDecide: ms } });
-      track({
-        event_type: "pairing_shown",
-        session_id: sessionId,
-        pairing_id: currentPairing.id,
-        response_time_ms: ms,
-        props: { skipped: true },
-      });
-      setPairing(null);
-      const {
-        pairing: nxt,
-        round: nr,
-        done: isDone,
-        max_rounds,
-        selection_reason,
-      } = (await nextFn({ data: { sessionId } })) as {
-        pairing: Pairing | null;
-        round: number;
-        done: boolean;
-        max_rounds?: number;
-        selection_reason?: unknown;
-      };
-      if (max_rounds) setMaxRounds(max_rounds);
-      if (isDone || !nxt) {
-        try {
-          await finalizeFn({ data: { sessionId } });
-        } catch (e) {
-          console.error("finalizeSession failed", e);
-        }
-        await loadFinalRead();
-        setPhase("done");
-        setBusy(false);
-        return;
-      }
-      setPairing(nxt as unknown as Pairing);
-      setRound(nr);
-      startedAt.current = Date.now();
-      track({
-        event_type: "pairing_shown",
-        session_id: sessionId,
-        pairing_id: (nxt as unknown as Pairing).id,
-        props: {
-          round: nr,
-          tests: (nxt as unknown as Pairing).tests,
-          selection_reason,
-          after_skip: true,
-        },
-      });
-      setBusy(false);
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Skip failed.");
-      setBusy(false);
-    }
-  }
+  const {
+    phase,
+    songs,
+    draft,
+    setDraft,
+    busy,
+    reactions,
+    nextLabels,
+    refined,
+    r5Step,
+    setR5Step,
+    opener,
+    sessionId,
+    pairing,
+    pendingSongId,
+    pendingSkip,
+    flowError,
+    resultError,
+    resultVersion,
+    shareBusy,
+    round,
+    maxRounds,
+    nextPrompt,
+    reactedRounds,
+    entries,
+    synthesis,
+    kept,
+    counters,
+    slotAnchorRef,
+    pairingAnchorRef,
+    doneAnchorRef,
+    bootError,
+    booting,
+    submitSlot,
+    pick,
+    reactToRead,
+    shareRead,
+    skip,
+    loadFinalRead,
+  } = useInterview(session);
+  if (booting)
+    return (
+      <>
+        <HomeLogo />
+        <main className="mx-auto max-w-2xl px-5 pt-28">
+          <p role="status" className="font-serif text-xl text-muted-foreground">
+            Opening your interview…
+          </p>
+        </main>
+      </>
+    );
 
   if (bootError) {
     return (
@@ -765,7 +108,16 @@ function Onboarding() {
         <HomeLogo />
         <main className="mx-auto max-w-2xl px-6 pt-24 text-center space-y-4">
           <p className="eyebrow">can't start a session</p>
-          <p className="font-serif text-xl text-muted-foreground">{bootError}</p>
+          <p role="alert" className="font-serif text-xl text-muted-foreground">
+            {bootError}
+          </p>
+          <button
+            type="button"
+            onClick={() => window.location.reload()}
+            className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm"
+          >
+            Try again
+          </button>
         </main>
       </>
     );
@@ -786,7 +138,8 @@ function Onboarding() {
                 <span className="italic text-muted-foreground">Don't be shy...</span>
               </h1>
               <p className="text-sm text-muted-foreground max-w-md text-center sm:text-left">
-                Start with #1 — and we'll see what makes YOU tick.
+                Three opening songs, then up to six answered choices. You can skip songs you don’t
+                know.
               </p>
             </header>
 
@@ -808,7 +161,7 @@ function Onboarding() {
                 disabled={busy || draft.trim().length < 2}
                 className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90 disabled:opacity-40"
               >
-                {busy ? "Reading…" : "→"}
+                {busy ? "Reading…" : "Continue →"}
               </button>
             </div>
           </section>
@@ -821,7 +174,8 @@ function Onboarding() {
   return (
     <>
       <HomeLogo />
-      <main className="mx-auto max-w-3xl px-6 pt-12 pb-24 space-y-12">
+      <main className="mx-auto max-w-3xl px-5 pt-24 pb-24 space-y-10 sm:px-6">
+        <h1 className="sr-only">Your MusicDNA interview</h1>
         <header className="space-y-2">
           <p className="eyebrow">the interview</p>
         </header>
@@ -873,10 +227,20 @@ function Onboarding() {
                 disabled={busy || draft.trim().length < 2}
                 className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90 disabled:opacity-40"
               >
-                {busy ? "Reading…" : "→"}
+                {busy ? "Reading…" : "Continue →"}
               </button>
             </div>
           </section>
+        )}
+
+        {refined && r5Step < 2 && (
+          <button
+            type="button"
+            onClick={() => setR5Step(2)}
+            className="min-h-11 px-3 text-sm underline"
+          >
+            Continue now
+          </button>
         )}
 
         {/* Post-3 read — one short conversational observation. No fork, no stakes, no axis talk. */}
@@ -884,7 +248,7 @@ function Onboarding() {
           <section className="space-y-3 animate-in fade-in duration-500">
             {r5Step >= 2 && (
               <>
-                <p className="eyebrow text-primary">working theory</p>
+                <p className="eyebrow">From your opening songs</p>
                 <p className="font-serif text-2xl md:text-3xl leading-snug text-foreground animate-in fade-in duration-700">
                   {refined.observation || refined.hypothesis}
                 </p>
@@ -896,117 +260,13 @@ function Onboarding() {
           </section>
         )}
 
-        {entries.length > 0 && (
-          <div className="space-y-10">
-            {entries.map((e, i) => {
-              const isLatest = i === entries.length - 1;
-              const reactionLines = e.reaction
-                .split("\n")
-                .map((s) => s.trim())
-                .filter(Boolean);
-              // First "X over Y." line is the verdict — bigger. A hedge line
-              // ("Early read:", "Starting to believe:") sits above it small.
-              const verdictIdx = reactionLines.findIndex((l) => / over .+\.$/.test(l));
-              const thesisFirst =
-                e.thesis
-                  .split("\n")
-                  .map((s) => s.trim())
-                  .filter(Boolean)[0] ?? "";
-              return (
-                <article key={e.round} className="space-y-3">
-                  {reactionLines.map((line, idx) => {
-                    const isHedge = idx < verdictIdx && line.endsWith(":");
-                    const isVerdict = idx === verdictIdx;
-                    if (isHedge) {
-                      return (
-                        <p
-                          key={idx}
-                          className="eyebrow text-primary animate-in fade-in duration-500"
-                        >
-                          {line.replace(/:$/, "")}
-                        </p>
-                      );
-                    }
-                    if (isVerdict) {
-                      return (
-                        <LineReveal
-                          key={idx}
-                          lines={[line]}
-                          animate={isLatest}
-                          startDelayMs={isLatest ? 200 : 0}
-                          intervalMs={0}
-                          className="display text-2xl md:text-3xl leading-tight text-foreground"
-                        />
-                      );
-                    }
-                    return (
-                      <LineReveal
-                        key={idx}
-                        lines={[line]}
-                        animate={isLatest}
-                        startDelayMs={isLatest ? 200 + (idx - Math.max(verdictIdx, 0)) * 550 : 0}
-                        intervalMs={0}
-                        className="font-serif text-base md:text-lg text-muted-foreground leading-snug"
-                      />
-                    );
-                  })}
-                  {thesisFirst && (
-                    <div className="mt-2 border-l-2 border-primary/40 pl-4 py-1 space-y-1">
-                      {e.tier !== "observation" && (
-                        <p className="eyebrow text-primary">
-                          {e.direction === "holding"
-                            ? "the thread holds"
-                            : e.direction === "contested"
-                              ? "one pick argues back"
-                              : e.direction === "revising"
-                                ? "revising"
-                                : "theory forming"}
-                        </p>
-                      )}
-                      <LineReveal
-                        lines={[thesisFirst]}
-                        animate={isLatest}
-                        startDelayMs={isLatest ? 200 + reactionLines.length * 550 : 0}
-                        intervalMs={700}
-                        className={
-                          e.tier === "read"
-                            ? "display text-xl md:text-2xl leading-snug text-foreground"
-                            : "font-serif italic text-base md:text-lg text-foreground/90 leading-snug"
-                        }
-                      />
-                      {isLatest && e.question && e.tier !== "read" && (
-                        <p className="font-serif text-sm md:text-base text-muted-foreground">
-                          {e.question}
-                        </p>
-                      )}
-                    </div>
-                  )}
-                  {isLatest && e.round >= 2 && !reactedRounds.includes(round) && pairing && (
-                    <div className="flex flex-wrap gap-2 pt-1">
-                      {(
-                        [
-                          ["thats_me", "That's me"],
-                          ["not_quite", "Not quite"],
-                          ["harder", "Give me a harder one"],
-                        ] as const
-                      ).map(([kind, label]) => (
-                        <button
-                          key={kind}
-                          type="button"
-                          disabled={busy}
-                          onClick={() => reactToRead(kind)}
-                          className="border hairline-strong rounded-sm px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground hover:text-foreground hover:bg-muted/40 disabled:opacity-40"
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-                  )}
-                </article>
-              );
-            })}
-          </div>
-        )}
+        <InterviewHistory
+          entries={entries}
+          allowReactions={!!pairing}
+          reactedRounds={reactedRounds}
+          busy={busy || pendingSongId !== null || pendingSkip !== null}
+          onReact={(kind) => void reactToRead(kind)}
+        />
 
         {/* Current pairing */}
         {pairing && phase === "playing" && (
@@ -1020,45 +280,32 @@ function Onboarding() {
             <p className="font-serif text-xl md:text-2xl text-muted-foreground">
               {entries.length === 0
                 ? "Pick one. First instinct."
-                : nextPrompt || ROUND_PROMPTS[(round - 2) % ROUND_PROMPTS.length]}
+                : nextPrompt || "Which one would you keep?"}
             </p>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-px bg-border rounded-sm overflow-hidden">
-              {[pairing.song_a, pairing.song_b].map((song) => {
-                const isPending = pendingSongId === song.id;
-                const isDimmed = busy && pendingSongId !== null && !isPending;
-                return (
-                  <button
-                    key={song.id}
-                    disabled={busy}
-                    onClick={() => pick(song.id)}
-                    className={`group p-8 md:p-12 text-left transition-colors ${
-                      isPending
-                        ? "bg-background ring-1 ring-primary/60"
-                        : isDimmed
-                          ? "bg-surface opacity-40"
-                          : "bg-surface hover:bg-background"
-                    }`}
-                  >
-                    <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-3">
-                      {song.lane}
-                      {song.year ? ` · ${song.year}` : ""}
-                    </p>
-                    <p className="font-serif text-2xl md:text-3xl text-foreground leading-tight mb-2">
-                      {song.title}
-                    </p>
-                    <p className="text-sm text-muted-foreground">{song.artist}</p>
-                  </button>
-                );
-              })}
-            </div>
+            <SongChoices
+              songs={[pairing.song_a, pairing.song_b]}
+              selectedId={pendingSongId}
+              busy={busy || pendingSkip !== null}
+              onChoose={(id) => void pick(id)}
+            />
+            {busy && (
+              <p role="status" className="text-sm text-muted-foreground">
+                Saving your choice…
+              </p>
+            )}
+            {flowError && (
+              <p role="alert" className="text-sm leading-relaxed text-foreground">
+                {flowError}
+              </p>
+            )}
             <div className="flex justify-center pt-1">
               <button
                 type="button"
-                disabled={busy}
+                disabled={busy || pendingSongId !== null}
                 onClick={skip}
-                className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
+                className="min-h-11 px-3 py-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
               >
-                Skip — I don't know these
+                {pendingSkip ? "Retry this skip" : "Skip — I don’t know these"}
               </button>
             </div>
           </section>
@@ -1073,151 +320,62 @@ function Onboarding() {
         {/* Final report */}
         {phase === "done" && (
           <section ref={doneAnchorRef} className="space-y-14 pt-6 animate-in fade-in duration-700">
-            {/* Lead with the one distinctive sentence, not a generic header. */}
-            <header className="space-y-3">
-              <p className="eyebrow">the read</p>
-              <h2 className="display text-3xl md:text-4xl leading-tight">
-                {synthesis ||
-                  (kept.length > 0 ? "What you kept choosing." : "Not enough to call it yet.")}
-              </h2>
-            </header>
-
-            {kept.length > 0 ? (
-              <section className="space-y-5">
-                <p className="eyebrow">evidence</p>
-                <ul className="space-y-4">
-                  {kept.slice(0, 2).map((k, i) => (
-                    <li key={i} className="border-l-2 border-primary/40 pl-5 space-y-2">
-                      <p className="font-serif text-xl md:text-2xl leading-snug">
-                        You repeatedly favored <span className="italic">{k.tradeoff}</span>.
-                      </p>
-                      {k.examples.length > 0 && (
-                        <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-                          {k.examples.join(" · ")}
-                        </p>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </section>
+            {resultError ? (
+              <div className="space-y-4">
+                <p role="alert" className="text-sm">
+                  {resultError}
+                </p>
+                <button
+                  type="button"
+                  onClick={() => void loadFinalRead()}
+                  className="min-h-11 rounded-sm border hairline-strong px-5 py-3"
+                >
+                  Retry saved reading
+                </button>
+              </div>
             ) : (
-              <section className="space-y-3">
-                <p className="eyebrow">the finding</p>
-                <p className="font-serif text-xl md:text-2xl italic text-muted-foreground leading-snug">
-                  You refused to collapse into a single pattern. Every time a clear read started to
-                  form, another pick complicated it. Broad ear — not random.
+              <ReadingResult
+                content={{
+                  synthesis: synthesis ?? "",
+                  kept_choosing: kept,
+                  counter_reads: counters,
+                  result_version: resultVersion,
+                }}
+              >
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <button
+                    type="button"
+                    disabled={resultVersion == null}
+                    onClick={() =>
+                      navigate({
+                        to: "/me",
+                        search: {
+                          session: sessionId ?? undefined,
+                          version: resultVersion ?? undefined,
+                        },
+                      })
+                    }
+                    className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                  >
+                    Push back on this →
+                  </button>
+                  <button
+                    type="button"
+                    disabled={shareBusy || resultVersion == null}
+                    onClick={() => void shareRead()}
+                    className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm disabled:opacity-50"
+                  >
+                    {shareBusy ? "Preparing share…" : "Share this read"}
+                  </button>
+                </div>
+                <p className="text-xs leading-relaxed text-muted-foreground">
+                  Sharing publishes this reading only. Your conversation stays private.
                 </p>
-              </section>
+              </ReadingResult>
             )}
-
-            {counters.length > 0 && (
-              <section className="space-y-3">
-                <p className="eyebrow">still unresolved</p>
-                <p className="font-serif text-xl md:text-2xl leading-snug border-l-2 border-primary pl-6 italic">
-                  {counters[0].claim}
-                </p>
-                {counters[0].notes && (
-                  <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground pl-6">
-                    {counters[0].notes}
-                  </p>
-                )}
-                {counters.length > 1 && (
-                  <details className="pl-6">
-                    <summary className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground cursor-pointer hover:text-foreground">
-                      other explanations
-                    </summary>
-                    <ul className="space-y-2 pt-3">
-                      {counters.slice(1).map((c, i) => (
-                        <li key={i} className="text-sm md:text-base text-muted-foreground">
-                          <span className="font-serif italic text-foreground">{c.claim}</span>
-                          {c.notes && (
-                            <span className="block font-mono text-[11px] uppercase tracking-[0.22em] mt-1">
-                              {c.notes}
-                            </span>
-                          )}
-                        </li>
-                      ))}
-                    </ul>
-                  </details>
-                )}
-              </section>
-            )}
-
-            <div className="flex flex-col sm:flex-row gap-3 pt-4">
-              <button
-                onClick={() => navigate({ to: "/me" })}
-                className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90"
-              >
-                Push back on this →
-              </button>
-              <button
-                onClick={shareRead}
-                className="border hairline-strong rounded-sm px-6 py-3 text-sm font-medium hover:bg-muted/40"
-              >
-                Share this read
-              </button>
-              <button
-                onClick={() => navigate({ to: "/profile" })}
-                className="rounded-sm px-6 py-3 text-sm font-medium text-muted-foreground hover:text-foreground"
-              >
-                See your full reading
-              </button>
-            </div>
           </section>
         )}
       </main>
     </>
-  );
-}
-
-function RankedInput({
-  rank,
-  label,
-  value,
-  placeholder,
-  onChange,
-  onEnter,
-  autoFocus,
-}: {
-  rank: number;
-  label: string;
-  value: string;
-  placeholder: string;
-  onChange: (v: string) => void;
-  onEnter?: () => void;
-  autoFocus?: boolean;
-}) {
-  const ref = useRef<HTMLInputElement | null>(null);
-  useEffect(() => {
-    if (autoFocus) ref.current?.focus();
-  }, [autoFocus]);
-  return (
-    <div className="grid grid-cols-[3rem_1fr] gap-4 items-baseline">
-      <div className="text-right">
-        <p className="font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
-          #{rank}
-        </p>
-      </div>
-      <div>
-        <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground mb-1">
-          {label}
-        </p>
-        <div className="border-b-2 hairline-strong focus-within:border-primary transition-colors pb-1">
-          <input
-            ref={ref}
-            value={value}
-            onChange={(e) => onChange(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && onEnter) {
-                e.preventDefault();
-                onEnter();
-              }
-            }}
-            placeholder={placeholder}
-            className="w-full bg-transparent text-xl md:text-2xl font-serif italic py-2 placeholder:text-muted-foreground/40 placeholder:not-italic placeholder:font-serif focus:outline-none"
-          />
-        </div>
-      </div>
-    </div>
   );
 }
