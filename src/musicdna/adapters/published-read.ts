@@ -1,5 +1,5 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
-import type { Database } from "@/integrations/supabase/types";
+import type { Database, Json } from "@/integrations/supabase/types";
 import type { Ledger } from "@/musicdna/engine/evidence";
 import type { PublicRevealInput } from "@/musicdna/engine/reveal";
 import { persistenceRpc } from "./persistence";
@@ -11,7 +11,7 @@ export type PublishedRead = {
   result_version: number;
   interpretation: string | null;
   archetype: PublicRevealInput["session"]["archetype"];
-  content: Record<string, unknown>;
+  content: Json;
   evidence: Ledger;
 };
 export function publishedChoices(evidence: Ledger) {

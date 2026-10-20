@@ -1,9 +1,10 @@
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database, Json } from "@/integrations/supabase/types";
 
+type PersistenceCode = "MUTATION_CONFLICT" | "FORBIDDEN" | "INVALID_RESULT_VERSION" | "CHAT_TURN_PENDING" | "PERSISTENCE_FAILED" | "INVALID_INPUT";
 export class PersistenceError extends Error {
   constructor(
-    public code: string,
+    public code: PersistenceCode,
     public status: number,
     message: string,
   ) {
