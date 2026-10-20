@@ -188,7 +188,7 @@ Combined-lane query includes only lane-consistent pairings and numeric ≥20 con
 
 - Read back all 37 saved songs and 30 saved matchups from Supabase and compared every axis, DPS component, total, canon/routing score, primary dimension and inactive flag with the reviewed fixture.
 - 10 new deterministic catalog tests: declared contrast enforcement, malformed/legacy axes, DPS mismatch rejection, coverage warnings, six distinct real-selector matchups, exhausted pool, same-artist exclusion, three-skip stop, qualified 3–1 versus ineligible 2–2 and mixed-era ledger handling.
-- Existing snapshot and saved-reading regressions also passed: 22 checks across 3 files. Tests use the actual selector and ledger, not a replacement scoring engine.
+- Final engine, snapshot, choice-evidence and saved-reading regressions passed: 194 checks across 23 files, including the 10 new catalog checks. Tests use the actual selector and ledger, not a replacement scoring engine.
 - Fixtures simulate catalog availability. They do **not** establish hosted opener routing, recognition or predictive performance with real listeners; modern-only/mixed-era onboarding acceptance remains pending.
 - No draft pairing had recorded choices before replacement. Before/after integrity: 249 choices, 18 results; evidence digest `4f3dda58463faedd7a39f22902ed2f7f`; result digest `3d95a079c768d7ceead0434da698a021`, unchanged.
 - Admin account-based visual verification is unavailable for this externally managed authentication setup. Saved data was verified directly; the existing Inactive only filter was not changed.

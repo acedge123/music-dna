@@ -44,4 +44,4 @@
 - Signed-in walkthrough: this project's Supabase is user-managed, so no account can be minted here.
 - D06 implementation: deferred until launch.
 
-- [ ] 2000–2026 catalog (CAT06–08): scope in docs/musicdna/catalog-2000-2026-scope.md — alternative pilot draft sheet written (docs/musicdna/catalog-alternative-2000-2026-draft.md, 45 songs + 24 pairings); awaiting Alan's review before staging
+- [ ] 2000–2026 catalog (CAT06–08): 37 inactive pilot songs recalibrated and 30 inactive pairings saved; activation still awaits editorial/recording review, coverage completion and listener testing (docs/musicdna/cat06-recalibration-2026-10-20.md).
