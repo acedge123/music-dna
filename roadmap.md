@@ -1,5 +1,8 @@
 # Roadmap
 
+## Current verification — merged PR #11
+- [ ] Verify source and deployed SHA; feedback recovery/version isolation; chat recovery/history; revised reading provenance; pinned public-share content, using authenticated persistence tests. No production migrations authorized.
+
 ## Done
 - D06 retention: policy decided, implementation deferred until launch (docs/musicdna/data-retention-d06.md).
 - Live anonymous walkthrough: interview, pushback, resume, share, revoke.
