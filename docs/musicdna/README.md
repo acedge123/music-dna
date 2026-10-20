@@ -4,7 +4,9 @@ Local working folder for the MusicDNA product thesis, ontology, diagnostic canon
 
 ## Current catalog handoff
 
-Start with [Inactive catalog review and Lovable correction instructions](inactive-catalog-review-2026-10-20.md) for the CAT06 correction pass. It contains the 37-song review, 23-pairing audit, original scores, calibration guidance, and acceptance checklist. Re-query current data before applying proposals; keep the batch inactive until reviewed and approved.
+Start with the [CAT06 independent recheck and next Lovable instructions](cat06-recheck-2026-10-20.md). At the 2026-10-20 recheck, 31 songs and 23 pairings were active; six songs and seven pairings remained held. The revised scores pass the checked numeric rules. Remaining priorities are active axis coverage and 17 older active Alternative pairings with no declared tests.
+
+The [original inactive catalog review](inactive-catalog-review-2026-10-20.md) records the initial 37-song/23-pairing audit and correction workflow. [Lovable's recalibration report](cat06-recalibration-2026-10-20.md) and the versioned data describe the pre-activation review. Treat these as dated snapshots; re-query current data before applying proposals.
 
 For current axis definitions use [catalog-expansion-spec.md](catalog-expansion-spec.md) and [`src/musicdna/engine/axes.ts`](../../src/musicdna/engine/axes.ts). Legacy ontology and scoring documents contain obsolete dimension lists; their axis lists must not drive new scoring. The six-component diagnostic-power formula remains useful.
 
@@ -31,7 +33,9 @@ This means `Ceremony` can remain `post_punk_new_wave`, `A Forest` can remain `go
 ## Current Structure
 
 - `docs/musicdna/catalog-expansion-spec.md`: current ten-axis song and pairing curation contract.
-- `docs/musicdna/inactive-catalog-review-2026-10-20.md`: dated CAT06 audit and Lovable correction workflow.
+- `docs/musicdna/cat06-recheck-2026-10-20.md`: independent post-update review, active coverage findings, and next Lovable instructions.
+- `docs/musicdna/cat06-recalibration-2026-10-20.md`: Lovable's pre-activation recalibration report.
+- `docs/musicdna/inactive-catalog-review-2026-10-20.md`: original dated CAT06 audit and correction workflow.
 - `docs/musicdna/ontology.md`: historical 15-dimension ontology and product thesis; its dimension list is superseded.
 - `docs/musicdna/project_learnings_v1.md`: living synthesis of the project thesis, major discoveries, and MVP assumptions.
 - `docs/musicdna/canon_workflow.md`: step-by-step curation process.
@@ -52,4 +56,4 @@ This means `Ceremony` can remain `post_punk_new_wave`, `A Forest` can remain `go
 
 ## Next Step
 
-Current catalog handoff: follow [the CAT06 review and correction workflow](inactive-catalog-review-2026-10-20.md). The older `lovable_lane_engine_prompt.md` describes the original multi-lane engine MVP and must be reconciled with current engine contracts before reuse.
+Current catalog handoff: follow [the independent recheck's next correction pass](cat06-recheck-2026-10-20.md#lovables-next-correction-pass). The older `lovable_lane_engine_prompt.md` describes the original multi-lane engine MVP and must be reconciled with current engine contracts before reuse.
