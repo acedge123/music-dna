@@ -238,6 +238,7 @@ describe.sequential(
         content: { synthesis: "Frozen original" },
         interpretation: "Frozen original",
       });
+      expect(await rpc("lookup_published_read", [SID])).toBeNull();
       const t = await rpc("begin_chat_turn", [
         SID,
         "after-publication",

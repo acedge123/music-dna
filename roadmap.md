@@ -2,7 +2,7 @@
 
 ## Current verification — merged PR #11
 - [x] Explain the harness key: private access to dedicated test personas/bearer issuance; distinct from Supabase keys and migration approval.
-- [x] Implement five backend gaps behind default-off persistence rollout with review-only SQL and 12 focused regressions (206 suite checks): feedback recovery/isolation, chat recovery/pagination, revised content/provenance, frozen publication.
+- [x] Implement five backend gaps behind default-off persistence rollout with review-only SQL and 16 focused regressions (210 suite checks): feedback recovery/isolation, chat recovery/pagination, revised content/provenance, frozen publication. Review summary: docs/musicdna/backend-parity-implementation-review.md.
 - [ ] Obtain approved matching production harness configuration and verify serving SHA before authenticated acceptance; keep MUSICDNA_EXPERIENCE_V1 disabled.
 - [x] Audit merged idea-builder PR #11 and backend source; report: docs/musicdna/backend-pr11-verification-2026-10-20.md. All five acceptance items have source gaps; 194 regression tests pass, not production acceptance.
 - [ ] Authenticated production acceptance for all five items: blocked by unapplied review SQL, default-off persistence rollout, and unapproved/mismatched production harness key; current custom-domain serving SHA also unverified. Recorded successful production deployment SHA: 1015b28fe965b15f77f13e3b199c9f0e0145831b. No production migrations authorized.
