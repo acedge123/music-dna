@@ -133,6 +133,53 @@ export type Database = {
           },
         ]
       }
+      chat_turns: {
+        Row: {
+          assistant_message_id: string | null
+          lease_token: string
+          lease_until: string
+          message: string
+          mutation_id: string
+          reply: string | null
+          result_version: number | null
+          session_id: string
+          user_id: string
+          user_message_id: string
+        }
+        Insert: {
+          assistant_message_id?: string | null
+          lease_token: string
+          lease_until: string
+          message: string
+          mutation_id: string
+          reply?: string | null
+          result_version?: number | null
+          session_id: string
+          user_id: string
+          user_message_id: string
+        }
+        Update: {
+          assistant_message_id?: string | null
+          lease_token?: string
+          lease_until?: string
+          message?: string
+          mutation_id?: string
+          reply?: string | null
+          result_version?: number | null
+          session_id?: string
+          user_id?: string
+          user_message_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "chat_turns_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       choices: {
         Row: {
           chosen_song_id: string
@@ -896,6 +943,7 @@ export type Database = {
           lane_confidence: number
           probe_candidate_lanes: string[]
           probe_state: Json
+          published_read: Json | null
           share_token: string | null
           started_at: string
           updated_at: string
@@ -919,6 +967,7 @@ export type Database = {
           lane_confidence?: number
           probe_candidate_lanes?: string[]
           probe_state?: Json
+          published_read?: Json | null
           share_token?: string | null
           started_at?: string
           updated_at?: string
@@ -942,6 +991,7 @@ export type Database = {
           lane_confidence?: number
           probe_candidate_lanes?: string[]
           probe_state?: Json
+          published_read?: Json | null
           share_token?: string | null
           started_at?: string
           updated_at?: string
@@ -1446,12 +1496,31 @@ export type Database = {
       }
     }
     Functions: {
+      begin_chat_turn: {
+        Args: { p_message: string; p_mutation_id: string; p_session_id: string }
+        Returns: Json
+      }
+      complete_chat_turn: {
+        Args: {
+          p_lease_token: string
+          p_mutation_id: string
+          p_refinement: Json
+          p_reply: string
+          p_session_id: string
+        }
+        Returns: Json
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
           _user_id: string
         }
         Returns: boolean
+      }
+      lookup_published_read: { Args: { p_token: string }; Returns: Json }
+      publish_saved_read: {
+        Args: { p_publish: boolean; p_session_id: string; p_version?: number }
+        Returns: Json
       }
       record_choice_atomic: {
         Args: {
@@ -1467,6 +1536,18 @@ export type Database = {
           p_update: Json
         }
         Returns: string
+      }
+      release_chat_turn: {
+        Args: {
+          p_lease_token: string
+          p_mutation_id: string
+          p_session_id: string
+        }
+        Returns: undefined
+      }
+      save_result_feedback: {
+        Args: { p_payload: Json; p_session_id: string }
+        Returns: Json
       }
     }
     Enums: {
