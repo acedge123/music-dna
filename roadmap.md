@@ -1,10 +1,11 @@
 # Roadmap
 
 ## Current — inactive catalog recalibration
-- [ ] Compare the 37 draft songs and 23 pairings with the dated review; preserve later changes.
-- [ ] Recalibrate song vectors and metadata independently; keep lane changes as proposals and all rows inactive.
-- [ ] Rebuild reviewed matchups, add deterministic validation and selector/evidence fixtures, and verify saved data.
-- [ ] Document before/after scores, coverage gaps and pending activation approval.
+- [x] Compared all 37 draft songs and 23 pairings with the dated review; no later song edits found.
+- [x] Recalibrated all 37 vectors and metadata independently; lane moves remain proposals and rows stay inactive.
+- [x] Rebuilt 23 matchups plus 7 new repeat/counterexample candidates; verified 30 saved pairs and unchanged evidence/results.
+- [x] Documented before/after scores, sources, coverage and editorial gaps in docs/musicdna/cat06-recalibration-2026-10-20.md; added catalog/selector/evidence regressions.
+- [ ] Activation acceptance: awaits Alan's review, recording/year reconciliation, four calibration-breadth warnings, movement/scale coverage additions and real-listener testing. No batch activation authorized.
 
 ## Current verification — merged PR #11
 - [x] Explain the harness key: private access to dedicated test personas/bearer issuance; distinct from Supabase keys and migration approval.
