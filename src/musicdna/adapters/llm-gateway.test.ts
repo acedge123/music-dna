@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { createLovableLlmGateway, callLovableAi } from "./llm-gateway";
+import { createLovableLlmGateway, callLovableAi, DEFAULT_MODEL } from "./llm-gateway";
 
 function mockFetch(responseBody: unknown, opts: { status?: number } = {}) {
   const calls: Array<{ url: string; init: RequestInit }> = [];
