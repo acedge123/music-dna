@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — inactive catalog recalibration
+- [ ] Compare the 37 draft songs and 23 pairings with the dated review; preserve later changes.
+- [ ] Recalibrate song vectors and metadata independently; keep lane changes as proposals and all rows inactive.
+- [ ] Rebuild reviewed matchups, add deterministic validation and selector/evidence fixtures, and verify saved data.
+- [ ] Document before/after scores, coverage gaps and pending activation approval.
+
 ## Current verification — merged PR #11
 - [x] Explain the harness key: private access to dedicated test personas/bearer issuance; distinct from Supabase keys and migration approval.
 - [x] Implement five backend gaps behind default-off persistence rollout with review-only SQL and 16 focused regressions (210 suite checks): feedback recovery/isolation, chat recovery/pagination, revised content/provenance, frozen publication. Review summary: docs/musicdna/backend-parity-implementation-review.md.
