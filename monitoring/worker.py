@@ -98,7 +98,9 @@ class Operator:
 
     def logs(self, window):
         sql = (ROOT / "sql" / "status-counts.clickhouse.sql").read_text()
-        response = self.api("/logs", params={"sql": sql, "iso_timestamp_start": window["start"], "iso_timestamp_end": window["end"]})
+        response = self.api("/analytics/endpoints/logs", params={"sql": sql, "iso_timestamp_start": window["start"], "iso_timestamp_end": window["end"]})
+        if isinstance(response, dict) and response.get('error'):
+            raise Unavailable('logs_query_rejected')
         if not isinstance(response, dict) or not isinstance(response.get("result"), list):
             raise Unavailable("invalid_log_aggregate_shape")
         return response["result"]
