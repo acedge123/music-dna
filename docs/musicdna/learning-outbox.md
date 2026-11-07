@@ -151,6 +151,19 @@ withdrawal state before reads or exports resume.
 
 ## Verification and rollout
 
+### Applied AB-45 receipt — 2026-11-07
+
+- Backend: `udycgnhvaanemhrchbuj`.
+- Applied exactly once, history version `20261107205842`, history name `b8473d97-8f49-41d5-a8ad-84377600e976`.
+- Retained file: `supabase/migrations/20261107205842_musicdna_learning_outbox.sql`; timestamp matches history, so fixture references remain unchanged. No duplicate creator exists.
+- SQL SHA-256: `96987806da549c8d4fb90ff8d79359372d156b6252dd91f50e5390e27440f0e1`.
+- Generated-record commit: `97adfeaa48834d9667cfb4fe67a197a6cb0b02e1` (not a serving/deployment SHA).
+- Hosted metadata readback: both tables have RLS enabled and zero policies intentionally denying browser access. `anon`/`authenticated` have no table privileges. `service_role` has read/delete on both tables, plus only the five declared outbox update columns; no insert or whole-table update grants.
+- All eight private functions deny direct execution to browser roles and service_role; the three new public invoker RPCs allow only service_role execution.
+- Capture default is `false`; scopes, enabled scopes, enrollments and outbox counts are all zero. `cron.job` is absent. No keys, schedules, scopes or enable flags were created; AB-49 and earlier migrations were not rerun.
+- Linter: two new informational no-policy findings are intentional fail-closed private tables; 37 pre-existing findings remain outside this rollout.
+- Native disposable-database tests remain unavailable locally without `AB45_TEST_DATABASE_URL`; metadata/access checks do not constitute activated synthetic-pilot acceptance.
+
 `npm test` runs the existing suite, mapper/reference/privacy cases, both frozen contracts
 (55 observation +17 deletion fixtures) and the applied AB-49 migration duplicate/hash
 guard. Native `npm run test:learning-outbox` is required separately; missing database

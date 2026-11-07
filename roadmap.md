@@ -3,7 +3,7 @@
 ## Current — PR #21 AB-45 database rollout
 
 - [x] Confirmed AB-45 enrollment/outbox tables are absent from the connected Music DNA backend.
-- [ ] Apply the merged migration once and return receipt plus grants/RLS verification: blocked because the existing SQL enables RLS before its required table grants; unchanged-file application rules forbid rewriting it here. No scopes, keys, schedules or flags authorized.
+- [x] Applied corrected AB-45 once: history version 20261107205842, name b8473d97-8f49-41d5-a8ad-84377600e976; generated-record commit 97adfeaa48834d9667cfb4fe67a197a6cb0b02e1. RLS and restricted grants verified; capture defaults false and scopes/enrollments/outbox remain empty. One executable SQL file; no keys, schedules or earlier migration reruns.
 
 ## Current — inactive catalog recalibration
 
