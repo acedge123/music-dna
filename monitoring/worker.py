@@ -98,7 +98,9 @@ class Operator:
 
     def logs(self, window):
         sql = (ROOT / "sql" / "status-counts.clickhouse.sql").read_text()
-        response = self.api("/logs", params={"sql": sql, "iso_timestamp_start": window["start"], "iso_timestamp_end": window["end"]})
+        response = self.api("/analytics/endpoints/logs", params={"sql": sql, "iso_timestamp_start": window["start"], "iso_timestamp_end": window["end"]})
+        if isinstance(response, dict) and response.get('error'):
+            raise Unavailable('logs_query_rejected')
         if not isinstance(response, dict) or not isinstance(response.get("result"), list):
             raise Unavailable("invalid_log_aggregate_shape")
         return response["result"]
@@ -285,11 +287,18 @@ def deliver(store, state, report, slack=None):
     return state
 
 
-def run_once(store, config, send=False):
+def due_slot(now, last_slot=None):
+    """One collection per UTC HH:05 slot, independent of manual smoke timings."""
+    slot = (now-timedelta(minutes=5)).replace(minute=0, second=0, microsecond=0)
+    return iso(slot) if not last_slot or stamp(last_slot) < slot else None
+
+
+def run_once(store, config, send=False, slot=None):
     with store.locked():
         state = store.load()
         observation = collect(state, config)
         state, report = evaluate(state, observation, config)
+        if slot is not None: state['last_scheduled_slot'] = slot
         state["hosting"] = {**state['hosting'], "execution_environment": "railway" if os.environ.get("RAILWAY_SERVICE_ID") else "manual", "last_worker_execution": observation['observed_at']}
         report["hosting"] = state["hosting"]
         store.save(state)
@@ -310,10 +319,11 @@ def main():
     while True:
         try:
             current = store.load()
-            last = current.get("last_attempt_at")
-            # A restored worker never invents observations for missed hours.
-            if not last or datetime.now(UTC)-stamp(last) >= timedelta(minutes=55):
-                run_once(store, config, args.send)
+            # Separate scheduler slots from manual checks: a recent smoke must
+            # not postpone the next HH:05 run by an extra hour. No backfill.
+            slot = due_slot(datetime.now(UTC), current.get('last_scheduled_slot'))
+            if not args.loop or slot is not None:
+                run_once(store, config, args.send, slot=slot if args.loop else None)
         except (ValueError, OSError, KeyError) as exc:
             print(json.dumps({"event": "monitor_unavailable", "project_id": PROJECT, "code": type(exc).__name__}), flush=True)
             if not args.loop: raise SystemExit(1) from None

@@ -7,8 +7,8 @@ from datetime import datetime, timedelta
 
 from monitoring.core import (PROJECT, RECIPIENT, UTC, advisor_objects, empty_state,
                              evaluate, iso, regression, sql_snapshot, cron_due)
-from monitoring.worker import (ROOT, Store, Unavailable, Slack, atomic_json,
-                               deliver, guard_sql, windows, collect)
+from monitoring.worker import (ROOT, Store, Unavailable, Slack, Operator, atomic_json,
+                               deliver, guard_sql, windows, collect, due_slot)
 
 CONFIG = json.loads((ROOT / 'config.json').read_text())
 NOW = datetime(2026, 11, 7, 6, 5, tzinfo=UTC)
@@ -201,6 +201,32 @@ class CounterTests(unittest.TestCase):
 
 
 class SafetyTests(unittest.TestCase):
+    def test_hourly_slots_do_not_skip_after_smoke_or_duplicate_after_restart(self):
+        at_0631 = NOW.replace(minute=31)
+        self.assertEqual(due_slot(at_0631), '2026-11-07T06:00:00Z')
+        self.assertIsNone(due_slot(at_0631, '2026-11-07T06:00:00Z'))
+        self.assertEqual(due_slot(NOW+timedelta(hours=1), '2026-11-07T06:00:00Z'), '2026-11-07T07:00:00Z')
+        self.assertIsNone(due_slot(NOW+timedelta(minutes=59), '2026-11-07T06:00:00Z'))
+        self.assertEqual(due_slot(NOW+timedelta(hours=4), '2026-11-07T06:00:00Z'), '2026-11-07T10:00:00Z')
+
+    def test_log_api_contract_uses_documented_route_and_rejects_query_errors(self):
+        class Http:
+            response = {'result': []}
+            def json(self, url, token=None, payload=None):
+                self.url = url
+                return self.response
+        from urllib.parse import urlparse, parse_qs
+        http = Http(); operator = Operator(http, 'fake')
+        window = windows(NOW)['hourly_current']
+        self.assertEqual(operator.logs(window), [])
+        url = urlparse(http.url)
+        self.assertEqual(url.path, '/v1/projects/'+PROJECT+'/analytics/endpoints/logs')
+        params = parse_qs(url.query)
+        self.assertEqual(params['iso_timestamp_start'], [window['start']])
+        self.assertEqual(params['iso_timestamp_end'], [window['end']])
+        http.response = {'result': [], 'error': 'sensitive provider error body'}
+        with self.assertRaisesRegex(Unavailable, '^logs_query_rejected$'): operator.logs(window)
+
     def test_all_diagnostic_templates_guarded(self):
         for file in (ROOT/'sql').glob('*.sql'):
             if file.name.endswith('clickhouse.sql'): continue
