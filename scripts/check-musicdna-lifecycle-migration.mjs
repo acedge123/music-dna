@@ -48,6 +48,31 @@ assert.equal(
   outboxCreators[1],
   "AB-45 tables must share the reviewed lifecycle migration",
 );
+const dispatchCreators = [];
+for (const table of [
+  "musicdna_learning_dispatch_jobs",
+  "musicdna_learning_dispatch_rates",
+  "musicdna_learning_dispatch_halts",
+]) {
+  const pattern = new RegExp(
+    `CREATE\\s+TABLE\\s+(?:IF\\s+NOT\\s+EXISTS\\s+)?(?:public\\.)?${table}\\b`,
+    "i",
+  );
+  const creators = files.filter((name) =>
+    pattern.test(readFileSync(resolve(root, "supabase/migrations", name), "utf8")),
+  );
+  assert.equal(
+    creators.length,
+    1,
+    `Duplicate or missing AB-47 table creator: ${table}; preserve one applied migration`,
+  );
+  dispatchCreators.push(creators[0]);
+}
+assert.equal(
+  new Set(dispatchCreators).size,
+  1,
+  "AB-47 tables must share the reviewed dispatcher migration",
+);
 const bytes = readFileSync(resolve(root, receipt.migration_path));
 assert.equal(
   createHash("sha256").update(bytes).digest("hex"),

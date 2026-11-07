@@ -1,6 +1,6 @@
 import postgres from "postgres";
 import { randomUUID } from "node:crypto";
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { requireLearningOutboxDatabase } from "../../../../scripts/require-learning-outbox-db.mjs";
 
 export const OWNER = "10000000-0000-4000-8000-000000000001";
@@ -11,7 +11,7 @@ export const SUBJECT = "s_" + "a".repeat(64);
 export const readSourceFile = (path: string) =>
   readFileSync(new URL("../../../../" + path, import.meta.url), "utf8");
 
-export async function createOutboxTestDatabase() {
+export async function createOutboxTestDatabase(dispatcher = false) {
   const base = requireLearningOutboxDatabase();
   const admin = postgres(base, { max: 1, onnotice: () => {} });
   const name = "ab45_suite_" + randomUUID().replaceAll("-", "");
@@ -55,11 +55,50 @@ export async function createOutboxTestDatabase() {
     CREATE POLICY owner_chat ON public.chat_messages TO authenticated USING(user_id=auth.uid());
   `);
   await sql.unsafe(readSourceFile("docs/musicdna/backend-parity-migration-review.sql"));
+  const migrationDir = new URL("../../../../supabase/migrations/", import.meta.url);
+  const outboxFiles = readdirSync(migrationDir).filter(
+    (name) =>
+      name.endsWith(".sql") &&
+      /CREATE\s+TABLE\s+public\.musicdna_learning_outbox\b/i.test(
+        readFileSync(new URL(name, migrationDir), "utf8"),
+      ),
+  );
+  if (outboxFiles.length !== 1) throw new Error("Expected one AB-45 migration creator");
+  const dispatchFiles = dispatcher
+    ? readdirSync(migrationDir).filter(
+        (name) =>
+          name.endsWith(".sql") &&
+          /CREATE\s+TABLE\s+public\.musicdna_learning_dispatch_jobs\b/i.test(
+            readFileSync(new URL(name, migrationDir), "utf8"),
+          ),
+      )
+    : [];
+  if (dispatcher && dispatchFiles.length !== 1)
+    throw new Error("Expected one AB-47 migration creator");
   for (const file of [
     "20261107204508_d966703f-803e-4e3a-9142-b55ad004d880.sql",
-    "20261107205842_musicdna_learning_outbox.sql",
+    outboxFiles[0],
+    ...dispatchFiles,
   ]) {
-    await sql.unsafe(readSourceFile("supabase/migrations/" + file));
+    try {
+      await sql.unsafe(readSourceFile("supabase/migrations/" + file));
+    } catch (error) {
+      const detail = error as {
+        code?: string;
+        position?: string;
+        internal_position?: string;
+        where?: string;
+      };
+      throw new Error(
+        JSON.stringify({
+          migration: file,
+          code: detail.code,
+          position: detail.position,
+          internal_position: detail.internal_position,
+          context: detail.where,
+        }),
+      );
+    }
   }
   await sql`INSERT INTO auth.users VALUES(${OWNER}),(${OTHER})`;
   return {

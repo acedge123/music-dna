@@ -7,7 +7,12 @@ import {
 } from "../learning/outbox";
 
 /** Trusted worker/operator client only. RLS/grants deny ordinary users. */
-export function learningOutboxRepository(client: SupabaseClient): LearningOutboxRepository {
+export function learningOutboxRepository(
+  client: SupabaseClient,
+  signal?: AbortSignal,
+): LearningOutboxRepository {
+  const deadline = () =>
+    signal ? AbortSignal.any([signal, AbortSignal.timeout(10_000)]) : AbortSignal.timeout(10_000);
   const receipt = (data: unknown, id: string): MaterializationReceipt => {
     const r = data as Partial<MaterializationReceipt> | null;
     if (
@@ -24,7 +29,7 @@ export function learningOutboxRepository(client: SupabaseClient): LearningOutbox
     };
   };
   async function mutate(name: string, args: Record<string, unknown>, id: string) {
-    const { data, error } = await client.rpc(name, args).abortSignal(AbortSignal.timeout(10_000));
+    const { data, error } = await client.rpc(name, args).abortSignal(deadline());
     if (error)
       throw new LearningOutboxError(
         error.code === "23505" ? "observation_conflict" : "outbox_unavailable",
@@ -39,7 +44,7 @@ export function learningOutboxRepository(client: SupabaseClient): LearningOutbox
           "observation_id,feedback_id,source_key,environment,receiver_tenant_id,state,projection",
         )
         .eq("observation_id", id)
-        .abortSignal(AbortSignal.timeout(10_000))
+        .abortSignal(deadline())
         .maybeSingle();
       if (error) throw new LearningOutboxError("outbox_unavailable");
       if (!data) return null;

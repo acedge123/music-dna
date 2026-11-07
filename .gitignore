@@ -38,3 +38,6 @@ monitoring/tests/__pycache__/
 *.njsproj
 *.sln
 *.sw?
+
+# Operator worker build
+dist-learning-worker/
