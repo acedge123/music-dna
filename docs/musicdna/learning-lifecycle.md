@@ -2,8 +2,8 @@
 
 This implements a **synthetic-only control plane**, not a real-user exporter or the
 D06/TGA-317 account deletion/consent flow. No browser/API route, source authorization,
-key, flag, cron, observation payload or live network call is added. There are currently
-no learning observation outbox records to purge. No share/account/action implies consent.
+key, flag, cron, observation payload or live network call is added. AB-45 now adds a transaction-captured
+observation outbox and its purge hooks; see [the outbox runbook](learning-outbox.md). No share/account/action implies consent.
 The reviewed receiver implementation is in `The-Gig-Agency/echelon-control`, documented
 in `docs/musicdna-learning-lifecycle.md`. Both halves are required for rollout.
 
@@ -13,7 +13,9 @@ A SQL owner approves `musicdna_export_scopes` for a reserved source/environment,
 observed lower bound and fixed expiry (at most 31 days), matching Echelon's lifecycle
 scope. The technical window bounds an explicitly approved synthetic pilot; it does
 not change registered-readings or anonymous-session retention. Scopes are not seeded.
-Normal server clients cannot create, change, extend, delete or reopen one. Never reuse
+Normal server clients cannot create, change, extend, delete or reopen a scope.
+AB-45 also requires its default-false capture_enabled flag and matching receiver tenant;
+only the SQL owner can enable that policy or approve a result enrollment. Never reuse
 an expired scope/subject namespace, including after key rotation. Retain the closed
 scope row after expiring subject markers so old observations remain ineligible.
 
@@ -27,13 +29,12 @@ cleanup can proceed. Clients cannot read or mutate these private RLS tables/RPCs
 
 `musicdna_learning_export_allowed` denies absent/expired/unapproved scopes, malformed
 subject refs, observations outside the approved window and any withdrawn subject. It
-is a **precondition, not an atomic enqueue/dispatch operation**. AB-45 must validate the
-closed synthetic observation contract and take the scope advisory lock
+is a **precondition, not an atomic enqueue/dispatch operation**. AB-45 validates the
+closed synthetic observation contract and takes the scope advisory lock
 `hashtextextended('musicdna-export-lifecycle:' || source || ':' || environment, 0)`
-inside its enqueue transaction before checking eligibility and inserting a payload.
-AB-47 must take that lock and recheck when claiming queued work; withdrawal must cancel
-and physically purge pending observation payloads in the same transaction once that
-outbox exists. Never restore eligibility from a late success/failure acknowledgement.
+inside its capture/materialization transactions before checking eligibility and storing a payload.
+AB-47 must take that lock and recheck when claiming queued work; AB-45 now cancels and clears captured/ready payloads in the withdrawal transaction.
+AB-47 must retain that behavior for its added dispatch states. Never restore eligibility from a late success/failure acknowledgement.
 Both tickets must test this integration before AB-49 can close or AB-50 activate a pilot.
 
 Withdrawal delivery is separate from observation delivery. `deliverLearningWithdrawal`
