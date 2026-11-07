@@ -526,26 +526,32 @@ export type Database = {
       musicdna_export_scopes: {
         Row: {
           approved_by: string | null
+          capture_enabled: boolean
           environment: string
           expires_at: string
           observed_from: string
           policy_version: string
+          receiver_tenant_id: string | null
           source_key: string
         }
         Insert: {
           approved_by?: string | null
+          capture_enabled?: boolean
           environment: string
           expires_at: string
           observed_from: string
           policy_version?: string
+          receiver_tenant_id?: string | null
           source_key: string
         }
         Update: {
           approved_by?: string | null
+          capture_enabled?: boolean
           environment?: string
           expires_at?: string
           observed_from?: string
           policy_version?: string
+          receiver_tenant_id?: string | null
           source_key?: string
         }
         Relationships: []
@@ -593,6 +599,146 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "musicdna_export_withdrawals_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: false
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_learning_enrollments: {
+        Row: {
+          approved_by: string | null
+          decision_ref: string
+          enrolled_at: string
+          environment: string
+          owner_user_id: string
+          receiver_tenant_id: string
+          result_fingerprint: string
+          result_id: string
+          result_ref: string
+          session_id: string
+          source_key: string
+          subject_ref: string
+        }
+        Insert: {
+          approved_by?: string | null
+          decision_ref: string
+          enrolled_at?: string
+          environment: string
+          owner_user_id: string
+          receiver_tenant_id: string
+          result_fingerprint: string
+          result_id: string
+          result_ref: string
+          session_id: string
+          source_key: string
+          subject_ref: string
+        }
+        Update: {
+          approved_by?: string | null
+          decision_ref?: string
+          enrolled_at?: string
+          environment?: string
+          owner_user_id?: string
+          receiver_tenant_id?: string
+          result_fingerprint?: string
+          result_id?: string
+          result_ref?: string
+          session_id?: string
+          source_key?: string
+          subject_ref?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_learning_enrollments_result_id_fkey"
+            columns: ["result_id"]
+            isOneToOne: true
+            referencedRelation: "session_results"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_learning_enrollments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_learning_enrollments_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: false
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_learning_outbox: {
+        Row: {
+          canonical_envelope: string | null
+          created_at: string
+          environment: string
+          feedback_id: string
+          observation_id: string
+          observed_at: string
+          payload_fingerprint: string | null
+          projection: Json | null
+          reason: string | null
+          receiver_tenant_id: string
+          result_id: string
+          source_key: string
+          state: string
+          subject_hash: string
+        }
+        Insert: {
+          canonical_envelope?: string | null
+          created_at?: string
+          environment: string
+          feedback_id: string
+          observation_id?: string
+          observed_at: string
+          payload_fingerprint?: string | null
+          projection?: Json | null
+          reason?: string | null
+          receiver_tenant_id: string
+          result_id: string
+          source_key: string
+          state: string
+          subject_hash: string
+        }
+        Update: {
+          canonical_envelope?: string | null
+          created_at?: string
+          environment?: string
+          feedback_id?: string
+          observation_id?: string
+          observed_at?: string
+          payload_fingerprint?: string | null
+          projection?: Json | null
+          reason?: string | null
+          receiver_tenant_id?: string
+          result_id?: string
+          source_key?: string
+          state?: string
+          subject_hash?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_learning_outbox_feedback_id_fkey"
+            columns: ["feedback_id"]
+            isOneToOne: true
+            referencedRelation: "result_feedback"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_learning_outbox_result_id_fkey"
+            columns: ["result_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_learning_enrollments"
+            referencedColumns: ["result_id"]
+          },
+          {
+            foreignKeyName: "musicdna_learning_outbox_source_key_environment_fkey"
             columns: ["source_key", "environment"]
             isOneToOne: false
             referencedRelation: "musicdna_export_scopes"
@@ -1587,6 +1733,10 @@ export type Database = {
         }
         Returns: Json
       }
+      exclude_musicdna_learning_capture: {
+        Args: { p_observation_id: string }
+        Returns: Json
+      }
       finish_musicdna_learning_withdrawal: {
         Args: {
           p_completed_at: string
@@ -1606,6 +1756,10 @@ export type Database = {
         Returns: boolean
       }
       lookup_published_read: { Args: { p_token: string }; Returns: Json }
+      materialize_musicdna_learning_observation: {
+        Args: { p_canonical_envelope: string; p_observation_id: string }
+        Returns: Json
+      }
       musicdna_learning_export_allowed: {
         Args: {
           p_environment: string
@@ -1622,6 +1776,10 @@ export type Database = {
       purge_completed_musicdna_learning_withdrawals: {
         Args: { p_limit?: number }
         Returns: number
+      }
+      purge_musicdna_learning_outbox: {
+        Args: { p_limit?: number }
+        Returns: Json
       }
       record_choice_atomic: {
         Args: {
