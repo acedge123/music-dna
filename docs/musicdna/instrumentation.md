@@ -144,3 +144,7 @@ mapper/scorer contract and the nine refinements this event exists to validate.
 Analysis queries live alongside the other diagnostics views; a follow-up
 migration adds `v_regime_distribution` and `v_regime_vs_fit_tier` once we
 have ~1k events to slice.
+
+## Proposed learning-export boundary (AB-43)
+
+The synthetic-only [learning-observation.v1 contract](../../contracts/musicdna-learning/v1/README.md) is a separate closed, versioned export shape. Its validator/fixtures do not install an exporter, alter event_log/result_feedback storage, authorize real-user processing or enable any signal/LLM route. AB-45/46/47 and AB-49/50 implement and verify those boundaries. Missing feedback/versions remain unknown; raw diagnostic vectors, songs-as-profiles and prose are excluded.

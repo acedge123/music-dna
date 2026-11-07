@@ -1,0 +1,8 @@
+{
+  "contract_version": "learning-observation.v1",
+  "canonical_repository": "acedge123/music-dna",
+  "module_path": "src/musicdna/contracts/learning-observation-v1.ts",
+  "fixture_path": "contracts/musicdna-learning/v1/fixtures.json",
+  "validator_sha256": "1744309ae65b6490a651d33351bf2b869eb09d282c2434b362c04a418f5c9ec4",
+  "fixtures_sha256": "4ea6e9bc40524e5d6bb51229e6f21e662292fb1f7497637c6e135dc676d2c98b"
+}

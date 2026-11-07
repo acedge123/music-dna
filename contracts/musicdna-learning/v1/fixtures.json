@@ -1,0 +1,691 @@
+{
+  "contract_version": "learning-observation.v1",
+  "base_envelope": {
+    "type": "workflow",
+    "source": "music-dna-staging",
+    "environment": "staging",
+    "severity": "low",
+    "summary": "Music DNA learning observation",
+    "correlation_id": "music-dna:learning:v1:11111111-1111-4111-8111-111111111111",
+    "metadata": {
+      "purpose": "learning_observation",
+      "observation": {
+        "schema_version": "learning-observation.v1",
+        "observation_id": "11111111-1111-4111-8111-111111111111",
+        "observed_at": "2026-11-06T20:00:00.000Z",
+        "subject_ref": "s_0000000000000000000000000000000000000000000000000000000000000001",
+        "decision": {
+          "ref": "d_0000000000000000000000000000000000000000000000000000000000000002",
+          "result_ref": "r_0000000000000000000000000000000000000000000000000000000000000003",
+          "result_version": 1,
+          "result_source": "pairings",
+          "answered_count": 6
+        },
+        "versions": {
+          "evidence": "evidence.v1",
+          "catalog": null
+        },
+        "policy": {
+          "id": null,
+          "version": null,
+          "recommendation_event_id": null,
+          "experiment_id": null,
+          "variant": null
+        },
+        "feedback": {
+          "ref": "f_0000000000000000000000000000000000000000000000000000000000000004",
+          "accuracy": "accurate",
+          "rating": 1
+        },
+        "privacy": {
+          "data_class": "synthetic",
+          "purpose": "musicdna_diagnostic_quality",
+          "consent_basis": "authorized_synthetic_test",
+          "policy_version": "synthetic-pilot.v1"
+        }
+      }
+    }
+  },
+  "envelope_cases": [
+    {
+      "id": "original-feedback",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "rating-only",
+      "valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "feedback", "accuracy"],
+          "value": null
+        },
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "feedback", "rating"],
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "accuracy-only",
+      "valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "feedback", "rating"],
+          "value": null
+        }
+      ]
+    },
+    {
+      "id": "revision-and-late-feedback",
+      "valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "decision", "result_version"],
+          "value": 2
+        },
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "decision", "result_source"],
+          "value": "chat_self_report"
+        },
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "decision", "result_ref"],
+          "value": "r_0000000000000000000000000000000000000000000000000000000000000008"
+        },
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "observed_at"],
+          "value": "2026-11-07T20:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "synthetic-production-fixture",
+      "valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["source"],
+          "value": "music-dna"
+        },
+        {
+          "op": "set",
+          "path": ["environment"],
+          "value": "production"
+        }
+      ]
+    },
+    {
+      "id": "known-experimental-policy",
+      "valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "policy"],
+          "value": {
+            "id": "musicdna-policy",
+            "version": "1.0.0",
+            "recommendation_event_id": "rec_01",
+            "experiment_id": "experiment_01",
+            "variant": "treatment"
+          }
+        }
+      ]
+    },
+    {
+      "id": "wrong-type",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["type"],
+          "value": "ops"
+        }
+      ]
+    },
+    {
+      "id": "unknown-source",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["source"],
+          "value": "other-app"
+        }
+      ]
+    },
+    {
+      "id": "source-environment-mismatch",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["environment"],
+          "value": "production"
+        }
+      ]
+    },
+    {
+      "id": "job-escalation",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["severity"],
+          "value": "high"
+        }
+      ]
+    },
+    {
+      "id": "free-text-summary",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["summary"],
+          "value": "synthetic prose"
+        }
+      ]
+    },
+    {
+      "id": "claimed-tenant",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["tenant"],
+          "value": "other-tenant"
+        }
+      ]
+    },
+    {
+      "id": "requested-action",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["requested_action"],
+          "value": "run-model"
+        }
+      ]
+    },
+    {
+      "id": "details-prose",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["details"],
+          "value": "synthetic private text"
+        }
+      ]
+    },
+    {
+      "id": "secret-refs",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["secret_refs"],
+          "value": ["key"]
+        }
+      ]
+    },
+    {
+      "id": "unknown-metadata",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "raw_text"],
+          "value": "synthetic private text"
+        }
+      ]
+    },
+    {
+      "id": "wrong-purpose",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "purpose"],
+          "value": "review_now"
+        }
+      ]
+    },
+    {
+      "id": "wrong-version",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "schema_version"],
+          "value": "learning-observation.v2"
+        }
+      ]
+    },
+    {
+      "id": "invalid-id",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "observation_id"],
+          "value": "no-id"
+        }
+      ]
+    },
+    {
+      "id": "wrong-correlation",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["correlation_id"],
+          "value": "different"
+        }
+      ]
+    },
+    {
+      "id": "noncanonical-date",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "observed_at"],
+          "value": "2026-11-06"
+        }
+      ]
+    },
+    {
+      "id": "invalid-date",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "observed_at"],
+          "value": "2026-02-30T20:00:00.000Z"
+        }
+      ]
+    },
+    {
+      "id": "raw-subject",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "subject_ref"],
+          "value": "person@example.test"
+        }
+      ]
+    },
+    {
+      "id": "raw-vector",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "vector"],
+          "value": {
+            "movement": 20
+          }
+        }
+      ]
+    },
+    {
+      "id": "raw-comment",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "feedback", "comment"],
+          "value": "synthetic private text"
+        }
+      ]
+    },
+    {
+      "id": "empty-feedback",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "feedback"],
+          "value": {
+            "ref": "f_0000000000000000000000000000000000000000000000000000000000000004",
+            "accuracy": null,
+            "rating": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "unnormalized-accuracy",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "feedback", "accuracy"],
+          "value": "partly"
+        }
+      ]
+    },
+    {
+      "id": "fractional-rating",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "feedback", "rating"],
+          "value": 0.5
+        }
+      ]
+    },
+    {
+      "id": "not-six-answers",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "decision", "answered_count"],
+          "value": 5
+        }
+      ]
+    },
+    {
+      "id": "invalid-version-number",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "decision", "result_version"],
+          "value": 0
+        }
+      ]
+    },
+    {
+      "id": "fractional-version",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "decision", "result_version"],
+          "value": 1.5
+        }
+      ]
+    },
+    {
+      "id": "raw-policy-prose",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "policy", "id"],
+          "value": "a paragraph"
+        }
+      ]
+    },
+    {
+      "id": "partial-policy",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "policy", "id"],
+          "value": "known"
+        }
+      ]
+    },
+    {
+      "id": "unattributed-recommendation",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "policy", "recommendation_event_id"],
+          "value": "rec_01"
+        }
+      ]
+    },
+    {
+      "id": "partial-experiment",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "policy", "variant"],
+          "value": "control"
+        }
+      ]
+    },
+    {
+      "id": "wrong-result-source",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "decision", "result_source"],
+          "value": "chat_transcript"
+        }
+      ]
+    },
+    {
+      "id": "real-user-data-disabled",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "privacy", "data_class"],
+          "value": "real"
+        }
+      ]
+    },
+    {
+      "id": "share-not-learning-consent",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "privacy", "consent_basis"],
+          "value": "public_share"
+        }
+      ]
+    },
+    {
+      "id": "unapproved-purpose",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "privacy", "purpose"],
+          "value": "general_learning"
+        }
+      ]
+    },
+    {
+      "id": "unknown-privacy-policy",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "privacy", "policy_version"],
+          "value": "future-policy"
+        }
+      ]
+    },
+    {
+      "id": "missing-metadata",
+      "valid": false,
+      "changes": [
+        {
+          "op": "delete",
+          "path": ["metadata"]
+        }
+      ]
+    },
+    {
+      "id": "missing-metadata-observation-feedback",
+      "valid": false,
+      "changes": [
+        {
+          "op": "delete",
+          "path": ["metadata", "observation", "feedback"]
+        }
+      ]
+    },
+    {
+      "id": "missing-metadata-observation-policy-version",
+      "valid": false,
+      "changes": [
+        {
+          "op": "delete",
+          "path": ["metadata", "observation", "policy", "version"]
+        }
+      ]
+    },
+    {
+      "id": "missing-metadata-observation-versions-catalog",
+      "valid": false,
+      "changes": [
+        {
+          "op": "delete",
+          "path": ["metadata", "observation", "versions", "catalog"]
+        }
+      ]
+    },
+    {
+      "id": "non-scalar-observation-id",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["metadata", "observation", "observation_id"],
+          "value": {
+            "toString": {}
+          }
+        }
+      ]
+    }
+  ],
+  "base_receipt": {
+    "ok": true,
+    "event_id": "22222222-2222-4222-8222-222222222222",
+    "observation_id": "11111111-1111-4111-8111-111111111111",
+    "duplicate": false,
+    "status": "received",
+    "route": "audit_only",
+    "agent_job_id": null,
+    "approval_id": null
+  },
+  "receipt_cases": [
+    {
+      "id": "first-receipt",
+      "valid": true,
+      "changes": []
+    },
+    {
+      "id": "duplicate-receipt",
+      "valid": true,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["duplicate"],
+          "value": true
+        }
+      ]
+    },
+    {
+      "id": "receipt-not-success",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["ok"],
+          "value": false
+        }
+      ]
+    },
+    {
+      "id": "different-observation",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["observation_id"],
+          "value": "33333333-3333-4333-8333-333333333333"
+        }
+      ]
+    },
+    {
+      "id": "queued-review-not-ingest",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["route"],
+          "value": "agent_queue"
+        }
+      ]
+    },
+    {
+      "id": "non-durable-status",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["status"],
+          "value": "queued_for_agent"
+        }
+      ]
+    },
+    {
+      "id": "unexpected-job",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["agent_job_id"],
+          "value": "44444444-4444-4444-8444-444444444444"
+        }
+      ]
+    },
+    {
+      "id": "unexpected-approval",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["approval_id"],
+          "value": "44444444-4444-4444-8444-444444444444"
+        }
+      ]
+    },
+    {
+      "id": "receipt-extra-text",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["raw_text"],
+          "value": "synthetic private text"
+        }
+      ]
+    },
+    {
+      "id": "invalid-receipt-id",
+      "valid": false,
+      "changes": [
+        {
+          "op": "set",
+          "path": ["event_id"],
+          "value": "none"
+        }
+      ]
+    }
+  ]
+}
