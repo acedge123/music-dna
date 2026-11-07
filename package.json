@@ -10,9 +10,9 @@
     "preview": "vite preview",
     "lint": "eslint .",
     "format": "prettier --write .",
-    "test": "node scripts/check-musicdna-learning-contract.mjs && vitest run",
+    "test": "npm run check:learning-contract && vitest run",
     "test:watch": "vitest",
-    "check:learning-contract": "node scripts/check-musicdna-learning-contract.mjs"
+    "check:learning-contract": "node scripts/check-musicdna-learning-contract.mjs && node scripts/check-musicdna-deletion-contract.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

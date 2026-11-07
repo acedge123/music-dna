@@ -1,0 +1,137 @@
+{
+  "base_request": {
+    "schema_version": "learning-deletion.v1",
+    "source": "music-dna-staging",
+    "environment": "staging",
+    "subject_ref": "s_aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "deletion_id": "10000000-0000-4000-8000-000000000001",
+    "reason": "withdrawal"
+  },
+  "base_receipt": {
+    "ok": true,
+    "deletion_id": "10000000-0000-4000-8000-000000000001",
+    "status": "completed",
+    "completed_at": "2026-11-07T20:00:00.000Z",
+    "purged_count": 1,
+    "duplicate": false
+  },
+  "requests": [
+    {
+      "id": "valid",
+      "changes": {},
+      "valid": true
+    },
+    {
+      "id": "reject-schema_version",
+      "changes": {
+        "schema_version": "v2"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-source",
+      "changes": {
+        "source": "other"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-environment",
+      "changes": {
+        "environment": "production"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-subject_ref",
+      "changes": {
+        "subject_ref": "raw-user"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-deletion_id",
+      "changes": {
+        "deletion_id": "not-uuid"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-reason",
+      "changes": {
+        "reason": "restore"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-tenant_id",
+      "changes": {
+        "tenant_id": "tenant-b"
+      },
+      "valid": false
+    }
+  ],
+  "receipts": [
+    {
+      "id": "complete",
+      "changes": {},
+      "valid": true
+    },
+    {
+      "id": "duplicate",
+      "changes": {
+        "duplicate": true
+      },
+      "valid": true
+    },
+    {
+      "id": "microseconds",
+      "changes": {
+        "completed_at": "2026-11-07T20:00:00.123456+00:00"
+      },
+      "valid": true
+    },
+    {
+      "id": "reject-ok",
+      "changes": {
+        "ok": false
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-status",
+      "changes": {
+        "status": "pending"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-deletion_id",
+      "changes": {
+        "deletion_id": "10000000-0000-4000-8000-000000000002"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-completed_at",
+      "changes": {
+        "completed_at": "2026-11-07"
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-purged_count",
+      "changes": {
+        "purged_count": -1
+      },
+      "valid": false
+    },
+    {
+      "id": "reject-duplicate",
+      "changes": {
+        "duplicate": "yes"
+      },
+      "valid": false
+    }
+  ]
+}
