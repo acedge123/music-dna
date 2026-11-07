@@ -1,5 +1,9 @@
 # Roadmap
 
+## Current — PR #23 AB-47 dispatcher database rollout
+
+- [ ] Confirm merged SQL identity, apply only the dispatcher migration once, and verify history, private grants/RLS, disabled capture/dispatch and empty enrollments; retain one executable migration matching history. No keys, sources, schedules or worker deployments.
+
 ## Current — PR #21 AB-45 database rollout
 
 - [x] Confirmed AB-45 enrollment/outbox tables are absent from the connected Music DNA backend.
