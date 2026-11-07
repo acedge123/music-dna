@@ -1,0 +1,16 @@
+{
+  "version": 1,
+  "project_id": "udycgnhvaanemhrchbuj",
+  "project_name": "Music DNA",
+  "repository": "acedge123/music-dna",
+  "slack_user_id": "U32PGT1PA",
+  "interval_seconds": 3600,
+  "policy_version": "supabase-detection-2026-10-27-musicdna-1",
+  "policy_source": "https://supabase.com/docs/guides/observability/detecting",
+  "daily_anchor_utc_hour": 6,
+  "confirmed_limits": [],
+  "dependencies": [{
+    "name": "Agent Brain",
+    "url": "https://agent-brain-production-6956.up.railway.app/ready"
+  }]
+}
