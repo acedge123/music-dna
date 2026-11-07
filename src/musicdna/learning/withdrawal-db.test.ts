@@ -55,7 +55,7 @@ describe.sequential(
       );
       await db.exec(
         await readFile(
-          "supabase/migrations/20261107202345_musicdna_synthetic_learning_lifecycle.sql",
+          "supabase/migrations/20261107204508_d966703f-803e-4e3a-9142-b55ad004d880.sql",
           "utf8",
         ),
       );

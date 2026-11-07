@@ -1,0 +1,29 @@
+{
+  "ticket": "AB-49",
+  "repository": "acedge123/music-dna",
+  "supabase_project_ref": "udycgnhvaanemhrchbuj",
+  "history_version": "20261107204508",
+  "history_name": "d966703f-803e-4e3a-9142-b55ad004d880",
+  "migration_path": "supabase/migrations/20261107204508_d966703f-803e-4e3a-9142-b55ad004d880.sql",
+  "applied_sql_sha256": "de1c894a83fd1f7c7fe82fd7ccf34e4850bee5ed227553d12c8fbd120fcc3236",
+  "original_reviewed_path": "supabase/migrations/20261107202345_musicdna_synthetic_learning_lifecycle.sql",
+  "original_reviewed_sha256": "7a5ec1431fdbda7365267d75a2a181f7ba6e0bc02ca866f2029ac0f3e9ef350f",
+  "difference": "The applied copy omits the original final newline; SQL otherwise identical.",
+  "generated_records_commit": "b7a3581e7835d7454e314e3e254f2f2ce030f966",
+  "merge_preserving_generated_records": "9002cc58c7e551e959cc1d7becda6444cf1937e5",
+  "verification": "Independent READ ONLY transaction with local 10-second statement timeout; history hash and numeric/grant metadata only.",
+  "production_verification": {
+    "history_matches_applied_version_only": true,
+    "rls_tables": 2,
+    "browser_table_grants": 0,
+    "invoker_functions": 4,
+    "browser_rpc_grants": 0,
+    "service_executable_functions": 4,
+    "service_scope_access": ["SELECT"],
+    "service_withdrawal_access": ["SELECT", "INSERT", "UPDATE", "DELETE"],
+    "scope_rows": 0,
+    "withdrawal_rows": 0
+  },
+  "activation": "No scopes, schedules, credentials or enable flags created. Positive hosted lifecycle acceptance remains pending.",
+  "reconciliation": "Repository-only removal of duplicate; no production SQL/history changes."
+}
