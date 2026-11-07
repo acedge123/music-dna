@@ -1,8 +1,7 @@
 # AB-45 — transaction-captured synthetic evidence outbox
 
 Status: source implementation prepared for review; no production migration, enrollment, capture
-flag, scheduler or outbound delivery is enabled by this work. AB-47 supplies the
-recovery/dispatch runtime; AB-50 supplies approved hosted synthetic acceptance.
+flag, scheduler or outbound delivery is enabled by this work. AB-47 adds the [bounded manual recovery/dispatch runtime](learning-dispatcher.md); AB-50 supplies approved hosted synthetic acceptance.
 Real-user export stays outside the frozen `learning-observation.v1` contract and
 blocked on TGA-317. Account existence and public sharing never authorize learning.
 
@@ -143,7 +142,7 @@ by D06 and are not removed by export cleanup. Completed withdrawal markers still
 the AB-49 expiry helper; retained closed scope rows prevent resurrection after markers
 are forgotten. No listener-activity timestamp is changed by mapping or cleanup.
 
-There is no cleanup/recovery schedule in this PR. AB-47/50 must prove the runner,
+There is no cleanup/recovery schedule in this PR; AB-47 adds an explicit manual runner, not an installed schedule. AB-47/50 must prove the runner,
 backlog escalation and active-system purge deadline before any scope is enabled.
 Backups, hosted logs and reviewer copies need their separately recorded retention;
 active purge does not claim backup erasure. A restore must reconcile terminal scope/
