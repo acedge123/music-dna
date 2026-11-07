@@ -1,0 +1,9 @@
+**
+!monitoring
+!monitoring/Dockerfile
+!monitoring/__init__.py
+!monitoring/core.py
+!monitoring/worker.py
+!monitoring/config.json
+!monitoring/sql
+!monitoring/sql/*.sql
