@@ -4,6 +4,8 @@
 !monitoring/__init__.py
 !monitoring/core.py
 !monitoring/worker.py
+!monitoring/transport.py
+!monitoring/notifications.py
 !monitoring/config.json
 !monitoring/sql
 !monitoring/sql/*.sql
