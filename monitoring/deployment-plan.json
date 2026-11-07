@@ -1,5 +1,5 @@
 {
-  "status": "provisioned_hourly_collection_active_alerts_pending",
+  "status": "active",
   "project_id": "ddc9d9d6-98be-4854-93c3-94ed324e3279",
   "environment_id": "0b3a3e78-f9d0-454e-ba54-5eea5ac6a23a",
   "service_name": "musicdna-infrastructure-monitor",
@@ -18,9 +18,10 @@
     "owner_uid": 10001,
     "requires_explicit_state_seed": true
   },
-  "credentials_required": ["SUPABASE_ACCESS_TOKEN", "SLACK_BOT_TOKEN"],
-  "credential_status": {"SUPABASE_ACCESS_TOKEN": "configured", "SLACK_BOT_TOKEN": "missing"},
+  "notification_transport": "repo_c",
+  "credentials_required": ["SUPABASE_ACCESS_TOKEN", "CIA_URL", "CIA_ANON_KEY", "EXECUTOR_SECRET"],
+  "credential_status": "configured and hosted delivery verified; no Slack token export",
   "existing_services_modified": [],
   "authorization": "owner approved provisioning, credentials, durable state and hourly execution",
-  "remaining_gate": "existing Slack bot credential and exact-owner hosted delivery verification; see railway-runtime.md"
+  "remaining_gate": "source review only; coverage limits and history requirements remain recorded in railway-runtime.md"
 }
