@@ -523,6 +523,83 @@ export type Database = {
           },
         ]
       }
+      musicdna_export_scopes: {
+        Row: {
+          approved_by: string | null
+          environment: string
+          expires_at: string
+          observed_from: string
+          policy_version: string
+          source_key: string
+        }
+        Insert: {
+          approved_by?: string | null
+          environment: string
+          expires_at: string
+          observed_from: string
+          policy_version?: string
+          source_key: string
+        }
+        Update: {
+          approved_by?: string | null
+          environment?: string
+          expires_at?: string
+          observed_from?: string
+          policy_version?: string
+          source_key?: string
+        }
+        Relationships: []
+      }
+      musicdna_export_withdrawals: {
+        Row: {
+          attempts: number
+          completed_at: string | null
+          deletion_id: string
+          environment: string
+          last_failure: string | null
+          purged_count: number | null
+          reason: string
+          requested_at: string
+          source_key: string
+          subject_hash: string
+          subject_ref: string | null
+        }
+        Insert: {
+          attempts?: number
+          completed_at?: string | null
+          deletion_id: string
+          environment: string
+          last_failure?: string | null
+          purged_count?: number | null
+          reason: string
+          requested_at?: string
+          source_key: string
+          subject_hash: string
+          subject_ref?: string | null
+        }
+        Update: {
+          attempts?: number
+          completed_at?: string | null
+          deletion_id?: string
+          environment?: string
+          last_failure?: string | null
+          purged_count?: number | null
+          reason?: string
+          requested_at?: string
+          source_key?: string
+          subject_hash?: string
+          subject_ref?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_export_withdrawals_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: false
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
       onboarding_openers: {
         Row: {
           created_at: string
@@ -1510,6 +1587,17 @@ export type Database = {
         }
         Returns: Json
       }
+      finish_musicdna_learning_withdrawal: {
+        Args: {
+          p_completed_at: string
+          p_deletion_id: string
+          p_environment: string
+          p_failure?: string
+          p_purged_count: number
+          p_source: string
+        }
+        Returns: undefined
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -1518,9 +1606,22 @@ export type Database = {
         Returns: boolean
       }
       lookup_published_read: { Args: { p_token: string }; Returns: Json }
+      musicdna_learning_export_allowed: {
+        Args: {
+          p_environment: string
+          p_observed_at: string
+          p_source: string
+          p_subject_ref: string
+        }
+        Returns: boolean
+      }
       publish_saved_read: {
         Args: { p_publish: boolean; p_session_id: string; p_version?: number }
         Returns: Json
+      }
+      purge_completed_musicdna_learning_withdrawals: {
+        Args: { p_limit?: number }
+        Returns: number
       }
       record_choice_atomic: {
         Args: {
@@ -1544,6 +1645,16 @@ export type Database = {
           p_session_id: string
         }
         Returns: undefined
+      }
+      request_musicdna_learning_withdrawal: {
+        Args: {
+          p_deletion_id: string
+          p_environment: string
+          p_reason: string
+          p_source: string
+          p_subject_ref: string
+        }
+        Returns: Json
       }
       save_result_feedback: {
         Args: { p_payload: Json; p_session_id: string }
