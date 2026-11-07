@@ -527,6 +527,7 @@ export type Database = {
         Row: {
           approved_by: string | null
           capture_enabled: boolean
+          dispatch_enabled: boolean
           environment: string
           expires_at: string
           observed_from: string
@@ -537,6 +538,7 @@ export type Database = {
         Insert: {
           approved_by?: string | null
           capture_enabled?: boolean
+          dispatch_enabled?: boolean
           environment: string
           expires_at: string
           observed_from: string
@@ -547,6 +549,7 @@ export type Database = {
         Update: {
           approved_by?: string | null
           capture_enabled?: boolean
+          dispatch_enabled?: boolean
           environment?: string
           expires_at?: string
           observed_from?: string
@@ -565,6 +568,7 @@ export type Database = {
           last_failure: string | null
           purged_count: number | null
           reason: string
+          receiver_tenant_id: string | null
           requested_at: string
           source_key: string
           subject_hash: string
@@ -578,6 +582,7 @@ export type Database = {
           last_failure?: string | null
           purged_count?: number | null
           reason: string
+          receiver_tenant_id?: string | null
           requested_at?: string
           source_key: string
           subject_hash: string
@@ -591,6 +596,7 @@ export type Database = {
           last_failure?: string | null
           purged_count?: number | null
           reason?: string
+          receiver_tenant_id?: string | null
           requested_at?: string
           source_key?: string
           subject_hash?: string
@@ -601,6 +607,147 @@ export type Database = {
             foreignKeyName: "musicdna_export_withdrawals_source_key_environment_fkey"
             columns: ["source_key", "environment"]
             isOneToOne: false
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_learning_dispatch_halts: {
+        Row: {
+          cleared_at: string | null
+          cleared_by: string | null
+          environment: string
+          id: string
+          raised_at: string
+          reason: string
+          source_key: string
+        }
+        Insert: {
+          cleared_at?: string | null
+          cleared_by?: string | null
+          environment: string
+          id?: string
+          raised_at?: string
+          reason: string
+          source_key: string
+        }
+        Update: {
+          cleared_at?: string | null
+          cleared_by?: string | null
+          environment?: string
+          id?: string
+          raised_at?: string
+          reason?: string
+          source_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_learning_dispatch_halts_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: false
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_learning_dispatch_jobs: {
+        Row: {
+          attempts: number
+          claims: number
+          completed_at: string | null
+          created_at: string
+          environment: string
+          kind: string
+          last_attempt_at: string | null
+          last_failure: string | null
+          lease_started_at: string | null
+          lease_token: string | null
+          lease_until: string | null
+          next_attempt_at: string
+          receipt_id: string | null
+          receiver_tenant_id: string | null
+          replay_count: number
+          source_key: string
+          state: string
+          work_id: string
+        }
+        Insert: {
+          attempts?: number
+          claims?: number
+          completed_at?: string | null
+          created_at?: string
+          environment: string
+          kind: string
+          last_attempt_at?: string | null
+          last_failure?: string | null
+          lease_started_at?: string | null
+          lease_token?: string | null
+          lease_until?: string | null
+          next_attempt_at?: string
+          receipt_id?: string | null
+          receiver_tenant_id?: string | null
+          replay_count?: number
+          source_key: string
+          state?: string
+          work_id: string
+        }
+        Update: {
+          attempts?: number
+          claims?: number
+          completed_at?: string | null
+          created_at?: string
+          environment?: string
+          kind?: string
+          last_attempt_at?: string | null
+          last_failure?: string | null
+          lease_started_at?: string | null
+          lease_token?: string | null
+          lease_until?: string | null
+          next_attempt_at?: string
+          receipt_id?: string | null
+          receiver_tenant_id?: string | null
+          replay_count?: number
+          source_key?: string
+          state?: string
+          work_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_learning_dispatch_jobs_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: false
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_learning_dispatch_rates: {
+        Row: {
+          cooldown_until: string | null
+          environment: string
+          failures: number
+          next_request_at: string
+          source_key: string
+        }
+        Insert: {
+          cooldown_until?: string | null
+          environment: string
+          failures?: number
+          next_request_at?: string
+          source_key: string
+        }
+        Update: {
+          cooldown_until?: string | null
+          environment?: string
+          failures?: number
+          next_request_at?: string
+          source_key?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_learning_dispatch_rates_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: true
             referencedRelation: "musicdna_export_scopes"
             referencedColumns: ["source_key", "environment"]
           },
@@ -1723,6 +1870,20 @@ export type Database = {
         Args: { p_message: string; p_mutation_id: string; p_session_id: string }
         Returns: Json
       }
+      begin_musicdna_learning_send: {
+        Args: {
+          p_environment: string
+          p_kind: string
+          p_lease_token: string
+          p_source: string
+          p_work_id: string
+        }
+        Returns: Json
+      }
+      claim_musicdna_learning_dispatch: {
+        Args: { p_environment: string; p_source: string }
+        Returns: Json
+      }
       complete_chat_turn: {
         Args: {
           p_lease_token: string
@@ -1735,6 +1896,20 @@ export type Database = {
       }
       exclude_musicdna_learning_capture: {
         Args: { p_observation_id: string }
+        Returns: Json
+      }
+      finish_musicdna_learning_dispatch: {
+        Args: {
+          p_environment: string
+          p_failure?: string
+          p_kind: string
+          p_lease_token: string
+          p_outcome: string
+          p_receipt?: Json
+          p_retry_after_seconds?: number
+          p_source: string
+          p_work_id: string
+        }
         Returns: Json
       }
       finish_musicdna_learning_withdrawal: {
@@ -1755,9 +1930,17 @@ export type Database = {
         }
         Returns: boolean
       }
+      inspect_musicdna_learning_dispatch: {
+        Args: { p_environment: string; p_source: string; p_work_id: string }
+        Returns: Json
+      }
       lookup_published_read: { Args: { p_token: string }; Returns: Json }
       materialize_musicdna_learning_observation: {
         Args: { p_canonical_envelope: string; p_observation_id: string }
+        Returns: Json
+      }
+      musicdna_learning_dispatch_status: {
+        Args: { p_environment: string; p_source: string }
         Returns: Json
       }
       musicdna_learning_export_allowed: {
@@ -1774,6 +1957,10 @@ export type Database = {
         Returns: Json
       }
       purge_completed_musicdna_learning_withdrawals: {
+        Args: { p_limit?: number }
+        Returns: number
+      }
+      purge_musicdna_learning_dispatch: {
         Args: { p_limit?: number }
         Returns: number
       }
