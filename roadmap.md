@@ -2,7 +2,7 @@
 
 ## Current — PR #23 AB-47 dispatcher database rollout
 
-- [ ] Confirm merged SQL identity, apply only the dispatcher migration once, and verify history, private grants/RLS, disabled capture/dispatch and empty enrollments; retain one executable migration matching history. No keys, sources, schedules or worker deployments.
+- [x] PR #23 merged at 6ae7d5c; dispatcher applied once as 20261107214337 (history name aa6badb6-8540-4b07-991d-c05311776aa7). Merged/local/history SQL SHA-256 d739082d087a2ad1f5e0d932f525992d4da00e6440a55878a7cff10ea0f17645; one executable file. Private grants/RLS verified; read-only service status confirms disabled capture/dispatch and no scopes/enrollments/jobs. No keys, sources, schedules, worker deployments or earlier reruns. Receipt: docs/musicdna/learning-dispatcher.md. 35 unit tests passed; 29 native DB tests unavailable.
 
 ## Current — PR #21 AB-45 database rollout
 

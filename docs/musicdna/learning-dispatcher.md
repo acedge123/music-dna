@@ -183,6 +183,18 @@ read or export resumes. This PR neither installs schedules nor claims backup era
 
 ## Verification and rollout
 
+### Applied migration receipt — 2026-11-07
+
+- PR #23 merged at `2026-11-07T23:19:29Z`, merge commit `6ae7d5ccd97a4157b5f2503ade597d43d8afa544`.
+- Applied only `20261107214337_musicdna_learning_dispatcher.sql` once to `udycgnhvaanemhrchbuj`; history version `20261107214337`, name `aa6badb6-8540-4b07-991d-c05311776aa7` (one history row).
+- SHA-256 `d739082d087a2ad1f5e0d932f525992d4da00e6440a55878a7cff10ea0f17645` matches the merged file, retained executable file, submitted SQL and stored history SQL exactly. No duplicate migration file or fixture-path change was needed. Generated-record commit: `fc22d2d8b9e72a4d49b1f208e39f9b95e136c492`.
+- All three dispatcher tables have RLS enabled, zero policies and no anon/authenticated table or column privileges. The three no-policy informational findings intentionally enforce private service-only access; no permissive policy was added.
+- Six new public RPCs permit service-role execution only. The private binding trigger denies direct execution and private-schema usage to anon/authenticated/service_role. Legacy unleased withdrawal completion also denies service-role execution.
+- Service grants match SQL: jobs read/create/delete plus 11 operational update columns; rates read/create plus three update columns; halts read/create only. No worker halt-clear, replay-count, binding or source-switch updates. Withdrawal updates remain limited to five acknowledgement columns.
+- Capture/dispatch defaults are false; scopes, enrollments, jobs, rates and halts all zero. Read-only service status returned HTTP 200 with `scope_present:false`, both gates false, no jobs, zero attempts/captured/pending deletions.
+- No keys, sources, schedules or worker deployments created; AB-45, AB-49 and earlier migrations were not rerun.
+- Existing dispatcher tests: 35 passed; 29 native database tests skipped because the disposable native test database was unavailable. This receipt establishes schema/private-access verification, not hosted delivery acceptance. The linter also reported 39 pre-existing findings outside this migration.
+
 Unit/fake-receiver tests exercise receipt validation, malformed/oversized responses,
 redirect/key restrictions, pause, time budgets, retry hints, audit redaction and CLI
 composition. Required native tests use separate disposable loopback PostgreSQL databases
