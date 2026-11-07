@@ -1,6 +1,6 @@
 # Music DNA infrastructure monitoring
 
-Prepared for AB-37, 2026-11-06 Pacific. **Hourly Railway collection is active; Slack delivery is pending its bot credential.**
+Prepared for AB-37. **Hourly Railway collection and owner-only Slack alerts through Repo C are active.**
 See [current Railway runtime facts](railway-runtime.md) for actual service/volume IDs,
 credential coverage and activation gates. The proposal below remains a design record.
 This is a separate hourly Railway worker with no dependency on Codex or Alan's
@@ -21,7 +21,7 @@ reference; their inspected schedules are local Codex heartbeats, not hosted work
   monitor/volume. It now also hosts this worker and durable volume. No matching
   local automation was found or created.
   This inventory is limited to the connected/visible account, not every possible host.
-- Agent Brain currently serves merged PR #7 at `496881df5190ff7c75eddf8f1734568cb0b46d51`.
+- At initial inspection Agent Brain served merged PR #7 at `496881df5190ff7c75eddf8f1734568cb0b46d51`.
   Its separate IaC migration PR #8 is not applied by this work.
 - Worker: **`musicdna-infrastructure-monitor`**, one replica, no sleeping, no public
   domain, explicit Dockerfile, durable volume at `/data/musicdna-monitoring`. Railway
@@ -54,16 +54,18 @@ After authorization only, supply approved credentials through Railway variables:
   available scopes covering read-only diagnostics, logs and advisors. A Management
   token can be broader than this project; document actual scope and owner rather
   than claiming isolation. Do not use the application service-role key.
-- `SLACK_BOT_TOKEN`: approved Slack bot with `users:read`, `im:write`, `chat:write`.
-  Do not extract connected-plugin OAuth tokens or borrow another service's secrets.
-- The approved CLI operator credential is configured on the new worker. The Slack
-  bot credential is still missing; delivery is explicitly disabled. Actual credential
-  scope and runtime facts are in `railway-runtime.md`.
+- `CIA_URL`, `CIA_ANON_KEY`, `EXECUTOR_SECRET`: the existing approved Repo C operator
+  connection, transferred from EdgeBot with stdin without displaying/storing values.
+  The Slack bot token stays in Repo C; the worker does not require `SLACK_BOT_TOKEN`.
+- Both operator connections are configured. Repo C's executor credential has broader
+  operator authority; the adapter restricts its own requests to one fixed endpoint,
+  TGA tenant, Slack action and recipient. Server-enforced narrow grants are not claimed.
 
 Slack recipient **`U32PGT1PA`** was verified as Alan Edgett through the connected
-Slack operator. Hosted startup rechecks that exact user and opens only a DM.
-No channel alerts. Slack API credentials/recipient compatibility remain a deployment
-acceptance check, separate from the connected operator's access.
+Slack operator. The adapter always posts to that immutable user ID through Repo C's
+`slack.chat.postMessage` action and confirms a returned D-prefixed DM ID plus timestamp.
+Slack supports opening that user's 1:1 DM this way. No arbitrary channel targets,
+member lists or message history are used. Hosted delivery has a confirmed receipt.
 
 ## Detection and accurate coverage
 
@@ -149,17 +151,16 @@ folder holds preparation/mirror artifacts only; never run a second monitor from 
 Source code lives in the separate backend Music DNA review branch. Actual state,
 receipts and latest-run files must never be committed to either repository/image.
 
-Provisioning and hourly collection were authorized and are active. The checklist
-below records full activation requirements; Slack delivery remains gated on the
-missing bot credential and exact-owner verification. See `railway-runtime.md` for
-completed hosted evidence and remaining steps.
+Provisioning, hourly collection and Repo C Slack delivery were authorized and are
+active. The checklist below records the repeatable setup. See `railway-runtime.md`
+for actual hosted evidence and documented coverage limits.
 
 1. Review/merge the monitoring source PR. Build image from repo root using
    `monitoring/Dockerfile`; pin the reviewed image digest for deployment. No Python
    third-party packages. Railway container build and hosted diagnostics are verified.
 2. Create only the proposed separate service and volume in the inspected Railway
    project. One replica, volume UID/GID10001, no public domain, no app sleeping.
-   Configure the approved operator/Slack variables without printing them.
+   Configure the approved Supabase and Repo C operator variables without printing them.
 3. Transfer the authoritative preparation state, latest report and receipts to the
    volume. Verify project/recipient identity, file permissions and retained history.
    Record the actual service/volume IDs and approved deployment SHA in state/runbook.
@@ -167,8 +168,10 @@ completed hosted evidence and remaining steps.
    read-only endpoint supports these explicit transaction batches and all privilege
    markers; failures remain unable. Do not substitute a write-capable query endpoint
    silently. Verify advisor object identity and each log-source response shape.
-5. Inspect pending/ambiguous events and confirmed initial receipts. Verify exact DM
-   user with the bot. Enable normal `--loop --send` only after that review. Worker
+5. Inspect pending/ambiguous events and confirmed initial receipts. Verify the fixed
+   owner through an operator and confirm one genuine changed finding through Repo C.
+   Enable `--loop --send` after that review. Use a fresh deployment snapshot after
+   changing the command and inspect PID1; image-only redeploy can retain the old command. Worker
    runs once per HH:05 UTC slot (UTC windows are complete), deduplicates same-slot
    restarts independently of manual checks and never fabricates missed intervals.
    Railway cron is not used alongside this loop.
@@ -186,11 +189,12 @@ operator recovery from last good copy, not automatic rebaseline.
 Run from repository root: `python3 -m unittest discover -s monitoring/tests -v`.
 The fixed Postgres templates were executed through the connected operator with
 read-only/timeout markers; cron was not executed because its catalogs are absent.
-Container build, operator transport, volume seeding and a first hourly-loop run are
-verified. Hosted Slack credentials/delivery and subsequent timer acceptance remain
-open; local policy tests do not prove those operations.
+32 tests pass. Container build, operator transport, volume seeding, overnight hourly
+runs, owner-only Repo C delivery, unchanged-state quiet behavior and restart/receipt
+preservation are verified. Real production incidents are not manufactured to test
+recovery; that logic has deterministic tests. Unavailable metrics remain flagged.
 
 - [Supabase read-only API](https://supabase.com/docs/reference/api/v1-read-only-query)
 - [Supabase logs API/filtering](https://supabase.com/docs/guides/observability/advanced-log-filtering)
 - [Slack users.info](https://docs.slack.dev/reference/methods/users.info/)
-- [Slack direct-message creation](https://docs.slack.dev/reference/methods/conversations.open/)
+- [Slack user-ID DM delivery](https://docs.slack.dev/reference/methods/chat.postMessage/)

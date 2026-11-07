@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 
 from monitoring.core import (PROJECT, RECIPIENT, UTC, advisor_objects, empty_state,
                              evaluate, iso, regression, sql_snapshot, cron_due)
-from monitoring.worker import (ROOT, Store, Unavailable, Slack, Operator, atomic_json,
+from monitoring.worker import (ROOT, Store, Unavailable, Operator, atomic_json,
                                deliver, guard_sql, windows, collect, due_slot)
 
 CONFIG = json.loads((ROOT / 'config.json').read_text())
@@ -274,18 +274,6 @@ class SafetyTests(unittest.TestCase):
         self.assertIsNone(cron_due('0 8 * * MON', start, start+timedelta(hours=23)))
         self.assertEqual(cron_due('0 6 * * *', start, start+timedelta(hours=7)).hour, 6)
         with self.assertRaises(ValueError): cron_due('5 seconds', start, start+timedelta(hours=1))
-
-    def test_slack_users_info_uses_get_and_only_exact_recipient(self):
-        class Http:
-            def json(self, url, token=None, payload=None):
-                if 'users.info' in url:
-                    self.url, self.payload = url, payload
-                    return {'ok': True, 'user': {'id': RECIPIENT}}
-                return {'ok': True, 'channel': {'id': 'D123'}}
-        http = Http()
-        self.assertEqual(Slack(http, 'fake').recipient(), 'D123')
-        self.assertIn('user='+RECIPIENT, http.url)
-        self.assertIsNone(http.payload)
 
     def test_ambiguous_slack_send_never_replayed_and_confirmed_receipts_only(self):
         class Sender:

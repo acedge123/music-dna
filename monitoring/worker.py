@@ -8,48 +8,16 @@ import json
 import os
 from pathlib import Path
 import re
-import ssl
 import tempfile
 import time
-from urllib import error, parse, request
+from urllib import parse
 from datetime import datetime, timedelta
 
 from .core import PROJECT, RECIPIENT, UTC, LINK, advisor_objects, digest, empty_state, evaluate, iso, sql_snapshot, stamp, validate_state
+from .transport import Http, Unavailable
+from .notifications import RepoCSlack
 
 ROOT = Path(__file__).resolve().parent
-
-
-class Unavailable(Exception):
-    """Stable sanitized failure code only; never include response bodies or credentials."""
-
-
-class NoRedirect(request.HTTPRedirectHandler):
-    def redirect_request(self, req, fp, code, msg, headers, newurl):
-        return None
-
-
-class Http:
-    def __init__(self):
-        self.opener = request.build_opener(NoRedirect(), request.HTTPSHandler(context=ssl.create_default_context()))
-
-    def json(self, url, token=None, payload=None):
-        headers = {"Accept": "application/json"}
-        if token: headers["Authorization"] = "Bearer " + token
-        body = None
-        if payload is not None:
-            body = json.dumps(payload).encode()
-            headers["Content-Type"] = "application/json"
-        try:
-            with self.opener.open(request.Request(url, data=body, headers=headers), timeout=25) as response:
-                data = response.read(2_000_001)
-                if len(data) > 2_000_000: raise Unavailable("response_too_large")
-                return json.loads(data)
-        except error.HTTPError as exc:
-            raise Unavailable("http_"+str(exc.code)) from None
-        except (error.URLError, TimeoutError, OSError):
-            raise Unavailable("network_or_tls_failure") from None
-        except (ValueError, UnicodeError):
-            raise Unavailable("invalid_json") from None
 
 
 def guard_sql(sql):
@@ -194,36 +162,6 @@ class Store:
         atomic_json(current, state)
 
 
-class Slack:
-    def __init__(self, http=None, token=None):
-        self.http = http or Http()
-        self.token = token if token is not None else os.environ.get("SLACK_BOT_TOKEN")
-
-    def api(self, method, payload):
-        if not self.token: raise Unavailable("slack_credential_not_configured")
-        url = 'https://slack.com/api/' + method
-        response = self.http.json(url+'?'+parse.urlencode(payload), self.token) if method == 'users.info' else self.http.json(url, self.token, payload)
-        if not response.get("ok"): raise Unavailable("slack_rejected_request")
-        return response
-
-    def recipient(self):
-        user = self.api("users.info", {"user": RECIPIENT}).get("user", {})
-        if user.get("id") != RECIPIENT or user.get("deleted") or user.get("is_bot"):
-            raise Unavailable("slack_recipient_not_verified")
-        channel = self.api("conversations.open", {"users": RECIPIENT}).get("channel", {})
-        if not str(channel.get("id", "")).startswith("D"):
-            raise Unavailable("slack_destination_not_dm")
-        return channel["id"]
-
-    def send(self, channel, text, identifier):
-        response = self.api("chat.postMessage", {"channel": channel, "text": text, "unfurl_links": False, "unfurl_media": False})
-        if response.get("channel") != channel or not response.get("ts"):
-            raise Unavailable("slack_ambiguous_receipt")
-        return {"confirmed": True, "user_id": RECIPIENT, "channel_id": channel,
-                "message_ts": response["ts"], "alert_batch": identifier,
-                "url": "https://thegigagency.slack.com/archives/"+channel+"/p"+response["ts"].replace(".", "")}
-
-
 def message(events, observed_at):
     groups = {}
     for event in events:
@@ -246,7 +184,7 @@ def message(events, observed_at):
 
 
 def deliver(store, state, report, slack=None):
-    slack = slack or Slack()
+    slack = slack or RepoCSlack()
     candidates = [e for e in state['pending_alerts'].values() if e['delivery_status'] == 'pending']
     latest = {}
     for event in candidates:
