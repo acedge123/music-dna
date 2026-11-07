@@ -47,9 +47,9 @@ CREATE TABLE public.musicdna_learning_enrollments (
   enrolled_at timestamptz NOT NULL DEFAULT now(),
   FOREIGN KEY(source_key,environment) REFERENCES public.musicdna_export_scopes
 );
-ALTER TABLE public.musicdna_learning_enrollments ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON public.musicdna_learning_enrollments FROM PUBLIC,anon,authenticated,service_role;
 GRANT SELECT,DELETE ON public.musicdna_learning_enrollments TO service_role;
+ALTER TABLE public.musicdna_learning_enrollments ENABLE ROW LEVEL SECURITY;
 
 CREATE TABLE public.musicdna_learning_outbox (
   observation_id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -71,10 +71,10 @@ CREATE TABLE public.musicdna_learning_outbox (
     OR (state='pending' AND projection IS NULL AND canonical_envelope IS NOT NULL AND payload_fingerprint IS NOT NULL AND reason IS NULL)
     OR (state IN ('excluded','cancelled') AND projection IS NULL AND canonical_envelope IS NULL AND payload_fingerprint IS NULL AND reason IS NOT NULL))
 );
-ALTER TABLE public.musicdna_learning_outbox ENABLE ROW LEVEL SECURITY;
 REVOKE ALL ON public.musicdna_learning_outbox FROM PUBLIC,anon,authenticated,service_role;
 GRANT SELECT,DELETE ON public.musicdna_learning_outbox TO service_role;
 GRANT UPDATE(state,reason,projection,canonical_envelope,payload_fingerprint) ON public.musicdna_learning_outbox TO service_role;
+ALTER TABLE public.musicdna_learning_outbox ENABLE ROW LEVEL SECURITY;
 CREATE INDEX musicdna_learning_outbox_recovery_idx ON public.musicdna_learning_outbox(created_at,observation_id) WHERE state='captured';
 CREATE INDEX musicdna_learning_outbox_subject_idx ON public.musicdna_learning_outbox(source_key,environment,subject_hash);
 CREATE INDEX musicdna_learning_enrollments_session_idx ON public.musicdna_learning_enrollments(session_id,owner_user_id);
