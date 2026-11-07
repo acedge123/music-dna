@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from monitoring.core import (PROJECT, RECIPIENT, UTC, advisor_objects, empty_state,
                              evaluate, iso, regression, sql_snapshot, cron_due)
 from monitoring.worker import (ROOT, Store, Unavailable, Slack, Operator, atomic_json,
-                               deliver, guard_sql, windows, collect)
+                               deliver, guard_sql, windows, collect, due_slot)
 
 CONFIG = json.loads((ROOT / 'config.json').read_text())
 NOW = datetime(2026, 11, 7, 6, 5, tzinfo=UTC)
@@ -201,6 +201,14 @@ class CounterTests(unittest.TestCase):
 
 
 class SafetyTests(unittest.TestCase):
+    def test_hourly_slots_do_not_skip_after_smoke_or_duplicate_after_restart(self):
+        at_0631 = NOW.replace(minute=31)
+        self.assertEqual(due_slot(at_0631), '2026-11-07T06:00:00Z')
+        self.assertIsNone(due_slot(at_0631, '2026-11-07T06:00:00Z'))
+        self.assertEqual(due_slot(NOW+timedelta(hours=1), '2026-11-07T06:00:00Z'), '2026-11-07T07:00:00Z')
+        self.assertIsNone(due_slot(NOW+timedelta(minutes=59), '2026-11-07T06:00:00Z'))
+        self.assertEqual(due_slot(NOW+timedelta(hours=4), '2026-11-07T06:00:00Z'), '2026-11-07T10:00:00Z')
+
     def test_log_api_contract_uses_documented_route_and_rejects_query_errors(self):
         class Http:
             response = {'result': []}
