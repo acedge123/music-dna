@@ -40,3 +40,10 @@ Deferred on purpose: the tables are small, so the sweeps buy no meaningful stora
 - [ ] Anonymous upgrade flow on web and Flutter.
 - [ ] Retry-safe "Save this reading to my account" transfer for an existing account.
 - [ ] Verification tests for each rule above.
+
+## Synthetic learning control plane (AB-49)
+
+The separate [synthetic learning lifecycle](learning-lifecycle.md) supplies scoped
+export denial and retry-safe downstream deletion groundwork. It neither implements
+this checklist nor authorizes real-user learning export. TGA-317, real consent and
+account/session/public-link cleanup remain required before a real-user path opens.

@@ -1,0 +1,8 @@
+{
+  "contract_version": "learning-deletion.v1",
+  "canonical_owner": "acedge123/music-dna",
+  "module_path": "src/musicdna/contracts/learning-deletion-v1.ts",
+  "fixture_path": "contracts/musicdna-learning-deletion/v1/fixtures.json",
+  "validator_sha256": "484447f3ee77b44dd3f1d339b49c47c5245856667e019e2af428c29e5e881b5b",
+  "fixtures_sha256": "cc60a74c75815ddf27dccadf69756ddb2e3b7b72b15af66003e2e2bdc05f28fc"
+}
