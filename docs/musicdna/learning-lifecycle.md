@@ -84,10 +84,26 @@ Real-user data/classes remain rejected by the frozen observation contract. Publi
 
 ## Rollout and verification
 
-Merge this source PR and the Echelon companion PR. Apply only
-`supabase/migrations/20261107202345_musicdna_synthetic_learning_lifecycle.sql` once to
-Music DNA's existing authoritative Supabase after separate migration review; capture
-source SHA, normalized SQL hash and journal receipt. Do not rerun earlier migrations.
+Music DNA's lifecycle migration is applied to its existing authoritative Supabase
+`udycgnhvaanemhrchbuj`. Lovable recorded version `20261107204508`, name
+`d966703f-803e-4e3a-9142-b55ad004d880`; retain only
+`supabase/migrations/20261107204508_d966703f-803e-4e3a-9142-b55ad004d880.sql`.
+Its bytes match the recorded SQL SHA-256
+`de1c894a83fd1f7c7fe82fd7ccf34e4850bee5ed227553d12c8fbd120fcc3236`.
+The original PR19 file `20261107202345_musicdna_synthetic_learning_lifecycle.sql`
+was an equivalent duplicate (only a trailing newline differed) and is removed from
+the executable migration directory. Preserve its provenance in the receipt, not as a
+second executable migration. No SQL rerun, remote history repair, new migration or
+schema change is needed for this reconciliation. Generated Supabase types are retained.
+See `learning-lifecycle-migration-receipt.json`; the migration check enforces one creator
+for each lifecycle table and the exact bytes of the applied file.
+
+Independent metadata-only verification confirmed: only the applied version in history;
+two RLS tables; no browser table/RPC grants; four SECURITY INVOKER functions with
+service execution; service scope SELECT only and withdrawal CRUD; zero scope/withdrawal
+rows. These empty tables do not prove end-to-end delivery or worker activation.
+Never rerun this migration on the existing backend. Fresh disposable databases replay
+the single retained version. Other environments must compare their own history first.
 Echelon applies only its named AB-49 migration and deploys `app-signal-inbound` with
 existing JWT settings. No scopes, reviewer grants, sources, credentials or flags are
 created by either migration. This code does not invoke production migration/deployment.

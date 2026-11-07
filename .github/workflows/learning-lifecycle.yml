@@ -8,7 +8,8 @@ on:
       - 'src/musicdna/adapters/learning-withdrawal.ts'
       - 'contracts/**'
       - 'scripts/check-musicdna*'
-      - 'supabase/migrations/*musicdna_synthetic_learning_lifecycle.sql'
+      - 'supabase/migrations/**'
+      - 'docs/musicdna/learning-lifecycle-migration-receipt.json'
       - 'package*.json'
       - '.github/workflows/learning-lifecycle.yml'
   push:
@@ -19,7 +20,8 @@ on:
       - 'src/musicdna/adapters/learning-withdrawal.ts'
       - 'contracts/**'
       - 'scripts/check-musicdna*'
-      - 'supabase/migrations/*musicdna_synthetic_learning_lifecycle.sql'
+      - 'supabase/migrations/**'
+      - 'docs/musicdna/learning-lifecycle-migration-receipt.json'
       - 'package*.json'
       - '.github/workflows/learning-lifecycle.yml'
 permissions:
