@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — PR #21 AB-45 database rollout
+
+- [x] Confirmed AB-45 enrollment/outbox tables are absent from the connected Music DNA backend.
+- [ ] Apply the merged migration once and return receipt plus grants/RLS verification: blocked because the existing SQL enables RLS before its required table grants; unchanged-file application rules forbid rewriting it here. No scopes, keys, schedules or flags authorized.
+
 ## Current — inactive catalog recalibration
 
 - [x] Compared all 37 draft songs and 23 pairings with the dated review; no later song edits found.
