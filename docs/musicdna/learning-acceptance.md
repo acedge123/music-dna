@@ -1,7 +1,7 @@
 # AB-50 — first-hop acceptance
 
-AB-50 is **In Progress**. The installed schemas and a working source journey are
-not end-to-end delivery acceptance. The current evidence record is
+AB-50 is **In Progress** with a completed bounded delivery/recovery/withdrawal run
+and remaining deployment/access/operational evidence gaps. The current evidence record is
 [the November 7 run](acceptance/ab50-2026-11-07.json). Dates in that record are UTC;
 November 7 is the operator's America/Los_Angeles work date.
 
@@ -12,7 +12,9 @@ Echelon backend, with Alan as approving admin. This is a tenant/source isolation
 choice, not another database, deployment or repository. Verify the actual Echelon
 admin account before binding approval, membership, source ownership or review grants.
 His verified Slack user is U32PGT1PA; a Slack email alone is not an Echelon identity.
-No new Echelon tenant/source/key/grant/scope has yet been provisioned.
+The isolated staging source was provisioned through the normal approved flow during
+this run. Its gates are now off and reviewer access is revoked; see the checkpoint
+below for what remains retained.
 
 The pilot uses only newly generated `ab50-<uuid>` synthetic personas and the frozen
 synthetic observation/deletion contracts. It grants no real-user consent, does not
@@ -108,20 +110,20 @@ or reset/delete them before reconciliation and the remaining checks.
    Fixed scope expiry is terminal: plan the last expiry test before closing it, and
    do not destroy the only readable fixture needed for the later AB-51 skill proof.
 
-| Required case | Evidence needed before pass |
-| --- | --- |
-| Feedback/replay/version integrity while export off | Hosted REST status/IDs plus read-only numeric persistence/zero-outbox evidence |
-| Positive capture → dispatch → receipt → paginated readback | Hosted source+receiver checks with exact revisions and non-secret work/receipt IDs |
-| Concurrent duplicate / same ID changed content | One receipt / 409 with original unchanged |
-| Timeout after remote accept / process crash / stale lease | Same bytes and UUID on retry; durable receipt convergence; no false delivered state |
-| Outage / 429 / Retry-After / max attempts | Bounded observed retries/backoff/quarantine; identify injected versus real failure |
-| Wrong key/source/environment/tenant/member/direct reads | Denial at each real boundary, not merely a unit test or missing-auth probe |
-| Source disable / key rotation / dispatch pause | Scoped halt, old-key denial, exact-byte replay after reviewed recovery, unrelated sources unchanged |
-| Withdrawal before/after send and during retry | Local cancellation plus matching downstream completion/read denial/non-resurrection |
-| Late/missing outcomes / immutable versions | Honest unknown/missing state and separate append-only operation/version receipts |
-| Expiry/purge / rollback either order | Authorized fixed-window denial, bounded cleanup, preserved suppression/closed-state proof |
-| No agent jobs/approvals/model/Slack from routine evidence | Source-scoped before/after numeric counts and relevant worker/provider evidence |
-| Delivery backlog alert | Meaningful controlled failure to Alan's verified DM, exact UTC evidence and confirmed notification receipt |
+| Required case                                              | Evidence needed before pass                                                                                |
+| ---------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Feedback/replay/version integrity while export off         | Hosted REST status/IDs plus read-only numeric persistence/zero-outbox evidence                             |
+| Positive capture → dispatch → receipt → paginated readback | Hosted source+receiver checks with exact revisions and non-secret work/receipt IDs                         |
+| Concurrent duplicate / same ID changed content             | One receipt / 409 with original unchanged                                                                  |
+| Timeout after remote accept / process crash / stale lease  | Same bytes and UUID on retry; durable receipt convergence; no false delivered state                        |
+| Outage / 429 / Retry-After / max attempts                  | Bounded observed retries/backoff/quarantine; identify injected versus real failure                         |
+| Wrong key/source/environment/tenant/member/direct reads    | Denial at each real boundary, not merely a unit test or missing-auth probe                                 |
+| Source disable / key rotation / dispatch pause             | Scoped halt, old-key denial, exact-byte replay after reviewed recovery, unrelated sources unchanged        |
+| Withdrawal before/after send and during retry              | Local cancellation plus matching downstream completion/read denial/non-resurrection                        |
+| Late/missing outcomes / immutable versions                 | Honest unknown/missing state and separate append-only operation/version receipts                           |
+| Expiry/purge / rollback either order                       | Authorized fixed-window denial, bounded cleanup, preserved suppression/closed-state proof                  |
+| No agent jobs/approvals/model/Slack from routine evidence  | Source-scoped before/after numeric counts and relevant worker/provider evidence                            |
+| Delivery backlog alert                                     | Meaningful controlled failure to Alan's verified DM, exact UTC evidence and confirmed notification receipt |
 
 Native PostgreSQL tests already exercise the failure/race/expiry mechanisms, but
 their pass is recorded separately from hosted observations. A source SHA or SQL hash
@@ -147,3 +149,47 @@ AB-44–49 close only against their specific evidence. AB-50 and AB-42 stay open
 the first connection's hosted report is reviewable. This work authorizes no real-user
 export, per-pairing Agent Brain dependency, EdgeBot LLM activation, media buying,
 automatic policy/skill changes or recurring Railway delivery deployment.
+
+## November 7 bounded run: delivery proved, rollout held
+
+The run used source `music-dna-staging`, tenant `musicdna-acceptance`, Echelon source
+`197da0c2-8e93-4c90-ab93-1945398a474d`. The immutable window is
+`2026-11-08T01:09:06.666Z` through `2026-11-09T01:10:06.666Z`. Never extend or
+recreate that used scope. No migration, production-source registration, global LLM
+switch, recurring worker or real-user export was added.
+
+| Boundary        | Verified result                                                                                                                                                                                                                                                                                              |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Source          | Six saved choices/frozen snapshots, unpublished version 1; feedback save/replay/conflict and cross-user checks passed; old unenrolled feedback was not backfilled.                                                                                                                                           |
+| Delivery        | Nine new captured observations; eight reached distinct durable audit-only receipts; one unsent item was later cancelled by withdrawal. Paused dispatch claimed/sent zero.                                                                                                                                    |
+| Readback/dedupe | Limit-one pagination, stable snapshot, late receipt on fresh same-window read, ten concurrent exact duplicates with one receipt, changed payload under the same UUID rejected 409.                                                                                                                           |
+| Recovery        | Injected 429 respected seven-second Retry-After. Lost response and real disposable worker crash after actual acceptance converged to original receipts; restart before real lease expiry sent zero. Invalid receipt quarantined until one separate owner-controlled exact replay.                            |
+| Authentication  | Actual source-key rotation rejected the old key; worker could not clear its own auth halt. Actual source-disable halt recovered only after separate operator action. Spoofed tenant/environment and direct Data API reads were denied.                                                                       |
+| Withdrawal      | Delivered deletion while capture and receiver ingest were paused; eight receiver observations/events purged, unsent ninth cancelled, zero source payloads/pending deletions. Old cursor empty; replay/new-ID backfill rejected even after temporary re-enable. Repeated deletion returned stable completion. |
+| Routine effects | Before purge: eight audit-only events, no linked agent jobs/approvals. Outcomes unknown. Provider-level model/Slack counters unavailable; ordinary operational-signal runtime regression not exercised.                                                                                                      |
+| Owner alerts    | Controlled halt and recovery DMs confirmed to U32PGT1PA through Repo C; helper restart deduplicated the confirmed halt. These two operator alerts are separate from routine observations.                                                                                                                    |
+| Closed test     | Capture/dispatch/receiver gates off, reviewer revoked and live read denied 403, key rotated again and plaintext discarded, exact operator session logged out, private JWT removed, controller terminated. Original reading remained unchanged.                                                               |
+
+The Echelon approver was verified through normal login. Music DNA had no matching
+human account: its FK approval uses a clearly labelled synthetic technical delegate
+recording Alan's AB-50 instruction and verified Echelon actor. That identity received
+no admin role. Do not represent it as Alan's Music DNA account or real-user consent.
+
+Remaining closure work is explicit in the JSON report: exact serving Echelon function
+management receipts; ordinary-member/other-tenant HTTP denial; actual terminal expiry
+and retention boundaries; provider/no-routine-notification and operational-route
+verification; backup/log/reviewer-copy inventory; owner acceptance. Native tests and
+owner deployment receipts stay separate from those missing hosted checks. Attempt/age
+boundaries have native coverage but were not all reached in this hosted run.
+
+The closed test retains synthetic source readings/feedback/enrollment, minimal work
+metadata and terminal scopes/suppression under the reviewed lifecycle policy. No
+receiver observation detail remains. Metadata forgetting has not yet reached its
+policy deadline; active purge is not backup erasure. No continuing laptop monitor,
+Railway learning worker or cleanup schedule was installed. Do not claim unattended
+coverage from the two manually generated monitoring notifications.
+
+For AB-51's later skill smoke, use a fresh explicitly authorized fixture within a
+valid approved scope. The withdrawn subject and used terminal scope may not be
+reopened to retain a convenient demo. Development may use contract fixtures while
+AB-50's remaining live evidence stays open; do not start another live batch by merge.

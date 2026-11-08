@@ -3,7 +3,7 @@
   "ticket": "AB-50",
   "operator_work_date": "2026-11-07",
   "operator_timezone": "America/Los_Angeles",
-  "state": "in_progress",
+  "state": "in_progress_acceptance_gaps",
   "decision": "hold_export_disabled",
   "scope": {
     "source": "music-dna-staging",
@@ -11,7 +11,13 @@
     "approved_test_area": "Music DNA Acceptance",
     "approving_owner": "Alan Edgett",
     "owner_slack_user": "U32PGT1PA",
-    "echelon_actor_verified": false
+    "echelon_actor_verified": true,
+    "tenant_id": "musicdna-acceptance",
+    "source_id": "197da0c2-8e93-4c90-ab93-1945398a474d",
+    "onboarding_request_id": "4f0401ff-16dd-4b67-8a79-a2e474e66219",
+    "observed_from": "2026-11-08T01:09:06.666Z",
+    "expires_at": "2026-11-09T01:10:06.666Z",
+    "scope_deadline_extended": false
   },
   "targets": {
     "musicdna_url": "https://www.musicdna.fm",
@@ -83,17 +89,6 @@
           "request_id": null
         }
       ]
-    },
-    "worker_status": {
-      "evidence_class": "hosted_database_via_actual_operator_worker",
-      "state": "passed",
-      "scope_present": false,
-      "capture_enabled": false,
-      "dispatch_enabled": false,
-      "captured": 0,
-      "attempts_started": 0,
-      "pending_deletions": 0,
-      "job_counts": {}
     },
     "source_journey": {
       "evidence_class": "hosted_http",
@@ -181,7 +176,39 @@
       "capture_enabled": 0,
       "dispatch_enabled": 0
     },
-    "echelon_readiness": {
+    "fixture_inventory": {
+      "fresh_synthetic_personas_created": 3,
+      "completed_journeys": 1,
+      "interrupted_probes": 2,
+      "private_inventory_retained": true,
+      "records_reset": 0,
+      "records_published": 0,
+      "technical_synthetic_approval_identities_created": 1,
+      "technical_identity_admin_roles": 0,
+      "enrolled_completed_results": 1
+    },
+    "native_and_unit_baseline": {
+      "evidence_class": "prior_reviewed_ci",
+      "url": "https://github.com/acedge123/music-dna/actions/runs/42429481793",
+      "unit_passed": 364,
+      "native_postgres_passed": 70,
+      "dispatcher_native_cases": 29,
+      "hosted_delivery_proof": false,
+      "total_passed": 434,
+      "note": "CI is separate from the hosted evidence below; seven new acceptance-runner guard tests included."
+    },
+    "initial_worker_status": {
+      "evidence_class": "hosted_database_via_actual_operator_worker",
+      "state": "passed",
+      "scope_present": false,
+      "capture_enabled": false,
+      "dispatch_enabled": false,
+      "captured": 0,
+      "attempts_started": 0,
+      "pending_deletions": 0,
+      "job_counts": {}
+    },
+    "initial_echelon_readiness": {
       "evidence_class": "read_only_numeric_metadata",
       "sources": 4,
       "learning_sources": 0,
@@ -191,22 +218,902 @@
       "reviewer_grants": 0,
       "receipts": 0
     },
-    "fixture_inventory": {
-      "fresh_synthetic_personas_created": 3,
-      "completed_journeys": 1,
-      "interrupted_probes": 2,
-      "private_inventory_retained": true,
-      "records_reset": 0,
-      "records_published": 0
+    "onboarding": {
+      "evidence_class": "hosted_authenticated_http_and_read_only_metadata",
+      "state": "passed",
+      "identity": "Existing platform admin verified by exact sign-in email and normal password/MFA login; no password reset or Echelon role escalation.",
+      "flow": "signal-source-request -> signal-source-decide; source initially disabled in both gates; exact source/tenant/environment/purpose independently verified.",
+      "key_handling": "One-time ingest key and subsequent rotations held only in private controller/worker process memory; no plaintext key persisted or printed.",
+      "source_approval": "Alan approved AB-50 and the dedicated test area. No matching Music DNA human account existed. An explicitly labelled synthetic technical execution principal records the delegated source approval; it is not Alan\u2019s Music DNA identity and received no admin role.",
+      "reviewer_grants_created": 1,
+      "lifecycle_scopes_per_side": 1
     },
-    "native_and_unit_baseline": {
-      "evidence_class": "prior_reviewed_ci",
-      "url": "https://github.com/acedge123/music-dna/actions/runs/42419839520",
-      "unit_passed": 357,
-      "native_postgres_passed": 70,
-      "dispatcher_native_cases": 29,
-      "hosted_delivery_proof": false
-    }
+    "delivery_and_readback": {
+      "evidence_class": "hosted_http_worker_and_read_only_numeric_metadata",
+      "state": "passed",
+      "old_unenrolled_feedback_replay_outbox_created": 0,
+      "captured_observations_total": 9,
+      "receiver_observations_accepted": 8,
+      "unsent_observations_cancelled": 1,
+      "dispatch_paused": {
+        "captured": 2,
+        "claimed": 0,
+        "transport_calls": 0,
+        "delivered": 0
+      },
+      "initial_dispatch": {
+        "claimed": 2,
+        "transport_calls": 2,
+        "delivered": 2
+      },
+      "paginated_readback": {
+        "limit": 1,
+        "initial_pages": 2,
+        "initial_items": 2,
+        "snapshot_excluded_late_receipt": true,
+        "fresh_same_closed_window_items": 3,
+        "late_items": 1,
+        "outcomes": "unknown; quality not evaluated"
+      },
+      "duplicate": {
+        "concurrent_exact_requests": 10,
+        "one_stable_receipt": true,
+        "changed_payload_same_uuid_http_status": 409
+      },
+      "initial_trace": [
+        {
+          "observation_id": "9d79d107-4bd9-48d4-b89e-ba9dd42fafd0",
+          "receipt_id": "ea9d2c38-df4a-44d2-a817-c1bcd94d8d61"
+        },
+        {
+          "observation_id": "1bba3c1e-e95f-44fe-b321-80f52f510c63",
+          "receipt_id": "5feeca48-d43d-4ba8-aa98-be724dc2484b"
+        }
+      ],
+      "routine_effects": {
+        "before_deletion_private_receipts": 8,
+        "before_deletion_audit_only_events": 8,
+        "linked_agent_jobs": 0,
+        "linked_approvals": 0,
+        "provider_model_calls": "not independently observable",
+        "provider_slack_calls": "not independently observable",
+        "normal_operational_signal_live_regression": "not exercised; source registrations and global flags untouched"
+      }
+    },
+    "recovery_matrix": [
+      {
+        "case": "429 Retry-After",
+        "evidence_class": "injected_test_transport_and_hosted_worker",
+        "state": "passed",
+        "retry_after_seconds": 7,
+        "stored_delay_seconds": 7.088323,
+        "immediate_restart_calls": 0,
+        "later_delivered": true
+      },
+      {
+        "case": "response lost after actual receiver acceptance",
+        "evidence_class": "injected_response_loss_and_hosted_receiver",
+        "state": "passed",
+        "no_false_source_delivery": true,
+        "retry_converged_to_original_receipt": true,
+        "receipt_id": "b28cfcc3-be93-4d53-abc4-bdf2217122b7"
+      },
+      {
+        "case": "invalid receipt after actual receiver acceptance",
+        "evidence_class": "injected_invalid_response_and_hosted_receiver",
+        "state": "passed",
+        "quarantined": true,
+        "sql_owner_controlled_exact_replay_count": 1,
+        "retry_converged_to_original_receipt": true,
+        "receipt_id": "d10128a1-fa60-42c2-b509-c0c5c509b040"
+      },
+      {
+        "case": "test worker process crash after actual receiver acceptance",
+        "evidence_class": "controlled_disposable_process_exit_and_real_lease_elapsed",
+        "state": "passed",
+        "exit_code": 86,
+        "lease_seconds": 90,
+        "restart_before_expiry_calls": 0,
+        "database_clock_or_lease_rewritten": false,
+        "retry_converged_to_original_receipt": true,
+        "receipt_id": "1e6eb9fe-eb96-4b4f-a2fd-3c641868db98"
+      },
+      {
+        "case": "real per-source key rotation",
+        "evidence_class": "hosted_auth",
+        "state": "passed",
+        "old_key_http_status": 401,
+        "new_key_exact_replay_http_status": 200,
+        "worker_halted_reason": "auth_rejected",
+        "restart_without_separate_clear_calls": 0
+      },
+      {
+        "case": "real receiver learning disable",
+        "evidence_class": "hosted_auth_and_worker",
+        "state": "passed",
+        "worker_halted_reason": "source_disabled",
+        "separate_sql_owner_recovery_required": true,
+        "same_uuid_later_delivered": true
+      },
+      {
+        "case": "network unavailable before send then withdrawal",
+        "evidence_class": "injected_test_transport_then_hosted_lifecycle",
+        "state": "passed",
+        "downstream_http_responses": 0,
+        "false_delivered": false,
+        "unsent_observation_cancelled": true
+      }
+    ],
+    "isolation": {
+      "evidence_class": "hosted_http_unless_marked",
+      "state": "partial",
+      "matching_key_disabled_source": 403,
+      "wrong_key": 401,
+      "ungranted_admin_read": 403,
+      "spoofed_tenant": 400,
+      "spoofed_read_environment": 400,
+      "staging_key_production_envelope": 401,
+      "authenticated_direct_data_api": 403,
+      "anonymous_direct_data_api": 401,
+      "revoked_reviewer_read": 403,
+      "redacted_readback": "No canonical envelope, comments or internal user_id returned; strict DTO assertions passed.",
+      "ordinary_member_http": "not exercised: no disposable member session available; anonymous auth disabled and email confirmation required. No signup mail, forged role or real-account alteration attempted.",
+      "ordinary_member_and_other_tenant_native": "Covered by reviewed native readback tests; this is not live HTTP evidence."
+    },
+    "withdrawal_and_rollback": {
+      "evidence_class": "hosted_http_worker_and_read_only_numeric_metadata",
+      "state": "passed_for_exercised_cases",
+      "deletion_id": "505d92cb-50ff-4655-8c4b-364cb10a9564",
+      "withdrawal_during_unsent_retry": true,
+      "receiver_ingest_disabled_during_delete": true,
+      "source_capture_disabled_during_delete": true,
+      "completed_deletions": 1,
+      "purged_receiver_records": 8,
+      "pending_deletions": 0,
+      "source_withdrawal_subject_ref_cleared": true,
+      "source_payloads_remaining": 0,
+      "receiver_receipts_remaining": 0,
+      "receiver_events_remaining": 0,
+      "receiver_suppression_markers": 1,
+      "old_cursor_items_after_deletion": 0,
+      "old_observation_replay_after_reenable": 403,
+      "new_uuid_same_subject_backfill_after_reenable": 403,
+      "repeated_deletion_http_status": 200,
+      "repeated_deletion_same_completion_and_count": true,
+      "source_feedback_after_withdrawal_http_status": 200,
+      "new_export_items_after_withdrawal": 0,
+      "final_result": {
+        "versions": 1,
+        "choices": 6,
+        "unpublished": true,
+        "version_content_unchanged": true
+      }
+    },
+    "operator_alerts": {
+      "evidence_class": "actual_repo_c_operator_slack_dm_receipts",
+      "recipient": "U32PGT1PA",
+      "controlled_halt": {
+        "confirmed": true,
+        "url": "https://thegigagency.slack.com/archives/D08Q89PA0QY/p1794101750393029"
+      },
+      "verified_recovery": {
+        "confirmed": true,
+        "url": "https://thegigagency.slack.com/archives/D08Q89PA0QY/p1794101972914989"
+      },
+      "restart_deduplication": "Confirmed receipt persisted before helper restart; repeat suppressed without resend.",
+      "initial_transport_failure": "Python TLS certificate verification failed before HTTP; independent unauthenticated probe reproduced it and exact-message search found no notification. Existing fixed Repo C destination then used via Node with TLS verification enabled.",
+      "unattended_learning_backlog_monitoring": false
+    },
+    "final_cleanup": {
+      "evidence_class": "hosted_read_only_metadata_and_api",
+      "source_capture_enabled": false,
+      "source_dispatch_enabled": false,
+      "receiver_enabled": false,
+      "receiver_learning_enabled": false,
+      "active_reviewer_grants": 0,
+      "all_receiver_learning_enabled": 0,
+      "source_scopes_extended": 0,
+      "pending_deletions": 0,
+      "payloads_remaining": 0,
+      "receiver_receipts": 0,
+      "receiver_events": 0,
+      "test_key_rotated_after_close": true,
+      "replacement_plaintext_discarded_with_controller": true,
+      "operator_local_auth_session_logout_http_status": 204,
+      "private_jwt_file_removed": true,
+      "private_controller_process_terminated": true,
+      "retained": "One disabled staging registration, terminal fixed scopes, one hashed receiver suppression, revoked grant, source synthetic fixtures/enrollment and minimal cancelled/delivered work metadata. Policy-governed metadata purge has not yet reached its deadline. Source reading/feedback retained; this is not full account deletion or backup erasure."
+    },
+    "timed_operator_checkpoints": [
+      {
+        "checked_at": "2026-11-08T01:25:40.494Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 1,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:25:42.907Z",
+        "operation": "feedback",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "captured": 1
+          },
+          "checks": [
+            {
+              "operation": "feedback_capture",
+              "state": "passed",
+              "http_status": 200,
+              "observation_id": "5062a291-ded7-4968-9e45-5b174129ce1a"
+            }
+          ]
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:25:44.048Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 0,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 1,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 1,
+            "recovery_calls": 1
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:25:44.822Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 0,
+            "attempts_started": 0,
+            "transport_calls": 0,
+            "http_responses": 0,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:27:18.890Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 1,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:27:21.095Z",
+        "operation": "feedback",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "captured": 1
+          },
+          "checks": [
+            {
+              "operation": "feedback_capture",
+              "state": "passed",
+              "http_status": 200,
+              "observation_id": "09222692-9140-42b9-9cfa-40b887645c54"
+            }
+          ]
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:27:22.357Z",
+        "operation": "worker",
+        "result": {
+          "state": "attention",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 1,
+            "stale": 0,
+            "materialized": 1,
+            "recovery_calls": 1
+          },
+          "flags": {
+            "attention_required": true,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:29:40.790Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 1,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:29:43.252Z",
+        "operation": "feedback",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "captured": 1
+          },
+          "checks": [
+            {
+              "operation": "feedback_capture",
+              "state": "passed",
+              "http_status": 200,
+              "observation_id": "4a3545c5-2c71-433a-b0f3-33f4ef841825"
+            }
+          ]
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:29:44.304Z",
+        "operation": "worker",
+        "result": {
+          "state": "controlled_crash",
+          "counts": {
+            "worker_exit": 86
+          },
+          "flags": {
+            "fault_injected": true,
+            "delivery_acknowledged": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:31:10.685Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 0,
+            "attempts_started": 0,
+            "transport_calls": 0,
+            "http_responses": 0,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:32:32.533Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 1,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:32:33.629Z",
+        "operation": "rotate",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "flags": {
+            "new_key_retained_only_in_memory": true
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:32:33.948Z",
+        "operation": "rotation_probe",
+        "result": {
+          "state": "passed",
+          "receipt_id": "ea9d2c38-df4a-44d2-a817-c1bcd94d8d61",
+          "checks": [
+            {
+              "operation": "old_key_rejected",
+              "state": "passed",
+              "http_status": 401
+            },
+            {
+              "operation": "new_key_exact_replay",
+              "state": "passed",
+              "http_status": 200
+            }
+          ]
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:32:36.297Z",
+        "operation": "feedback",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "captured": 1
+          },
+          "checks": [
+            {
+              "operation": "feedback_capture",
+              "state": "passed",
+              "http_status": 200,
+              "observation_id": "3a9aa102-d531-4893-9358-96ba8d04dd42"
+            }
+          ]
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:32:37.289Z",
+        "operation": "worker",
+        "result": {
+          "state": "attention",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 1,
+            "recovery_calls": 1
+          },
+          "flags": {
+            "attention_required": true,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:35:56.205Z",
+        "operation": "worker",
+        "result": {
+          "state": "attention",
+          "counts": {
+            "claimed": 0,
+            "attempts_started": 0,
+            "transport_calls": 0,
+            "http_responses": 0,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": true,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:36:51.865Z",
+        "operation": "worker",
+        "result": {
+          "state": "attention",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": true,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:37:39.662Z",
+        "operation": "worker",
+        "result": {
+          "state": "attention",
+          "counts": {
+            "claimed": 0,
+            "attempts_started": 0,
+            "transport_calls": 0,
+            "http_responses": 0,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": true,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:37:40.524Z",
+        "operation": "read",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "receipt_id": "ea9d2c38-df4a-44d2-a817-c1bcd94d8d61",
+          "observation_id": "9d79d107-4bd9-48d4-b89e-ba9dd42fafd0",
+          "counts": {
+            "items": 1,
+            "late_items": 0
+          },
+          "flags": {
+            "has_more": true,
+            "all_outcomes_unknown": true
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:38:05.941Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 1,
+            "deleted": 0,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:38:06.318Z",
+        "operation": "read",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "receipt_id": "ea9d2c38-df4a-44d2-a817-c1bcd94d8d61",
+          "observation_id": "9d79d107-4bd9-48d4-b89e-ba9dd42fafd0",
+          "counts": {
+            "items": 1,
+            "late_items": 0
+          },
+          "flags": {
+            "has_more": true,
+            "all_outcomes_unknown": true
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:40:38.136Z",
+        "operation": "remember_result",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "counts": {
+            "result_versions": 1
+          },
+          "flags": {
+            "version_one_unchanged": true
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:40:46.831Z",
+        "operation": "feedback_while_blocked",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "counts": {
+            "new_feedback": 1,
+            "export_items_created": 0
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:41:36.571Z",
+        "operation": "feedback",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "captured": 1
+          },
+          "checks": [
+            {
+              "operation": "feedback_capture",
+              "state": "passed",
+              "http_status": 200,
+              "observation_id": "a9efd28a-3522-4634-8236-20ab51a4e8ad"
+            }
+          ]
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:41:37.404Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 0,
+            "delivered": 0,
+            "deleted": 0,
+            "retry": 1,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 1,
+            "recovery_calls": 1
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:41:37.553Z",
+        "operation": "withdraw",
+        "result": {
+          "state": "pending",
+          "deletion_id": "505d92cb-50ff-4655-8c4b-364cb10a9564",
+          "flags": {
+            "receiver_completion_claimed": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:45:04.962Z",
+        "operation": "worker",
+        "result": {
+          "state": "passed",
+          "counts": {
+            "claimed": 1,
+            "attempts_started": 1,
+            "transport_calls": 1,
+            "http_responses": 1,
+            "delivered": 0,
+            "deleted": 1,
+            "retry": 0,
+            "quarantined": 0,
+            "stale": 0,
+            "materialized": 0,
+            "recovery_calls": 0
+          },
+          "flags": {
+            "attention_required": false,
+            "disabled": false
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:45:42.051Z",
+        "operation": "read",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "counts": {
+            "items": 0,
+            "late_items": 0
+          },
+          "flags": {
+            "has_more": false,
+            "all_outcomes_unknown": true
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:46:03.612Z",
+        "operation": "post_withdrawal_probes",
+        "result": {
+          "state": "passed",
+          "deletion_id": "505d92cb-50ff-4655-8c4b-364cb10a9564",
+          "counts": {
+            "purged_count": 8
+          },
+          "checks": [
+            {
+              "operation": "old_observation_suppressed",
+              "state": "passed",
+              "http_status": 403
+            },
+            {
+              "operation": "changed_id_backfill_suppressed",
+              "state": "passed",
+              "http_status": 403
+            },
+            {
+              "operation": "repeated_deletion_stable",
+              "state": "passed",
+              "http_status": 200
+            }
+          ]
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:46:11.576Z",
+        "operation": "feedback_while_blocked",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "counts": {
+            "new_feedback": 1,
+            "export_items_created": 0
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:46:13.180Z",
+        "operation": "check_result",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "counts": {
+            "result_versions": 1
+          },
+          "flags": {
+            "version_one_unchanged": true
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:47:00.946Z",
+        "operation": "revoked_read",
+        "result": {
+          "state": "passed",
+          "http_status": 403,
+          "flags": {
+            "revoked_grant_denied": true
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:47:01.251Z",
+        "operation": "worker_status",
+        "result": {
+          "state": "passed",
+          "flags": {
+            "capture_enabled": false,
+            "dispatch_enabled": false,
+            "scope_present": true
+          },
+          "counts": {
+            "captured": 0,
+            "pending_deletions": 0,
+            "attempts_started": 16
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:47:01.882Z",
+        "operation": "rotate",
+        "result": {
+          "state": "passed",
+          "http_status": 200,
+          "flags": {
+            "new_key_retained_only_in_memory": true
+          }
+        }
+      },
+      {
+        "checked_at": "2026-11-08T01:47:34.169Z",
+        "operation": "end_operator_session",
+        "result": {
+          "state": "passed",
+          "http_status": 204,
+          "flags": {
+            "local_session_revoked": true
+          }
+        }
+      }
+    ]
   },
   "availability": {
     "vercel_operator_metadata": {
@@ -215,34 +1122,40 @@
       "runtime_health_inferred_from_this_failure": false
     },
     "echelon_owner_identity": {
-      "state": "input_required",
-      "detail": "Verified Slack identity did not match an Echelon auth account; waiting for Echelon sign-in email. No role or credential changes attempted."
+      "state": "verified",
+      "detail": "Normal login to the existing approved admin account completed; one local operator session was logged out after the test."
     }
   },
   "remaining": [
-    "Verify approving Echelon account and exact serving function versions.",
-    "Existing authenticated source request/decide flow; isolated source/key handoff and expiring reviewer/lifecycle authorization.",
-    "Exact-result synthetic enrollment, transactional capture, bounded manual dispatch and durable receiver receipt/readback.",
-    "Hosted/injected-fault duplicate, timeout, restart, rate, key rotation, pause, isolation, deletion and rollback matrix.",
-    "Source-scoped proof of no routine agent jobs/approvals/model/Slack calls.",
-    "Verified owner-only backlog alert receipt, cleanup/retention inventory and final restored gates."
+    "Obtain Echelon deployment-management receipts for exact live function versions/source/settings; existing owner receipts and live behavior are recorded separately.",
+    "Exercise ordinary-member and other-tenant HTTP read denial using approved disposable non-admin accounts; native tests/direct Data API denial do not substitute for this.",
+    "Complete live terminal-expiry/retention-boundary checks after the immutable deadline (without extending/reopening the used scope), and inventory hosted backup/log retention/external review copies.",
+    "Verify provider-level no-model/no-routine-Slack evidence and normal operational-signal regression; receipt rows are audit-only with no linked jobs/approvals, but unavailable provider counters are not zero.",
+    "Review remaining max-age/attempt-exhaustion/retention boundaries: native coverage passes; not all boundaries elapsed in the hosted run.",
+    "Keep unattended delivery disabled until explicit worker/cleanup/backlog-monitoring deployment approval and verified coverage; record owner acceptance/hold decision after report review."
   ],
-  "production_changes": {
-    "new_migrations": 0,
-    "echelon_sources": 0,
-    "keys_created_or_rotated": 0,
-    "learning_scopes": 0,
-    "reviewer_grants": 0,
-    "capture_or_dispatch_activations": 0,
-    "export_sends": 0,
-    "worker_services_or_schedules": 0,
-    "application_code_changed": false,
-    "synthetic_source_journey_and_feedback_writes": true
-  },
   "limitations": [
-    "Source-only evidence is not AB-50 completion.",
-    "Unavailable checks are not healthy.",
-    "Synthetic behavior does not establish listener benefit.",
-    "Raw internal IDs, tokens, bodies, reading content and pseudonymous refs remain outside this artifact."
-  ]
+    "AB-50/AB-42 remain open for the listed evidence gaps; this report does not authorize export activation or the next live skill pilot.",
+    "Injected transport faults are labelled; no production service/network was stopped.",
+    "Unverified deployment/provider/retention metrics are not healthy or zero.",
+    "Synthetic outcomes remain unknown and prove no listener benefit.",
+    "Raw participant/internal IDs, tokens, payloads, reading content and pseudonymous refs stay outside this report. Operational work/receipt UUIDs are included for investigation."
+  ],
+  "scoped_test_changes": {
+    "new_migrations": 0,
+    "staging_sources_created": 1,
+    "ingest_keys_issued": 1,
+    "source_key_rotations": 2,
+    "lifecycle_scopes_per_side": 1,
+    "reviewer_grants_created_then_revoked": 1,
+    "technical_synthetic_approval_identity_created_without_admin_role": 1,
+    "capture_dispatch_ingest_enabled_only_during_test": true,
+    "receiver_observations_accepted": 8,
+    "completed_deletions": 1,
+    "worker_services_or_schedules_created": 0,
+    "application_code_changed": false,
+    "real_user_exports": 0,
+    "unrelated_source_configuration_changes": 0
+  },
+  "report_prepared_at": "2026-11-08T01:50:24.331936+00:00"
 }
