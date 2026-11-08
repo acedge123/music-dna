@@ -10,6 +10,8 @@ on:
       - 'scripts/check-musicdna*'
       - 'scripts/require-learning-outbox-db.*'
       - 'scripts/learning-worker.ts'
+      - 'tools/musicdna/learning-acceptance/**'
+      - 'tools/musicdna/verify-learning-acceptance.ts'
       - 'vite.learning-worker.config.ts'
       - 'supabase/migrations/**'
       - 'docs/musicdna/learning-lifecycle-migration-receipt.json'
@@ -25,6 +27,8 @@ on:
       - 'scripts/check-musicdna*'
       - 'scripts/require-learning-outbox-db.*'
       - 'scripts/learning-worker.ts'
+      - 'tools/musicdna/learning-acceptance/**'
+      - 'tools/musicdna/verify-learning-acceptance.ts'
       - 'vite.learning-worker.config.ts'
       - 'supabase/migrations/**'
       - 'docs/musicdna/learning-lifecycle-migration-receipt.json'
@@ -63,9 +67,10 @@ jobs:
         env:
           AB45_TEST_DATABASE_URL: postgres://postgres:ab45-local-test@127.0.0.1:5432/ab45_test
       - run: npx tsc --noEmit
-      - run: npx eslint src/musicdna/learning src/musicdna/adapters/learning-*.ts
+      - run: npx eslint src/musicdna/learning src/musicdna/adapters/learning-*.ts tools/musicdna/learning-acceptance tools/musicdna/verify-learning-acceptance.ts
       - run: npm run build:learning-worker
       - run: npm run learning:worker -- --help
+      - run: npm run verify:learning-journey -- --help
       - run: npm run build
         env:
           VERCEL: '1'
