@@ -7,6 +7,10 @@
 
 ## Current — PR #23 AB-47 dispatcher database rollout
 
+## Done — PR #25 AB-29 database rollout
+
+- [x] Applied only merged SQL once as `20261108175602` (history name `be2ceb1f-664f-4cfb-9b16-4178f4169568`); SHA-256 `df939895cc3d2ee39131870c6cc0c0ab4eb5ceecf5aef3e1dbd7ff2feb17bde9`. One matching executable migration. Operator RPC/private-function grants, RLS and four triggers verified. Zero routing assignments and zero enabled capture/dispatch scopes. Existing one scope/two enrollments untouched; no keys, schedules, workers, flags or earlier reruns. Receipt: docs/musicdna/applied-outcomes.md. Activation and cross-repo acceptance remain separate.
+
 - [x] PR #23 merged at 6ae7d5c; dispatcher applied once as 20261107214337 (history name aa6badb6-8540-4b07-991d-c05311776aa7). Merged/local/history SQL SHA-256 d739082d087a2ad1f5e0d932f525992d4da00e6440a55878a7cff10ea0f17645; one executable file. Private grants/RLS verified; read-only service status confirms disabled capture/dispatch and no scopes/enrollments/jobs. No keys, sources, schedules, worker deployments or earlier reruns. Receipt: docs/musicdna/learning-dispatcher.md. 35 unit tests passed; 29 native DB tests unavailable.
 
 ## Current — PR #21 AB-45 database rollout
