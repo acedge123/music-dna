@@ -11,6 +11,7 @@ const walk = (dir) =>
   );
 const files = [
   "src/lib/musicdna.functions.ts",
+  "src/musicdna/learning/pilot-routing.ts",
   ...walk("src/musicdna/engine"),
   ...walk("src/musicdna/router"),
 ].sort();

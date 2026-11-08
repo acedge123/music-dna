@@ -445,6 +445,7 @@ export type Database = {
       }
       experiment_assignments: {
         Row: {
+          pilot: Json | null
           assigned_at: string
           experiment_key: string
           id: string
@@ -452,6 +453,7 @@ export type Database = {
           variant: string
         }
         Insert: {
+          pilot?: Json | null
           assigned_at?: string
           experiment_key: string
           id?: string
@@ -459,6 +461,7 @@ export type Database = {
           variant: string
         }
         Update: {
+          pilot?: Json | null
           assigned_at?: string
           experiment_key?: string
           id?: string
@@ -1875,6 +1878,22 @@ export type Database = {
       }
     }
     Functions: {
+      enroll_musicdna_pilot_participant: {
+        Args: { p_owner_id: string; p_design: Json; p_consent_ref: string; p_consented_at: string; p_approval_ref: string }
+        Returns: Json
+      }
+      prepare_musicdna_pilot_session: {
+        Args: { p_session_id: string; p_owner_id: string; p_policy_version: string }
+        Returns: Json
+      }
+      withdraw_musicdna_pilot_participant: {
+        Args: { p_owner_id: string; p_experiment_id: string }
+        Returns: Json
+      }
+      read_musicdna_pilot_cohort: {
+        Args: { p_experiment_id: string; p_as_of: string }
+        Returns: Json
+      }
       assign_musicdna_routing_experiment: {
         Args: { p_design: Json; p_owner_id: string; p_session_id: string }
         Returns: Json

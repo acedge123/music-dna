@@ -1,6 +1,6 @@
 {
   "policy_id": "musicdna-selector",
-  "version": "sha256:5b597d81438aaf2cb059263932aa3cb17cfef832d47fbc52f13d7af4892cae14",
+  "version": "sha256:eec8a22b56725ebeed7154b962a8aa0d60ef55f171396fb4bc65056625144961",
   "files": [
     "src/lib/musicdna.functions.ts",
     "src/musicdna/engine/archetypes.ts",
@@ -27,6 +27,7 @@
     "src/musicdna/engine/types.ts",
     "src/musicdna/engine/versions.ts",
     "src/musicdna/engine/voice.ts",
+    "src/musicdna/learning/pilot-routing.ts",
     "src/musicdna/router/index.ts",
     "src/musicdna/router/knobs.ts",
     "src/musicdna/router/scoring.ts",
