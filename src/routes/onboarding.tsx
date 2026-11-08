@@ -7,6 +7,7 @@ import { OpeningSongInput as RankedInput } from "@/components/musicdna/opening-s
 import { SongChoices } from "@/components/musicdna/song-choices";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Share2, MessageCircle } from "lucide-react";
+import { readingLead } from "@/lib/critic-display";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -113,6 +114,7 @@ function Onboarding() {
           </p>
           <Button
             type="button"
+            variant="outline"
             onClick={() => window.location.reload()}
             className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm"
           >
@@ -175,7 +177,7 @@ function Onboarding() {
     );
   }
 
-  // TRANSCRIPT: slot2 → slot3 → playing → done in one continuous scroll
+  // One active stage; prior exchanges stay in history.
   return (
     <>
       <HomeLogo />
@@ -263,9 +265,10 @@ function Onboarding() {
               </div>
             </header>
             {entries.length === 0 && refined && (
-              <p className="max-w-2xl font-serif text-2xl leading-snug">
-                {refined.observation || refined.hypothesis}
-              </p>
+              <details className="max-w-2xl">
+                <summary className="cursor-pointer font-serif text-2xl leading-snug">{readingLead(refined.observation || refined.hypothesis)}</summary>
+                <p className="pt-3 text-sm text-muted-foreground">{refined.observation || refined.hypothesis}</p>
+              </details>
             )}
             <InterviewHistory
               entries={entries}
@@ -306,6 +309,7 @@ function Onboarding() {
             <div className="flex justify-center pt-1">
               <Button
                 type="button"
+                variant="ghost"
                 disabled={busy || pendingSongId !== null}
                 onClick={skip}
                 className="min-h-11 px-3 py-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
@@ -332,6 +336,7 @@ function Onboarding() {
                 </p>
                 <Button
                   type="button"
+                  variant="outline"
                   onClick={() => void loadFinalRead()}
                   className="min-h-11 rounded-sm border hairline-strong px-5 py-3"
                 >
@@ -366,6 +371,7 @@ function Onboarding() {
                   </Button>
                   <Button
                     type="button"
+                    variant="outline"
                     disabled={shareBusy || resultVersion == null}
                     onClick={() => void shareRead()}
                     className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm disabled:opacity-50"

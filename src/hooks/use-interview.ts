@@ -301,9 +301,9 @@ export function useInterview(requestedSession?: string) {
   }, [phase, reducedMotion]);
   useEffect(() => {
     if (pairing && pairingAnchorRef.current) {
-      pairingAnchorRef.current.scrollIntoView({
+      pairingAnchorRef.current.closest("main")?.scrollIntoView({
         behavior: reducedMotion ? "instant" : "smooth",
-        block: "center",
+        block: "start",
       });
     }
   }, [pairing, reducedMotion]);

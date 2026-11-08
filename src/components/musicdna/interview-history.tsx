@@ -95,8 +95,10 @@ export function InterviewHistory({
       <div aria-live="polite">
         <div className="space-y-4">
           <p className="eyebrow">The critic · after choice {latest.round}</p>
-          {latest.thesis ? (
-            <ReadMoment read={{ ...latest, question: "" }} />
+          {reactionReply?.round === latest.round ? (
+            <p role="status" className="border-l-2 border-teal pl-4 font-serif text-xl leading-snug">{reactionReply.message}</p>
+          ) : latest.thesis ? (
+            <ReadMoment compact read={{ ...latest, question: "" }} />
           ) : (
             <p className="font-serif text-xl">{latest.reaction}</p>
           )}
@@ -128,14 +130,6 @@ export function InterviewHistory({
                 </Button>
               ))}
             </div>
-          )}
-          {reactionReply?.round === latest.round && (
-            <p
-              role="status"
-              className="border-l-2 border-teal pl-4 font-serif text-xl leading-snug"
-            >
-              {reactionReply.message}
-            </p>
           )}
         </div>
       </div>
