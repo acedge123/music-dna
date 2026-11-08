@@ -77,6 +77,9 @@ jobs:
       - run: npm run test:applied-outcomes
         env:
           AB45_TEST_DATABASE_URL: postgres://postgres:ab45-local-test@127.0.0.1:5432/ab45_test
+      - run: npm run test:pilot
+        env:
+          AB45_TEST_DATABASE_URL: postgres://postgres:ab45-local-test@127.0.0.1:5432/ab45_test
       - run: npx tsc --noEmit
       - run: npx eslint src/musicdna/learning src/musicdna/adapters/learning-*.ts tools/musicdna/learning-acceptance tools/musicdna/verify-learning-acceptance.ts
       - run: npm run build:learning-worker

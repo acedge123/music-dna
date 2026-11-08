@@ -15,6 +15,8 @@ import { callLovableAi, DEFAULT_MODEL as MODEL } from "@/musicdna/adapters/llm-g
 import { recommendForSession, type Regime } from "@/musicdna/router";
 import { toEnginePairingKnobs } from "@/musicdna/router/knobs";
 import { appliedRoutingContext } from "@/musicdna/learning/applied-routing";
+import { resolvePilotRouting } from "@/musicdna/learning/pilot-routing";
+import routingArtifact from "@/musicdna/learning/routing-artifact.json";
 
 // Phase 4: routing mode. Read once per request from env.
 //   "legacy"  — original behavior, no shadow diff, no regime knobs.
@@ -789,7 +791,28 @@ export async function nextPairingImpl(
   // only apply if we removed the await. If a future change makes this
   // truly fire-and-forget, switch to `event.waitUntil(promise)` from the
   // server route's ctx instead of dropping the await.
-  const routingMode: RoutingMode = readRoutingMode();
+  const routingMode: RoutingMode = await resolvePilotRouting({
+    enabled: typeof process !== "undefined" ? process.env?.MUSICDNA_AB52_PILOT_ENABLED : undefined,
+    instrumentationEnabled:
+      typeof process !== "undefined" ? process.env?.MUSICDNA_APPLIED_OUTCOMES_V1 : undefined,
+    defaultMode: readRoutingMode(),
+    policyVersion: routingArtifact.version,
+    prepare: async () => {
+      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+      const { data: assignment, error } = await supabaseAdmin.rpc(
+        "prepare_musicdna_pilot_session",
+        {
+          p_session_id: data.sessionId,
+          p_owner_id: session.user_id,
+          p_policy_version: routingArtifact.version,
+        },
+      );
+      if (error) throw new Error("pilot_assignment_unavailable");
+      return assignment;
+    },
+    onUnavailable: () =>
+      console.warn("[musicdna] pilot assignment unavailable; normal routing retained"),
+  });
   const appliedOutcomesFlag =
     typeof process !== "undefined" ? process.env?.MUSICDNA_APPLIED_OUTCOMES_V1 : undefined;
   const emitShadowRecommendation = async (
