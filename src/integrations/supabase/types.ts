@@ -182,7 +182,6 @@ export type Database = {
       }
       choices: {
         Row: {
-          routing_context: Json | null
           chosen_song_id: string
           created_at: string
           evidence: Json | null
@@ -195,7 +194,6 @@ export type Database = {
           session_id: string
         }
         Insert: {
-          routing_context?: Json | null
           chosen_song_id: string
           created_at?: string
           evidence?: Json | null
@@ -208,7 +206,6 @@ export type Database = {
           session_id: string
         }
         Update: {
-          routing_context?: Json | null
           chosen_song_id?: string
           created_at?: string
           evidence?: Json | null
@@ -1244,7 +1241,6 @@ export type Database = {
       }
       session_results: {
         Row: {
-          routing_context: Json | null
           base_version: number | null
           content: Json
           created_at: string
@@ -1260,7 +1256,6 @@ export type Database = {
           version: number
         }
         Insert: {
-          routing_context?: Json | null
           base_version?: number | null
           content?: Json
           created_at?: string
@@ -1276,7 +1271,6 @@ export type Database = {
           version: number
         }
         Update: {
-          routing_context?: Json | null
           base_version?: number | null
           content?: Json
           created_at?: string
@@ -1303,7 +1297,6 @@ export type Database = {
       }
       sessions: {
         Row: {
-          routing_assignment: Json | null
           archetype_flag_reason: string | null
           archetype_flagged: boolean
           archetype_id: string | null
@@ -1328,7 +1321,6 @@ export type Database = {
           vector: Json
         }
         Insert: {
-          routing_assignment?: Json | null
           archetype_flag_reason?: string | null
           archetype_flagged?: boolean
           archetype_id?: string | null
@@ -1353,7 +1345,6 @@ export type Database = {
           vector?: Json
         }
         Update: {
-          routing_assignment?: Json | null
           archetype_flag_reason?: string | null
           archetype_flagged?: boolean
           archetype_id?: string | null
@@ -1875,14 +1866,6 @@ export type Database = {
       }
     }
     Functions: {
-      assign_musicdna_routing_experiment: {
-        Args: { p_session_id: string; p_owner_id: string; p_design: Json }
-        Returns: Json
-      }
-      read_musicdna_routing_outcome: {
-        Args: { p_result_id: string }
-        Returns: Json
-      }
       begin_chat_turn: {
         Args: { p_message: string; p_mutation_id: string; p_session_id: string }
         Returns: Json
