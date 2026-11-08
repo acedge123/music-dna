@@ -191,6 +191,7 @@ export type Database = {
           pairing_id: string
           rejected_song_id: string | null
           response: Json | null
+          routing_context: Json | null
           session_id: string
         }
         Insert: {
@@ -203,6 +204,7 @@ export type Database = {
           pairing_id: string
           rejected_song_id?: string | null
           response?: Json | null
+          routing_context?: Json | null
           session_id: string
         }
         Update: {
@@ -215,6 +217,7 @@ export type Database = {
           pairing_id?: string
           rejected_song_id?: string | null
           response?: Json | null
+          routing_context?: Json | null
           session_id?: string
         }
         Relationships: [
@@ -1249,6 +1252,7 @@ export type Database = {
           id: string
           ledger_version: string
           policy_version: string
+          routing_context: Json | null
           self_report: Json
           session_id: string
           source: string
@@ -1264,6 +1268,7 @@ export type Database = {
           id?: string
           ledger_version: string
           policy_version: string
+          routing_context?: Json | null
           self_report?: Json
           session_id: string
           source?: string
@@ -1279,6 +1284,7 @@ export type Database = {
           id?: string
           ledger_version?: string
           policy_version?: string
+          routing_context?: Json | null
           self_report?: Json
           session_id?: string
           source?: string
@@ -1314,6 +1320,7 @@ export type Database = {
           probe_candidate_lanes: string[]
           probe_state: Json
           published_read: Json | null
+          routing_assignment: Json | null
           share_token: string | null
           started_at: string
           updated_at: string
@@ -1338,6 +1345,7 @@ export type Database = {
           probe_candidate_lanes?: string[]
           probe_state?: Json
           published_read?: Json | null
+          routing_assignment?: Json | null
           share_token?: string | null
           started_at?: string
           updated_at?: string
@@ -1362,6 +1370,7 @@ export type Database = {
           probe_candidate_lanes?: string[]
           probe_state?: Json
           published_read?: Json | null
+          routing_assignment?: Json | null
           share_token?: string | null
           started_at?: string
           updated_at?: string
@@ -1866,6 +1875,10 @@ export type Database = {
       }
     }
     Functions: {
+      assign_musicdna_routing_experiment: {
+        Args: { p_design: Json; p_owner_id: string; p_session_id: string }
+        Returns: Json
+      }
       begin_chat_turn: {
         Args: { p_message: string; p_mutation_id: string; p_session_id: string }
         Returns: Json
@@ -1966,6 +1979,10 @@ export type Database = {
       }
       purge_musicdna_learning_outbox: {
         Args: { p_limit?: number }
+        Returns: Json
+      }
+      read_musicdna_routing_outcome: {
+        Args: { p_result_id: string }
         Returns: Json
       }
       record_choice_atomic: {
