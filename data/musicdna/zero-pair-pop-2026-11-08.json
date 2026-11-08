@@ -1,0 +1,299 @@
+{
+  "batch": "zero-pair-pop-2026-11-08-v1",
+  "review": "Editorial review; not empirically validated",
+  "scope": "Active songs with no existing pairings outside Alternative; Pop first",
+  "songs": [
+    {
+      "id": "27e409ce-9501-4cd8-bf39-41ba46d9ad8e",
+      "title": "I Wanna Dance with Somebody",
+      "artist": "Whitney Houston",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "movement": 95,
+      "community": 95,
+      "scale": 90
+    },
+    {
+      "id": "e6472f72-e6ca-4b3b-ad5a-fb58351c0806",
+      "title": "Golden Hour",
+      "artist": "Kacey Musgraves",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "movement": 48,
+      "community": 50,
+      "scale": 58
+    },
+    {
+      "id": "aa361939-5d76-44f8-91f2-a8b630719a6e",
+      "title": "Into the Groove",
+      "artist": "Madonna",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "community": 92,
+      "immersion": 35
+    },
+    {
+      "id": "3cc52e73-9a04-4f60-822f-4cf374c8f24c",
+      "title": "Ditto",
+      "artist": "NewJeans",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "community": 62,
+      "immersion": 62
+    },
+    {
+      "id": "f8ce0f65-eb36-40dc-8a22-eebcffa98c74",
+      "title": "Run Away With Me",
+      "artist": "Carly Rae Jepsen",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "tension": 34,
+      "immersion": 55
+    },
+    {
+      "id": "8829382f-0302-4966-a1de-2ded703aa875",
+      "title": "Track 10",
+      "artist": "Charli XCX",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "tension": 76,
+      "immersion": 82
+    },
+    {
+      "id": "b5826de9-9d80-48d6-8dac-3086ccdb2edc",
+      "title": "Dancing On My Own",
+      "artist": "Robyn",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "tension": 72
+    },
+    {
+      "id": "dc7aefa0-fc0a-4dac-80e3-f22a5ea34131",
+      "title": "Flowers",
+      "artist": "Miley Cyrus",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "tension": 35
+    },
+    {
+      "id": "39932a59-0dd6-429e-8e8e-98b08797d304",
+      "title": "Good Luck, Babe!",
+      "artist": "Chappell Roan",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "tension": 68
+    },
+    {
+      "id": "87a37692-f37c-4dcf-b7c6-a2b22dbb6150",
+      "title": "Birds of a Feather",
+      "artist": "Billie Eilish",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "tension": 35
+    },
+    {
+      "id": "76455d50-d7c0-473c-a2f6-13cf1ee84571",
+      "title": "As It Was",
+      "artist": "Harry Styles",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "immersion": 42
+    },
+    {
+      "id": "f2184157-5d61-471e-b1c8-eb38a1f1cfc0",
+      "title": "Running Up That Hill",
+      "artist": "Kate Bush",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": false,
+      "immersion": 82
+    },
+    {
+      "id": "d57cbd47-5706-4649-9f63-24bdda5c0a66",
+      "title": "Anti-Hero",
+      "artist": "Taylor Swift",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "perspective": 74
+    },
+    {
+      "id": "2cd7b61c-8cb9-4b9a-a143-90311df00fb0",
+      "title": "Thank U, Next",
+      "artist": "Ariana Grande",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": false,
+      "perspective": 22
+    },
+    {
+      "id": "a167efca-d8d2-4974-83d3-96427543b9d6",
+      "title": "Blinding Lights",
+      "artist": "The Weeknd",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": true,
+      "scale": 94
+    },
+    {
+      "id": "f579b420-8aa9-41f6-b58e-474da4fdd92d",
+      "title": "Ocean Eyes",
+      "artist": "Billie Eilish",
+      "primary_lane": "pop",
+      "active": true,
+      "had_no_pairings": false,
+      "scale": 20
+    }
+  ],
+  "pairings": [
+    {
+      "id": "938701c9-dabe-5185-ab64-afb9d0f2a708",
+      "song_a_id": "27e409ce-9501-4cd8-bf39-41ba46d9ad8e",
+      "song_b_id": "e6472f72-e6ca-4b3b-ad5a-fb58351c0806",
+      "lane": "pop",
+      "active": true,
+      "tests": [
+        "movement",
+        "community"
+      ],
+      "diagnostic_weight": 60,
+      "hypothesis": "Communal dance-floor release versus unhurried private warmth",
+      "user_facing_tradeoff": "Join the dance floor, or stay in that golden hush?",
+      "why_good": "Whitney turns romantic longing into a shared dance-floor invitation; Musgraves settles into a warm, unhurried glow. Editorial contrast only; no measured listener split or predictive validation.",
+      "expected_split": "Unmeasured; listener validation pending",
+      "difficulty": 2,
+      "is_bootstrap": false
+    },
+    {
+      "id": "811c9504-ab3f-50f3-8ff2-044be38fbd4f",
+      "song_a_id": "aa361939-5d76-44f8-91f2-a8b630719a6e",
+      "song_b_id": "3cc52e73-9a04-4f60-822f-4cf374c8f24c",
+      "lane": "pop",
+      "active": true,
+      "tests": [
+        "community"
+      ],
+      "diagnostic_weight": 60,
+      "hypothesis": "Public dance-floor invitation versus wistful private connection",
+      "user_facing_tradeoff": "The whole room moving, or a connection held close?",
+      "why_good": "Madonna explicitly invites a partner onto the dance floor; Ditto frames connection through restrained, wistful intimacy. Editorial contrast only; no measured listener split or predictive validation.",
+      "expected_split": "Unmeasured; listener validation pending",
+      "difficulty": 2,
+      "is_bootstrap": false
+    },
+    {
+      "id": "088e19d2-6c4b-54f5-acc2-67abe1dc45bc",
+      "song_a_id": "f8ce0f65-eb36-40dc-8a22-eebcffa98c74",
+      "song_b_id": "8829382f-0302-4966-a1de-2ded703aa875",
+      "lane": "pop",
+      "active": true,
+      "tests": [
+        "tension",
+        "immersion"
+      ],
+      "diagnostic_weight": 60,
+      "hypothesis": "Direct romantic lift versus an unstable, unfolding pop climax",
+      "user_facing_tradeoff": "A clean rush, or a song that keeps coming apart?",
+      "why_good": "Jepsen builds a direct euphoric invitation; Track 10 repeatedly fractures and rebuilds its vocal and electronic structure. Editorial contrast only; no measured listener split or predictive validation.",
+      "expected_split": "Unmeasured; listener validation pending",
+      "difficulty": 2,
+      "is_bootstrap": false
+    },
+    {
+      "id": "420b8a45-6a2d-51b1-9192-ad112c56a6a4",
+      "song_a_id": "b5826de9-9d80-48d6-8dac-3086ccdb2edc",
+      "song_b_id": "dc7aefa0-fc0a-4dac-80e3-f22a5ea34131",
+      "lane": "pop",
+      "active": true,
+      "tests": [
+        "tension"
+      ],
+      "diagnostic_weight": 60,
+      "hypothesis": "Unresolved dance-floor ache versus settled self-possession",
+      "user_facing_tradeoff": "Keep the ache alive, or walk away standing tall?",
+      "why_good": "Robyn stays inside the pressure of watching an unavailable lover; Cyrus frames separation as self-sufficient release. Editorial contrast only; no measured listener split or predictive validation.",
+      "expected_split": "Unmeasured; listener validation pending",
+      "difficulty": 2,
+      "is_bootstrap": false
+    },
+    {
+      "id": "8e6b6c63-256c-5f4b-a6b7-90c3c0df541a",
+      "song_a_id": "39932a59-0dd6-429e-8e8e-98b08797d304",
+      "song_b_id": "87a37692-f37c-4dcf-b7c6-a2b22dbb6150",
+      "lane": "pop",
+      "active": true,
+      "tests": [
+        "tension"
+      ],
+      "diagnostic_weight": 60,
+      "hypothesis": "Romantic confrontation versus reciprocal reassurance",
+      "user_facing_tradeoff": "A love under pressure, or a love you can lean into?",
+      "why_good": "Roan confronts denial with an escalating warning; Birds of a Feather offers a comparatively reassuring declaration of attachment. Editorial contrast only; no measured listener split or predictive validation.",
+      "expected_split": "Unmeasured; listener validation pending",
+      "difficulty": 2,
+      "is_bootstrap": false
+    },
+    {
+      "id": "609093ab-026b-5555-b45c-0501102e940b",
+      "song_a_id": "76455d50-d7c0-473c-a2f6-13cf1ee84571",
+      "song_b_id": "f2184157-5d61-471e-b1c8-eb38a1f1cfc0",
+      "lane": "pop",
+      "active": true,
+      "tests": [
+        "immersion"
+      ],
+      "diagnostic_weight": 60,
+      "hypothesis": "Compact immediate hook versus sustained unfolding drama",
+      "user_facing_tradeoff": "Hit the hook now, or stay inside the build?",
+      "why_good": "As It Was delivers its compact hook quickly; Running Up That Hill sustains a longer dramatic electronic ascent. Editorial contrast only; no measured listener split or predictive validation.",
+      "expected_split": "Unmeasured; listener validation pending",
+      "difficulty": 2,
+      "is_bootstrap": false
+    },
+    {
+      "id": "56d27295-955e-5704-8c6b-e0216fb4e5b0",
+      "song_a_id": "d57cbd47-5706-4649-9f63-24bdda5c0a66",
+      "song_b_id": "2cd7b61c-8cb9-4b9a-a143-90311df00fb0",
+      "lane": "pop",
+      "active": true,
+      "tests": [
+        "perspective"
+      ],
+      "diagnostic_weight": 60,
+      "hypothesis": "Self-observing irony versus direct emotional reframing",
+      "user_facing_tradeoff": "Watch yourself from the outside, or say it straight?",
+      "why_good": "Anti-Hero turns the self into an ironic object of scrutiny; Thank U, Next directly addresses gratitude and a new stance toward past relationships. Editorial contrast only; no measured listener split or predictive validation.",
+      "expected_split": "Unmeasured; listener validation pending",
+      "difficulty": 2,
+      "is_bootstrap": false
+    },
+    {
+      "id": "66200228-f272-5f0c-a962-66efca98da9e",
+      "song_a_id": "a167efca-d8d2-4974-83d3-96427543b9d6",
+      "song_b_id": "f579b420-8aa9-41f6-b58e-474da4fdd92d",
+      "lane": "pop",
+      "active": true,
+      "tests": [
+        "scale"
+      ],
+      "diagnostic_weight": 60,
+      "hypothesis": "Expansive neon anthem versus close vocal intimacy",
+      "user_facing_tradeoff": "Fill the skyline, or bring the voice close?",
+      "why_good": "Blinding Lights projects a widescreen synth-pop surge; Ocean Eyes keeps its floating vocal comparatively close and small-scale. Editorial contrast only; no measured listener split or predictive validation.",
+      "expected_split": "Unmeasured; listener validation pending",
+      "difficulty": 2,
+      "is_bootstrap": false
+    }
+  ]
+}
