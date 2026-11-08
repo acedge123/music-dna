@@ -2,6 +2,16 @@
 
 Status: code prepared; production migration and emitter activation are **not performed** by this PR. AB-52 owns experiment design, routing activation and acceptance. Nothing here demonstrates improved Music DNA readings.
 
+## Applied migration receipt — 2026-11-08
+
+- PR #25 confirmed merged at `616586f739f9cc8457022d72aa2c0064e65ce1ca`.
+- Applied only `20261108175602_musicdna_applied_outcomes.sql` once to `udycgnhvaanemhrchbuj`; history version `20261108175602`, name `be2ceb1f-664f-4cfb-9b16-4178f4169568`.
+- Merged/local SQL SHA-256: `df939895cc3d2ee39131870c6cc0c0ab4eb5ceecf5aef3e1dbd7ff2feb17bde9`. One executable local migration remains, matching merged bytes and applied history version.
+- Both public operator RPCs deny execution to `anon`/`authenticated` and allow `service_role`. All six affected private functions deny direct execution to all three roles. Four routing triggers exist; RLS remains enabled on sessions, choices, results, events, scopes, enrollments and outbox.
+- Readback: zero routing assignments and zero enabled capture/dispatch scopes. **One scope and two enrollments already exist**; this migration contains no row inserts or enrollment changes, and these records were left untouched. Do not describe enrollments as empty.
+- No activation settings, keys, sources, schedules or workers were created; no earlier migration was rerun. Emitter/pilot activation and cross-repository acceptance remain separate and unapproved.
+- Linter reports 42 pre-existing findings, with none introduced by this migration; review separately.
+
 ## Small extension to the existing path
 
 1. An authorized operator may freeze a **synthetic-only**, session-scoped experiment assignment before its first decision. `assign_musicdna_routing_experiment` requires the exact owner, eligibility version, experiment/arm, expected policy and strategy versions, expected routing mode and a 60-second–30-day feedback window. Repeating the identical assignment returns its stored UUID/time; a changed assignment conflicts. Concurrent assignment, serving and voting serialize on the session row. Completed/previously answered sessions cannot be enrolled retrospectively. No assignments are seeded and no randomization or routing is activated here.
