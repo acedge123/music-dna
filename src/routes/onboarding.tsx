@@ -160,7 +160,13 @@ function Onboarding() {
                 disabled={busy || draft.trim().length < 2}
                 className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90 disabled:opacity-40"
               >
-                {busy ? "Reading…" : <>Continue <ArrowRight /></>}
+                {busy ? (
+                  "Reading…"
+                ) : (
+                  <>
+                    Continue <ArrowRight />
+                  </>
+                )}
               </Button>
             </div>
           </section>
@@ -178,11 +184,21 @@ function Onboarding() {
         {(phase === "slot2" || phase === "slot3") && (
           <section className="max-w-2xl space-y-5">
             <p className="eyebrow">Your songs · {songs.length + 1} / 3</p>
-            <p className="font-mono text-sm text-muted-foreground">#{songs.length} · {songs.at(-1)}</p>
-            {reactions.at(-1) && <p className="font-serif text-3xl leading-snug">{reactions.at(-1)}</p>}
+            <p className="font-mono text-sm text-muted-foreground">
+              #{songs.length} · {songs.at(-1)}
+            </p>
+            {reactions.at(-1) && (
+              <p className="font-serif text-3xl leading-snug">{reactions.at(-1)}</p>
+            )}
             <details className="text-sm text-muted-foreground">
               <summary className="min-h-11 cursor-pointer py-3">Your opening songs</summary>
-              <ol className="space-y-2">{songs.map((song, i) => <li key={`${i}:${song}`}>#{i + 1} · {song}</li>)}</ol>
+              <ol className="space-y-2">
+                {songs.map((song, i) => (
+                  <li key={`${i}:${song}`}>
+                    #{i + 1} · {song}
+                  </li>
+                ))}
+              </ol>
             </details>
           </section>
         )}
@@ -213,7 +229,13 @@ function Onboarding() {
                 disabled={busy || draft.trim().length < 2}
                 className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90 disabled:opacity-40"
               >
-                {busy ? "Reading…" : <>Continue <ArrowRight /></>}
+                {busy ? (
+                  "Reading…"
+                ) : (
+                  <>
+                    Continue <ArrowRight />
+                  </>
+                )}
               </Button>
             </div>
           </section>
@@ -223,14 +245,37 @@ function Onboarding() {
           <>
             <header className="flex flex-wrap items-center justify-between gap-3 border-b pb-3">
               <p className="eyebrow">The interview</p>
-              <div className="flex items-center gap-3" aria-label={`${entries.length} of up to ${maxRounds} choices answered`}>
-                <span className="font-mono text-xs text-muted-foreground">{pairing ? `Round ${round} / ${maxRounds}` : `${entries.length} / ${maxRounds}`}</span>
-                <div className="flex gap-1.5" aria-hidden="true">{Array.from({ length: maxRounds }, (_, i) => <span key={i} className={`h-1.5 w-4 rounded-sm ${i < entries.length ? "bg-gold" : "bg-muted"}`} />)}</div>
+              <div
+                className="flex items-center gap-3"
+                aria-label={`${entries.length} of up to ${maxRounds} choices answered`}
+              >
+                <span className="font-mono text-xs text-muted-foreground">
+                  {pairing ? `Round ${round} / ${maxRounds}` : `${entries.length} / ${maxRounds}`}
+                </span>
+                <div className="flex gap-1.5" aria-hidden="true">
+                  {Array.from({ length: maxRounds }, (_, i) => (
+                    <span
+                      key={i}
+                      className={`h-1.5 w-4 rounded-sm ${i < entries.length ? "bg-gold" : "bg-muted"}`}
+                    />
+                  ))}
+                </div>
               </div>
             </header>
-            {entries.length === 0 && refined && <p className="max-w-2xl font-serif text-2xl leading-snug">{refined.observation || refined.hypothesis}</p>}
-            <InterviewHistory entries={entries} openerSongs={songs} allowReactions={!!pairing} reactedRounds={reactedRounds}
-              reactionReply={reactionReply} busy={busy || pendingSongId !== null || pendingSkip !== null} onReact={(kind) => void reactToRead(kind)} />
+            {entries.length === 0 && refined && (
+              <p className="max-w-2xl font-serif text-2xl leading-snug">
+                {refined.observation || refined.hypothesis}
+              </p>
+            )}
+            <InterviewHistory
+              entries={entries}
+              openerSongs={songs}
+              allowReactions={!!pairing}
+              reactedRounds={reactedRounds}
+              reactionReply={reactionReply}
+              busy={busy || pendingSongId !== null || pendingSkip !== null}
+              onReact={(kind) => void reactToRead(kind)}
+            />
           </>
         )}
 

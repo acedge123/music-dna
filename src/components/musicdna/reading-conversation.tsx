@@ -84,15 +84,33 @@ export function ReadingConversation({
               <p className="whitespace-pre-wrap font-serif text-xl leading-snug">
                 {message.content}
               </p>
-              {message.role === "assistant" && message.content.startsWith("I couldn't ground that reply") && (
-                <div className="space-y-3 border-t pt-3">
-                  <p className="text-sm text-muted-foreground">Your message is saved. The critic couldn't produce a grounded reply; this is not a rejection of your account.</p>
-                  <div className="flex flex-wrap gap-2">
-                    <Button variant="outline" disabled={busy || pending !== null} onClick={() => onDraft("The voice mattered most to me because…")} className="min-h-11"><Music2 /> The voice</Button>
-                    <Button variant="outline" disabled={busy || pending !== null} onClick={() => onDraft("The song's context mattered to me because…")} className="min-h-11"><MessageCircle /> The context</Button>
+              {message.role === "assistant" &&
+                message.content.startsWith("I couldn't ground that reply") && (
+                  <div className="space-y-3 border-t pt-3">
+                    <p className="text-sm text-muted-foreground">
+                      Your message is saved. The critic couldn't produce a grounded reply; this is
+                      not a rejection of your account.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline"
+                        disabled={busy || pending !== null}
+                        onClick={() => onDraft("The voice mattered most to me because…")}
+                        className="min-h-11"
+                      >
+                        <Music2 /> The voice
+                      </Button>
+                      <Button
+                        variant="outline"
+                        disabled={busy || pending !== null}
+                        onClick={() => onDraft("The song's context mattered to me because…")}
+                        className="min-h-11"
+                      >
+                        <MessageCircle /> The context
+                      </Button>
+                    </div>
                   </div>
-                </div>
-              )}
+                )}
             </article>
           ))}
         <div ref={end} />
@@ -137,7 +155,9 @@ export function ReadingConversation({
             </p>
           )}
         </div>
-        <p className="text-xs text-muted-foreground">Private conversation. Your original picks stay unchanged.</p>
+        <p className="text-xs text-muted-foreground">
+          Private conversation. Your original picks stay unchanged.
+        </p>
       </form>
     </section>
   );

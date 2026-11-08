@@ -21,7 +21,10 @@ export const Route = createFileRoute("/me")({
         content: "Continue the conversation around your saved MusicDNA reading.",
       },
       { property: "og:title", content: "MusicDNA — Argue with the critic" },
-      { property: "og:description", content: "Bring your own account to the conversation around your saved reading." },
+      {
+        property: "og:description",
+        content: "Bring your own account to the conversation around your saved reading.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -59,11 +62,19 @@ function Me() {
         <>
           <details className="border-b pb-4">
             <summary className="cursor-pointer space-y-2 py-2">
-              <span className="eyebrow block">Your saved read · version {reading.selected.version}</span>
-              <span className="block font-serif text-xl leading-snug">{readingLead(reading.selected.content.synthesis)}</span>
-              <span className="block text-xs text-muted-foreground">The original read and its evidence</span>
+              <span className="eyebrow block">
+                Your saved read · version {reading.selected.version}
+              </span>
+              <span className="block font-serif text-xl leading-snug">
+                {readingLead(reading.selected.content.synthesis)}
+              </span>
+              <span className="block text-xs text-muted-foreground">
+                The original read and its evidence
+              </span>
             </summary>
-            <div className="py-6"><ReadingResult content={reading.selected.content} label="The original reading" /></div>
+            <div className="py-6">
+              <ReadingResult content={reading.selected.content} label="The original reading" />
+            </div>
           </details>
           <ReadingConversation
             messages={conversation.messages}

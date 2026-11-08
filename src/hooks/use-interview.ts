@@ -93,7 +93,9 @@ export function useInterview(requestedSession?: string) {
   const [maxRounds, setMaxRounds] = useState(6);
   const [nextPrompt, setNextPrompt] = useState<string | null>(null);
   const [reactedRounds, setReactedRounds] = useState<number[]>([]);
-  const [reactionReply, setReactionReply] = useState<{ round: number; message: string } | null>(null);
+  const [reactionReply, setReactionReply] = useState<{ round: number; message: string } | null>(
+    null,
+  );
   const [entries, setEntries] = useState<Entry[]>([]);
   const [synthesis, setSynthesis] = useState<string | null>(null);
   const [kept, setKept] = useState<
