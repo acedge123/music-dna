@@ -4,6 +4,10 @@ on:
     branches: [main]
     paths:
       - 'src/musicdna/learning/**'
+      - 'src/lib/musicdna.functions.ts'
+      - 'src/musicdna/engine/**'
+      - 'src/musicdna/router/**'
+      - 'scripts/check-routing-artifact.mjs'
       - 'src/musicdna/contracts/**'
       - 'src/musicdna/adapters/learning-*.ts'
       - 'contracts/**'
@@ -21,6 +25,10 @@ on:
     branches: [main]
     paths:
       - 'src/musicdna/learning/**'
+      - 'src/lib/musicdna.functions.ts'
+      - 'src/musicdna/engine/**'
+      - 'src/musicdna/router/**'
+      - 'scripts/check-routing-artifact.mjs'
       - 'src/musicdna/contracts/**'
       - 'src/musicdna/adapters/learning-*.ts'
       - 'contracts/**'
@@ -64,6 +72,9 @@ jobs:
       - run: npm ci --no-audit --no-fund
       - run: npm test
       - run: npm run test:learning-outbox
+        env:
+          AB45_TEST_DATABASE_URL: postgres://postgres:ab45-local-test@127.0.0.1:5432/ab45_test
+      - run: npm run test:applied-outcomes
         env:
           AB45_TEST_DATABASE_URL: postgres://postgres:ab45-local-test@127.0.0.1:5432/ab45_test
       - run: npx tsc --noEmit
