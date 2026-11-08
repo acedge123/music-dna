@@ -37,7 +37,7 @@ export function InterviewExchange({
             thesis: entry.thesis,
             tier: entry.tier,
             direction: entry.direction,
-            question: entry.question,
+            question: "",
             revision: entry.revision,
           }}
         />

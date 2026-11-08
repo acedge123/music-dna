@@ -72,7 +72,6 @@ function Onboarding() {
     shareBusy,
     round,
     maxRounds,
-    nextPrompt,
     reactedRounds,
     reactionReply,
     entries,
@@ -289,16 +288,8 @@ function Onboarding() {
         {/* Current pairing */}
         {pairing && phase === "playing" && (
           <section ref={pairingAnchorRef} className="space-y-4 pt-2">
-            <p
-              className={
-                reactionReply && nextPrompt && reactionReply.message.includes(nextPrompt)
-                  ? "sr-only"
-                  : "font-serif text-2xl md:text-3xl"
-              }
-            >
-              {entries.length === 0
-                ? "Pick one. First instinct."
-                : nextPrompt || "Which one would you keep?"}
+            <p className="font-serif text-2xl md:text-3xl">
+              {entries.length === 0 ? "Pick one. First instinct." : "Which one would you keep?"}
             </p>
             <SongChoices
               songs={[pairing.song_a, pairing.song_b]}
