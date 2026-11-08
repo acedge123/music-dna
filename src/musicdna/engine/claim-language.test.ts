@@ -7,6 +7,8 @@ import {
   languageCeiling,
   validatedNarration,
   validatedChat,
+  insufficientText,
+  concentrationCaution,
 } from "./claim-language";
 
 const labels = { scale: { hi: "intimacy", lo: "spectacle" } };
@@ -26,6 +28,36 @@ function ledger(deltas: number[]) {
 const selection = { claims: [{ axis: "scale", direction: "hi", choice_ids: ["c0"] }] };
 
 describe("versioned claim language ceilings", () => {
+  it("gives a concrete uncertain result without upgrading mixed evidence", () => {
+    const l = ledger([40, 40, -40, -40]);
+    const original = structuredClone(l);
+    const text = insufficientText(l);
+    expect(text).toContain("Your 4 choices are saved");
+    expect(text).toContain("Song 0 A over Song 0 B");
+    expect(text).toContain("different directions");
+    expect(text).toContain("Tell me what mattered");
+    expect(text).not.toContain("you favored");
+    expect(l).toEqual(original);
+  });
+  it("keeps operator lane/song identifiers out of reading caveats", () => {
+    const lane = concentrationCaution({
+      kind: "lane",
+      value: "grunge_altrock",
+      count: 5,
+      total: 6,
+    });
+    const song = concentrationCaution({
+      kind: "song",
+      value: "private-song-id",
+      count: 3,
+      total: 6,
+    });
+    expect(lane.notes).toContain("5 of 6");
+    expect(lane.claim).toContain("style");
+    expect(JSON.stringify([lane, song])).not.toMatch(
+      /grunge_altrock|private-song-id|confound|frozen/,
+    );
+  });
   it.each([
     [[40], "observation"],
     [[40, 40], "tentative"],

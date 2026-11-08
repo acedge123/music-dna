@@ -14,8 +14,8 @@ export type PairingCandidate = {
   lane?: string | null;
   tests: string[] | null;
   diagnostic_weight: number | null;
-  song_a?: { artist?: string | null } | null;
-  song_b?: { artist?: string | null } | null;
+  song_a?: { id?: string; artist?: string | null } | null;
+  song_b?: { id?: string; artist?: string | null } | null;
 };
 
 // Recognition data joined from the pairing_recognition view. Optional —
@@ -51,6 +51,7 @@ export type SelectPairingInput<P extends PairingCandidate = PairingCandidate> = 
   pool: P[];
   vector: Vector;
   used_ids: Set<string>;
+  used_song_ids?: ReadonlySet<string>;
   session_lane: Lane;
   dims: readonly string[];
   rng: Rng;
@@ -130,8 +131,7 @@ export const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
 };
 
 export type SelectPairingResult<P extends PairingCandidate = PairingCandidate> =
-  | { kind: "picked"; pairing: P; selection_reason: SelectionReason }
-  | { kind: "empty" };
+  { kind: "picked"; pairing: P; selection_reason: SelectionReason } | { kind: "empty" };
 
 export function shouldStop(input: {
   round: number;
@@ -221,6 +221,20 @@ function differentArtist<P extends PairingCandidate>(p: P): boolean {
   return a !== "" && b !== "" && a !== b;
 }
 
+// Prefer two new songs only inside the caller's already eligible pool. If
+// unavailable, retain the pool: repetition must not fake catalog exhaustion
+// or relax lane, recognition, artist or declared-test safeguards.
+export function preferFreshSongs<P extends PairingCandidate>(
+  pool: P[],
+  seen: ReadonlySet<string> = new Set(),
+): P[] {
+  if (!seen.size) return pool;
+  const fresh = pool.filter(
+    (p) => p.song_a?.id && p.song_b?.id && !seen.has(p.song_a.id) && !seen.has(p.song_b.id),
+  );
+  return fresh.length ? fresh : pool;
+}
+
 // Filter/score pipeline for the next pairing. Deterministic given rng.
 // Returns { kind: "empty" } when nothing in the pool is eligible.
 export function selectPairing<P extends PairingCandidate>(
@@ -273,6 +287,8 @@ export function selectPairing<P extends PairingCandidate>(
     const forkPool = pool.filter(testsFork);
     if (forkPool.length > 0) pool = forkPool;
   }
+
+  pool = preferFreshSongs(pool, input.used_song_ids);
 
   const need = (dim: string) => 1 / (1 + Math.abs(vector[dim] ?? 0));
   // Blend factor for recognition vs diagnostic weight.

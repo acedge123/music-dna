@@ -1,6 +1,6 @@
 {
   "policy_id": "musicdna-selector",
-  "version": "sha256:eec8a22b56725ebeed7154b962a8aa0d60ef55f171396fb4bc65056625144961",
+  "version": "sha256:1ce4271f61cc49c8025e4829861073f71c3a3fc9c0e262e4b02e9ef277c3ac79",
   "files": [
     "src/lib/musicdna.functions.ts",
     "src/musicdna/engine/archetypes.ts",
@@ -15,6 +15,7 @@
     "src/musicdna/engine/evidence.ts",
     "src/musicdna/engine/experiments/cross-lane-probes.ts",
     "src/musicdna/engine/index.ts",
+    "src/musicdna/engine/opening-song.ts",
     "src/musicdna/engine/pairing.ts",
     "src/musicdna/engine/ports.ts",
     "src/musicdna/engine/priors.ts",

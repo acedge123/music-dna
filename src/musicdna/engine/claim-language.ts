@@ -1,18 +1,11 @@
 import { z } from "zod";
 import type { AxisSummary, Ledger, LedgerEntry } from "./evidence";
 
-export const CLAIM_LANGUAGE_VERSION = "claim-language-v1";
+export const CLAIM_LANGUAGE_VERSION = "claim-language-v2";
 export type LanguageCeiling =
-  | "observation"
-  | "tentative"
-  | "supported"
-  | "contested"
-  | "mixed"
-  | "insufficient";
+  "observation" | "tentative" | "supported" | "contested" | "mixed" | "insufficient";
 export type InsufficiencyReason =
-  | "sparse_evidence"
-  | "conflicting_evidence"
-  | "invalid_catalog_evidence";
+  "sparse_evidence" | "conflicting_evidence" | "invalid_catalog_evidence";
 export type AxisLabels = Record<string, { hi: string; lo: string }>;
 
 export function languageCeiling(a: AxisSummary): LanguageCeiling {
@@ -55,12 +48,46 @@ export function boundedClaim(a: AxisSummary, labels: AxisLabels): string {
 export function insufficientText(ledger: Ledger): string {
   const reason = insufficiencyReason(ledger);
   if (reason === "invalid_catalog_evidence")
-    return "Your choices are saved, but their diagnostic evidence is unavailable or invalid. I can't turn that into a taste claim.";
-  if (reason === "conflicting_evidence")
-    return "These choices pull in different directions. There isn't enough consistent evidence for a supported reading yet.";
-  return ledger.answered === 0
-    ? "No pairing evidence yet. There isn't a reading to make."
-    : `${ledger.answered} answered ${ledger.answered === 1 ? "matchup isn't" : "matchups aren't"} enough consistent evidence for a supported reading yet. Choices noted, not decoded.`;
+    return "Your choices are saved, but I couldn't verify the song information needed to interpret them. You can still tell me what mattered in your picks.";
+  if (ledger.answered === 0)
+    return "Choose the songs you prefer, or skip any you don't know. Your reading will follow those choices.";
+  const examples = [...new Map(ledger.entries.map((e) => [e.pairing_id ?? e.index, e])).values()]
+    .filter((e) => e.chosen && e.rejected)
+    .slice(0, 1)
+    .map(example);
+  const picks = examples.length ? ` You chose ${examples.join("; ")}.` : "";
+  const uncertainty =
+    reason === "conflicting_evidence"
+      ? "These choices pull in different directions, so there isn't one clear preference across them."
+      : "These matchups don't yet show one consistent preference.";
+  return `Your ${ledger.answered} ${ledger.answered === 1 ? "choice is" : "choices are"} saved.${picks} ${uncertainty} Tell me what mattered in your picks.`;
+}
+
+/** User-facing limits on the reading, not operator taxonomy or causal claims. */
+export function concentrationCaution(c: Ledger["confounds"][number]) {
+  const count = `${c.count} of ${c.total}`;
+  switch (c.kind) {
+    case "artist":
+      return {
+        claim: "One artist appears often in these choices",
+        notes: `${count} choices involved ${c.value}. That artist may be part of what you preferred; more artists would help us tell.`,
+      };
+    case "song":
+      return {
+        claim: "One song appeared in several matchups",
+        notes: `${count} choices involved the same song. More different songs would help us tell whether the preference carries across them.`,
+      };
+    case "era":
+      return {
+        claim: "These choices cover a similar era",
+        notes: `${count} choices involved songs from ${/^\d{4}s$/.test(c.value) ? c.value : "a similar era"}. A wider range of eras would help us understand your taste.`,
+      };
+    case "lane":
+      return {
+        claim: "These choices cover a similar style",
+        notes: `${count} choices involved a similar musical style. A wider range of matchups would help us understand your taste.`,
+      };
+  }
 }
 
 export function deterministicNarration(
@@ -71,9 +98,7 @@ export function deterministicNarration(
   if (!axes.length) return insufficientText(ledger);
   const text = axes.map((a) => boundedClaim(a, labels)).join(" ");
   const c = ledger.confounds[0];
-  return c
-    ? `${text} ${c.count} of ${c.total} chosen songs share ${c.kind} ${c.value}; that concentration could be doing some of the work.`
-    : text;
+  return c ? `${text} ${concentrationCaution(c).notes}` : text;
 }
 
 const Selection = z

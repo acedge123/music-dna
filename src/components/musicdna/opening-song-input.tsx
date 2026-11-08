@@ -39,6 +39,7 @@ export function OpeningSongInput({
           <input
             ref={ref}
             id={`opening-song-${rank}`}
+            aria-describedby={`opening-song-help-${rank}`}
             value={value}
             onChange={(e) => onChange(e.target.value)}
             onKeyDown={(e) => {
@@ -51,6 +52,9 @@ export function OpeningSongInput({
             className="w-full bg-transparent text-xl md:text-2xl font-serif italic py-2 placeholder:text-muted-foreground/40 placeholder:not-italic placeholder:font-serif focus:outline-none"
           />
         </div>
+        <p id={`opening-song-help-${rank}`} className="mt-2 text-xs text-muted-foreground">
+          Add the artist too, so we know which song you mean. Include a version if it matters.
+        </p>
       </div>
     </div>
   );

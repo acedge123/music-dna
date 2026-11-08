@@ -4,6 +4,7 @@ import { useInterview } from "@/hooks/use-interview";
 import { ReadingResult } from "@/components/musicdna/reading-result";
 import { InterviewHistory } from "@/components/musicdna/interview-history";
 import { OpeningSongInput as RankedInput } from "@/components/musicdna/opening-song-input";
+import { OpeningContext } from "@/components/musicdna/opening-context";
 import { SongChoices } from "@/components/musicdna/song-choices";
 
 export const Route = createFileRoute("/onboarding")({
@@ -138,8 +139,8 @@ function Onboarding() {
                 <span className="italic text-muted-foreground">Don't be shy...</span>
               </h1>
               <p className="text-sm text-muted-foreground max-w-md text-center sm:text-left">
-                Three opening songs, then up to six answered choices. You can skip songs you don’t
-                know.
+                Three opening songs, then up to six choices. We'll explore what they suggest and say
+                when a pattern is unclear. Skip songs you don't know.
               </p>
             </header>
 
@@ -180,26 +181,20 @@ function Onboarding() {
           <p className="eyebrow">the interview</p>
         </header>
 
-        {/* Submitted songs + their reactions, interleaved */}
-        <section className="space-y-8">
-          {songs.map((s, i) => (
-            <div key={i} className="space-y-3 animate-in fade-in duration-500">
-              <div className="grid grid-cols-[3rem_1fr] gap-4 items-baseline">
-                <span className="text-right font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
-                  #{i + 1}
-                </span>
-                <span className="font-mono text-base md:text-lg text-foreground">✓ {s}</span>
-              </div>
-              {reactions[i] && i < 2 && (
-                <div className="pl-[4rem]">
-                  <p className="font-serif text-xl md:text-2xl leading-snug text-foreground animate-in fade-in slide-in-from-bottom-2 duration-500">
-                    {reactions[i]}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
-        </section>
+        <OpeningContext
+          songs={songs}
+          reactions={reactions}
+          observation={refined && r5Step >= 2 ? refined.observation || refined.hypothesis : null}
+          compact={entries.length > 0 || phase === "done"}
+          starting={
+            !!refined &&
+            r5Step >= 2 &&
+            phase === "playing" &&
+            !pairing &&
+            !flowError &&
+            entries.length === 0
+          }
+        />
 
         {/* Active slot input — slot2 or slot3 */}
         {(phase === "slot2" || phase === "slot3") && (
@@ -243,23 +238,6 @@ function Onboarding() {
           </button>
         )}
 
-        {/* Post-3 read — one short conversational observation. No fork, no stakes, no axis talk. */}
-        {refined && (
-          <section className="space-y-3 animate-in fade-in duration-500">
-            {r5Step >= 2 && (
-              <>
-                <p className="eyebrow">From your opening songs</p>
-                <p className="font-serif text-2xl md:text-3xl leading-snug text-foreground animate-in fade-in duration-700">
-                  {refined.observation || refined.hypothesis}
-                </p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground pt-1">
-                  next one coming up…
-                </p>
-              </>
-            )}
-          </section>
-        )}
-
         <InterviewHistory
           entries={entries}
           allowReactions={!!pairing}
@@ -273,7 +251,7 @@ function Onboarding() {
           <section ref={pairingAnchorRef} className="space-y-6 pt-2">
             <div className="flex items-center">
               <p className="eyebrow">
-                Round {String(round).padStart(2, "0")} / {maxRounds}
+                Choice {Math.min(entries.length + 1, maxRounds)} of {maxRounds}
               </p>
               <div className="h-px flex-1 ml-6 bg-border" />
             </div>
@@ -313,7 +291,7 @@ function Onboarding() {
 
         {busy && !pairing && phase === "playing" && (
           <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            Thinking…
+            Loading your next matchup…
           </p>
         )}
 
@@ -357,7 +335,7 @@ function Onboarding() {
                     }
                     className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
                   >
-                    Push back on this →
+                    {kept.length ? "Discuss this reading →" : "Add what mattered to you →"}
                   </button>
                   <button
                     type="button"

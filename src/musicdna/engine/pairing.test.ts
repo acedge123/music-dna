@@ -43,6 +43,46 @@ const seededRng = (seed: number) => {
 };
 
 describe("selectPairing", () => {
+  const knownSongs = (id: string, a: string, b: string, tests = ["movement"]) =>
+    p(id, { tests, song_a: { id: a, artist: "A" }, song_b: { id: b, artist: "B" } });
+  const selectSeen = (pool: PairingCandidate[], extra = {}) =>
+    selectPairing({
+      pool,
+      vector: {},
+      used_ids: new Set<string>(),
+      used_song_ids: new Set(["heard"]),
+      session_lane: "alternative" as never,
+      dims: DIMS,
+      rng: { next: () => 0 },
+      ...extra,
+    });
+  it("uses fresh songs inside the eligible pool, with a repetition fallback", () => {
+    const repeat = knownSongs("repeat", "heard", "other");
+    const fresh = knownSongs("fresh", "new-a", "new-b");
+    const picked = selectSeen([repeat, fresh]);
+    expect(picked.kind === "picked" && picked.pairing.id).toBe("fresh");
+    const fallback = selectSeen([repeat]);
+    expect(fallback.kind === "picked" && fallback.pairing.id).toBe("repeat");
+  });
+  it("does not trade recognition or a declared fork test for novelty", () => {
+    const repeat = knownSongs("repeat", "heard", "other");
+    const fresh = knownSongs("fresh", "new-a", "new-b", ["scale"]);
+    const fork = selectSeen([repeat, fresh], { vector: { movement: 40 } });
+    expect(fork.kind === "picked" && fork.pairing.id).toBe("repeat");
+    const recognisable = selectSeen([repeat, fresh], {
+      mode: "recognition_first",
+      recognition: new Map([
+        ["repeat", { min_canon: 90, avg_canon: 90, recognition_score: 90 }],
+        ["fresh", { min_canon: 10, avg_canon: 10, recognition_score: 10 }],
+      ]),
+    });
+    expect(recognisable.kind === "picked" && recognisable.pairing.id).toBe("repeat");
+  });
+  it("does not treat missing song identities as proof of fresh songs", () => {
+    const repeat = knownSongs("repeat", "heard", "other");
+    const result = selectSeen([repeat, p("unknown")]);
+    expect(result.kind === "picked" && result.pairing.id).toBe("repeat");
+  });
   it("returns empty when pool is empty", () => {
     const r = selectPairing({
       pool: [],
