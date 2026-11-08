@@ -4,6 +4,9 @@ import { ReadingResult } from "./reading-result";
 import { SongChoices } from "./song-choices";
 import { ReadMoment } from "./read-moment";
 import { ReadingConversation } from "./reading-conversation";
+import { OpeningContext } from "./opening-context";
+import { InterviewHistory } from "./interview-history";
+import type { Entry } from "@/lib/interview-model";
 import { readingExamples, parseReadingContent } from "@/lib/reading-content";
 import suite from "../../../fixtures/musicdna/product-parity-v1.json";
 const cached = suite.responses.stable.result;
@@ -14,6 +17,23 @@ const content = {
   result_version: 1,
 };
 describe("web reading reference presentation", () => {
+  it("keeps the saved read available without prompting for feedback between choices", () => {
+    const entry = {
+      round: 2,
+      pairing: { id: "previous-pair" },
+      reaction: "Chosen song over other song.",
+      thesis: "Stored developing read",
+      tier: "observation",
+      direction: "forming",
+      question: "",
+    } as Entry;
+    const html = renderToStaticMarkup(<InterviewHistory entries={[entry]} />);
+    expect(html).toContain("<details");
+    expect(html).not.toContain("<details open");
+    expect(html).toContain("Chosen song over other song.");
+    expect(html).toContain("Stored developing read");
+    expect(html).not.toMatch(/<button|That's me|Not quite|Give me a harder one|aria-live/);
+  });
   it("limits the lead evidence to two distinct examples without discarding full details", () => {
     const c = {
       ...content,
@@ -51,10 +71,29 @@ describe("web reading reference presentation", () => {
         onChoose={() => {}}
       />,
     );
-    expect(h).toContain('aria-pressed="true"');
+    expect(h).toContain(`aria-label="Selected: ${p.song_a.title} by ${p.song_a.artist}"`);
+    expect(h).not.toContain("aria-pressed");
     expect(h).toContain("Your choice");
     expect(h).toContain('aria-busy="true"');
     expect(h.match(/disabled=""/g)).toHaveLength(2);
+  });
+  it("keeps the opening context expandable and removes waiting copy once ready", () => {
+    const props = {
+      songs: ["One", "Two", "Three"],
+      reactions: [],
+      observation: "Opening observation",
+    };
+    const intro = renderToStaticMarkup(
+      <OpeningContext {...props} compact={false} starting={true} />,
+    );
+    const active = renderToStaticMarkup(
+      <OpeningContext {...props} compact={true} starting={false} />,
+    );
+    expect(intro).toContain('role="status"');
+    expect(active).toContain("<details");
+    expect(active).not.toContain("<details open");
+    expect(active).toContain("Opening observation");
+    expect(active).not.toContain("Loading your first matchup");
   });
   it("shows the original claim and the actual contradicting choice in a revision", () => {
     const h = renderToStaticMarkup(

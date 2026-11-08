@@ -23,7 +23,7 @@ export function SongChoices({
           <button
             key={song.id}
             type="button"
-            aria-pressed={selected}
+            aria-label={`${selected ? "Selected" : "Choose"}: ${song.title} by ${song.artist}`}
             disabled={busy || (!!selectedId && !selected)}
             onClick={() => onChoose(song.id)}
             className={`min-h-36 min-w-0 break-words p-6 text-left transition-colors focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-offset-[-3px] focus-visible:outline-gold md:p-10 ${selected ? "bg-background ring-2 ring-inset ring-gold" : selectedId ? "bg-surface opacity-50" : "bg-surface hover:bg-background"}`}

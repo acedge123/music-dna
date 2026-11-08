@@ -548,11 +548,17 @@ import {
   validatedChat,
   fallbackChat,
   narrationOptions,
+  concentrationCaution,
   CLAIM_LANGUAGE_VERSION,
 } from "@/musicdna/engine/claim-language";
 import { fitTier } from "@/musicdna/engine/scoring";
 import { projectRead, type CurrentReadResult } from "@/musicdna/engine/read";
 import { nextPromptFor } from "@/musicdna/engine/prompts";
+import {
+  parseOpeningSong,
+  matchOpeningSong,
+  openingAcknowledgement,
+} from "@/musicdna/engine/opening-song";
 import {
   CLAIM_POLICY_VERSION,
   CLAIM_MIN_SUPPORT,
@@ -560,6 +566,7 @@ import {
 } from "@/musicdna/engine/claims";
 import {
   selectPairing,
+  preferFreshSongs,
   shouldStop,
   sessionCompletion,
   assertWithinLane,
@@ -659,7 +666,10 @@ export async function nextPairingImpl(
   data: { sessionId: string; steer?: "not_quite" | "harder" },
 ) {
   const [usedRes, sessionRes, profileRes] = await Promise.all([
-    supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
+    supabase
+      .from("choices")
+      .select("pairing_id,chosen_song_id,rejected_song_id")
+      .eq("session_id", data.sessionId),
     supabase
       .from("sessions")
       .select(
@@ -711,6 +721,11 @@ export async function nextPairingImpl(
     `;
 
   const usedIds = new Set((usedRes.data ?? []).map((c) => c.pairing_id));
+  const usedSongIds = new Set(
+    (usedRes.data ?? [])
+      .flatMap((c) => [c.chosen_song_id, c.rejected_song_id])
+      .filter((id): id is string => typeof id === "string"),
+  );
   // Skipped pairings are excluded from every future selection in this session.
   for (const pid of probeState.skipped_pairing_ids ?? []) usedIds.add(pid);
   const round = usedIds.size;
@@ -961,7 +976,7 @@ export async function nextPairingImpl(
         const b = p.song_b?.primary_lane ?? null;
         return a && b && a !== b;
       });
-      const finalPool = differing.length > 0 ? differing : bootPool;
+      const finalPool = preferFreshSongs(differing.length > 0 ? differing : bootPool, usedSongIds);
       const pickIdx = Math.floor(Math.random() * finalPool.length);
       const bootPicked = finalPool[pickIdx];
       const bootReason = {
@@ -1113,6 +1128,7 @@ export async function nextPairingImpl(
     pool: finalPool,
     vector,
     used_ids: usedIds,
+    used_song_ids: usedSongIds,
     session_lane: sessionLane,
     dims: DIMS as readonly string[],
     rng,
@@ -1141,6 +1157,7 @@ export async function nextPairingImpl(
       pool: livePool,
       vector,
       used_ids: usedIds,
+      used_song_ids: usedSongIds,
       session_lane: sessionLane,
       dims: DIMS as readonly string[],
       rng: fbRng,
@@ -1183,6 +1200,7 @@ export async function nextPairingImpl(
         pool: livePool,
         vector,
         used_ids: usedIds,
+        used_song_ids: usedSongIds,
         session_lane: sessionLane,
         dims: DIMS as readonly string[],
         rng: shadowRng,
@@ -1432,7 +1450,9 @@ export async function recordChoiceImpl(
     .eq("session_id", data.sessionId);
   const round = (priorChoices ?? 0) + 1;
   const verdict = `${winner.title} over ${loser.title}.`;
-  const why = "Choice noted. A pattern needs independent evidence.";
+  // The verdict already names the saved pick. Any interpretation belongs
+  // to the ledger-backed running read, not boilerplate after every tap.
+  const why = "";
   const hesitation = null;
 
   // Cross-lane probe flipping is quarantined. See
@@ -2447,8 +2467,8 @@ async function lookupSongContext(
   year: number | null;
   primary_lane: string | null;
 } | null> {
-  const [titlePart, artistPart] = raw.split(/—|–|-/).map((s) => s.trim());
-  const title = titlePart || raw;
+  const input = parseOpeningSong(raw);
+  const { title } = input;
   if (!title) return null;
   try {
     const { data } = await supabase
@@ -2457,9 +2477,8 @@ async function lookupSongContext(
       .ilike("title", title)
       .limit(5);
     if (!data?.length) return null;
-    const best = artistPart
-      ? (data.find((r) => r.artist?.toLowerCase().includes(artistPart.toLowerCase())) ?? data[0])
-      : data[0];
+    const best = matchOpeningSong(data, input);
+    if (!best) return null;
     return {
       title: best.title,
       artist: best.artist,
@@ -2568,131 +2587,23 @@ export const reactToThree = createServerFn({ method: "POST" })
     }
   });
 
-// Per-song micro-reaction. LADDERED by index — the PERSONA itself escalates:
-// song 1–2 = casual friend, song 3 = music-loving friend, song 4 = sharper
-// critic-friend, song 5+ = niche expert. Heavy critic flourishes are saved
-// for the final synthesis (refineWithTwoMore).
-// PRINCIPLE (see docs/musicdna/intelligence_layer.md): confidence tracks evidence.
-// One song is not enough to claim a trait. Three is barely enough to name one, and
-// only if the alternative is stated out loud. The AI's job is not to sound clever;
-// it is to become progressively less wrong.
-const MICRO_REACT_BASE = `Mode: micro-reaction. The listener just named ONE song. React in ONE sentence — curious, not clever. A friend at a record store who just clocked something and is still listening.
-
-VOICE RULES (HARD):
-- Punch WITH the listener, never AT them. Never imply the pick was safe, obvious, lazy, shallow, predictable, a gateway, a starter pack, basic, or that some other song would've been better.
-- BANNED WORDS (case-insensitive): gateway, shallow, deep cut, obvious, predictable, safe, basic, surface, starter, expected, instead, rather than, should've, could've, lazy.
-- BANNED APHORISM OPENERS: "the moment when", "the performer who", "secret becomes", "survives their own", "refuses to blink".
-- If you name a real fact (year, producer, scene), be certain of it. Otherwise riff on the mood. Never invent chart history, producers, or labels.
-- One sentence, 10–18 words. Sentence case. No emojis, no hashtags, no quotes around the reaction.`;
-
-function microReactVoice(index: number): string {
-  if (index === 0) {
-    return `${MICRO_REACT_BASE}
-Tier: SONG 1 — first move. DO NOT name a trait about the listener yet. You have one data point. Note the pick, hint you're paying attention, stop. Good: "Interesting place to start." / "Ceremony out the gate — noted." / "Okay. Still listening." Bad: "You like your melancholy with a backbeat." (that's a trait claim — forbidden after one song)`;
-  }
-  if (index === 1) {
-    return `${MICRO_REACT_BASE}
-Tier: SONG 2 — still watching. DO NOT name a trait yet. Two points don't make a line. Notice what the two picks share OR don't share, and keep listening. Good: "Two very different rooms. Interesting." / "Those two share less than people think." / "Still listening." Bad: "You like attitude over polish." (still a trait claim — forbidden)`;
-  }
-  if (index === 2) {
-    return `${MICRO_REACT_BASE}
-Tier: SONG 3 — first working theory allowed. If (and only if) the three picks share a real thread, name it TENTATIVELY and END WITH A COMPETING EXPLANATION so the theory is falsifiable. Good: "Working theory: you keep picking songs that ask for patience. Or you just really like The Cure. Let's see." Bad: "You trust slow reveal." (no alternative — pretends certainty)`;
-  }
-  if (index === 3) {
-    return `${MICRO_REACT_BASE}
-Tier: SONG 4 — pressure test. Say whether the new pick strengthens the theory, breaks it, or leaves it unchanged. If it strengthens, still hedge. Good: "That fits — patience again. Getting more confident." / "Okay, that breaks my read. Back to listening." / "Doesn't tell me much either way."`;
-  }
-  return `${MICRO_REACT_BASE}
-Tier: SONG 5+ — landed read. One short, specific observation. Still falsifiable. If evidence is thin, say so.`;
-}
-
+// Per-song acknowledgements use catalog facts only. The third-song
+// observation remains conversational; the first two inputs need no model call.
 export const ReactToOneInput = z.object({
   song: z.string().trim().min(1).max(200),
   index: z.number().int().min(0).max(20),
   priorSongs: z.array(z.string().trim().min(1).max(200)).max(20).default([]),
 });
 
-function deterministicMicroReaction(
-  data: { song: string; index: number; priorSongs: string[] },
-  ctx: { title: string; artist: string; year: number | null; primary_lane: string | null } | null,
-): string {
-  if (!ctx) {
-    return ["Interesting.", "Noted.", "Okay. Still listening."][data.index % 3];
-  }
-  if (data.index === 0) {
-    return `${ctx.artist} as the opener — specific enough to keep me listening.`;
-  }
-  if (data.index === 1) {
-    return `${ctx.title}${ctx.year ? ` (${ctx.year})` : ""} gives this a second clear reference point.`;
-  }
-  return `${ctx.title} makes three; now there is enough shape to test.`;
-}
-
 export async function reactToOneImpl(
   supabase: AuthedSupabase,
   data: { song: string; index: number; priorSongs: string[] },
 ): Promise<{ text: string; nextLabel: string | null }> {
-  const fallbacks = ["Interesting.", "Noted.", "Mm.", "Okay.", "Now we're talking."];
-  let fallbackText = fallbacks[data.index % fallbacks.length];
-  const nextRank = data.index + 2;
-  try {
-    const prior = data.priorSongs.length
-      ? `Already named: ${data.priorSongs.map((s, i) => `${i + 1}. ${s}`).join("; ")}.\n`
-      : "";
-
-    const ctx = await lookupSongContext(supabase as never, data.song);
-    fallbackText = deterministicMicroReaction(data, ctx);
-    const ctxBlock = ctx
-      ? `Catalog knows: ${ctx.title} — ${ctx.artist}${ctx.year ? ` (${ctx.year})` : ""}${ctx.primary_lane ? ` · ${ctx.primary_lane}` : ""}. You may use this. Do not invent anything beyond it.`
-      : `Catalog has no match for this song. Don't invent facts — riff on instinct or mood.`;
-
-    const nextPromptRules = `
-Also write a SHORT, CONVERSATIONAL prompt for the next slot (#${nextRank}). This is the critic talking to a friend across a table — NOT a quiz question. Show you were listening to what they just said.
-
-Riff on ONE distinctive angle of what's been named so far — pick whichever fits best:
-- the ARTIST by name (e.g. "who's second best to Echo?", "your #2 after Nirvana?")
-- the DECADE/ERA (e.g. "80s kid, huh? Give me #2", "still in the 90s — what's next?")
-- the GENRE/SCENE (e.g. "okay grunge head, now #2", "another from the boom-bap shelf?")
-- the MOOD or time-of-day (e.g. "cool... now another 4am one", "stay sad — what's next?")
-
-Rules for nextLabel:
-- 4 to 10 words. Conversational. Lowercase fragments and ellipses are fine.
-- Reference EXACTLY ONE angle (artist OR era OR scene OR mood). Don't stack them.
-- Voice: warm — punching WITH them, never at them. Never grade the pick.
-- If you can't pin a distinctive angle, return nextLabel as "" (empty string).`;
-
-    const txt = await ai([
-      {
-        role: "system",
-        content: `${microReactVoice(data.index)}\n${nextPromptRules}\n\nReturn STRICT JSON: {"reaction": "...", "nextLabel": "..."}. No markdown fences.`,
-      },
-      {
-        role: "user",
-        content: `${prior}Just named (#${data.index + 1}): ${data.song}\n${ctxBlock}\n\nReturn the JSON now.`,
-      },
-    ]);
-    const cleaned = txt.replace(/```json\s*|```/g, "").trim();
-    let reaction = "";
-    let nextLabel: string | null = null;
-    try {
-      const parsed = JSON.parse(cleaned) as { reaction?: unknown; nextLabel?: unknown };
-      if (typeof parsed.reaction === "string") reaction = parsed.reaction.trim();
-      if (typeof parsed.nextLabel === "string") {
-        const nl = parsed.nextLabel.replace(/^["'`\s]+|["'`\s]+$/g, "").trim();
-        if (nl && nl.length <= 120 && nl.split(/\s+/).length <= 14) nextLabel = nl;
-      }
-    } catch {
-      reaction = cleaned
-        .split("\n")[0]
-        .replace(/^["'`\s]+|["'`\s]+$/g, "")
-        .trim();
-    }
-    if (!reaction) reaction = fallbackText;
-    const capped = reaction.length > 200 ? reaction.slice(0, 197) + "…" : reaction;
-    return { text: capped, nextLabel };
-  } catch {
-    return { text: fallbackText, nextLabel: null };
-  }
+  const song = await lookupSongContext(supabase as never, data.song);
+  return {
+    text: openingAcknowledgement(data.song, data.index, song),
+    nextLabel: `Song #${data.index + 2} — title and artist`,
+  };
 }
 
 export const reactToOne = createServerFn({ method: "POST" })
@@ -2937,7 +2848,7 @@ export const refineWithTwoMore = createServerFn({ method: "POST" })
 // ============================================================
 
 const COMMIT_THREE_VOICE = `${PERSONA}
-Mode: lock in the read after three ranked songs. You're an attentive interviewer. Drop ONE short conversational observation about what you've noticed — speak TO the listener, reference their actual picks, then stop. The next matchup is coming; don't preview it.
+Mode: lock in the read after three ranked songs. You're an attentive interviewer. Drop ONE short conversational observation about what you've noticed — speak TO the listener, reference their actual picks, then stop. The next matchup is coming; don't preview it. Do not end with a question or ask for a written answer: the next action is a song choice.
 ${ONBOARDING_RULES}
 ${LANE_RULES}
 Return STRICT JSON:
@@ -3267,9 +3178,8 @@ async function computeFinalSynthesis(
       examples: a.supporting_examples,
     }));
   const counters = ledger.confounds.map((c) => ({
-    claim: `${c.kind} concentration (${c.value})`,
+    ...concentrationCaution(c),
     impact: "medium",
-    notes: `${c.count} of ${c.total} frozen choices; a possible confound, not an identity claim.`,
   }));
   const kept_choosing: SynthEvidence[] = allowed
     .slice(0, 4)

@@ -44,60 +44,18 @@ export function InterviewExchange({
   );
 }
 
-export function InterviewHistory({
-  entries,
-  allowReactions,
-  reactedRounds,
-  busy,
-  onReact,
-}: {
-  entries: Entry[];
-  allowReactions: boolean;
-  reactedRounds: number[];
-  busy: boolean;
-  onReact: (kind: "thats_me" | "not_quite" | "harder") => void;
-}) {
-  const latest = entries.at(-1);
-  if (!latest) return null;
+export function InterviewHistory({ entries }: { entries: Entry[] }) {
+  if (!entries.length) return null;
   return (
-    <section className="space-y-7" aria-label="Your choices and the developing read">
-      {entries.length > 1 && (
-        <details className="border-y hairline py-2">
-          <summary className="min-h-11 cursor-pointer py-3 text-sm">
-            Earlier choices ({entries.length - 1})
-          </summary>
-          <div className="space-y-8 py-5">
-            {entries.slice(0, -1).map((entry) => (
-              <InterviewExchange key={entry.pairing.id} entry={entry} />
-            ))}
-          </div>
-        </details>
-      )}
-      <div aria-live="polite">
-        <InterviewExchange entry={latest}>
-          {allowReactions && latest.round >= 2 && !reactedRounds.includes(latest.round) && (
-            <div className="flex flex-wrap gap-2 pt-1">
-              {(
-                [
-                  ["thats_me", "That's me"],
-                  ["not_quite", "Not quite"],
-                  ["harder", "Give me a harder one"],
-                ] as const
-              ).map(([kind, label]) => (
-                <button
-                  key={kind}
-                  type="button"
-                  disabled={busy}
-                  onClick={() => onReact(kind)}
-                  className="min-h-11 rounded-sm border hairline-strong px-3 py-2 text-sm disabled:opacity-50"
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          )}
-        </InterviewExchange>
+    <details className="border-y hairline py-2">
+      <summary className="min-h-11 cursor-pointer py-3 text-sm">
+        Your choices ({entries.length})
+      </summary>
+      <div className="space-y-8 py-5">
+        {entries.map((entry) => (
+          <InterviewExchange key={entry.pairing.id} entry={entry} />
+        ))}
       </div>
-    </section>
+    </details>
   );
 }

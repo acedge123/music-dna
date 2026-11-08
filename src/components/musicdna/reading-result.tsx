@@ -19,8 +19,11 @@ export function ReadingResult({
       <header className="space-y-3">
         <p className="eyebrow">{label}</p>
         <h2 className="display text-3xl leading-tight md:text-4xl">
-          {content.synthesis || "Not enough evidence to call it yet."}
+          {content.kept_choosing.length ? content.synthesis : "Your choices so far"}
         </h2>
+        {!content.kept_choosing.length && content.synthesis && (
+          <p className="font-serif text-xl leading-relaxed">{content.synthesis}</p>
+        )}
         {content.result_version != null && (
           <p className="font-mono text-xs text-muted-foreground">
             Saved reading · version {content.result_version}
@@ -41,9 +44,10 @@ export function ReadingResult({
             ))}
           </ul>
         </section>
-      ) : showInsufficientHint ? (
+      ) : showInsufficientHint && !content.synthesis ? (
         <p className="text-sm leading-relaxed text-muted-foreground">
-          These choices don't yet support a clear tendency. The reading can stay open.
+          You can add what mattered to you in these choices. There is no need to agree with the
+          reading.
         </p>
       ) : null}
       {tension && (
