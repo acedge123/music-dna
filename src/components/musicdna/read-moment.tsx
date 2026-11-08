@@ -27,7 +27,10 @@ export function ReadMoment({
         <p className="text-sm text-muted-foreground">Earlier: {read.revision.previous_claim}</p>
       )}
       <p className="font-serif text-xl leading-snug md:text-2xl">
-        {criticDisplayLine(read.thesis).replace(/^.*?\. (?=One choice |A tentative lean |The evidence for )/, "")}
+        {criticDisplayLine(read.thesis).replace(
+          /^.*?\. (?=One choice |A tentative lean |The evidence for )/,
+          "",
+        )}
       </p>
       {read.revision?.changed_by && (
         <p className="text-sm text-muted-foreground">

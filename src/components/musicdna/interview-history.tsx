@@ -96,7 +96,12 @@ export function InterviewHistory({
         <div className="space-y-4">
           <p className="eyebrow">The critic · after choice {latest.round}</p>
           {reactionReply?.round === latest.round ? (
-            <p role="status" className="border-l-2 border-teal pl-4 font-serif text-xl leading-snug">{reactionReply.message}</p>
+            <p
+              role="status"
+              className="border-l-2 border-teal pl-4 font-serif text-xl leading-snug"
+            >
+              {reactionReply.message}
+            </p>
           ) : latest.thesis ? (
             <ReadMoment compact read={{ ...latest, question: "" }} />
           ) : (

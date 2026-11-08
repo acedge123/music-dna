@@ -266,8 +266,12 @@ function Onboarding() {
             </header>
             {entries.length === 0 && refined && (
               <details className="max-w-2xl">
-                <summary className="cursor-pointer font-serif text-2xl leading-snug">{readingLead(refined.observation || refined.hypothesis)}</summary>
-                <p className="pt-3 text-sm text-muted-foreground">{refined.observation || refined.hypothesis}</p>
+                <summary className="cursor-pointer font-serif text-2xl leading-snug">
+                  {readingLead(refined.observation || refined.hypothesis)}
+                </summary>
+                <p className="pt-3 text-sm text-muted-foreground">
+                  {refined.observation || refined.hypothesis}
+                </p>
               </details>
             )}
             <InterviewHistory
