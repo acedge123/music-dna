@@ -71,10 +71,8 @@ function Onboarding() {
     resultError,
     resultVersion,
     shareBusy,
-    round,
     maxRounds,
     nextPrompt,
-    reactedRounds,
     entries,
     synthesis,
     kept,
@@ -86,7 +84,6 @@ function Onboarding() {
     booting,
     submitSlot,
     pick,
-    reactToRead,
     shareRead,
     skip,
     loadFinalRead,
@@ -181,20 +178,22 @@ function Onboarding() {
           <p className="eyebrow">the interview</p>
         </header>
 
-        <OpeningContext
-          songs={songs}
-          reactions={reactions}
-          observation={refined && r5Step >= 2 ? refined.observation || refined.hypothesis : null}
-          compact={entries.length > 0 || phase === "done"}
-          starting={
-            !!refined &&
-            r5Step >= 2 &&
-            phase === "playing" &&
-            !pairing &&
-            !flowError &&
-            entries.length === 0
-          }
-        />
+        {entries.length === 0 && phase !== "done" && (
+          <OpeningContext
+            songs={songs}
+            reactions={reactions}
+            observation={refined && r5Step >= 2 ? refined.observation || refined.hypothesis : null}
+            compact={false}
+            starting={
+              !!refined &&
+              r5Step >= 2 &&
+              phase === "playing" &&
+              !pairing &&
+              !flowError &&
+              entries.length === 0
+            }
+          />
+        )}
 
         {/* Active slot input — slot2 or slot3 */}
         {(phase === "slot2" || phase === "slot3") && (
@@ -237,14 +236,6 @@ function Onboarding() {
             Continue now
           </button>
         )}
-
-        <InterviewHistory
-          entries={entries}
-          allowReactions={!!pairing}
-          reactedRounds={reactedRounds}
-          busy={busy || pendingSongId !== null || pendingSkip !== null}
-          onReact={(kind) => void reactToRead(kind)}
-        />
 
         {/* Current pairing */}
         {pairing && phase === "playing" && (
@@ -351,6 +342,20 @@ function Onboarding() {
                 </p>
               </ReadingResult>
             )}
+          </section>
+        )}
+        {(entries.length > 0 || phase === "done") && (
+          <section className="space-y-4" aria-label="Optional interview history">
+            {(songs.length > 0 || refined) && (
+              <OpeningContext
+                songs={songs}
+                reactions={reactions}
+                observation={refined?.observation || refined?.hypothesis}
+                compact={true}
+                starting={false}
+              />
+            )}
+            <InterviewHistory entries={entries} />
           </section>
         )}
       </main>
