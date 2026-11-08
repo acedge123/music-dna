@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { readingExamples, type ReadingContent } from "@/lib/reading-content";
+import { readingLead } from "@/lib/critic-display";
 
 export function ReadingResult({
   content,
@@ -18,8 +19,8 @@ export function ReadingResult({
     <section className="space-y-8 break-words" aria-label={label}>
       <header className="space-y-3">
         <p className="eyebrow">{label}</p>
-        <h2 className="display text-3xl leading-tight md:text-4xl">
-          {content.synthesis || "Not enough evidence to call it yet."}
+        <h2 className="display text-4xl leading-tight md:text-5xl">
+          {readingLead(content.synthesis) || "Not enough evidence to call it yet."}
         </h2>
         {content.result_version != null && (
           <p className="font-mono text-xs text-muted-foreground">
@@ -56,7 +57,7 @@ export function ReadingResult({
         </section>
       )}
       {children}
-      <details className="border-t hairline pt-4">
+      <details id="full-reading" className="border-t hairline pt-4">
         <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium">
           See the full reading
         </summary>

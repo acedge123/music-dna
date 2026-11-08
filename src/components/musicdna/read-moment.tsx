@@ -1,4 +1,5 @@
 import type { CurrentReadResult } from "@/musicdna/engine/read";
+import { criticDisplayLine } from "@/lib/critic-display";
 
 export function ReadMoment({
   read,
@@ -23,7 +24,7 @@ export function ReadMoment({
       {read.revision?.previous_claim && (
         <p className="text-sm text-muted-foreground">Earlier: {read.revision.previous_claim}</p>
       )}
-      <p className="font-serif text-xl leading-snug md:text-2xl">{read.thesis}</p>
+      <p className="font-serif text-xl leading-snug md:text-2xl">{criticDisplayLine(read.thesis)}</p>
       {read.revision?.changed_by && (
         <p className="text-sm text-muted-foreground">
           Changed by {read.revision.changed_by.chosen} over {read.revision.changed_by.rejected}.
