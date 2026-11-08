@@ -1,5 +1,9 @@
 # Roadmap
 
+## Current — zero-pairing song coverage
+
+- [ ] Review songs with no existing pairings outside Alternative, add valid lane-local matchups, verify availability and preserve existing pairs/flags.
+
 ## Done — PR #26 AB-52 database rollout
 
 - [x] Applied only merged PR #26 SQL once as `20261108194533` (history name `9e66b3e2-84f7-4f37-83f7-8ff896e6b4c7`); merged/local/history SHA-256 `a111d24d2d86d47412c6cdf719c897887fbae5e9b625e7f010a39d390af67e8c`. One executable file, operator/private grants, RLS exclusions and four new triggers verified. Zero pilot invitations; existing two export enrollments untouched, capture/dispatch disabled. No flags, keys, schedules, deployments or earlier reruns. Three unit tests passed; ten native DB tests unavailable. Receipt: docs/musicdna/ab52-pilot-plan.md. Pilot activation/acceptance remain separate.
