@@ -5,6 +5,9 @@ import { ReadingResult } from "@/components/musicdna/reading-result";
 import { InterviewHistory } from "@/components/musicdna/interview-history";
 import { OpeningSongInput as RankedInput } from "@/components/musicdna/opening-song-input";
 import { SongChoices } from "@/components/musicdna/song-choices";
+import { Button } from "@/components/ui/button";
+import { ArrowRight, Share2, MessageCircle } from "lucide-react";
+import { readingLead } from "@/lib/critic-display";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -59,9 +62,6 @@ function Onboarding() {
     reactions,
     nextLabels,
     refined,
-    r5Step,
-    setR5Step,
-    opener,
     sessionId,
     pairing,
     pendingSongId,
@@ -74,6 +74,7 @@ function Onboarding() {
     maxRounds,
     nextPrompt,
     reactedRounds,
+    reactionReply,
     entries,
     synthesis,
     kept,
@@ -111,13 +112,14 @@ function Onboarding() {
           <p role="alert" className="font-serif text-xl text-muted-foreground">
             {bootError}
           </p>
-          <button
+          <Button
             type="button"
+            variant="outline"
             onClick={() => window.location.reload()}
             className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm"
           >
             Try again
-          </button>
+          </Button>
         </main>
       </>
     );
@@ -131,15 +133,14 @@ function Onboarding() {
         <main className="mx-auto max-w-2xl px-6 pt-24 pb-24 min-h-screen flex flex-col">
           <section className="space-y-16 animate-in fade-in duration-500">
             <header className="space-y-4 text-center sm:text-left">
-              <p className="eyebrow">YOUR SONGS · RANKED</p>
-              <h1 className="display text-4xl md:text-5xl leading-[1.05] tracking-tight">
-                What's YOUR greatest song of all time?
+              <p className="eyebrow">YOUR SONGS · 1 / 3</p>
+              <h1 className="display text-4xl md:text-5xl leading-[1.05] tracking-normal">
+                What's your greatest song of all time?
                 <br />
                 <span className="italic text-muted-foreground">Don't be shy...</span>
               </h1>
               <p className="text-sm text-muted-foreground max-w-md text-center sm:text-left">
-                Three opening songs, then up to six answered choices. You can skip songs you don’t
-                know.
+                First song. No committee. Just you.
               </p>
             </header>
 
@@ -156,13 +157,19 @@ function Onboarding() {
             </div>
 
             <div className="flex justify-center sm:justify-start">
-              <button
+              <Button
                 onClick={submitSlot}
                 disabled={busy || draft.trim().length < 2}
                 className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90 disabled:opacity-40"
               >
-                {busy ? "Reading…" : "Continue →"}
-              </button>
+                {busy ? (
+                  "Reading…"
+                ) : (
+                  <>
+                    Continue <ArrowRight />
+                  </>
+                )}
+              </Button>
             </div>
           </section>
         </main>
@@ -170,36 +177,33 @@ function Onboarding() {
     );
   }
 
-  // TRANSCRIPT: slot2 → slot3 → playing → done in one continuous scroll
+  // One active stage; prior exchanges stay in history.
   return (
     <>
       <HomeLogo />
-      <main className="mx-auto max-w-3xl px-5 pt-24 pb-24 space-y-10 sm:px-6">
+      <main className="mx-auto max-w-4xl px-5 pt-24 pb-16 space-y-6 sm:px-6">
         <h1 className="sr-only">Your MusicDNA interview</h1>
-        <header className="space-y-2">
-          <p className="eyebrow">the interview</p>
-        </header>
-
-        {/* Submitted songs + their reactions, interleaved */}
-        <section className="space-y-8">
-          {songs.map((s, i) => (
-            <div key={i} className="space-y-3 animate-in fade-in duration-500">
-              <div className="grid grid-cols-[3rem_1fr] gap-4 items-baseline">
-                <span className="text-right font-mono text-xs uppercase tracking-[0.22em] text-muted-foreground">
-                  #{i + 1}
-                </span>
-                <span className="font-mono text-base md:text-lg text-foreground">✓ {s}</span>
-              </div>
-              {reactions[i] && i < 2 && (
-                <div className="pl-[4rem]">
-                  <p className="font-serif text-xl md:text-2xl leading-snug text-foreground animate-in fade-in slide-in-from-bottom-2 duration-500">
-                    {reactions[i]}
-                  </p>
-                </div>
-              )}
-            </div>
-          ))}
-        </section>
+        {(phase === "slot2" || phase === "slot3") && (
+          <section className="max-w-2xl space-y-5">
+            <p className="eyebrow">Your songs · {songs.length + 1} / 3</p>
+            <p className="font-mono text-sm text-muted-foreground">
+              #{songs.length} · {songs.at(-1)}
+            </p>
+            {reactions.at(-1) && (
+              <p className="font-serif text-3xl leading-snug">{reactions.at(-1)}</p>
+            )}
+            <details className="text-sm text-muted-foreground">
+              <summary className="min-h-11 cursor-pointer py-3">Your opening songs</summary>
+              <ol className="space-y-2">
+                {songs.map((song, i) => (
+                  <li key={`${i}:${song}`}>
+                    #{i + 1} · {song}
+                  </li>
+                ))}
+              </ol>
+            </details>
+          </section>
+        )}
 
         {/* Active slot input — slot2 or slot3 */}
         {(phase === "slot2" || phase === "slot3") && (
@@ -222,62 +226,76 @@ function Onboarding() {
               />
             </div>
             <div>
-              <button
+              <Button
                 onClick={submitSlot}
                 disabled={busy || draft.trim().length < 2}
                 className="bg-primary text-primary-foreground rounded-sm px-6 py-3 text-sm font-medium hover:opacity-90 disabled:opacity-40"
               >
-                {busy ? "Reading…" : "Continue →"}
-              </button>
+                {busy ? (
+                  "Reading…"
+                ) : (
+                  <>
+                    Continue <ArrowRight />
+                  </>
+                )}
+              </Button>
             </div>
           </section>
         )}
 
-        {refined && r5Step < 2 && (
-          <button
-            type="button"
-            onClick={() => setR5Step(2)}
-            className="min-h-11 px-3 text-sm underline"
-          >
-            Continue now
-          </button>
-        )}
-
-        {/* Post-3 read — one short conversational observation. No fork, no stakes, no axis talk. */}
-        {refined && (
-          <section className="space-y-3 animate-in fade-in duration-500">
-            {r5Step >= 2 && (
-              <>
-                <p className="eyebrow">From your opening songs</p>
-                <p className="font-serif text-2xl md:text-3xl leading-snug text-foreground animate-in fade-in duration-700">
+        {phase === "playing" && (
+          <>
+            <header className="flex flex-wrap items-center justify-between gap-3 border-b pb-3">
+              <p className="eyebrow">The interview</p>
+              <div
+                className="flex items-center gap-3"
+                aria-label={`${entries.length} of up to ${maxRounds} choices answered`}
+              >
+                <span className="font-mono text-xs text-muted-foreground">
+                  {pairing ? `Round ${round} / ${maxRounds}` : `${entries.length} / ${maxRounds}`}
+                </span>
+                <div className="flex gap-1.5" aria-hidden="true">
+                  {Array.from({ length: maxRounds }, (_, i) => (
+                    <span
+                      key={i}
+                      className={`h-1.5 w-4 rounded-sm ${i < entries.length ? "bg-gold" : "bg-muted"}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            </header>
+            {entries.length === 0 && refined && (
+              <details className="max-w-2xl">
+                <summary className="cursor-pointer font-serif text-2xl leading-snug">
+                  {readingLead(refined.observation || refined.hypothesis)}
+                </summary>
+                <p className="pt-3 text-sm text-muted-foreground">
                   {refined.observation || refined.hypothesis}
                 </p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground pt-1">
-                  next one coming up…
-                </p>
-              </>
+              </details>
             )}
-          </section>
+            <InterviewHistory
+              entries={entries}
+              openerSongs={songs}
+              allowReactions={!!pairing}
+              reactedRounds={reactedRounds}
+              reactionReply={reactionReply}
+              busy={busy || pendingSongId !== null || pendingSkip !== null}
+              onReact={(kind) => void reactToRead(kind)}
+            />
+          </>
         )}
-
-        <InterviewHistory
-          entries={entries}
-          allowReactions={!!pairing}
-          reactedRounds={reactedRounds}
-          busy={busy || pendingSongId !== null || pendingSkip !== null}
-          onReact={(kind) => void reactToRead(kind)}
-        />
 
         {/* Current pairing */}
         {pairing && phase === "playing" && (
-          <section ref={pairingAnchorRef} className="space-y-6 pt-2">
-            <div className="flex items-center">
-              <p className="eyebrow">
-                Round {String(round).padStart(2, "0")} / {maxRounds}
-              </p>
-              <div className="h-px flex-1 ml-6 bg-border" />
-            </div>
-            <p className="font-serif text-xl md:text-2xl text-muted-foreground">
+          <section ref={pairingAnchorRef} className="space-y-4 pt-2">
+            <p
+              className={
+                reactionReply && nextPrompt && reactionReply.message.includes(nextPrompt)
+                  ? "sr-only"
+                  : "font-serif text-2xl md:text-3xl"
+              }
+            >
               {entries.length === 0
                 ? "Pick one. First instinct."
                 : nextPrompt || "Which one would you keep?"}
@@ -299,14 +317,15 @@ function Onboarding() {
               </p>
             )}
             <div className="flex justify-center pt-1">
-              <button
+              <Button
                 type="button"
+                variant="ghost"
                 disabled={busy || pendingSongId !== null}
                 onClick={skip}
                 className="min-h-11 px-3 py-2 font-mono text-xs text-muted-foreground hover:text-foreground transition-colors disabled:opacity-40"
               >
                 {pendingSkip ? "Retry this skip" : "Skip — I don’t know these"}
-              </button>
+              </Button>
             </div>
           </section>
         )}
@@ -325,13 +344,14 @@ function Onboarding() {
                 <p role="alert" className="text-sm">
                   {resultError}
                 </p>
-                <button
+                <Button
                   type="button"
+                  variant="outline"
                   onClick={() => void loadFinalRead()}
                   className="min-h-11 rounded-sm border hairline-strong px-5 py-3"
                 >
                   Retry saved reading
-                </button>
+                </Button>
               </div>
             ) : (
               <ReadingResult
@@ -343,7 +363,7 @@ function Onboarding() {
                 }}
               >
                 <div className="flex flex-col gap-3 sm:flex-row">
-                  <button
+                  <Button
                     type="button"
                     disabled={resultVersion == null}
                     onClick={() =>
@@ -357,16 +377,17 @@ function Onboarding() {
                     }
                     className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
                   >
-                    Push back on this →
-                  </button>
-                  <button
+                    <MessageCircle /> Argue with me
+                  </Button>
+                  <Button
                     type="button"
+                    variant="outline"
                     disabled={shareBusy || resultVersion == null}
                     onClick={() => void shareRead()}
                     className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm disabled:opacity-50"
                   >
-                    {shareBusy ? "Preparing share…" : "Share this read"}
-                  </button>
+                    <Share2 /> {shareBusy ? "Preparing share…" : "Share this read"}
+                  </Button>
                 </div>
                 <p className="text-xs leading-relaxed text-muted-foreground">
                   Sharing publishes this reading only. Your conversation stays private.

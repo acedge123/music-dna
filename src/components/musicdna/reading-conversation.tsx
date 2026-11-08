@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { ConversationMessage, PendingTurn } from "@/lib/reading-conversation";
+import { Button } from "@/components/ui/button";
+import { ArrowUp, Music2, MessageCircle } from "lucide-react";
 
 export function ReadingConversation({
   messages,
@@ -39,22 +41,19 @@ export function ReadingConversation({
   return (
     <section className="space-y-5" aria-label="Continue this reading">
       <header className="space-y-2">
-        <p className="eyebrow">Push back</p>
-        <h2 className="font-serif text-2xl">What did the read miss?</h2>
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          Your own account adds context. It doesn't replace the original choices or publish this
-          conversation.
-        </p>
+        <p className="eyebrow">You & the critic</p>
+        <h2 className="display text-4xl leading-tight">What did I miss?</h2>
       </header>
       {hasOlder && (
-        <button
+        <Button
           type="button"
           disabled={busy}
           onClick={onOlder}
+          variant="outline"
           className="min-h-11 rounded-sm border hairline-strong px-4 py-2 text-sm disabled:opacity-50"
         >
           Load earlier messages
-        </button>
+        </Button>
       )}
       <div
         role="log"
@@ -65,8 +64,7 @@ export function ReadingConversation({
       >
         {messages.length === 0 && (
           <p className="font-serif text-lg text-muted-foreground">
-            The original read is above. Tell the critic what fits, what doesn't, or which song
-            changes the picture.
+            The picks are one thing. Your reasons are another. Let's hear them.
           </p>
         )}
         {messages
@@ -86,6 +84,33 @@ export function ReadingConversation({
               <p className="whitespace-pre-wrap font-serif text-xl leading-snug">
                 {message.content}
               </p>
+              {message.role === "assistant" &&
+                message.content.startsWith("I couldn't ground that reply") && (
+                  <div className="space-y-3 border-t pt-3">
+                    <p className="text-sm text-muted-foreground">
+                      Your message is saved. The critic couldn't produce a grounded reply; this is
+                      not a rejection of your account.
+                    </p>
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        variant="outline"
+                        disabled={busy || pending !== null}
+                        onClick={() => onDraft("The voice mattered most to me because…")}
+                        className="min-h-11"
+                      >
+                        <Music2 /> The voice
+                      </Button>
+                      <Button
+                        variant="outline"
+                        disabled={busy || pending !== null}
+                        onClick={() => onDraft("The song's context mattered to me because…")}
+                        className="min-h-11"
+                      >
+                        <MessageCircle /> The context
+                      </Button>
+                    </div>
+                  </div>
+                )}
             </article>
           ))}
         <div ref={end} />
@@ -116,19 +141,23 @@ export function ReadingConversation({
           className="block w-full min-w-0 resize-y rounded-sm border hairline-strong bg-surface p-3 text-base leading-relaxed focus-visible:outline-2 focus-visible:outline-gold"
         />
         <div className="flex flex-wrap items-center gap-3">
-          <button
+          <Button
             type="submit"
             disabled={busy || (!draft.trim() && !pending)}
             className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
           >
+            <ArrowUp />
             {busy ? "Saving your conversation…" : pending ? "Retry this message" : "Send message"}
-          </button>
+          </Button>
           {pending && (
             <p role="status" className="text-xs text-muted-foreground">
               Your draft is kept until its reply is saved.
             </p>
           )}
         </div>
+        <p className="text-xs text-muted-foreground">
+          Private conversation. Your original picks stay unchanged.
+        </p>
       </form>
     </section>
   );

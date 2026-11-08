@@ -1,5 +1,12 @@
 # Roadmap
 
+## Done — critic-first web presentation
+
+- [x] Replaced transcript-first interview with one active stage, original vinyl imagery, progress and an accessible history drawer.
+- [x] Server-confirmed reaction acknowledgements appear inline; compact saved reveal and conversation-first challenge; saved fallback replies remain verbatim with contextual follow-up drafts.
+- [x] 53 focused regressions and changed-file lint pass. Real 390px preview session: three openers, six choices, reaction/steered pairing, history, reveal, chat saved/read back after reload and return to completed result. Desktop result checked; no runtime errors or overflow. Latest preview build OK.
+- Scope: presentation only. No backend/catalog/flags changed; new editorial narration, offer-side diversity audit and playable friend challenge are not implemented by this pass. Production deployment acceptance remains separate.
+
 ## Current — zero-pairing song coverage
 
 - [x] Added eight active Pop matchups covering all 13 never-paired Pop songs; database readback confirms eight eligible and zero remaining. Thirteen tests passed; existing pairs/scores/flags untouched. Receipt: docs/musicdna/zero-pair-coverage-2026-11-08.md.

@@ -93,6 +93,9 @@ export function useInterview(requestedSession?: string) {
   const [maxRounds, setMaxRounds] = useState(6);
   const [nextPrompt, setNextPrompt] = useState<string | null>(null);
   const [reactedRounds, setReactedRounds] = useState<number[]>([]);
+  const [reactionReply, setReactionReply] = useState<{ round: number; message: string } | null>(
+    null,
+  );
   const [entries, setEntries] = useState<Entry[]>([]);
   const [synthesis, setSynthesis] = useState<string | null>(null);
   const [kept, setKept] = useState<
@@ -124,6 +127,8 @@ export function useInterview(requestedSession?: string) {
     setPendingSkip(null);
     setSynthesis(null);
     setResultVersion(null);
+    setReactionReply(null);
+    setReactedRounds([]);
     playStartedRef.current = false;
     (async () => {
       try {
@@ -296,9 +301,9 @@ export function useInterview(requestedSession?: string) {
   }, [phase, reducedMotion]);
   useEffect(() => {
     if (pairing && pairingAnchorRef.current) {
-      pairingAnchorRef.current.scrollIntoView({
+      pairingAnchorRef.current.closest("main")?.scrollIntoView({
         behavior: reducedMotion ? "instant" : "smooth",
-        block: "center",
+        block: "start",
       });
     }
   }, [pairing, reducedMotion]);
@@ -450,6 +455,7 @@ export function useInterview(requestedSession?: string) {
       setEntries((prev) =>
         prev.some((saved) => saved.pairing.id === currentPairing.id) ? prev : [...prev, entry],
       );
+      setReactionReply(null);
       setPairing(null);
 
       const {
@@ -561,6 +567,7 @@ export function useInterview(requestedSession?: string) {
         } | null;
       };
       setReactedRounds((prev) => [...prev, currentRound]);
+      setReactionReply({ round: currentRound, message: r.message });
       const nx = r.next;
       if (nx?.max_rounds) setMaxRounds(nx.max_rounds);
       if (nx?.done) {
@@ -574,7 +581,6 @@ export function useInterview(requestedSession?: string) {
         startedAt.current = Date.now();
       }
       setNextPrompt(nx?.prompt ?? null);
-      toast(r.message);
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Couldn't switch that up.");
     } finally {
@@ -696,6 +702,7 @@ export function useInterview(requestedSession?: string) {
     maxRounds,
     nextPrompt,
     reactedRounds,
+    reactionReply,
     entries,
     synthesis,
     kept,
