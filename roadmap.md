@@ -2,7 +2,8 @@
 
 ## Current — zero-pairing song coverage
 
-- [ ] Review songs with no existing pairings outside Alternative, add valid lane-local matchups, verify availability and preserve existing pairs/flags.
+- [x] Added eight active Pop matchups covering all 13 never-paired Pop songs; database readback confirms eight eligible and zero remaining. Thirteen tests passed; existing pairs/scores/flags untouched. Receipt: docs/musicdna/zero-pair-coverage-2026-11-08.md.
+- [ ] Remaining 71 non-Alternative-tagged never-paired songs: blocked on editorial lane classification (all primary_lane=general; actually sophistipop, punk/noise and artrock). No indiscriminate general-lane pairing or silent reclassification.
 
 ## Done — PR #26 AB-52 database rollout
 
