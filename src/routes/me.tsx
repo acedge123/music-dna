@@ -3,6 +3,8 @@ import { z } from "zod";
 import { useReadingConversation } from "@/hooks/use-reading-conversation";
 import { ReadingConversation } from "@/components/musicdna/reading-conversation";
 import { ReadingResult } from "@/components/musicdna/reading-result";
+import { readingLead } from "@/lib/critic-display";
+import { Button } from "@/components/ui/button";
 
 const Search = z.object({
   session: z.string().uuid().optional(),
@@ -18,6 +20,10 @@ export const Route = createFileRoute("/me")({
         name: "description",
         content: "Continue the conversation around your saved MusicDNA reading.",
       },
+      { property: "og:title", content: "MusicDNA — Argue with the critic" },
+      { property: "og:description", content: "Bring your own account to the conversation around your saved reading." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Me,
@@ -51,7 +57,14 @@ function Me() {
         </p>
       ) : reading ? (
         <>
-          <ReadingResult content={reading.selected.content} label="The reading you opened" />
+          <details className="border-b pb-4">
+            <summary className="cursor-pointer space-y-2 py-2">
+              <span className="eyebrow block">Your saved read · version {reading.selected.version}</span>
+              <span className="block font-serif text-xl leading-snug">{readingLead(reading.selected.content.synthesis)}</span>
+              <span className="block text-xs text-muted-foreground">The original read and its evidence</span>
+            </summary>
+            <div className="py-6"><ReadingResult content={reading.selected.content} label="The original reading" /></div>
+          </details>
           <ReadingConversation
             messages={conversation.messages}
             draft={conversation.draft}
@@ -84,13 +97,14 @@ function Me() {
           <p role="alert" className="text-sm leading-relaxed text-muted-foreground">
             {error}
           </p>
-          <button
+          <Button
             type="button"
             onClick={() => void conversation.reload()}
+            variant="outline"
             className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm"
           >
             Try again
-          </button>
+          </Button>
           <Link
             to="/onboarding"
             className="ml-4 inline-flex min-h-11 items-center text-sm underline"

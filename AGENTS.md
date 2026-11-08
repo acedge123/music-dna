@@ -1,5 +1,7 @@
 # Agent rules
 
+- The critic-first web stage keeps the active pairing and latest read primary; history and audit text stay secondary. Presentation may omit numeric parentheticals but never strengthen, fabricate or rewrite saved claims; full frozen content remains available.
+
 - Every claim about a listener (running read, final reasoning, chat context, share card) derives from `buildLedger` in `src/musicdna/engine/evidence.ts` and `evaluateClaim` in `claims.ts` — so no two surfaces can disagree about what the choices show.
 - Session completion is decided only by `sessionCompletion` in `src/musicdna/engine/pairing.ts`; clients trust the server's `done`/`stop_reason` — so web, REST and Flutter stop identically.
 - The "next question" prompt is generated from the pairing actually selected (`engine/prompts.ts`), never from the prior read — so the critic can't promise a test the next matchup doesn't run.
