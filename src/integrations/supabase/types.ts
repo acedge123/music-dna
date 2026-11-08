@@ -448,6 +448,7 @@ export type Database = {
           assigned_at: string
           experiment_key: string
           id: string
+          pilot: Json | null
           user_id: string
           variant: string
         }
@@ -455,6 +456,7 @@ export type Database = {
           assigned_at?: string
           experiment_key: string
           id?: string
+          pilot?: Json | null
           user_id: string
           variant: string
         }
@@ -462,6 +464,7 @@ export type Database = {
           assigned_at?: string
           experiment_key?: string
           id?: string
+          pilot?: Json | null
           user_id?: string
           variant?: string
         }
@@ -1907,6 +1910,16 @@ export type Database = {
         }
         Returns: Json
       }
+      enroll_musicdna_pilot_participant: {
+        Args: {
+          p_approval_ref: string
+          p_consent_ref: string
+          p_consented_at: string
+          p_design: Json
+          p_owner_id: string
+        }
+        Returns: Json
+      }
       exclude_musicdna_learning_capture: {
         Args: { p_observation_id: string }
         Returns: Json
@@ -1965,6 +1978,14 @@ export type Database = {
         }
         Returns: boolean
       }
+      prepare_musicdna_pilot_session: {
+        Args: {
+          p_owner_id: string
+          p_policy_version: string
+          p_session_id: string
+        }
+        Returns: Json
+      }
       publish_saved_read: {
         Args: { p_publish: boolean; p_session_id: string; p_version?: number }
         Returns: Json
@@ -1979,6 +2000,10 @@ export type Database = {
       }
       purge_musicdna_learning_outbox: {
         Args: { p_limit?: number }
+        Returns: Json
+      }
+      read_musicdna_pilot_cohort: {
+        Args: { p_as_of: string; p_experiment_id: string }
         Returns: Json
       }
       read_musicdna_routing_outcome: {
@@ -2020,6 +2045,10 @@ export type Database = {
       }
       save_result_feedback: {
         Args: { p_payload: Json; p_session_id: string }
+        Returns: Json
+      }
+      withdraw_musicdna_pilot_participant: {
+        Args: { p_experiment_id: string; p_owner_id: string }
         Returns: Json
       }
     }
