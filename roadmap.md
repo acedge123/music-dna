@@ -1,5 +1,9 @@
 # Roadmap
 
+## Current — PR #26 AB-52 database rollout
+
+- [ ] Verify merged source and apply only `20261108194533_musicdna_invited_pilot.sql` once; record history/hash and private-access checks. Preserve existing export enrollments, disabled capture/dispatch and pilot flags; create no invitations, keys, schedules or deployments.
+
 ## Open — cross-repo first-hop acceptance gate (Music DNA → Echelon)
 
 - [ ] Uploaded gate doc (Nov 6, 2026 source review): record deployed SHAs/migrations/flags/fixtures; trace one synthetic six-answer session domain commit → outbox → dispatcher → durable Echelon receipt → paginated readback; chaos cases (duplicate delivery, reused-ID changed payload, out-of-order/late outcomes, timeout after acceptance, receiver outage, lease expiry, 429, source disable/key rotation, replay); redaction/denial for wrong source/key, spoofed tenant, ordinary member, cross-tenant; opt-out/deletion during retry with non-resurrection; kill switch and sender/receiver rollback in either order; batch/rate/age limits and quarantine ownership; acceptance report with pass/fail and owner decision. Real-user export stays disabled; MUSICDNA_ROUTING_MODE=shadow preserved.
