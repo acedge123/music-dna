@@ -1,5 +1,15 @@
 # AB-52: perceived-accuracy pilot and owner QA
 
+## Database migration receipt — November 8, 2026
+
+- Applied only `20261108194533_musicdna_invited_pilot.sql`, once, to Music DNA (`udycgnhvaanemhrchbuj`). PR #26 was merged at `8c4f460cc02ade73c1f6a61074b9fb1c349fd52e`; merged, local and applied-history SQL bytes match.
+- History version: `20261108194533`; history name: `9e66b3e2-84f7-4f37-83f7-8ff896e6b4c7`.
+- SQL SHA-256: `a111d24d2d86d47412c6cdf719c897887fbae5e9b625e7f010a39d390af67e8c`. Exactly one executable invited-pilot migration remains, matching applied history.
+- Catalog verification: `experiment_assignments.pilot` exists, RLS remains enabled, and the authenticated read policy excludes pilot metadata and `ab52.*` assignments. All four operator RPCs deny `PUBLIC`, `anon` and `authenticated`, granting execution only to `service_role`; all five private trigger routines deny those roles and direct service-role execution. Four new protection triggers are enabled.
+- Zero pilot invitations; existing two synthetic-export enrollments unchanged. Existing scope has capture and dispatch disabled. No earlier migrations rerun; no enrollment, keys, schedules, deployments or flag changes made.
+- Focused tests: three routing tests passed; ten native database tests skipped because their database test connection was unavailable. Live catalog/access verification is not a substitute for authenticated pilot acceptance.
+- Migration tool reported 42 pre-existing linter findings and no new findings: seven RLS-without-policy informational items, three public and eight authenticated security-definer execution warnings, 23 anonymous-policy warnings and disabled leaked-password protection. These were not changed by this rollout.
+
 ## Owner decisions — November 8, 2026
 
 Alan chose himself plus invited TestFlight testers and the existing accurate/mixed/not-accurate feedback as the first measure. He then authorized switching from live synthetic checks to real QA, noting that he is currently the only human TestFlight tester. The initial activation is therefore **owner QA on the candidate**, limited to Alan's verified Music DNA account. Codex is an operator, not an independent human rater. No comparison, statistical benefit or efficacy claim can come from one person's QA reading.
