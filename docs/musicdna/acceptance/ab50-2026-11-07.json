@@ -1,0 +1,248 @@
+{
+  "schema": "musicdna-first-hop-acceptance.v1",
+  "ticket": "AB-50",
+  "operator_work_date": "2026-11-07",
+  "operator_timezone": "America/Los_Angeles",
+  "state": "in_progress",
+  "decision": "hold_export_disabled",
+  "scope": {
+    "source": "music-dna-staging",
+    "environment": "staging",
+    "approved_test_area": "Music DNA Acceptance",
+    "approving_owner": "Alan Edgett",
+    "owner_slack_user": "U32PGT1PA",
+    "echelon_actor_verified": false
+  },
+  "targets": {
+    "musicdna_url": "https://www.musicdna.fm",
+    "musicdna_serving_sha": "f81977c1de5509505ddc1039b7c847a4707ddf6b",
+    "musicdna_backend": "udycgnhvaanemhrchbuj",
+    "echelon_backend": "yczomejrvihbmydyraqg",
+    "echelon_reported_function_source_sha": "30e53b2f6fba0a712689392c3b2a47a0f587367f",
+    "echelon_serving_function_revision_verified": false
+  },
+  "evidence": {
+    "read_only_http_preflight": {
+      "checked_at": "2026-11-07T23:59:29.178Z",
+      "mode": "read_only_preflight",
+      "results": [
+        {
+          "name": "musicdna_version",
+          "project": "music-dna",
+          "http_status": 200,
+          "request_id": null,
+          "serving_sha": "f81977c1de5509505ddc1039b7c847a4707ddf6b",
+          "persistence_v2": true
+        },
+        {
+          "name": "harness_unknown_persona",
+          "project": "music-dna",
+          "http_status": 404,
+          "request_id": null
+        },
+        {
+          "name": "no_auth_app-signal-inbound",
+          "project": "echelon",
+          "http_status": 401,
+          "request_id": null
+        },
+        {
+          "name": "no_auth_app-signal-inbound/learning",
+          "project": "echelon",
+          "http_status": 401,
+          "request_id": "f12a055a-7dbe-4f42-9ca8-88879fd01056"
+        },
+        {
+          "name": "no_auth_app-signal-inbound/learning/delete",
+          "project": "echelon",
+          "http_status": 401,
+          "request_id": "8916ece0-515b-49fa-ac35-7ca3c609ed43"
+        },
+        {
+          "name": "no_auth_musicdna-learning-read",
+          "project": "echelon",
+          "http_status": 401,
+          "request_id": null
+        },
+        {
+          "name": "no_auth_signal-source-request",
+          "project": "echelon",
+          "http_status": 401,
+          "request_id": null
+        },
+        {
+          "name": "no_auth_signal-source-decide",
+          "project": "echelon",
+          "http_status": 401,
+          "request_id": null
+        },
+        {
+          "name": "no_auth_signal-source-rotate-key",
+          "project": "echelon",
+          "http_status": 401,
+          "request_id": null
+        }
+      ]
+    },
+    "worker_status": {
+      "evidence_class": "hosted_database_via_actual_operator_worker",
+      "state": "passed",
+      "scope_present": false,
+      "capture_enabled": false,
+      "dispatch_enabled": false,
+      "captured": 0,
+      "attempts_started": 0,
+      "pending_deletions": 0,
+      "job_counts": {}
+    },
+    "source_journey": {
+      "evidence_class": "hosted_http",
+      "checked_at": "2026-11-08T00:16:23.233Z",
+      "state": "passed",
+      "http_requests": 22,
+      "answered": 6,
+      "result_version": 1,
+      "completed": true,
+      "is_public": false,
+      "v0_restore": true,
+      "v1_restore": true,
+      "deployed_sha_stable": true
+    },
+    "source_database_proof": {
+      "evidence_class": "read_only_numeric_metadata",
+      "choice_count": 6,
+      "frozen_choice_count": 6,
+      "result_versions": 1,
+      "result_answered": 6,
+      "result_unavailable": 0,
+      "result_ledger_matches": true
+    },
+    "disabled_feedback_http": {
+      "checked_at": "2026-11-08T00:18:14.215Z",
+      "outcomes": [
+        {
+          "check": "owner_auth",
+          "http_status": 200
+        },
+        {
+          "check": "other_auth",
+          "http_status": 200
+        },
+        {
+          "check": "immutable_result_before",
+          "http_status": 200
+        },
+        {
+          "check": "feedback_save",
+          "http_status": 200
+        },
+        {
+          "check": "feedback_replay",
+          "http_status": 200
+        },
+        {
+          "check": "feedback_conflict",
+          "http_status": 409
+        },
+        {
+          "check": "cross_user_read",
+          "http_status": 403
+        },
+        {
+          "check": "cross_user_write",
+          "http_status": 404
+        },
+        {
+          "check": "cross_user_session",
+          "http_status": 404
+        },
+        {
+          "check": "feedback_version_readback",
+          "http_status": 200
+        },
+        {
+          "check": "immutable_result_after",
+          "http_status": 200
+        },
+        {
+          "check": "source_disabled_feedback_contract",
+          "state": "passed",
+          "saved_rows": 1,
+          "result_version": 1,
+          "content_unchanged": true
+        }
+      ]
+    },
+    "disabled_feedback_database": {
+      "evidence_class": "read_only_numeric_metadata",
+      "fixture_feedback_rows": 1,
+      "outbox_rows": 0,
+      "enrollments": 0,
+      "capture_enabled": 0,
+      "dispatch_enabled": 0
+    },
+    "echelon_readiness": {
+      "evidence_class": "read_only_numeric_metadata",
+      "sources": 4,
+      "learning_sources": 0,
+      "keyed_sources": 0,
+      "learning_enabled": 0,
+      "lifecycle_scopes": 0,
+      "reviewer_grants": 0,
+      "receipts": 0
+    },
+    "fixture_inventory": {
+      "fresh_synthetic_personas_created": 3,
+      "completed_journeys": 1,
+      "interrupted_probes": 2,
+      "private_inventory_retained": true,
+      "records_reset": 0,
+      "records_published": 0
+    },
+    "native_and_unit_baseline": {
+      "evidence_class": "prior_reviewed_ci",
+      "url": "https://github.com/acedge123/music-dna/actions/runs/42419839520",
+      "unit_passed": 357,
+      "native_postgres_passed": 70,
+      "dispatcher_native_cases": 29,
+      "hosted_delivery_proof": false
+    }
+  },
+  "availability": {
+    "vercel_operator_metadata": {
+      "state": "unavailable",
+      "http_status": 403,
+      "runtime_health_inferred_from_this_failure": false
+    },
+    "echelon_owner_identity": {
+      "state": "input_required",
+      "detail": "Verified Slack identity did not match an Echelon auth account; waiting for Echelon sign-in email. No role or credential changes attempted."
+    }
+  },
+  "remaining": [
+    "Verify approving Echelon account and exact serving function versions.",
+    "Existing authenticated source request/decide flow; isolated source/key handoff and expiring reviewer/lifecycle authorization.",
+    "Exact-result synthetic enrollment, transactional capture, bounded manual dispatch and durable receiver receipt/readback.",
+    "Hosted/injected-fault duplicate, timeout, restart, rate, key rotation, pause, isolation, deletion and rollback matrix.",
+    "Source-scoped proof of no routine agent jobs/approvals/model/Slack calls.",
+    "Verified owner-only backlog alert receipt, cleanup/retention inventory and final restored gates."
+  ],
+  "production_changes": {
+    "new_migrations": 0,
+    "echelon_sources": 0,
+    "keys_created_or_rotated": 0,
+    "learning_scopes": 0,
+    "reviewer_grants": 0,
+    "capture_or_dispatch_activations": 0,
+    "export_sends": 0,
+    "worker_services_or_schedules": 0,
+    "application_code_changed": false,
+    "synthetic_source_journey_and_feedback_writes": true
+  },
+  "limitations": [
+    "Source-only evidence is not AB-50 completion.",
+    "Unavailable checks are not healthy.",
+    "Synthetic behavior does not establish listener benefit.",
+    "Raw internal IDs, tokens, bodies, reading content and pseudonymous refs remain outside this artifact."
+  ]
+}

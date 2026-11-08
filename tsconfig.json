@@ -1,5 +1,5 @@
 {
-  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "eslint.config.js", "scripts/learning-worker.ts", "vite.learning-worker.config.ts"],
+  "include": ["src/**/*.ts", "src/**/*.tsx", "vite.config.ts", "eslint.config.js", "scripts/learning-worker.ts", "vite.learning-worker.config.ts", "tools/musicdna/learning-acceptance/**/*.ts", "tools/musicdna/verify-learning-acceptance.ts"],
   "compilerOptions": {
     "target": "ES2022",
     "jsx": "react-jsx",

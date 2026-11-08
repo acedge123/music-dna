@@ -16,7 +16,8 @@
     "check:learning-migrations": "node scripts/check-musicdna-lifecycle-migration.mjs",
     "test:learning-outbox": "node scripts/require-learning-outbox-db.mjs && vitest run src/musicdna/learning/outbox-db.test.ts src/musicdna/learning/dispatcher-db.test.ts",
     "build:learning-worker": "vite build --config vite.learning-worker.config.ts",
-    "learning:worker": "node dist-learning-worker/worker.mjs"
+    "learning:worker": "node dist-learning-worker/worker.mjs",
+    "verify:learning-journey": "node --experimental-strip-types tools/musicdna/verify-learning-acceptance.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
