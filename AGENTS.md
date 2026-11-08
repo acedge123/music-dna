@@ -20,6 +20,7 @@
 - Reveal never returns a `share_token`; sharing is an explicit `POST /api/v1/session/:id/share` publish/revoke (D03) — so finalizing a reading never implies publication consent.
 - `/api/v1/*` production preflights use `V1_CORS_HEADERS`; Vite echoes localhost origins in dev, so differences are expected.
 - Catalog batches keep versioned before/after data; `tools/musicdna/validate-catalog.ts` separates errors from activation-blocking review warnings. Numeric passes never imply prediction or approval.
+- Coverage-only pairing batches preserve song scores and existing pairings, pin reviewed song values, and test lane/test validity plus selector reachability; coverage expansion must not silently rescore the catalog.
 - Production runs on Vercel at `https://www.musicdna.fm/` (auto-publish from the GitHub repo); the Lovable preview is not production — verify API behavior against the live domain, and remember Vercel needs its own server env vars (`SUPABASE_URL`, `SB_SECRET_KEY`, `AGENT_TEST_HARNESS_KEY`), since Lovable-managed secrets do not propagate there.
 
 - Learning export is synthetic-only and default-disabled by `musicdna_export_scopes.capture_enabled`. AB-45 captures minimal evidence in the existing feedback transaction for operator-enrolled exact results; recovery maps only the frozen outbox projection. Never infer enrollment from sharing/account/user_metadata, reread mutable catalog data for history, bypass lifecycle locks, or enable learning from a PR merge. See `docs/musicdna/learning-outbox.md`.
