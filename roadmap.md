@@ -2,6 +2,8 @@
 
 ## Done — critic-first web presentation
 
+- [x] Keep next matchups mysterious: neutral invitations and effect-only reaction acknowledgements; selection rationale/test prompts are not displayed, including history. Server selection and contracts unchanged.
+
 - [x] Replaced transcript-first interview with one active stage, original vinyl imagery, progress and an accessible history drawer.
 - [x] Server-confirmed reaction acknowledgements appear inline; compact saved reveal and conversation-first challenge; saved fallback replies remain verbatim with contextual follow-up drafts.
 - [x] 53 focused regressions and changed-file lint pass. Real 390px preview session: three openers, six choices, reaction/steered pairing, history, reveal, chat saved/read back after reload and return to completed result. Desktop result checked; no runtime errors or overflow. Latest preview build OK.
