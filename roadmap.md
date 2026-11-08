@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — critic-first web experience
+
+- [ ] Replace transcript-first interview with one active stage, song visuals, progress and a history drawer.
+- [ ] Show durable reaction acknowledgements inline; compact the saved reveal and foreground the conversation.
+- [ ] Preserve authoritative claims, saved content, server-selected questions, completion and all rollout switches; verify desktop/mobile first-session flow and focused regressions.
+
 ## Current — zero-pairing song coverage
 
 - [x] Added eight active Pop matchups covering all 13 never-paired Pop songs; database readback confirms eight eligible and zero remaining. Thirteen tests passed; existing pairs/scores/flags untouched. Receipt: docs/musicdna/zero-pair-coverage-2026-11-08.md.
