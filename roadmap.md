@@ -1,10 +1,11 @@
 # Roadmap
 
-## Current — critic-first web experience
+## Done — critic-first web presentation
 
-- [ ] Replace transcript-first interview with one active stage, song visuals, progress and a history drawer.
-- [ ] Show durable reaction acknowledgements inline; compact the saved reveal and foreground the conversation.
-- [ ] Preserve authoritative claims, saved content, server-selected questions, completion and all rollout switches; verify desktop/mobile first-session flow and focused regressions.
+- [x] Replaced transcript-first interview with one active stage, original vinyl imagery, progress and an accessible history drawer.
+- [x] Server-confirmed reaction acknowledgements appear inline; compact saved reveal and conversation-first challenge; saved fallback replies remain verbatim with contextual follow-up drafts.
+- [x] 53 focused regressions and changed-file lint pass. Real 390px preview session: three openers, six choices, reaction/steered pairing, history, reveal, chat saved/read back after reload and return to completed result. Desktop result checked; no runtime errors or overflow. Latest preview build OK.
+- Scope: presentation only. No backend/catalog/flags changed; new editorial narration, offer-side diversity audit and playable friend challenge are not implemented by this pass. Production deployment acceptance remains separate.
 
 ## Current — zero-pairing song coverage
 
