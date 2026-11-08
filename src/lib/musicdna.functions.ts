@@ -14,6 +14,7 @@ import {
 import { callLovableAi, DEFAULT_MODEL as MODEL } from "@/musicdna/adapters/llm-gateway";
 import { recommendForSession, type Regime } from "@/musicdna/router";
 import { toEnginePairingKnobs } from "@/musicdna/router/knobs";
+import { appliedRoutingContext } from "@/musicdna/learning/applied-routing";
 
 // Phase 4: routing mode. Read once per request from env.
 //   "legacy"  — original behavior, no shadow diff, no regime knobs.
@@ -789,6 +790,8 @@ export async function nextPairingImpl(
   // truly fire-and-forget, switch to `event.waitUntil(promise)` from the
   // server route's ctx instead of dropping the await.
   const routingMode: RoutingMode = readRoutingMode();
+  const appliedOutcomesFlag =
+    typeof process !== "undefined" ? process.env?.MUSICDNA_APPLIED_OUTCOMES_V1 : undefined;
   const emitShadowRecommendation = async (
     pairingId: string | null,
     ctx: {
@@ -809,6 +812,9 @@ export async function nextPairingImpl(
       // we don't run recommendForSession twice per pick. Bootstrap
       // callers omit it and we fall back to computing here.
       cachedRec?: Awaited<ReturnType<typeof recommendForSession>> | null;
+      actualKnobs?: Record<string, unknown> | null;
+      actualMode?: string;
+      fallback?: boolean;
     },
   ): Promise<void> => {
     try {
@@ -823,18 +829,30 @@ export async function nextPairingImpl(
               round,
               maxRounds: 6,
             });
-      if (!rec) return;
+      if (!rec && appliedOutcomesFlag !== "1") return;
       const legacyRegime = legacyToRegime(ctx.selected_mode, ctx.is_bootstrap);
       const props = {
         ...rec,
         selected_mode: ctx.selected_mode,
         legacy_regime: legacyRegime,
-        scoring_agrees: rec.regime === legacyRegime,
+        scoring_agrees: rec ? rec.regime === legacyRegime : null,
         selection_reason: ctx.selection_reason,
         routing_mode: routingMode,
         shadow_pick: ctx.shadow ?? null,
+        ...appliedRoutingContext({
+          enabled: appliedOutcomesFlag,
+          vector,
+          answered,
+          routingMode,
+          mode: ctx.actualMode ?? ctx.selected_mode,
+          knobs: ctx.actualKnobs ?? null,
+          bootstrap: ctx.is_bootstrap,
+          fallback: ctx.fallback ?? false,
+          steer: data.steer ?? null,
+          recommendation: rec,
+        }),
       };
-      await (
+      const { error: eventError } = await (
         await trustedEventLog()
       ).insert({
         user_id: session?.user_id ?? null,
@@ -844,6 +862,7 @@ export async function nextPairingImpl(
         client: "server",
         props: props as never,
       } as never);
+      if (eventError) throw new Error("routing_event_write_failed");
     } catch (e) {
       console.warn(
         "[musicdna] regime_recommended emit failed:",
@@ -1178,6 +1197,9 @@ export async function nextPairingImpl(
     is_bootstrap: false,
     shadow: shadowInfo,
     cachedRec,
+    actualMode: liveKnobs?.mode ?? liveMode,
+    actualKnobs: (liveKnobs ?? null) as Record<string, unknown> | null,
+    fallback: livePool !== finalPool,
   });
   return {
     // why_good / hypothesis are the critic's private notes — never ship them
