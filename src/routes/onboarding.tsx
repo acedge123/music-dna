@@ -289,9 +289,7 @@ function Onboarding() {
         {pairing && phase === "playing" && (
           <section ref={pairingAnchorRef} className="space-y-4 pt-2">
             <p className="font-serif text-2xl md:text-3xl">
-              {entries.length === 0
-                ? "Pick one. First instinct."
-                : "Which one would you keep?"}
+              {entries.length === 0 ? "Pick one. First instinct." : "Which one would you keep?"}
             </p>
             <SongChoices
               songs={[pairing.song_a, pairing.song_b]}
