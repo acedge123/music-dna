@@ -50,11 +50,13 @@ export function criticFacts(ledger: Ledger, labels: AxisLabels) {
       chosen_artist: e.chosen_artist,
       rejected: e.rejected,
       rejected_artist: e.rejected_artist,
-      tested_tradeoffs: ledger.entries.filter((other) => evidenceId(other) === evidenceId(e)).map((other) => ({
-        axis: other.axis,
-        chosen_pole: other.delta > 0 ? labels[other.axis]?.hi : labels[other.axis]?.lo,
-        rejected_pole: other.delta > 0 ? labels[other.axis]?.lo : labels[other.axis]?.hi,
-      })),
+      tested_tradeoffs: ledger.entries
+        .filter((other) => evidenceId(other) === evidenceId(e))
+        .map((other) => ({
+          axis: other.axis,
+          chosen_pole: other.delta > 0 ? labels[other.axis]?.hi : labels[other.axis]?.lo,
+          rejected_pole: other.delta > 0 ? labels[other.axis]?.lo : labels[other.axis]?.hi,
+        })),
     })),
     axes: ledger.axes.map((a) => ({
       axis: a.axis,
@@ -116,14 +118,17 @@ export async function authorCritic(
     status: "insufficient" | "invalid_generation" | "narrator_failure",
     reason: string,
   ) => {
-    console.info("[critic-expression]", JSON.stringify({ stage: options.stage, status, reason, version: CRITIC_EXPRESSION_VERSION }));
-    return ({
-    text: fallback,
-    status,
-    voice_version: CRITIC_EXPRESSION_VERSION,
-    audit_text: audit,
-    validation_reason: reason,
-    });
+    console.info(
+      "[critic-expression]",
+      JSON.stringify({ stage: options.stage, status, reason, version: CRITIC_EXPRESSION_VERSION }),
+    );
+    return {
+      text: fallback,
+      status,
+      voice_version: CRITIC_EXPRESSION_VERSION,
+      audit_text: audit,
+      validation_reason: reason,
+    };
   };
   if (!ledger.entries.length && options.stage !== "chat")
     return fail("insufficient", "no_verified_choices");
