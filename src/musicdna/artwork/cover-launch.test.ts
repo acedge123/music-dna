@@ -20,7 +20,9 @@ describe("album artwork launch approvals", () => {
     const held = launch.rows.filter((row) => !row.display_enabled);
     expect(held).toHaveLength(23);
     expect(held.find((row) => row.title === "No Diggity")?.display_enabled).toBe(false);
-    expect(held.find((row) => row.title === "Heaven Knows I'm Miserable Now")?.display_enabled).toBe(false);
+    expect(
+      held.find((row) => row.title === "Heaven Knows I'm Miserable Now")?.display_enabled,
+    ).toBe(false);
     expect(launch.summary.fallback_count).toBe(161);
   });
 });
