@@ -31,6 +31,13 @@ permission-review notes are never included in the song response. Artwork is not
 part of scoring, evidence snapshots or frozen saved results; this change does not
 enable V1, change routing, or implement Flutter rendering. See `album-artwork.md`.
 
+Launch readback: 333 approved covers available; 161 catalog entries retain null
+artwork (138 missing candidates, 23 held editions/download failure). Flutter
+retains its fallback for null or image errors. Branded fallback source:
+`src/assets/music-dna-cover.jpg`; portable hosted URL:
+`https://id-preview--bf62bea5-34b0-497c-a8a5-6c41d3f35ed6.lovable.app/__l5e/assets-v1/55f73a8a-43de-44dd-ad88-30869528c59d/music-dna-cover.jpg`.
+No Flutter rendering or native release was changed in this launch.
+
 - Flutter must not reimplement MusicDNA engine logic client-side.
 - Flutter should call the existing `/api/v1/*` routes directly over HTTP.
 - Supabase auth is still handled client-side, but authenticated MusicDNA

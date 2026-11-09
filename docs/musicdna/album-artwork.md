@@ -81,3 +81,26 @@ Validation: 18 focused tests passed (matching, approval rules, enrichment/fallba
 session ownership and frozen evidence); changed-file lint passes; latest preview
 build OK. Playwright opened the interview with no runtime errors. Production
 deployment and approved-image rendering remain unverified.
+
+## Display launch, 2026-11-09
+
+- 333 of the 356 candidates passed conservative release-edition review and are
+  enabled in `song_artwork`. 294 unique cover files are hosted with asset pointers
+  under `src/assets/album-covers/`. This was a data-only import; no schema,
+  scoring, pairing, evidence, publication or rollout flags changed.
+- 23 candidates are held: suspicious special/remix/songbook editions, distant or
+  missing release years, one wrong Smiths album, and one download failure.
+  Together with 138 without usable candidates, 161 songs use the branded fallback.
+- Manifest: `data/musicdna/artwork/cover-launch-2026-11-09.json`. Database readback
+  matched all 333 exact song/release/title/hosted-URL bindings, with no unexpected
+  rows or invalid approvals. Optional recording IDs, dates and original candidate
+  URLs remain in the manifest; the compact import populated display fields only.
+- Web song cards now render approved covers and the Music DNA fallback for null
+  or failed images. The nullable REST shape is unchanged; Flutter rendering is
+  still owned by the Flutter team. Absolute HTTPS asset URLs work independently
+  of Vercel's application paths.
+- 19 focused checks and changed-file lint passed. A fresh guest interview visibly
+  rendered approved Elephant artwork alongside a missing-cover fallback; no page
+  errors. Production website deployment remains unverified.
+
+Earlier zero-row/preparation notes describe the preceding pass, not current state.
