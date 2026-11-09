@@ -544,11 +544,17 @@ import { ENGINE_VERSION } from "@/musicdna/engine/versions";
 import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
-import { authorCritic, contextualChatFallback, CRITIC_EXPRESSION_VERSION } from "@/musicdna/adapters/critic-editorial";
-import { choiceObservation, reactionAcknowledgement, reactionSelectionMode } from "@/musicdna/engine/critic-effects";
 import {
-  CLAIM_LANGUAGE_VERSION,
-} from "@/musicdna/engine/claim-language";
+  authorCritic,
+  contextualChatFallback,
+  CRITIC_EXPRESSION_VERSION,
+} from "@/musicdna/adapters/critic-editorial";
+import {
+  choiceObservation,
+  reactionAcknowledgement,
+  reactionSelectionMode,
+} from "@/musicdna/engine/critic-effects";
+import { CLAIM_LANGUAGE_VERSION } from "@/musicdna/engine/claim-language";
 import { fitTier } from "@/musicdna/engine/scoring";
 import { projectRead, type CurrentReadResult } from "@/musicdna/engine/read";
 import { nextPromptFor } from "@/musicdna/engine/prompts";
@@ -1957,11 +1963,14 @@ export async function finalizeSessionImpl(
   const tier = String(fitTier(bestScore));
 
   const criticStart = Date.now();
-  const narrated = await authorCritic(ledger, DIM_LABEL, (prompt) =>
-    ai([
-      { role: "system", content: CRITIC_VOICE },
-      { role: "user", content: prompt },
-    ]),
+  const narrated = await authorCritic(
+    ledger,
+    DIM_LABEL,
+    (prompt) =>
+      ai([
+        { role: "system", content: CRITIC_VOICE },
+        { role: "user", content: prompt },
+      ]),
     { stage: "reveal" },
   );
   const narrative = narrated.text;
@@ -1988,7 +1997,12 @@ export async function finalizeSessionImpl(
       fit_tier: tier,
       cosine_score: Math.round(bestScore * 1000) / 1000,
     },
-    output: { length: narrative.length, narration_status: narrated.status, voice_version: narrated.voice_version, validation_reason: narrated.validation_reason } as never,
+    output: {
+      length: narrative.length,
+      narration_status: narrated.status,
+      voice_version: narrated.voice_version,
+      validation_reason: narrated.validation_reason,
+    } as never,
     narrative: narrative || null,
   });
 
@@ -3149,11 +3163,14 @@ export const roundInsight = createServerFn({ method: "POST" })
     if (!session || session.user_id !== userId) return null;
 
     const { ledger } = await loadChoiceEvidence(supabase, data.sessionId);
-    const narrated = await authorCritic(ledger, DIM_LABEL, (prompt) =>
-      ai([
-        { role: "system", content: INSIGHT_VOICE },
-        { role: "user", content: prompt },
-      ]),
+    const narrated = await authorCritic(
+      ledger,
+      DIM_LABEL,
+      (prompt) =>
+        ai([
+          { role: "system", content: INSIGHT_VOICE },
+          { role: "user", content: prompt },
+        ]),
       { stage: "read" },
     );
     return { kind: data.round === 6 ? "challenge" : "observation", text: narrated.text };
@@ -3296,19 +3313,28 @@ async function computeFinalSynthesis(
     }))
     .filter((c) => c.claim);
 
-  const narrated = await authorCritic(ledger, DIM_LABEL, (prompt) =>
-    ai([
-      { role: "system", content: SYNTH_VOICE },
-      { role: "user", content: prompt },
-    ]),
+  const narrated = await authorCritic(
+    ledger,
+    DIM_LABEL,
+    (prompt) =>
+      ai([
+        { role: "system", content: SYNTH_VOICE },
+        { role: "user", content: prompt },
+      ]),
     { stage: "reveal" },
   );
   const synthesis = narrated.text;
 
   await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
 
-  return { synthesis, kept_choosing, counter_reads, narration_status: narrated.status,
-    voice_version: narrated.voice_version, audit_text: narrated.audit_text };
+  return {
+    synthesis,
+    kept_choosing,
+    counter_reads,
+    narration_status: narrated.status,
+    voice_version: narrated.voice_version,
+    audit_text: narrated.audit_text,
+  };
 }
 
 // ============================================================
@@ -3828,11 +3854,19 @@ Reactions, skips, opener priors and conversation are separate self-report, never
       messages.push({ role: m.role, content: m.content });
     }
   }
-  const previousReply = [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
-  const authored = await authorCritic(chatLedger, DIM_LABEL,
+  const previousReply =
+    [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
+  const authored = await authorCritic(
+    chatLedger,
+    DIM_LABEL,
     (prompt) => ai([...messages, { role: "user", content: prompt }]),
-    { stage: "chat", previous: previousReply, selfReport: data.message,
-      fallback: contextualChatFallback(chatLedger, data.message) });
+    {
+      stage: "chat",
+      previous: previousReply,
+      selfReport: data.message,
+      fallback: contextualChatFallback(chatLedger, data.message),
+    },
+  );
   const reply = authored.text;
   // Never truncate away the exception or qualification from a supported claim.
 
@@ -4037,13 +4071,21 @@ Reactions, skips, opener priors and conversation are separate self-report, never
         messages.push({ role: m.role, content: m.content });
       }
     }
-    const previousReply = [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
-  const authored = await authorCritic(chatLedger, DIM_LABEL,
-    (prompt) => ai([...messages, { role: "user", content: prompt }]),
-    { stage: "chat", previous: previousReply, selfReport: data.message,
-      fallback: contextualChatFallback(chatLedger, data.message) });
-  const reply = authored.text;
-  // Never truncate away the exception or qualification from a supported claim.
+    const previousReply =
+      [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
+    const authored = await authorCritic(
+      chatLedger,
+      DIM_LABEL,
+      (prompt) => ai([...messages, { role: "user", content: prompt }]),
+      {
+        stage: "chat",
+        previous: previousReply,
+        selfReport: data.message,
+        fallback: contextualChatFallback(chatLedger, data.message),
+      },
+    );
+    const reply = authored.text;
+    // Never truncate away the exception or qualification from a supported claim.
 
     const committed = await persistenceRpc<Turn>(supabase, "complete_chat_turn", {
       p_session_id: sessionId,
@@ -4161,11 +4203,7 @@ export async function currentReadImpl(
     language?: string;
     result?: CurrentReadResult;
   } | null;
-  if (
-    priorProps?.answered === ledger.answered &&
-    priorProps.result
-  )
-    return priorProps.result;
+  if (priorProps?.answered === ledger.answered && priorProps.result) return priorProps.result;
   const prior =
     priorProps?.axis && priorProps.direction
       ? {
@@ -4176,9 +4214,16 @@ export async function currentReadImpl(
         }
       : null;
   const result = projectRead(ledger, DIM_LABEL, prior);
-  const authored = await authorCritic(ledger, DIM_LABEL,
-    (prompt) => ai([{ role: "system", content: VOICE }, { role: "user", content: prompt }]),
-    { stage: "read", previous: prior?.thesis, fallback: result.thesis });
+  const authored = await authorCritic(
+    ledger,
+    DIM_LABEL,
+    (prompt) =>
+      ai([
+        { role: "system", content: VOICE },
+        { role: "user", content: prompt },
+      ]),
+    { stage: "read", previous: prior?.thesis, fallback: result.thesis },
+  );
   result.audit_text = result.thesis;
   result.voice_version = authored.voice_version;
   result.narration_status = authored.status;
@@ -4283,9 +4328,13 @@ export async function recordReactionImpl(
   const steer = data.kind === "harder" ? "harder" : "not_quite";
   const next = await nextPairingImpl(supabase, { sessionId: data.sessionId, steer });
   const replaced = !!(next as { pairing?: unknown }).pairing && !(next as { done?: boolean }).done;
-  const { data: priorReads } = await supabase.from("event_log").select("props")
-    .eq("session_id", data.sessionId).eq("event_type", "read_shown")
-    .order("created_at", { ascending: false }).limit(1);
+  const { data: priorReads } = await supabase
+    .from("event_log")
+    .select("props")
+    .eq("session_id", data.sessionId)
+    .eq("event_type", "read_shown")
+    .order("created_at", { ascending: false })
+    .limit(1);
   const priorThesis = (priorReads?.[0]?.props as { thesis?: string } | null)?.thesis ?? "";
   return {
     effect: (replaced

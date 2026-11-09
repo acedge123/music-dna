@@ -1,15 +1,22 @@
 import type { SelectionMode } from "./pairing";
 import type { AxisLabels } from "./claim-language";
 
-export function reactionSelectionMode(mode: SelectionMode, steer?: "harder" | "not_quite"): SelectionMode {
+export function reactionSelectionMode(
+  mode: SelectionMode,
+  steer?: "harder" | "not_quite",
+): SelectionMode {
   return steer === "harder" ? "diagnostic_first" : mode;
 }
 
 export function choiceObservation(
-  axis: string | null | undefined, delta: number, labels: AxisLabels, round: number,
+  axis: string | null | undefined,
+  delta: number,
+  labels: AxisLabels,
+  round: number,
 ) {
   const poles = axis ? labels[axis] : null;
-  if (!poles || !Number.isFinite(delta) || delta === 0) return "One pick. I'm listening, not declaring a pattern.";
+  if (!poles || !Number.isFinite(delta) || delta === 0)
+    return "One pick. I'm listening, not declaring a pattern.";
   const preferred = delta > 0 ? poles.hi : poles.lo;
   const other = delta > 0 ? poles.lo : poles.hi;
   const lines = [
@@ -24,16 +31,25 @@ export function choiceObservation(
 }
 
 export function reactionAcknowledgement(
-  kind: "thats_me" | "harder" | "not_quite", replaced: boolean, completed: boolean,
+  kind: "thats_me" | "harder" | "not_quite",
+  replaced: boolean,
+  completed: boolean,
   priorThesis = "",
 ) {
-  if (completed) return kind === "thats_me" ? "Heard you. The reading stays; the argument can keep going."
-    : "The picks are finished. Bring that objection to the reading—I'm not done listening.";
+  if (completed)
+    return kind === "thats_me"
+      ? "Heard you. The reading stays; the argument can keep going."
+      : "The picks are finished. Bring that objection to the reading—I'm not done listening.";
   if (kind === "thats_me") return "That landed. Still not letting one good line close the case.";
-  if (!replaced) return "No other matchup available right now. I'm not calling that a tougher test.";
-  const earlier = priorThesis.trim().split(/\n|(?<=[.!?])\s/)[0]?.slice(0, 160);
-  if (kind === "not_quite") return earlier
-    ? `You pushed back on “${earlier}”. Fair—I'll keep the claim on trial. Pick again.`
-    : "Fair objection. The read isn't gospel. Pick again.";
+  if (!replaced)
+    return "No other matchup available right now. I'm not calling that a tougher test.";
+  const earlier = priorThesis
+    .trim()
+    .split(/\n|(?<=[.!?])\s/)[0]
+    ?.slice(0, 160);
+  if (kind === "not_quite")
+    return earlier
+      ? `You pushed back on “${earlier}”. Fair—I'll keep the claim on trial. Pick again.`
+      : "Fair objection. The read isn't gospel. Pick again.";
   return "Alright, no victory lap. Another matchup—your call.";
 }

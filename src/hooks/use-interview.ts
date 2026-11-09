@@ -21,7 +21,6 @@ import { toast } from "sonner";
 import type { CurrentReadResult } from "@/musicdna/engine/read";
 import type { Phase, Refined, Pairing, Entry } from "@/lib/interview-model";
 import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
-import { reactionDisplayMessage } from "@/lib/critic-display";
 
 export function useInterview(requestedSession?: string) {
   const reducedMotion = usePrefersReducedMotion();
@@ -568,7 +567,7 @@ export function useInterview(requestedSession?: string) {
         } | null;
       };
       setReactedRounds((prev) => [...prev, currentRound]);
-      setReactionReply({ round: currentRound, message: reactionDisplayMessage(r.effect) });
+      setReactionReply({ round: currentRound, message: r.message });
       const nx = r.next;
       if (nx?.max_rounds) setMaxRounds(nx.max_rounds);
       if (nx?.done) {
