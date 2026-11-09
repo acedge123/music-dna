@@ -1,5 +1,9 @@
 # Roadmap
 
+## Current — critic audit review
+
+- [ ] Review docs/musicdna/CRITIC_IMPLEMENTATION_GAP_AUDIT.md against the critic's current behavior; report agreement/disagreement without changing critic logic.
+
 ## Current — album artwork for web and Flutter
 
 - [ ] Launch checked release covers with a branded Music DNA fallback for every missing, unconfirmed or failed image; preserve approval gates and nullable Flutter contract.
