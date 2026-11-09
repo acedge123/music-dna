@@ -102,7 +102,7 @@ export function contextualChatFallback(ledger: Ledger, selfReport: string) {
 export async function authorCritic(
   ledger: Ledger,
   labels: AxisLabels,
-  generate: (prompt: string) => Promise<string>,
+  generate: (prompt: string, review?: boolean) => Promise<string>,
   options: { stage: CriticStage; fallback?: string; previous?: string; selfReport?: string },
 ) {
   const audit = deterministicNarration(ledger, labels);
@@ -169,7 +169,7 @@ Song titles and axis labels do NOT establish details of lyrics, instrumentation,
 Such factual details not supplied in FACTS MUST fail no_invented_facts. Never validate using your own musical knowledge.
 FACTS: ${JSON.stringify(facts)}
 CONTEXT: ${JSON.stringify(context)}
-CANDIDATE: ${JSON.stringify(beat)}`);
+CANDIDATE: ${JSON.stringify(beat)}`, true);
     let review: unknown;
     try {
       review = JSON.parse(reviewRaw);
