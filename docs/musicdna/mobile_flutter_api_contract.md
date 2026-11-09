@@ -14,6 +14,23 @@ The architecture boundary is:
 
 ## Principles
 
+### Optional album artwork (additive, 2026-11-09)
+
+The shared next-pairing response includes `artwork` on both `pairing.song_a` and
+`pairing.song_b`. It is `null` until the exact release and display rights are approved.
+Existing clients may ignore this field. New Flutter clients should accept missing
+or null artwork, retain their fallback image, and fall back on image-load failure.
+
+```json
+{ "artwork": { "image_url": "https://<approved-image-host>/<image>", "album_title": "Album title", "release_mbid": "release UUID", "source": "cover_art_archive", "attribution": "Required credit" } }
+```
+
+This is a shape illustration, not a live image URL. Use `image_url` verbatim; do
+not reconstruct archive URLs from song names or identifiers. Candidate URLs and
+permission-review notes are never included in the song response. Artwork is not
+part of scoring, evidence snapshots or frozen saved results; this change does not
+enable V1, change routing, or implement Flutter rendering. See `album-artwork.md`.
+
 - Flutter must not reimplement MusicDNA engine logic client-side.
 - Flutter should call the existing `/api/v1/*` routes directly over HTTP.
 - Supabase auth is still handled client-side, but authenticated MusicDNA

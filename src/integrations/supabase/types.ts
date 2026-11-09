@@ -1390,6 +1390,91 @@ export type Database = {
           },
         ]
       }
+      song_artwork: {
+        Row: {
+          attribution: string | null
+          candidate_image_url: string | null
+          checked_at: string | null
+          created_at: string
+          display_enabled: boolean
+          image_url: string | null
+          match_score: number | null
+          match_status: string
+          recording_mbid: string | null
+          release_artist: string | null
+          release_date: string | null
+          release_mbid: string | null
+          release_title: string | null
+          rights_reference: string | null
+          rights_status: string
+          song_id: string
+          source: string
+          updated_at: string
+        }
+        Insert: {
+          attribution?: string | null
+          candidate_image_url?: string | null
+          checked_at?: string | null
+          created_at?: string
+          display_enabled?: boolean
+          image_url?: string | null
+          match_score?: number | null
+          match_status?: string
+          recording_mbid?: string | null
+          release_artist?: string | null
+          release_date?: string | null
+          release_mbid?: string | null
+          release_title?: string | null
+          rights_reference?: string | null
+          rights_status?: string
+          song_id: string
+          source?: string
+          updated_at?: string
+        }
+        Update: {
+          attribution?: string | null
+          candidate_image_url?: string | null
+          checked_at?: string | null
+          created_at?: string
+          display_enabled?: boolean
+          image_url?: string | null
+          match_score?: number | null
+          match_status?: string
+          recording_mbid?: string | null
+          release_artist?: string | null
+          release_date?: string | null
+          release_mbid?: string | null
+          release_title?: string | null
+          rights_reference?: string | null
+          rights_status?: string
+          song_id?: string
+          source?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "song_artwork_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: true
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "song_artwork_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: true
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "song_artwork_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: true
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       song_axes: {
         Row: {
           axis_id: string

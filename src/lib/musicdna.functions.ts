@@ -1,4 +1,5 @@
 import { requireVisibleSession } from "@/musicdna/adapters/session-access";
+import { withPairingArtwork } from "@/musicdna/adapters/song-artwork";
 import { persistenceRpc, PersistenceError } from "@/musicdna/adapters/persistence";
 import { loadChatPage } from "@/musicdna/adapters/chat-history";
 import { createServerFn } from "@tanstack/react-start";
@@ -983,7 +984,7 @@ export async function nextPairingImpl(
         is_bootstrap: true,
       });
       return {
-        pairing: stripPrivatePairingFields(bootPicked),
+        pairing: await withPairingArtwork(supabase, stripPrivatePairingFields(bootPicked)),
         prompt: nextPromptFor((bootPicked.tests ?? []) as string[]),
         round: round + 1,
         answered,
@@ -1227,7 +1228,7 @@ export async function nextPairingImpl(
   return {
     // why_good / hypothesis are the critic's private notes — never ship them
     // to a client before the choice is made.
-    pairing: stripPrivatePairingFields(picked.pairing),
+    pairing: await withPairingArtwork(supabase, stripPrivatePairingFields(picked.pairing)),
     prompt: nextPromptFor(
       ((picked.pairing as { tests?: string[] | null }).tests ?? []) as string[],
       topLeadAxis(vector),
