@@ -89,8 +89,6 @@ export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLab
     return null;
   if (beat.claims.length && validatedNarration({ claims: beat.claims }, ledger, labels) === null)
     return null;
-  if (!beat.claims.every((c) => c.choice_ids.every((id) => beat.choice_ids.includes(id))))
-    return null;
   // Internal references belong in structured fields, never in listener-facing prose.
   const prose = `${beat.headline} ${beat.body}`;
   if (/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i.test(prose)) return null;
@@ -142,6 +140,7 @@ export async function authorCritic(
     const raw = await generate(`AUTHOR a MusicDNA critic beat. Return ONLY JSON:
 {"headline":"short opening line","body":"original prose","choice_ids":["verified id"],"claims":[]}.
 Claims, if any, use {"axis":"supplied eligible axis","direction":"hi|lo","choice_ids":["support id"]}.
+If you only acknowledge self-report or discuss a possibility, return claims: []. Do not attach unused claims.
 Use existing critic voice: music fan first, sharp and humane, not a clinical report. React before inference.
 Be inventive about phrasing, not facts. Music-specific means actual titles and supplied tested tradeoffs, not invented production details.
 Metaphor is welcome when explicitly describing a supplied pole; it does not establish literal music facts.
@@ -164,7 +163,7 @@ FACTS: ${JSON.stringify(facts)}
 CONTEXT: ${JSON.stringify(context)}`);
     let decoded: unknown;
     try {
-      decoded = JSON.parse(raw);
+      decoded = JSON.parse(raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, ""));
     } catch {
       return fail("invalid_generation", "invalid_json");
     }
@@ -193,7 +192,7 @@ CANDIDATE: ${JSON.stringify(beat)}`,
     );
     let review: unknown;
     try {
-      review = JSON.parse(reviewRaw);
+      review = JSON.parse(reviewRaw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, ""));
     } catch {
       return fail("invalid_generation", "invalid_review");
     }
