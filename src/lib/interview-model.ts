@@ -11,7 +11,14 @@ export type Refined = {
   fork?: string;
   stakes?: string;
 };
-export type Song = { id: string; title: string; artist: string; year: number | null; lane: string };
+export type Song = {
+  id: string;
+  title: string;
+  artist: string;
+  year: number | null;
+  lane: string;
+  artwork?: { image_url: string; album_title: string | null } | null;
+};
 export type Pairing = {
   id: string;
   tests: string[];

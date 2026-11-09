@@ -2,6 +2,8 @@
 
 - Album artwork is optional release-specific catalog decoration shared by web and Flutter through `withPairingArtwork`; caller-scoped reads and documented rights/release verification gate display, and artwork never changes frozen evidence or routing.
 
+- Web song choices render approved artwork through `SongCover`, using a bundled branded fallback for null or failed images; hosted cover URLs are absolute for external clients so Vercel and Flutter do not depend on local asset paths.
+
 - The critic-first web stage keeps the active pairing and latest read primary; history and audit text stay secondary. Presentation may omit numeric parentheticals but never strengthen, fabricate or rewrite saved claims; full frozen content remains available.
 
 - Every claim about a listener (running read, final reasoning, chat context, share card) derives from `buildLedger` in `src/musicdna/engine/evidence.ts` and `evaluateClaim` in `claims.ts` — so no two surfaces can disagree about what the choices show.
