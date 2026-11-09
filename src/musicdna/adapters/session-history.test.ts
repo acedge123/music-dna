@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest";
 import { loadSessionHistory } from "./session-history";
 import { expectedCatalog } from "../engine/evidence-snapshot";
 
-function client(legacy = false, error: { message: string } | null = null) {
+function client(
+  legacy = false,
+  error: { message: string } | null = null,
+  events: Record<string, unknown>[] = [],
+) {
   const chosen = { id: "b", title: "Live B renamed", artist: "Y", year: null, lane: "pop" };
   const rejected = { id: "a", title: "Live A renamed", artist: "X", year: null, lane: "pop" };
   const row = {
@@ -52,7 +56,7 @@ function client(legacy = false, error: { message: string } | null = null) {
         in: () => q,
         order: () => q,
         then: (resolve: (v: unknown) => unknown) =>
-          Promise.resolve({ data: table === "choices" ? [row] : [], error }).then(resolve),
+          Promise.resolve({ data: table === "choices" ? [row] : events, error }).then(resolve),
       };
       return q;
     },
@@ -60,6 +64,54 @@ function client(legacy = false, error: { message: string } | null = null) {
 }
 
 describe("frozen resume history", () => {
+  it("restores authored read and frozen audit metadata without exposing validation diagnostics", async () => {
+    const history = await loadSessionHistory(
+      client(false, null, [
+        {
+          event_type: "read_shown",
+          created_at: "2",
+          pairing_id: null,
+          props: {
+            thesis: "The saved authored read.",
+            validation_reason: "private diagnostic",
+            result: {
+              voice_version: "critic-expression-v2",
+              audit_text: "The frozen evidence.",
+              narration_status: "ok",
+            },
+          },
+        },
+      ]) as never,
+      "s",
+    );
+    expect(history[1]).toMatchObject({
+      type: "read",
+      thesis: "The saved authored read.",
+      voice_version: "critic-expression-v2",
+      audit_text: "The frozen evidence.",
+      narration_status: "ok",
+    });
+    expect(JSON.stringify(history)).not.toContain("private diagnostic");
+  });
+  it("preserves legacy read wording when optional narration metadata is absent", async () => {
+    const history = await loadSessionHistory(
+      client(false, null, [
+        {
+          event_type: "read_shown",
+          created_at: "2",
+          pairing_id: null,
+          props: { thesis: "A historical claim, including its exception." },
+        },
+      ]) as never,
+      "s",
+    );
+    expect(history[1]).toMatchObject({
+      thesis: "A historical claim, including its exception.",
+      voice_version: null,
+      audit_text: null,
+      narration_status: null,
+    });
+  });
   it("uses vote-time metadata and preserves the original A/B order", async () => {
     const history = await loadSessionHistory(client() as never, "s");
     expect(history[0]).toMatchObject({
