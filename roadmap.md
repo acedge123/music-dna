@@ -2,16 +2,16 @@
 
 ## Current — critic audit review
 
-- [ ] Review docs/musicdna/CRITIC_IMPLEMENTATION_GAP_AUDIT.md against the critic's current behavior; report agreement/disagreement without changing critic logic.
+- [x] Reviewed CRITIC_IMPLEMENTATION_GAP_AUDIT.md against current code: agree expression contract blocks authored critic prose; preserve evidence/replay/privacy, reject revealing next tests, reuse persona/one bounded editorial seam. No critic changes made.
 
 ## Current — album artwork for web and Flutter
 
-- [ ] Launch checked release covers with a branded Music DNA fallback for every missing, unconfirmed or failed image; preserve approval gates and nullable Flutter contract.
+- [x] Enabled 333 checked covers (294 hosted assets); 23 suspicious/unavailable candidates held. Web uses branded fallback for 161 missing/held songs and image errors; exact database binding readback, 19 tests and guest rendering verified.
 
 - [x] Checked all 494 songs: 356 candidates with artwork, 16 candidates without front artwork, 118 no eligible matches, four upstream errors. Full candidate report saved; no images republished or permission inferred.
-- [x] Applied protected song_artwork storage and additive nullable artwork fields to both shared web/Flutter pairing selection paths; approved-only reads and documented-rights validation. Table currently empty; candidate data stays in the review report.
+- [x] Applied protected song_artwork storage and additive nullable artwork fields to both shared web/Flutter pairing selection paths; approved-only reads and documented-rights validation. Initial empty table now has 333 approved display records.
 - [x] Grants/RLS readback, 18 focused tests, changed-file lint, preview build and interview opening checked. Receipt: docs/musicdna/album-artwork.md.
-- [ ] Candidate import, verified release/rights approval and public display await editorial/legal review; Flutter rendering and deployed Vercel artwork acceptance remain separate.
+- [ ] Remaining 23 candidate covers need release confirmation/download retry; Flutter rendering needs Flutter team, deployed Vercel artwork acceptance awaits synced website deployment.
 
 ## Done — critic-first web presentation
 
