@@ -3,8 +3,9 @@
 ## Current — critic audit review
 
 - [x] Reviewed CRITIC_IMPLEMENTATION_GAP_AUDIT.md against current code: agree expression contract blocks authored critic prose; preserve evidence/replay/privacy, reject revealing next tests, reuse persona/one bounded editorial seam. No critic changes made.
-- [ ] Implement versioned bounded authored reads/reveal/chat, specific opener/vote/reaction copy, and harder-mode precedence regression; preserve evidence, replay and shared Flutter fields.
-- [ ] Verify safety fixtures and a real preview conversation; document Flutter handoff and human-quality/production acceptance limits.
+- [x] Added versioned authored reads/reveal/chat with reference checks and independent semantic review, specific opener/vote/reaction copy, harder-mode override, full audit text and additive Flutter fields. No evidence/flags/migrations changed.
+- [x] 255 focused tests, changed-file lint and preview build pass; guest interview/reaction/reveal/chat correction and exact reload verified, desktop/390px/no overflow. Handoff: docs/musicdna/critic-expression-v2.md.
+- [ ] Early-read authoring still rejects too often and falls back to old templates; human voice matrix and production serving/ownership acceptance remain pending. Flutter display adoption needs Codex. This is not full critic-quality acceptance.
 
 ## Current — album artwork for web and Flutter
 

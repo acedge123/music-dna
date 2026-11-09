@@ -430,6 +430,8 @@ Session history and resume ARE exposed as REST:
 
 ## Flutter Integration Notes
 
+November 9 critic expression amendment: shared authored responses retain existing fields. Render choice `feedback`, `read.thesis`, reaction `message`, reveal `headline`, and chat `reply` verbatim; do not recreate critic prose in Flutter. V1 read/reveal add optional `voice_version`, `audit_text`, `narration_status`; old records may omit them. Never expose next-test rationale. See `critic-expression-v2.md` for verification limits; native adoption/deployed acceptance remain pending.
+
 Recommended mobile layering:
 
 - data source:
