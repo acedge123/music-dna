@@ -5,6 +5,11 @@ and remaining deployment/access/operational evidence gaps. The current evidence 
 [the November 7 run](acceptance/ab50-2026-11-07.json). Dates in that record are UTC;
 November 7 is the operator's America/Los_Angeles work date.
 
+The [November 9 closeout](acceptance/ab50-closeout-2026-11-09.md) verifies the unchanged
+expired scope, disabled gates, zero active evidence payloads/pending deletions and
+the future marker-forgetting deadline. It preserves the remaining deployment,
+authenticated-access and retention limitations; AB-50 is not complete.
+
 ## Approved test boundary
 
 Alan approved a separate **Music DNA Acceptance** test area inside the existing
