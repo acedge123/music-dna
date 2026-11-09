@@ -10,6 +10,11 @@ expired scope, disabled gates, zero active evidence payloads/pending deletions a
 the future marker-forgetting deadline. It preserves the remaining deployment,
 authenticated-access and retention limitations; AB-50 is not complete.
 
+Alan subsequently approved the Echelon request. The [approved handoff receipt](acceptance/ab50-echelon-handoff-2026-11-09.md)
+records unavailable provider/Auth-admin access, no QA accounts created and an
+unrelated Lovable dependency commit. A signed-in Cloud operator session is needed
+to inspect the remaining supported console controls. Learning remains off.
+
 ## Approved test boundary
 
 Alan approved a separate **Music DNA Acceptance** test area inside the existing
