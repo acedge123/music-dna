@@ -2,9 +2,10 @@
 
 ## Current — album artwork for web and Flutter
 
-- [ ] Match the entire catalog against MusicBrainz recordings and release-specific Cover Art Archive entries; save a review report without claiming copyright permission.
-- [ ] Prepare protected artwork metadata storage and an additive nullable artwork field shared by web and Flutter pairings.
-- [ ] Verify permissions and regressions; keep unreviewed artwork unavailable to listeners. Public artwork activation awaits release-match and rights approval.
+- [x] Checked all 494 songs: 356 candidates with artwork, 16 candidates without front artwork, 118 no eligible matches, four upstream errors. Full candidate report saved; no images republished or permission inferred.
+- [x] Applied protected song_artwork storage and additive nullable artwork fields to both shared web/Flutter pairing selection paths; approved-only reads and documented-rights validation. Table currently empty; candidate data stays in the review report.
+- [x] Grants/RLS readback, 18 focused tests, changed-file lint, preview build and interview opening checked. Receipt: docs/musicdna/album-artwork.md.
+- [ ] Candidate import, verified release/rights approval and public display await editorial/legal review; Flutter rendering and deployed Vercel artwork acceptance remain separate.
 
 ## Done — critic-first web presentation
 
