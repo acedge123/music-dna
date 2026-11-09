@@ -23,4 +23,3 @@ SELECT jsonb_build_object(
  'rls_table_count',(SELECT count(*) FROM pg_class c JOIN pg_namespace n ON n.oid=c.relnamespace WHERE n.nspname='public' AND c.relname IN ('musicdna_learning_receipts','musicdna_learning_lifecycle_scopes','musicdna_learning_suppressions','musicdna_learning_read_grants') AND c.relrowsecurity)
 ) AS status;
 COMMIT;
-

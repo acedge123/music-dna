@@ -196,12 +196,12 @@
     "database_writes": 0,
     "new_identities": 0,
     "migrations": 0,
-    "deployments": 0,
     "keys_changed": 0,
     "gates_enabled": 0,
     "model_calls": 0,
     "slack_messages": 0,
     "new_evidence_deliveries": 0,
-    "schedules": 0
+    "schedules": 0,
+    "production_deployments": 0
   }
 }
