@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — album artwork for web and Flutter
+
+- [ ] Match the entire catalog against MusicBrainz recordings and release-specific Cover Art Archive entries; save a review report without claiming copyright permission.
+- [ ] Prepare protected artwork metadata storage and an additive nullable artwork field shared by web and Flutter pairings.
+- [ ] Verify permissions and regressions; keep unreviewed artwork unavailable to listeners. Public artwork activation awaits release-match and rights approval.
+
 ## Done — critic-first web presentation
 
 - [x] Keep next matchups mysterious: neutral invitations and effect-only reaction acknowledgements; selection rationale/test prompts are not displayed, including history. Server selection and contracts unchanged.
