@@ -44,9 +44,9 @@ describe("critic-expression-v2 boundary", () => {
     expect(result.audit_text).toContain("3 supporting choices, 1 against");
     expect(generate).toHaveBeenCalledTimes(2);
   });
-  it.each([[40], [40, 40], [40, -40, 40, -40]])(
+  it.each([{ deltas: [40] }, { deltas: [40, 40] }, { deltas: [40, -40, 40, -40] }])(
     "cannot cite a supported tendency below D01: %j",
-    (deltas) => {
+    ({ deltas }) => {
       expect(validateCriticBeat(beat, ledger(deltas), labels)).toBeNull();
     },
   );
