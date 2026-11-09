@@ -19,6 +19,12 @@ mismatch and keeps its configured fallback; beta pilot/instrumentation remain of
 
 ## Target and verification
 
+Resume/history also now projects the three optional narration fields from the
+saved read result. The old projection dropped them, so audit details disappeared
+after the client refreshed history. Authored wording and original frozen audit
+text are restored directly; no claims are regenerated, and private validation
+diagnostics are not returned. Legacy reads retain their original wording.
+
 - Existing Vercel project `prj_xXtAp85f1cFGox23XyxRG7RCuIyP`, custom environment
   `musicdna-beta`, stable hostname
   `musicdna-beta-alan-edgetts-projects.vercel.app`.
@@ -26,7 +32,7 @@ mismatch and keeps its configured fallback; beta pilot/instrumentation remain of
   mode off, routing shadow, AB-52 pilot and applied-outcome instrumentation unset/off.
   Sensitive server configuration is configured in Vercel; values are not copied
   into the Flutter app or this document.
-- Full source checks:418 tests pass,99 environment-dependent tests skipped;
+- Full source checks:420 tests pass,99 environment-dependent tests skipped;
   contract/migration/source-artifact guards pass. Vercel-target build succeeds.
 - Deploy to the existing beta environment, retain the prior deployment for rollback,
   and verify the actual served revision and ordinary authentication boundary.

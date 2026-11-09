@@ -44,6 +44,9 @@ export type Exchange =
       answered: number | null;
       tier: string | null;
       thesis: string | null;
+      voice_version?: string | null;
+      audit_text?: string | null;
+      narration_status?: string | null;
       direction: string | null;
       revised: boolean;
       revision: Record<string, string | number | boolean | null | Record<string, string>> | null;
@@ -131,13 +134,22 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
   for (const e of (eventsRes.data ?? []) as ERow[]) {
     const p = e.props ?? {};
     if (e.event_type === "read_shown") {
-      const savedRead = p.result as { direction?: string; question?: string } | null;
+      const savedRead = p.result as {
+        direction?: string;
+        question?: string;
+        voice_version?: string;
+        audit_text?: string;
+        narration_status?: string;
+      } | null;
       out.push({
         type: "read",
         at: e.created_at,
         answered: typeof p.answered === "number" ? p.answered : null,
         tier: (p.tier as string) ?? null,
         thesis: (p.thesis as string) ?? null,
+        voice_version: savedRead?.voice_version ?? (p.voice_version as string) ?? null,
+        audit_text: savedRead?.audit_text ?? null,
+        narration_status: savedRead?.narration_status ?? null,
         direction: savedRead?.direction ?? (p.revised ? "revising" : null),
         revised: !!p.revised,
         revision: (p.revision ?? null) as never,
