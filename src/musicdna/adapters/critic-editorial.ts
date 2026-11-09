@@ -163,7 +163,12 @@ FACTS: ${JSON.stringify(facts)}
 CONTEXT: ${JSON.stringify(context)}`);
     let decoded: unknown;
     try {
-      decoded = JSON.parse(raw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, ""));
+      decoded = JSON.parse(
+        raw
+          .trim()
+          .replace(/^```(?:json)?\s*/i, "")
+          .replace(/\s*```$/, ""),
+      );
     } catch {
       return fail("invalid_generation", "invalid_json");
     }
@@ -192,7 +197,12 @@ CANDIDATE: ${JSON.stringify(beat)}`,
     );
     let review: unknown;
     try {
-      review = JSON.parse(reviewRaw.trim().replace(/^```(?:json)?\s*/i, "").replace(/\s*```$/, ""));
+      review = JSON.parse(
+        reviewRaw
+          .trim()
+          .replace(/^```(?:json)?\s*/i, "")
+          .replace(/\s*```$/, ""),
+      );
     } catch {
       return fail("invalid_generation", "invalid_review");
     }
