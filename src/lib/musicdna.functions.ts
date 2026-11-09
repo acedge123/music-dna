@@ -685,7 +685,8 @@ export async function nextPairingImpl(
   probeState.flips = probeState.flips ?? [];
   const bootstrapChoices =
     ((session as { bootstrap_choices_json?: unknown } | null)?.bootstrap_choices_json as
-      BootstrapChoiceEntry[] | null) ?? [];
+      | BootstrapChoiceEntry[]
+      | null) ?? [];
 
   // Extract the set of lanes the opener songs actually landed in. Used by
   // the bootstrap phase to keep probe pairings inside the user's stated
@@ -3180,8 +3181,9 @@ type SynthPayload = {
 export const finalSynthesis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
-  .handler(async ({ data, context }): Promise<SynthPayload> =>
-    finalSynthesisImpl(context.supabase, context.userId, data),
+  .handler(
+    async ({ data, context }): Promise<SynthPayload> =>
+      finalSynthesisImpl(context.supabase, context.userId, data),
   );
 
 // RES04: the first pairing-based result is saved once and replayed verbatim
@@ -3548,8 +3550,9 @@ export const chatTurn = createServerFn({ method: "POST" })
       })
       .parse(d),
   )
-  .handler(async ({ data, context }): Promise<{ reply: string; sessionId: string }> =>
-    chatTurnImpl(context.supabase, context.userId, data),
+  .handler(
+    async ({ data, context }): Promise<{ reply: string; sessionId: string }> =>
+      chatTurnImpl(context.supabase, context.userId, data),
   );
 
 // Shared by the web server function and the v1 REST chat endpoint, so both
