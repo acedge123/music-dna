@@ -98,6 +98,7 @@ export function useInterview(requestedSession?: string) {
   );
   const [entries, setEntries] = useState<Entry[]>([]);
   const [synthesis, setSynthesis] = useState<string | null>(null);
+  const [auditText, setAuditText] = useState<string | undefined>();
   const [kept, setKept] = useState<
     Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>
   >([]);
@@ -515,6 +516,7 @@ export function useInterview(requestedSession?: string) {
       const r = (await synthFn({ data: { sessionId: sid } })) as {
         result_version?: number | null;
         synthesis: string;
+        audit_text?: string;
         kept_choosing: Array<{
           tradeoff: string;
           examples: string[];
@@ -526,6 +528,7 @@ export function useInterview(requestedSession?: string) {
       if (!r.synthesis || r.result_version == null) throw new Error("Reading not saved yet");
       setResultVersion(r.result_version);
       setSynthesis(r.synthesis);
+      setAuditText(r.audit_text);
       setKept(r.kept_choosing ?? []);
       setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
     } catch (e) {
@@ -705,6 +708,7 @@ export function useInterview(requestedSession?: string) {
     reactionReply,
     entries,
     synthesis,
+    auditText,
     kept,
     counters,
     slotAnchorRef,

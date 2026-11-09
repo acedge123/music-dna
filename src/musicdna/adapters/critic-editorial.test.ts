@@ -31,6 +31,14 @@ const review = {
 };
 
 describe("critic-expression-v2 boundary", () => {
+  it("accepts fenced structured output while keeping all validation", async () => {
+    const generate = vi.fn().mockResolvedValueOnce(`\`\`\`json\n${JSON.stringify(beat)}\n\`\`\``)
+      .mockResolvedValueOnce(JSON.stringify(review));
+    expect((await authorCritic(ledger([40,40,40]), labels, generate, {stage:"read"})).status).toBe("ok");
+  });
+  it("rejects internal UUIDs in displayed prose", () => {
+    expect(validateCriticBeat({...beat, body:"Song (781015b1-dbec-4c2b-b10e-9be06cfea57f)."}, ledger([40,40,40]),labels)).toBeNull();
+  });
   it("accepts reviewed authored wording and keeps the full 3–1 audit exception", async () => {
     const generate = vi
       .fn()
