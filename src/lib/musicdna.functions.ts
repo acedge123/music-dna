@@ -544,11 +544,9 @@ import { ENGINE_VERSION } from "@/musicdna/engine/versions";
 import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
-import { narrateEvidence } from "@/musicdna/adapters/evidence-narrator";
+import { authorCritic, contextualChatFallback, CRITIC_EXPRESSION_VERSION } from "@/musicdna/adapters/critic-editorial";
+import { choiceObservation, reactionAcknowledgement, reactionSelectionMode } from "@/musicdna/engine/critic-effects";
 import {
-  validatedChat,
-  fallbackChat,
-  narrationOptions,
   CLAIM_LANGUAGE_VERSION,
 } from "@/musicdna/engine/claim-language";
 import { fitTier } from "@/musicdna/engine/scoring";
@@ -1111,6 +1109,7 @@ export async function nextPairingImpl(
       canon_floor: 0,
     } as typeof liveKnobs;
   }
+  const effectiveMode = reactionSelectionMode(mode, data.steer);
   let picked = selectPairing({
     pool: finalPool,
     vector,
@@ -1118,7 +1117,7 @@ export async function nextPairingImpl(
     session_lane: sessionLane,
     dims: DIMS as readonly string[],
     rng,
-    mode,
+    mode: effectiveMode,
     recognition,
     knobs: liveKnobs,
   });
@@ -1127,7 +1126,7 @@ export async function nextPairingImpl(
   // the shadow pick scores the same universe. Cursor: "General-lane
   // fallback under-counts real diverge cases" — fixed here.
   let livePool = finalPool;
-  let liveMode = mode;
+  let liveMode = effectiveMode;
   if (picked.kind === "empty" && sessionLane !== "general") {
     pairingsRes = await supabase
       .from("pairings")
@@ -1136,7 +1135,7 @@ export async function nextPairingImpl(
       .eq("lane", "general");
     if (pairingsRes.error) throw new Error(pairingsRes.error.message);
     livePool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
-    liveMode = "recognition_first";
+    liveMode = reactionSelectionMode("recognition_first", data.steer);
     // Reseed for the fallback attempt so shadow can reproduce it exactly.
     const fbRng = mulberry32(rngSeed ^ 0x9e3779b9);
     picked = selectPairing({
@@ -1222,7 +1221,7 @@ export async function nextPairingImpl(
     is_bootstrap: false,
     shadow: shadowInfo,
     cachedRec,
-    actualMode: liveKnobs?.mode ?? liveMode,
+    actualMode: liveMode,
     actualKnobs: (liveKnobs ?? null) as Record<string, unknown> | null,
     fallback: livePool !== finalPool,
   });
@@ -1434,7 +1433,7 @@ export async function recordChoiceImpl(
     .eq("session_id", data.sessionId);
   const round = (priorChoices ?? 0) + 1;
   const verdict = `${winner.title} over ${loser.title}.`;
-  const why = "Choice noted. A pattern needs independent evidence.";
+  const why = choiceObservation(topDim, topDelta, DIM_LABEL, round);
   const hesitation = null;
 
   // Cross-lane probe flipping is quarantined. See
@@ -1806,7 +1805,7 @@ function round3(n: number): number {
 // ============================================================
 
 const CRITIC_VOICE = `${PERSONA}
-Mode: evidence-bounded critic selection. Select only eligible claims and frozen choice references provided by the caller. Return only the requested structured selection JSON, no prose. Editorial fit is not a calibrated probability.`;
+Mode: bounded authored music criticism. Follow the versioned author/review contract. Editorial fit is not a calibrated probability. No future pairing rationale or tests.`;
 
 export const finalizeSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -1958,11 +1957,12 @@ export async function finalizeSessionImpl(
   const tier = String(fitTier(bestScore));
 
   const criticStart = Date.now();
-  const narrated = await narrateEvidence(ledger, DIM_LABEL, (prompt) =>
+  const narrated = await authorCritic(ledger, DIM_LABEL, (prompt) =>
     ai([
       { role: "system", content: CRITIC_VOICE },
       { role: "user", content: prompt },
     ]),
+    { stage: "reveal" },
   );
   const narrative = narrated.text;
   const criticStatus =
@@ -1977,7 +1977,7 @@ export async function finalizeSessionImpl(
     session_id: data.sessionId,
     role: "critic",
     model: MODEL,
-    prompt_version: CLAIM_LANGUAGE_VERSION,
+    prompt_version: CRITIC_EXPRESSION_VERSION,
     status: criticStatus,
     latency_ms: criticLatency,
     error_message: criticError,
@@ -1988,7 +1988,7 @@ export async function finalizeSessionImpl(
       fit_tier: tier,
       cosine_score: Math.round(bestScore * 1000) / 1000,
     },
-    output: { length: narrative.length, narration_status: narrated.status } as never,
+    output: { length: narrative.length, narration_status: narrated.status, voice_version: narrated.voice_version, validation_reason: narrated.validation_reason } as never,
     narrative: narrative || null,
   });
 
@@ -2578,7 +2578,7 @@ export const reactToThree = createServerFn({ method: "POST" })
 // One song is not enough to claim a trait. Three is barely enough to name one, and
 // only if the alternative is stated out loud. The AI's job is not to sound clever;
 // it is to become progressively less wrong.
-const MICRO_REACT_BASE = `Mode: micro-reaction. The listener just named ONE song. React in ONE sentence — curious, not clever. A friend at a record store who just clocked something and is still listening.
+const MICRO_REACT_BASE = `Mode: micro-reaction. The listener just named ONE song. React in ONE sentence — curious, vivid, music-specific. A friend at a record store who just clocked something and is still listening.
 
 VOICE RULES (HARD):
 - Punch WITH the listener, never AT them. Never imply the pick was safe, obvious, lazy, shallow, predictable, a gateway, a starter pack, basic, or that some other song would've been better.
@@ -2590,11 +2590,11 @@ VOICE RULES (HARD):
 function microReactVoice(index: number): string {
   if (index === 0) {
     return `${MICRO_REACT_BASE}
-Tier: SONG 1 — first move. DO NOT name a trait about the listener yet. You have one data point. Note the pick, hint you're paying attention, stop. Good: "Interesting place to start." / "Ceremony out the gate — noted." / "Okay. Still listening." Bad: "You like your melancholy with a backbeat." (that's a trait claim — forbidden after one song)`;
+Tier: SONG 1 — first move. DO NOT name a trait about the listener yet. You have one data point. Note the pick, hint you're paying attention, stop. Name the actual song or artist and one grounded musical detail. No generic "Interesting" / "Still listening" filler. Good: "Ceremony out the gate—that guitar line gets the first word." Bad: "You like your melancholy with a backbeat." (that's a trait claim — forbidden after one song)`;
   }
   if (index === 1) {
     return `${MICRO_REACT_BASE}
-Tier: SONG 2 — still watching. DO NOT name a trait yet. Two points don't make a line. Notice what the two picks share OR don't share, and keep listening. Good: "Two very different rooms. Interesting." / "Those two share less than people think." / "Still listening." Bad: "You like attitude over polish." (still a trait claim — forbidden)`;
+Tier: SONG 2 — still watching. DO NOT name a trait yet. Two points don't make a line. Notice what the two picks share OR don't share, and keep listening. Name an actual song or artist from these picks and a concrete musical contrast supported by the supplied context. No generic "Two rooms" or "Still listening" filler. Bad: "You like attitude over polish." (still a trait claim — forbidden)`;
   }
   if (index === 2) {
     return `${MICRO_REACT_BASE}
@@ -3129,7 +3129,7 @@ const INSIGHT_KINDS = ["observation", "challenge", "refinement"] as const;
 type InsightKind = (typeof INSIGHT_KINDS)[number];
 
 const INSIGHT_VOICE = `${PERSONA}
-Mode: grounded between-matchup selection. Choose only supplied eligible claims and choice IDs. Return only the requested structured selection JSON, no prose. Do not infer taste or decisiveness from timing or opener priors.`;
+Mode: a fresh, bounded editorial beat between matchups. Follow the author/review contract. Timing and opener priors are not evidence. Keep upcoming tests mysterious.`;
 
 export const roundInsight = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -3149,11 +3149,12 @@ export const roundInsight = createServerFn({ method: "POST" })
     if (!session || session.user_id !== userId) return null;
 
     const { ledger } = await loadChoiceEvidence(supabase, data.sessionId);
-    const narrated = await narrateEvidence(ledger, DIM_LABEL, (prompt) =>
+    const narrated = await authorCritic(ledger, DIM_LABEL, (prompt) =>
       ai([
         { role: "system", content: INSIGHT_VOICE },
         { role: "user", content: prompt },
       ]),
+      { stage: "read" },
     );
     return { kind: data.round === 6 ? "challenge" : "observation", text: narrated.text };
   });
@@ -3165,11 +3166,13 @@ export const roundInsight = createServerFn({ method: "POST" })
 // ============================================================
 
 const SYNTH_VOICE = `${PERSONA}
-Mode: evidence-bounded final synthesis selection. Choose supplied eligible claim and choice IDs only. Return only the requested structured selection JSON, no prose. The renderer preserves exceptions; never invent songs or supported tendencies.`;
+Mode: the earned reveal. Write a memorable opening and interpretation inside the author/review contract. Keep real exceptions and uncertainty, never invent identity or motive. No future tests.`;
 
 type SynthEvidence = { tradeoff: string; examples: string[]; supporting: number; tested: number };
 type SynthCounter = { claim: string; impact: string; notes: string };
 type SynthPayload = {
+  voice_version?: string;
+  audit_text?: string;
   narration_status?: "ok" | "insufficient" | "invalid_generation" | "narrator_failure";
   synthesis: string;
   kept_choosing: SynthEvidence[];
@@ -3293,17 +3296,19 @@ async function computeFinalSynthesis(
     }))
     .filter((c) => c.claim);
 
-  const narrated = await narrateEvidence(ledger, DIM_LABEL, (prompt) =>
+  const narrated = await authorCritic(ledger, DIM_LABEL, (prompt) =>
     ai([
       { role: "system", content: SYNTH_VOICE },
       { role: "user", content: prompt },
     ]),
+    { stage: "reveal" },
   );
   const synthesis = narrated.text;
 
   await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
 
-  return { synthesis, kept_choosing, counter_reads, narration_status: narrated.status };
+  return { synthesis, kept_choosing, counter_reads, narration_status: narrated.status,
+    voice_version: narrated.voice_version, audit_text: narrated.audit_text };
 }
 
 // ============================================================
@@ -3313,7 +3318,7 @@ async function computeFinalSynthesis(
 // ============================================================
 
 const CHAT_VOICE = `${PERSONA}
-Mode: grounded critic-interview selection. Respond by selecting supplied claims and one allowed follow-up question. Return only the requested structured JSON, no prose. Opener priors and conversation are self-report, never corroborating votes. Do not invent song or choice references.`;
+Mode: conversational music criticism. Acknowledge the actual objection before debating. Use the author/review contract. Opener priors and conversation are self-report, never votes. Never invent facts or future tests.`;
 
 // ---------- Per-user critic profile (tone + tactic memory) ----------
 type CriticProfileRow = {
@@ -3823,26 +3828,12 @@ Reactions, skips, opener priors and conversation are separate self-report, never
       messages.push({ role: m.role, content: m.content });
     }
   }
-  messages.push({
-    role: "system",
-    content: `Return only JSON, never prose:
-{"claims":[],"question_id":"preference|familiarity|context|exception|correction","acknowledge_self_report":true}.
-Optional claims (maximum two) must be objects {"axis":"<supplied axis>","direction":"hi|lo","choice_ids":["<supporting id>"]}.
-Use only these eligible claims: ${JSON.stringify(narrationOptions(chatLedger))}.
-Only choose exception if the evidence has a contradiction. Self-report never adds a supporting choice.`,
-  });
-
-  let reply = "";
-  try {
-    const raw = await ai(messages);
-    const previousReply =
-      [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
-    reply =
-      validatedChat(JSON.parse(raw), chatLedger, DIM_LABEL, data.message, previousReply) ??
-      fallbackChat(chatLedger);
-  } catch {
-    reply = fallbackChat(chatLedger);
-  }
+  const previousReply = [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
+  const authored = await authorCritic(chatLedger, DIM_LABEL,
+    (prompt) => ai([...messages, { role: "user", content: prompt }]),
+    { stage: "chat", previous: previousReply, selfReport: data.message,
+      fallback: contextualChatFallback(chatLedger, data.message) });
+  const reply = authored.text;
   // Never truncate away the exception or qualification from a supported claim.
 
   const { data: assistantRow } = await supabase
@@ -4046,27 +4037,13 @@ Reactions, skips, opener priors and conversation are separate self-report, never
         messages.push({ role: m.role, content: m.content });
       }
     }
-    messages.push({
-      role: "system",
-      content: `Return only JSON, never prose:
-{"claims":[],"question_id":"preference|familiarity|context|exception|correction","acknowledge_self_report":true}.
-Optional claims (maximum two) must be objects {"axis":"<supplied axis>","direction":"hi|lo","choice_ids":["<supporting id>"]}.
-Use only these eligible claims: ${JSON.stringify(narrationOptions(chatLedger))}.
-Only choose exception if the evidence has a contradiction. Self-report never adds a supporting choice.`,
-    });
-
-    let reply = "";
-    try {
-      const raw = await ai(messages);
-      const previousReply =
-        [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
-      reply =
-        validatedChat(JSON.parse(raw), chatLedger, DIM_LABEL, data.message, previousReply) ??
-        fallbackChat(chatLedger);
-    } catch {
-      reply = fallbackChat(chatLedger);
-    }
-    // Never truncate away the exception or qualification from a supported claim.
+    const previousReply = [...(history ?? [])].reverse().find((m) => m.role === "assistant")?.content ?? "";
+  const authored = await authorCritic(chatLedger, DIM_LABEL,
+    (prompt) => ai([...messages, { role: "user", content: prompt }]),
+    { stage: "chat", previous: previousReply, selfReport: data.message,
+      fallback: contextualChatFallback(chatLedger, data.message) });
+  const reply = authored.text;
+  // Never truncate away the exception or qualification from a supported claim.
 
     const committed = await persistenceRpc<Turn>(supabase, "complete_chat_turn", {
       p_session_id: sessionId,
@@ -4186,7 +4163,6 @@ export async function currentReadImpl(
   } | null;
   if (
     priorProps?.answered === ledger.answered &&
-    priorProps.language === CLAIM_LANGUAGE_VERSION &&
     priorProps.result
   )
     return priorProps.result;
@@ -4200,6 +4176,14 @@ export async function currentReadImpl(
         }
       : null;
   const result = projectRead(ledger, DIM_LABEL, prior);
+  const authored = await authorCritic(ledger, DIM_LABEL,
+    (prompt) => ai([{ role: "system", content: VOICE }, { role: "user", content: prompt }]),
+    { stage: "read", previous: prior?.thesis, fallback: result.thesis });
+  result.audit_text = result.thesis;
+  result.voice_version = authored.voice_version;
+  result.narration_status = authored.status;
+  result.thesis = authored.text;
+  if (result.revision) result.revision.new_interpretation = authored.text;
   const lead = ledger.axes[0];
   const { error } = await (
     await trustedEventLog()
@@ -4218,6 +4202,8 @@ export async function currentReadImpl(
       ledger: ledger.version,
       policy: ledger.policy,
       language: CLAIM_LANGUAGE_VERSION,
+      voice_version: authored.voice_version,
+      validation_reason: authored.validation_reason,
       result,
       revised: !!result.revision,
       revision: result.revision,
@@ -4290,26 +4276,24 @@ export async function recordReactionImpl(
   if (data.kind === "thats_me" || session.completed_at) {
     return {
       effect: "pacing_only" as ReactionEffect,
-      message:
-        data.kind === "thats_me"
-          ? "Noted. Let's keep pushing on it."
-          : "Session's done — push back on the reading instead.",
+      message: reactionAcknowledgement(data.kind, false, !!session.completed_at),
       next: null,
     };
   }
   const steer = data.kind === "harder" ? "harder" : "not_quite";
   const next = await nextPairingImpl(supabase, { sessionId: data.sessionId, steer });
   const replaced = !!(next as { pairing?: unknown }).pairing && !(next as { done?: boolean }).done;
-  const prompt = (next as { prompt?: string }).prompt ?? "";
+  const { data: priorReads } = await supabase.from("event_log").select("props")
+    .eq("session_id", data.sessionId).eq("event_type", "read_shown")
+    .order("created_at", { ascending: false }).limit(1);
+  const priorThesis = (priorReads?.[0]?.props as { thesis?: string } | null)?.thesis ?? "";
   return {
     effect: (replaced
       ? steer === "harder"
         ? "harder_pairing"
         : "retest_pairing"
       : "no_alternative") as ReactionEffect,
-    message: replaced
-      ? `${steer === "harder" ? "Fine. Harder one." : "Alright, let's check that."} ${prompt}`.trim()
-      : "Nothing in the catalog tests that differently right now. Your call on the next one stands.",
+    message: reactionAcknowledgement(data.kind, replaced, false, priorThesis),
     next,
   };
 }
