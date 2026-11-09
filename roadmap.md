@@ -11,7 +11,7 @@
 
 ## Current — zero-pairing song coverage
 
-- [ ] Add another coverage-only batch for never-paired active songs, with reviewed dimension contrasts, regression tests and saved database verification; preserve song scores, lane classifications and disabled release/export flags.
+- [x] Added 21 active matchups covering 42 previously unpaired songs across seven already-classified musical families. Every test has at least 20 points of contrast; database readback confirms 21 eligible and no invalid tests. Seven focused tests passed. Song scores, classifications, existing pairs and flags unchanged. Receipt: docs/musicdna/zero-pair-coverage-2026-11-09.md.
 - [x] Added eight active Pop matchups covering all 13 never-paired Pop songs; database readback confirms eight eligible and zero remaining. Thirteen tests passed; existing pairs/scores/flags untouched. Receipt: docs/musicdna/zero-pair-coverage-2026-11-08.md.
 - [ ] Remaining 71 non-Alternative-tagged never-paired songs: blocked on editorial lane classification (all primary_lane=general; actually sophistipop, punk/noise and artrock). No indiscriminate general-lane pairing or silent reclassification.
 
