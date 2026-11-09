@@ -63,6 +63,9 @@ export const Route = createFileRoute("/api/v1/session/$id/choice")({
               question: read.question,
               evidence: read.evidence,
               revision: read.revision ?? null,
+              voice_version: read.voice_version ?? "claim-language-v1",
+              audit_text: read.audit_text ?? read.thesis,
+              narration_status: read.narration_status ?? "ok",
             },
           });
         } catch (e) {

@@ -76,6 +76,7 @@ function Onboarding() {
     reactionReply,
     entries,
     synthesis,
+    auditText,
     kept,
     counters,
     slotAnchorRef,
@@ -348,6 +349,7 @@ function Onboarding() {
               <ReadingResult
                 content={{
                   synthesis: synthesis ?? "",
+                  audit_text: auditText,
                   kept_choosing: kept,
                   counter_reads: counters,
                   result_version: resultVersion,

@@ -15,6 +15,9 @@ export type ReadEvidence = {
   examples: { chosen: string; rejected: string }[];
 };
 export type CurrentReadResult = {
+  voice_version?: string;
+  audit_text?: string;
+  narration_status?: "ok" | "insufficient" | "invalid_generation" | "narrator_failure";
   thesis: string;
   hook: string;
   topDim: string | null;

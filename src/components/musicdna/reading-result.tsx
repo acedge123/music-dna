@@ -65,6 +65,9 @@ export function ReadingResult({
           <p className="whitespace-pre-wrap font-serif text-lg">
             {content.synthesis || "No supported interpretation has been saved yet."}
           </p>
+          {content.audit_text && content.audit_text !== content.synthesis && (
+            <p className="whitespace-pre-wrap text-muted-foreground">{content.audit_text}</p>
+          )}
           {content.kept_choosing.map((claim) => (
             <section key={claim.tradeoff} className="space-y-2">
               <h3 className="font-medium">{claim.tradeoff}</h3>

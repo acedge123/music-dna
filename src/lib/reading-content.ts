@@ -1,6 +1,8 @@
 import { z } from "zod";
 
 export type ReadingContent = {
+  voice_version?: string;
+  audit_text?: string;
   synthesis: string;
   kept_choosing: Array<{
     tradeoff: string;
@@ -13,6 +15,8 @@ export type ReadingContent = {
 };
 
 const ContentSchema = z.object({
+  voice_version: z.string().optional(),
+  audit_text: z.string().optional(),
   synthesis: z.string(),
   kept_choosing: z.array(
     z.object({

@@ -5,6 +5,10 @@ const state = vi.hoisted(() => ({
   events: [] as { props: Record<string, unknown> }[],
   failWrite: false,
 }));
+vi.mock("@/musicdna/adapters/llm-gateway", () => ({
+  DEFAULT_MODEL: "test-model",
+  callLovableAi: vi.fn().mockRejectedValue(new Error("test generation unavailable")),
+}));
 vi.mock("@/integrations/supabase/client.server", () => ({
   supabaseAdmin: {
     from: () => ({

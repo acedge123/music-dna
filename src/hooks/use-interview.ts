@@ -21,7 +21,6 @@ import { toast } from "sonner";
 import type { CurrentReadResult } from "@/musicdna/engine/read";
 import type { Phase, Refined, Pairing, Entry } from "@/lib/interview-model";
 import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
-import { reactionDisplayMessage } from "@/lib/critic-display";
 
 export function useInterview(requestedSession?: string) {
   const reducedMotion = usePrefersReducedMotion();
@@ -99,6 +98,7 @@ export function useInterview(requestedSession?: string) {
   );
   const [entries, setEntries] = useState<Entry[]>([]);
   const [synthesis, setSynthesis] = useState<string | null>(null);
+  const [auditText, setAuditText] = useState<string | undefined>();
   const [kept, setKept] = useState<
     Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>
   >([]);
@@ -516,6 +516,7 @@ export function useInterview(requestedSession?: string) {
       const r = (await synthFn({ data: { sessionId: sid } })) as {
         result_version?: number | null;
         synthesis: string;
+        audit_text?: string;
         kept_choosing: Array<{
           tradeoff: string;
           examples: string[];
@@ -527,6 +528,7 @@ export function useInterview(requestedSession?: string) {
       if (!r.synthesis || r.result_version == null) throw new Error("Reading not saved yet");
       setResultVersion(r.result_version);
       setSynthesis(r.synthesis);
+      setAuditText(r.audit_text);
       setKept(r.kept_choosing ?? []);
       setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
     } catch (e) {
@@ -568,7 +570,7 @@ export function useInterview(requestedSession?: string) {
         } | null;
       };
       setReactedRounds((prev) => [...prev, currentRound]);
-      setReactionReply({ round: currentRound, message: reactionDisplayMessage(r.effect) });
+      setReactionReply({ round: currentRound, message: r.message });
       const nx = r.next;
       if (nx?.max_rounds) setMaxRounds(nx.max_rounds);
       if (nx?.done) {
@@ -706,6 +708,7 @@ export function useInterview(requestedSession?: string) {
     reactionReply,
     entries,
     synthesis,
+    auditText,
     kept,
     counters,
     slotAnchorRef,

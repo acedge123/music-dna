@@ -23,6 +23,8 @@ priors only; it no longer grants stable claims from an independent song-count ru
 
 ## Generation Boundary
 
+November 9 amendment: owner approved richer expression for **new** reads. `critic-expression-v2.md` documents the separate reference-checked author/independent-review seam, deterministic fallback, unchanged D01 eligibility and frozen historical replay. The v1 renderer below remains the audit/fallback, not the sole wording path. Human voice and deployed acceptance remain pending.
+
 The model selects eligible claim/direction/choice IDs. The application validates every
 reference and renders deterministic, evidence-bounded clauses. Free prose, invented IDs,
 duplicate claims/supports, a contradiction cited as support, and noneligible claims are

@@ -3,12 +3,15 @@
 ## Current — critic audit review
 
 - [x] Reviewed CRITIC_IMPLEMENTATION_GAP_AUDIT.md against current code: agree expression contract blocks authored critic prose; preserve evidence/replay/privacy, reject revealing next tests, reuse persona/one bounded editorial seam. No critic changes made.
+- [x] Added versioned authored reads/reveal/chat with reference checks and independent semantic review, specific opener/vote/reaction copy, harder-mode override, full audit text and additive Flutter fields. No evidence/flags/migrations changed.
+- [x] 255 focused tests, changed-file lint and preview build pass; guest interview/reaction/reveal/chat correction and exact reload verified, desktop/390px/no overflow. Handoff: docs/musicdna/critic-expression-v2.md.
+- [ ] Early-read authoring still rejects too often and falls back to old templates; human voice matrix and production serving/ownership acceptance remain pending. Flutter display adoption needs Codex. This is not full critic-quality acceptance.
 
 ## Current — album artwork for web and Flutter
 
 - [x] Enabled 333 checked covers (294 hosted assets); 23 suspicious/unavailable candidates held. Web uses branded fallback for 161 missing/held songs and image errors; exact database binding readback, 19 tests and guest rendering verified.
 
-- [x] Checked all 494 songs: 356 candidates with artwork, 16 candidates without front artwork, 118 no eligible matches, four upstream errors. Full candidate report saved; no images republished or permission inferred.
+- [x] Checked all 494 songs: 356 candidates with artwork, 16 candidates without front artwork, 118 no eligible matches, four upstream errors. Candidate report preceded the separately checked, owner-rights-approved launch above.
 - [x] Applied protected song_artwork storage and additive nullable artwork fields to both shared web/Flutter pairing selection paths; approved-only reads and documented-rights validation. Initial empty table now has 333 approved display records.
 - [x] Grants/RLS readback, 18 focused tests, changed-file lint, preview build and interview opening checked. Receipt: docs/musicdna/album-artwork.md.
 - [ ] Remaining 23 candidate covers need release confirmation/download retry; Flutter rendering needs Flutter team, deployed Vercel artwork acceptance awaits synced website deployment.
