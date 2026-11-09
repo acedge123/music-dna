@@ -11,6 +11,11 @@ release-specific Cover Art Archive metadata:
 - 4 encountered upstream errors.
 
 These are candidate matches, not verified releases or copyright permissions.
+Alan Edgett confirmed on 2026-11-09 that licensing rights are approved for
+MusicDNA's web and Flutter artwork use. This is owner-reported approval, not
+independent legal verification; it does not verify the candidate release matches.
+The import must document this approval on each covered record, and display must
+still wait for correct release verification.
 The first 100 recording results and up to three eligible release editions are
 checked per song; `search_truncated` records searches exceeding that limit.
 Strict artist matching means collaborations, alternate credits, spelling and
@@ -68,7 +73,9 @@ read errors. See `mobile_flutter_api_contract.md` for Flutter handling.
 Web presentation and Flutter rendering are unchanged in this preparation pass.
 Frozen results, share publications and choice evidence are untouched. Rights and
 release review must precede public display; retrieval and attribution alone are
-not permission. Hosting for approved images must work on Vercel and Flutter.
+not permission. Owner rights approval is now recorded above; release verification
+and record-level approval remain outstanding. Hosting for approved images must
+work on Vercel and Flutter.
 
 Validation: 18 focused tests passed (matching, approval rules, enrichment/fallback,
 session ownership and frozen evidence); changed-file lint passes; latest preview
