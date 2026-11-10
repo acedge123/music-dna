@@ -2,8 +2,8 @@
 
 ## Current — post-choice pairing sayings
 
-- [ ] Freeze new sayings at vote time and pass only answered, verified context to critic author/reviewer.
-- [ ] Verify post-choice use, valid direction, old snapshot compatibility and unchanged replay.
+- [x] Freeze new sayings at vote time; shared author/reviewer receive answered, revision-verified saying, tested traits and chosen direction only. No pre-pick disclosure or historical backfill.
+- [x] 35 tests, lint and preview build pass; real guest vote/readback verifies frozen saying and round advancement. Reviewer rejected that run's prose, retaining the safe fallback; voice acceptance is not claimed. Details: docs/musicdna/post-choice-sayings.md.
 
 ## Current — specialist lanes and full catalog review
 
