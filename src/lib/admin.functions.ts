@@ -52,8 +52,8 @@ export const adminNewQaInterview = createServerFn({ method: "POST" })
     if (profile.error) throw new Error("Could not load opening songs.");
     if (!profile.data?.opening_lane) throw new Error("Complete three opening songs before starting QA.");
     const { buildStartSessionSeed } = await import("@/musicdna/engine/session");
-    const { LANES } = await import("@/musicdna/engine/types");
-    const seed = buildStartSessionSeed({ profile: profile.data as never, all_lanes: LANES, rng: { next: () => Math.random() } });
+    const lanes = ["alternative", "pop", "hip_hop", "electronic", "classic_rock", "metal", "country", "r_and_b", "yacht_rock", "disco", "punk", "reggae"];
+    const seed = buildStartSessionSeed({ profile: profile.data as never, all_lanes: lanes, rng: { next: () => Math.random() } });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const result = await supabaseAdmin.rpc("create_interview_qa", {
       p_owner: context.userId, p_vector: seed.seed_vector,
@@ -258,14 +258,20 @@ export const adminResidualQueue = createServerFn({ method: "POST" })
     const admin = await assertAdminAndGetClient(context.userId);
 
     // Totals for the residual rate — completed sessions vs flagged ones.
-    const totalP = admin
+    const qa = await qaSessionIds(admin);
+    const excludeQa = [...qa].length ? `(${[...qa].join(",")})` : null;
+    let totalP = admin
       .from("sessions")
       .select("id", { count: "exact", head: true })
       .not("completed_at", "is", null);
-    const flaggedP = admin
+    let flaggedP = admin
       .from("sessions")
       .select("id", { count: "exact", head: true })
       .eq("archetype_flagged", true);
+    if (excludeQa) {
+      totalP = totalP.not("id", "in", excludeQa);
+      flaggedP = flaggedP.not("id", "in", excludeQa);
+    }
     const [totalRes, flaggedRes] = await Promise.all([totalP, flaggedP]);
     if (totalRes.error) throw new Error(totalRes.error.message);
     if (flaggedRes.error) throw new Error(flaggedRes.error.message);
@@ -273,11 +279,13 @@ export const adminResidualQueue = createServerFn({ method: "POST" })
     // Per-reason counts.
     const reasons: Record<string, number> = { low_score: 0, ambiguous: 0, no_archetypes: 0 };
     for (const r of Object.keys(reasons)) {
-      const { count, error } = await admin
+      let reasonQuery = admin
         .from("sessions")
         .select("id", { count: "exact", head: true })
         .eq("archetype_flagged", true)
         .eq("archetype_flag_reason", r);
+      if (excludeQa) reasonQuery = reasonQuery.not("id", "in", excludeQa);
+      const { count, error } = await reasonQuery;
       if (error) throw new Error(error.message);
       reasons[r] = count ?? 0;
     }
@@ -291,6 +299,7 @@ export const adminResidualQueue = createServerFn({ method: "POST" })
       .order("completed_at", { ascending: false, nullsFirst: false })
       .limit(data.limit);
     if (data.reason !== "any") q = q.eq("archetype_flag_reason", data.reason);
+    if (excludeQa) q = q.not("id", "in", excludeQa);
     if (data.lane) q = q.eq("lane", data.lane);
     const { data: rows, error } = await q;
     if (error) throw new Error(error.message);
