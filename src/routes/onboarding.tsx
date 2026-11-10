@@ -103,10 +103,10 @@ function Onboarding() {
   } = useInterview(session, fresh);
   useEffect(() => {
     // Never pin the previous render's ID while a fresh search is booting.
-    if (!booting && !bootError && !fresh && sessionId && sessionId !== session) {
+    if (!booting && !bootError && pairing && sessionId && sessionId !== session) {
       void navigate({ to: "/onboarding", search: { session: sessionId }, replace: true });
     }
-  }, [sessionId, session, fresh, booting, bootError, navigate]);
+  }, [sessionId, session, pairing, booting, bootError, navigate]);
   if (booting)
     return (
       <>
