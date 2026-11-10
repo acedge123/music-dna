@@ -11,6 +11,7 @@ import {
 } from "@/lib/critic-quality.functions";
 import { QUALITY_AXES, QUALITY_ANCHORS, QUALITY_LABELS, KEEP_TALKING } from "@/musicdna/engine/critic-quality";
 import { toast } from "sonner";
+import { DraftTimelinePanel } from "./draft-timeline-panel";
 
 export function CriticQualityPanel() {
   const [page, setPage] = useState(0);
@@ -35,6 +36,7 @@ export function CriticQualityPanel() {
   return (
     <section className="space-y-6">
       <h2 className="display text-3xl">Critic QA</h2>
+      <DraftTimelinePanel />
       <p className="text-sm text-muted-foreground">
         Independent human assessment · rubric v2 · unassessed is not zero
       </p>
