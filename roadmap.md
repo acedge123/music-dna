@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — rescue final reveal voice without losing precomputation
+
+- [ ] Diagnose whether reported mechanical prose is accepted writing or rejected-writing fallback.
+- [ ] Restore reveal-specific editorial writing, keep deterministic receipts/exceptions and exact draft matching; no model, timing, routing or learning changes.
+- [ ] Run focused regressions and verify new reading presentation; production Sol quality remains subject to owner-QA retest.
+
 ## Current — pre-write final reading during pick 6
 
 - [x] While the default final pick is on screen, draft the reveal for both outcomes; finalize reuses only an exact frozen-ledger match, else writes live. Same writer/reviewer/rules.
