@@ -1441,6 +1441,53 @@ export type Database = {
           },
         ]
       }
+      prepared_reads: {
+        Row: {
+          answered: number
+          chosen_song_id: string
+          fingerprint: string | null
+          finished_at: string | null
+          pairing_id: string
+          payload: Json | null
+          session_id: string
+          started_at: string
+          status: string
+          user_id: string
+        }
+        Insert: {
+          answered: number
+          chosen_song_id: string
+          fingerprint?: string | null
+          finished_at?: string | null
+          pairing_id: string
+          payload?: Json | null
+          session_id: string
+          started_at?: string
+          status?: string
+          user_id: string
+        }
+        Update: {
+          answered?: number
+          chosen_song_id?: string
+          fingerprint?: string | null
+          finished_at?: string | null
+          pairing_id?: string
+          payload?: Json | null
+          session_id?: string
+          started_at?: string
+          status?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prepared_reads_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           created_at: string
