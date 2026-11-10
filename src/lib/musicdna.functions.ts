@@ -648,7 +648,7 @@ import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
 import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
-import { hypotheticalChoice, readFingerprint } from "@/musicdna/engine/prepared-read";
+import { hypotheticalChoice, readFingerprint, revealDraftKey, revealFingerprint } from "@/musicdna/engine/prepared-read";
 import { POOL_STAGE, poolEligible, poolFingerprint } from "@/musicdna/engine/reaction-pool";
 import {
   authorCritic,
@@ -2166,15 +2166,30 @@ export async function finalizeSessionImpl(
   const tier = String(fitTier(bestScore));
 
   const criticStart = Date.now();
-  const narrated = await observedCritic(
-    supabase,
-    userId,
-    data.sessionId,
-    ledger,
-    DIM_LABEL,
-    [{ role: "system", content: CRITIC_VOICE }],
-    { stage: "reveal" },
-  );
+  // A reveal drafted while the listener made the final pick is reused only
+  // when the frozen ledger is identical to the hypothetical one it was written for.
+  const lastPick = ledger.answered > 0 ? await latestChoice(supabase, data.sessionId) : null;
+  const preparedReveal = lastPick
+    ? ((await awaitPreparedRead(
+        data.sessionId,
+        revealDraftKey(ledger.answered),
+        lastPick,
+        revealFingerprint(ledger),
+        REVEAL_WAIT_MS,
+        REVEAL_DEADLINE_MS,
+      )) as unknown as Awaited<ReturnType<typeof observedCritic>> | null)
+    : null;
+  const narrated =
+    preparedReveal ??
+    (await observedCritic(
+      supabase,
+      userId,
+      data.sessionId,
+      ledger,
+      DIM_LABEL,
+      [{ role: "system", content: CRITIC_VOICE }],
+      { stage: "reveal" },
+    ));
   const narrative = narrated.text;
   const criticStatus =
     narrated.status === "invalid_generation" || narrated.status === "narrator_failure"
@@ -2204,6 +2219,7 @@ export async function finalizeSessionImpl(
       narration_status: narrated.status,
       voice_version: narrated.voice_version,
       validation_reason: narrated.validation_reason,
+      prepared_before_pick: !!preparedReveal,
     } as never,
     narrative: narrative || null,
   });
@@ -4498,14 +4514,18 @@ async function poolUnusedDraft(
 
 const PREPARE_WAIT_MS = 25_000;
 const PREPARE_DEADLINE_MS = 20_000;
+const REVEAL_WAIT_MS = 35_000;
+const REVEAL_DEADLINE_MS = 30_000;
 async function awaitPreparedRead(
   sessionId: string,
   answered: number,
   choice: { pairing_id: string; chosen_song_id: string },
   fingerprint: string,
+  waitMs = PREPARE_WAIT_MS,
+  draftDeadlineMs = PREPARE_DEADLINE_MS,
 ): Promise<ComposedRead | null> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-  const deadline = Date.now() + PREPARE_WAIT_MS;
+  const deadline = Date.now() + waitMs;
   for (;;) {
     const { data } = await supabaseAdmin
       .from("prepared_reads" as never)
@@ -4525,7 +4545,7 @@ async function awaitPreparedRead(
     if (row.status === "ready") return row.fingerprint === fingerprint ? row.payload : null;
     // Pending: wait for the in-flight draft unless it has gone stale.
     // A draft past its own deadline is abandoned; write the reaction live instead.
-    if (Date.now() > deadline || Date.now() - Date.parse(row.started_at) > PREPARE_DEADLINE_MS + 2_000)
+    if (Date.now() > deadline || Date.now() - Date.parse(row.started_at) > draftDeadlineMs + 2_000)
       return null;
     await new Promise((r) => setTimeout(r, 400));
   }
@@ -4598,8 +4618,44 @@ export async function prepareReadsImpl(
     [pairing.song_a, pairing.song_b],
     [pairing.song_b, pairing.song_a],
   ] as const;
-  const done = await Promise.all(
-    branches.map(async ([chosen, rejected]) => {
+  // On the pick that ends the interview by default, also draft the final
+  // reveal for both outcomes so it is usually ready when the listener taps.
+  const finalPick = sessionCompletion({
+    answered: buildLedger(choices, DIMS).answered + 1,
+    vector: {},
+    dims: [],
+  }).done;
+  const revealDrafts = finalPick
+    ? branches.map(async ([chosen, rejected]) => {
+        const ledger = buildLedger([...choices, hypotheticalChoice(pairing, chosen, rejected)], DIMS);
+        const key = {
+          session_id: data.sessionId,
+          user_id: userId,
+          answered: revealDraftKey(ledger.answered),
+          pairing_id: pairing.id,
+          chosen_song_id: chosen.id,
+        };
+        const claim = await supabaseAdmin.from("prepared_reads" as never).insert({ ...key, status: "pending" } as never);
+        if (claim.error) return 0;
+        const match = { session_id: key.session_id, answered: key.answered, pairing_id: key.pairing_id, chosen_song_id: key.chosen_song_id };
+        try {
+          const narrated = await Promise.race([
+            observedCritic(supabase, userId, data.sessionId, ledger, DIM_LABEL, [{ role: "system", content: CRITIC_VOICE }], { stage: "reveal" }),
+            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("prepare_deadline")), REVEAL_DEADLINE_MS)),
+          ]);
+          await supabaseAdmin
+            .from("prepared_reads" as never)
+            .update({ status: "ready", fingerprint: revealFingerprint(ledger), payload: narrated, finished_at: new Date().toISOString() } as never)
+            .match(match);
+          return 0;
+        } catch {
+          await supabaseAdmin.from("prepared_reads" as never).update({ status: "failed", finished_at: new Date().toISOString() } as never).match(match);
+          return 0;
+        }
+      })
+    : [];
+  const done = await Promise.all([...revealDrafts,
+    ...branches.map(async ([chosen, rejected]) => {
       const ledger = buildLedger([...choices, hypotheticalChoice(pairing, chosen, rejected)], DIMS);
       const key = {
         session_id: data.sessionId,
@@ -4656,7 +4712,7 @@ export async function prepareReadsImpl(
         return 0;
       }
     }),
-  );
+  ]);
   return { prepared: done.reduce<number>((a, b) => a + b, 0) };
 }
 
