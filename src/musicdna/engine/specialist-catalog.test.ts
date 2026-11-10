@@ -25,7 +25,10 @@ describe("approved specialist catalog", () => {
         expect(
           sayingProblem(
             pair.phrase,
-            batches.flatMap((b) => b.pairings).filter((p) => p !== pair).map((p) => p.phrase),
+            batches
+              .flatMap((b) => b.pairings)
+              .filter((p) => p !== pair)
+              .map((p) => p.phrase),
           ),
         ).toBeNull();
       }
