@@ -31,11 +31,13 @@ export const EvidenceSnapshot = z.object({
     chosen: Song,
     rejected: Song,
   }),
-  editorial: z.object({
-    version: z.literal("pairing-saying-v1"),
-    pairing_revision: z.string().nullable(),
-    user_facing_tradeoff: z.string().nullable(),
-  }).optional(),
+  editorial: z
+    .object({
+      version: z.literal("pairing-saying-v1"),
+      pairing_revision: z.string().nullable(),
+      user_facing_tradeoff: z.string().nullable(),
+    })
+    .optional(),
   contrasts: z.record(z.number().finite()),
 });
 export type ChoiceEvidenceSnapshot = z.infer<typeof EvidenceSnapshot>;
@@ -80,9 +82,10 @@ export function snapshotChoice(row: EvidenceRow): LedgerChoice {
   });
   return {
     ...base,
-    pairing_saying: s.editorial?.pairing_revision === s.catalog.pairing_revision
-      ? s.editorial?.user_facing_tradeoff ?? null
-      : null,
+    pairing_saying:
+      s.editorial?.pairing_revision === s.catalog.pairing_revision
+        ? (s.editorial?.user_facing_tradeoff ?? null)
+        : null,
     tests: s.catalog.tests,
     diagnostic_weight: s.catalog.diagnostic_weight,
     chosen: song(s.catalog.chosen),

@@ -1,6 +1,11 @@
 import { describe, expect, it, vi } from "vitest";
 import { buildLedger } from "../engine/evidence";
-import { authorCritic, validateCriticBeat, contextualChatFallback, criticFacts } from "./critic-editorial";
+import {
+  authorCritic,
+  validateCriticBeat,
+  contextualChatFallback,
+  criticFacts,
+} from "./critic-editorial";
 
 const labels = { scale: { hi: "intimacy", lo: "spectacle" } };
 const ledger = (deltas: number[]) =>
@@ -32,11 +37,40 @@ const review = {
 
 describe("critic-expression-v2 boundary", () => {
   it("supplies only the answered saying with its valid tested direction to author and reviewer", async () => {
-    const l = buildLedger([{ choice_id: "c0", pairing_id: "p0", pairing_saying: "Studio chrome, or open water?", tests: ["scale", "tension"], chosen: { title: "A", scale: 10, tension: 55 }, rejected: { title: "B", scale: 90, tension: 50 } }], ["scale", "tension"]);
+    const l = buildLedger(
+      [
+        {
+          choice_id: "c0",
+          pairing_id: "p0",
+          pairing_saying: "Studio chrome, or open water?",
+          tests: ["scale", "tension"],
+          chosen: { title: "A", scale: 10, tension: 55 },
+          rejected: { title: "B", scale: 90, tension: 50 },
+        },
+      ],
+      ["scale", "tension"],
+    );
     const facts = criticFacts(l, labels);
     expect(facts.choices[0].post_choice_saying).toBe("Studio chrome, or open water?");
-    expect(facts.choices[0].tested_tradeoffs).toEqual([{ axis: "scale", chosen_direction: "lo", chosen_pole: "spectacle", rejected_pole: "intimacy" }]);
-    const generate = vi.fn().mockResolvedValueOnce(JSON.stringify({ headline: "Bigger wins this round.", body: "One choice, not a verdict.", choice_ids: ["c0"], claims: [] })).mockResolvedValueOnce(JSON.stringify(review));
+    expect(facts.choices[0].tested_tradeoffs).toEqual([
+      {
+        axis: "scale",
+        chosen_direction: "lo",
+        chosen_pole: "spectacle",
+        rejected_pole: "intimacy",
+      },
+    ]);
+    const generate = vi
+      .fn()
+      .mockResolvedValueOnce(
+        JSON.stringify({
+          headline: "Bigger wins this round.",
+          body: "One choice, not a verdict.",
+          choice_ids: ["c0"],
+          claims: [],
+        }),
+      )
+      .mockResolvedValueOnce(JSON.stringify(review));
     expect((await authorCritic(l, labels, generate, { stage: "read" })).status).toBe("ok");
     for (const call of generate.mock.calls) {
       const supplied = JSON.parse(String(call[0]).split("FACTS: ")[1].split("\nCONTEXT:")[0]);

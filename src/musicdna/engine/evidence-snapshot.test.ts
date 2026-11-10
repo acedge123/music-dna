@@ -37,10 +37,20 @@ describe("frozen choice evidence", () => {
   it("uses a frozen saying only when its revision matches and leaves old votes compatible", () => {
     const original = row();
     const saved = original.evidence as Record<string, unknown>;
-    saved.editorial = { version: "pairing-saying-v1", pairing_revision: "revision-1", user_facing_tradeoff: "Studio chrome, or open water?" };
+    saved.editorial = {
+      version: "pairing-saying-v1",
+      pairing_revision: "revision-1",
+      user_facing_tradeoff: "Studio chrome, or open water?",
+    };
     expect(snapshotChoice(original).pairing_saying).toBe("Studio chrome, or open water?");
-    expect(buildLedger([snapshotChoice(original)], DIMS).entries[0].pairing_saying).toBe("Studio chrome, or open water?");
-    saved.editorial = { version: "pairing-saying-v1", pairing_revision: "other-revision", user_facing_tradeoff: "Changed saying" };
+    expect(buildLedger([snapshotChoice(original)], DIMS).entries[0].pairing_saying).toBe(
+      "Studio chrome, or open water?",
+    );
+    saved.editorial = {
+      version: "pairing-saying-v1",
+      pairing_revision: "other-revision",
+      user_facing_tradeoff: "Changed saying",
+    };
     expect(snapshotChoice(original).pairing_saying).toBeNull();
     expect(snapshotChoice(row()).pairing_saying).toBeNull();
     expect(snapshotChoice(row()).chosen?.title).toBe("A");
