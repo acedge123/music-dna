@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — post-choice pairing sayings
+
+- [ ] Freeze new sayings at vote time and pass only answered, verified context to critic author/reviewer.
+- [ ] Verify post-choice use, valid direction, old snapshot compatibility and unchanged replay.
+
 ## Current — specialist lanes and full catalog review
 
 - [x] Imported and activated the approved 69 songs / 46 matchups; all contrasts and unique phrases pass, existing historical evidence unchanged.
