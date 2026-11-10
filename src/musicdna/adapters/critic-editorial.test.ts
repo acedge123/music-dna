@@ -215,12 +215,12 @@ describe("critic-expression-v2 boundary", () => {
 
 describe("critic-expression-v2.3 output contract", () => {
   it("restricts claim axes and IDs to the eligible allowlist", () => {
-    const schema = criticBeatSchema(ledger([40, 40, 40, -40])) as any;
+    const schema = criticBeatSchema(ledger([40, 40, 40, -40]));
     expect(schema.properties.claims.items.properties.axis.enum).toEqual(["scale"]);
     expect(schema.properties.choice_ids.items.enum).toEqual(["c0", "c1", "c2", "c3"]);
   });
   it("forbids claims entirely when no axis is eligible", () => {
-    expect((criticBeatSchema(ledger([40])) as any).properties.claims.maxItems).toBe(0);
+    expect(criticBeatSchema(ledger([40])).properties.claims.maxItems).toBe(0);
   });
   it("repairs trailing junk after valid JSON and flags the repair", () => {
     expect(parseModelJson('{"a":"}"}}')).toEqual({ value: { a: "}" }, repaired: true });
