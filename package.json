@@ -20,7 +20,8 @@
     "verify:learning-journey": "node --experimental-strip-types tools/musicdna/verify-learning-acceptance.ts",
     "check:routing-artifact": "node scripts/check-routing-artifact.mjs",
     "test:applied-outcomes": "node scripts/require-learning-outbox-db.mjs && vitest run src/musicdna/learning/applied-routing.test.ts src/musicdna/learning/applied-outcomes-db.test.ts",
-    "test:pilot": "node scripts/require-learning-outbox-db.mjs && vitest run src/musicdna/learning/pilot-routing.test.ts src/musicdna/learning/pilot-db.test.ts"
+    "test:pilot": "node scripts/require-learning-outbox-db.mjs && vitest run src/musicdna/learning/pilot-routing.test.ts src/musicdna/learning/pilot-db.test.ts",
+    "build:learning-edge": "vite build --config vite.learning-edge.config.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

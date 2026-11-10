@@ -5,6 +5,7 @@ SET LOCAL statement_timeout='10s';
 SELECT source_key,environment,state,started_at,finished_at,last_success_at,delivered,attention,
  started_at < now()-interval '2 hours' AS missed_execution
 FROM public.musicdna_learning_worker_status;
+SELECT enabled,valid_until,last_claim_at FROM public.musicdna_learning_worker_callers;
 COMMIT;
 
 -- Run separately against Echelon:

@@ -1,25 +1,18 @@
-import { createClient } from "@supabase/supabase-js";
-import { spawn } from "node:child_process";
-import { randomUUID } from "node:crypto";
 import { fileURLToPath } from "node:url";
 export async function runHourly(deps) {
-  const runId = deps.id();
   let delivered = 0,
     attention = false,
+    sourceState = "unavailable",
     autoState = "unavailable";
   try {
-    await deps.record(runId, "started", 0, false);
+    const d = await deps.deliver();
+    delivered = d.delivered;
+    sourceState = d.state;
+    attention = d.attention;
   } catch {
     attention = true;
   }
-  try {
-    const delivery = await deps.deliver();
-    delivered = delivery.delivered;
-    attention ||= delivery.attention;
-  } catch {
-    attention = true;
-  }
-  // Receiver retention is independent of source availability.
+  // Receiver retention remains independent of source availability.
   try {
     autoState = await deps.tick();
   } catch {
@@ -27,99 +20,88 @@ export async function runHourly(deps) {
   }
   if (!["idle", "queued", "busy", "budget_limited", "scope_closed"].includes(autoState))
     attention = true;
-  try {
-    await deps.record(runId, attention ? "failed" : "completed", delivered, attention);
-  } catch {
-    attention = true;
-  }
   return {
     event: "musicdna_hourly",
     delivery_receipts: delivered,
+    delivery_state: sourceState,
     review_queue_state: autoState,
     attention_required: attention,
   };
+}
+async function call(url, token, body, timeout) {
+  const r = await fetch(url, {
+    method: "POST",
+    headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
+    body: JSON.stringify(body),
+    redirect: "error",
+    signal: AbortSignal.timeout(timeout),
+  });
+  if (!r.ok || !r.body) throw Error("unavailable");
+  const reader = r.body.getReader(),
+    chunks = [];
+  let size = 0;
+  try {
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      size += value.length;
+      if (size > 8192) {
+        await reader.cancel();
+        throw Error("oversize");
+      }
+      chunks.push(value);
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  const bytes = new Uint8Array(size);
+  let offset = 0;
+  for (const b of chunks) {
+    bytes.set(b, offset);
+    offset += b.length;
+  }
+  const v = JSON.parse(new TextDecoder().decode(bytes));
+  if (v.ok !== true || typeof v.state !== "string") throw Error("unavailable");
+  return v;
 }
 async function main() {
   if (process.env.MUSICDNA_HOURLY_ENABLED !== "1") {
     console.log(JSON.stringify({ event: "musicdna_hourly", state: "disabled" }));
     return;
   }
-  const url = process.env.SUPABASE_URL,
-    key = process.env.SB_SECRET_KEY;
+  if (
+    process.env.SB_SECRET_KEY ||
+    process.env.SUPABASE_SERVICE_ROLE_KEY ||
+    process.env.SUPABASE_SECRET_KEY
+  )
+    throw Error("backend_credentials_forbidden");
   const sourceId = process.env.MUSICDNA_ECHELON_SOURCE_ID,
-    token = process.env.MUSICDNA_AUTOMATION_TOKEN;
-  if (url !== "https://udycgnhvaanemhrchbuj.supabase.co" || !key || !sourceId || !token)
-    throw Error("hourly_configuration");
-  const db = createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+    exportKey = process.env.MUSICDNA_EXPORT_API_KEY,
+    reviewKey = process.env.MUSICDNA_AUTOMATION_TOKEN;
+  if (!sourceId || !exportKey || !reviewKey) throw Error("configuration");
   const result = await runHourly({
-    id: randomUUID,
-    async record(id, state, delivered, attention) {
-      const { error } = await db
-        .rpc("record_musicdna_learning_worker_run", {
-          p_run_id: id,
-          p_state: state,
-          p_delivered: delivered,
-          p_attention: attention,
-        })
-        .abortSignal(AbortSignal.timeout(10000));
-      if (error) throw Error("run_receipt_unavailable");
-    },
     async deliver() {
-      return new Promise((resolve) => {
-        let output = "";
-        const child = spawn(
-          process.execPath,
-          [
-            fileURLToPath(new URL("../dist-learning-worker/worker.mjs", import.meta.url)),
-            "--source",
-            "music-dna",
-            "--environment",
-            "production",
-            "--execute",
-            "--maintenance",
-            "--batch",
-            "10",
-          ],
-          { env: process.env, stdio: ["ignore", "pipe", "pipe"] },
-        );
-        child.stdout.on("data", (b) => {
-          if (output.length < 65536) output += b.toString();
-        });
-        child.stderr.resume();
-        const timeout = setTimeout(() => child.kill("SIGTERM"), 65000);
-        child.on("error", () => {
-          clearTimeout(timeout);
-          resolve({ delivered: 0, attention: true });
-        });
-        child.on("exit", (code) => {
-          clearTimeout(timeout);
-          try {
-            const s = JSON.parse(output.trim()).summary;
-            resolve({
-              delivered: Number.isSafeInteger(s?.delivered) ? s.delivered : 0,
-              attention: code !== 0 || s?.attention_required === true || s?.state === "disabled",
-            });
-          } catch {
-            resolve({ delivered: 0, attention: true });
-          }
-        });
-      });
+      const v = await call(
+        "https://udycgnhvaanemhrchbuj.supabase.co/functions/v1/musicdna-learning-dispatch",
+        exportKey,
+        {},
+        70000,
+      );
+      if (
+        !Number.isSafeInteger(v.delivered) ||
+        v.delivered < 0 ||
+        typeof v.attention_required !== "boolean"
+      )
+        throw Error("invalid");
+      return { delivered: v.delivered, state: v.state, attention: v.attention_required };
     },
     async tick() {
-      const r = await fetch(
+      const v = await call(
         "https://yczomejrvihbmydyraqg.supabase.co/functions/v1/musicdna-learning-auto",
-        {
-          method: "POST",
-          headers: { Authorization: "Bearer " + token, "Content-Type": "application/json" },
-          body: JSON.stringify({ source_id: sourceId }),
-          redirect: "error",
-          signal: AbortSignal.timeout(15000),
-        },
+        reviewKey,
+        { source_id: sourceId },
+        15000,
       );
-      const raw = await r.text();
-      if (!r.ok || raw.length > 8192) throw Error("automation_unavailable");
-      const v = JSON.parse(raw);
-      if (v.ok !== true || typeof v.state !== "string") throw Error("automation_unavailable");
       return v.pricing_state === "unavailable_or_changed" ? "pricing_unavailable" : v.state;
     },
   });
