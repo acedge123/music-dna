@@ -13,6 +13,19 @@ export function readFingerprint(ledger: Ledger, priorThesis: string | null | und
   );
 }
 
+/**
+ * Reveal drafts share the prepared_reads table; a negative `answered` slot
+ * keeps them apart from the post-pick reaction drafted for the same pick.
+ */
+export function revealDraftKey(answered: number) {
+  return -answered;
+}
+
+/** Exact identity of everything the critic sees for the final reveal. */
+export function revealFingerprint(ledger: Ledger) {
+  return JSON.stringify({ reveal: ledger }, (k, v) => (VOLATILE.has(k) ? undefined : v));
+}
+
 /** The evidence a vote for `chosen` would freeze, built from the current catalog row. */
 export function hypotheticalChoice(
   pairing: {
