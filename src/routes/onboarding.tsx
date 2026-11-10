@@ -9,10 +9,14 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Share2, MessageCircle } from "lucide-react";
 import { readingLead } from "@/lib/critic-display";
 import { AccountControl } from "@/components/musicdna/account-control";
+import { useEffect } from "react";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
-  validateSearch: (search) => z.object({ session: z.string().uuid().optional() }).parse(search),
+  validateSearch: (search) =>
+    z
+      .object({ session: z.string().uuid().optional(), fresh: z.string().max(80).optional() })
+      .parse(search),
   head: () => ({
     meta: [
       { title: "MusicDNA — Interview" },
@@ -44,8 +48,8 @@ function HomeLogo() {
       <Link
         to="/"
         className="absolute top-4 left-5 z-10 flex min-h-11 items-center gap-2 opacity-80 transition-opacity hover:opacity-100"
-        aria-label="MusicDNA — home / start over"
-        title="Home / start over"
+        aria-label="MusicDNA — home"
+        title="Home"
       >
         <img src="/music-dna-logo.png" alt="MusicDNA" className="h-12 w-auto" />
       </Link>
@@ -57,7 +61,7 @@ function HomeLogo() {
 }
 
 function Onboarding() {
-  const { session } = Route.useSearch();
+  const { session, fresh } = Route.useSearch();
   const navigate = useNavigate();
   const {
     phase,
@@ -96,7 +100,12 @@ function Onboarding() {
     shareRead,
     skip,
     loadFinalRead,
-  } = useInterview(session);
+  } = useInterview(session, fresh);
+  useEffect(() => {
+    if (sessionId && sessionId !== session) {
+      void navigate({ to: "/onboarding", search: { session: sessionId }, replace: true });
+    }
+  }, [sessionId, session, navigate]);
   if (booting)
     return (
       <>
@@ -382,6 +391,16 @@ function Onboarding() {
                     className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
                   >
                     <MessageCircle /> Argue with me
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() =>
+                      void navigate({ to: "/onboarding", search: { fresh: crypto.randomUUID() } })
+                    }
+                    className="min-h-11 rounded-sm px-5 py-3"
+                  >
+                    <ArrowRight /> Start new interview
                   </Button>
                   <Button
                     type="button"

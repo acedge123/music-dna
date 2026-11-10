@@ -588,6 +588,38 @@ export type Database = {
         }
         Relationships: []
       }
+      interview_qa_sessions: {
+        Row: {
+          created_at: string
+          created_by: string
+          purpose: string
+          session_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          purpose: string
+          session_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          purpose?: string
+          session_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interview_qa_sessions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       llm_calls: {
         Row: {
           confidence: number | null
@@ -880,6 +912,7 @@ export type Database = {
       musicdna_learning_enrollments: {
         Row: {
           approved_by: string | null
+          data_class: string
           decision_ref: string
           enrolled_at: string
           environment: string
@@ -894,6 +927,7 @@ export type Database = {
         }
         Insert: {
           approved_by?: string | null
+          data_class?: string
           decision_ref: string
           enrolled_at?: string
           environment: string
@@ -908,6 +942,7 @@ export type Database = {
         }
         Update: {
           approved_by?: string | null
+          data_class?: string
           decision_ref?: string
           enrolled_at?: string
           environment?: string
@@ -1010,6 +1045,53 @@ export type Database = {
           },
           {
             foreignKeyName: "musicdna_learning_outbox_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: false
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_real_qa_consents: {
+        Row: {
+          approved_by: string
+          consent_ref: string
+          consented_at: string
+          environment: string
+          expires_at: string
+          policy_version: string
+          receiver_tenant_id: string
+          source_key: string
+          subject_ref: string
+          user_id: string
+        }
+        Insert: {
+          approved_by: string
+          consent_ref: string
+          consented_at: string
+          environment?: string
+          expires_at: string
+          policy_version?: string
+          receiver_tenant_id: string
+          source_key?: string
+          subject_ref: string
+          user_id: string
+        }
+        Update: {
+          approved_by?: string
+          consent_ref?: string
+          consented_at?: string
+          environment?: string
+          expires_at?: string
+          policy_version?: string
+          receiver_tenant_id?: string
+          source_key?: string
+          subject_ref?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_real_qa_consents_source_key_environment_fkey"
             columns: ["source_key", "environment"]
             isOneToOne: false
             referencedRelation: "musicdna_export_scopes"
@@ -2128,24 +2210,6 @@ export type Database = {
           winner_archetype_id: string | null
           winner_fit: number | null
         }
-        Insert: {
-          created_at?: string | null
-          is_final?: never
-          margin?: never
-          round_number?: never
-          session_id?: string | null
-          winner_archetype_id?: never
-          winner_fit?: never
-        }
-        Update: {
-          created_at?: string | null
-          is_final?: never
-          margin?: never
-          round_number?: never
-          session_id?: string | null
-          winner_archetype_id?: never
-          winner_fit?: never
-        }
         Relationships: [
           {
             foreignKeyName: "event_log_session_id_fkey"
@@ -2190,6 +2254,16 @@ export type Database = {
         }
         Returns: Json
       }
+      create_interview_qa: {
+        Args: {
+          p_candidates: Json
+          p_confidence: number
+          p_lane: string
+          p_owner: string
+          p_vector: Json
+        }
+        Returns: string
+      }
       enroll_musicdna_pilot_participant: {
         Args: {
           p_approval_ref: string
@@ -2199,6 +2273,17 @@ export type Database = {
           p_owner_id: string
         }
         Returns: Json
+      }
+      enroll_musicdna_real_qa: {
+        Args: {
+          p_approved_by: string
+          p_consent: string
+          p_consented_at: string
+          p_expires_at: string
+          p_subject_ref: string
+          p_user: string
+        }
+        Returns: undefined
       }
       exclude_musicdna_learning_capture: {
         Args: { p_observation_id: string }
