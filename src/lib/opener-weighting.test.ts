@@ -44,13 +44,15 @@ describe("opener slot weighting", () => {
   });
 });
 
-
 describe("specialist lane activation", () => {
-  it.each(["yacht_rock", "disco", "punk", "reggae"])("preserves exact %s catalog routing", (lane) => {
-    expect(catalogLaneToTopLane(lane)).toBe(lane);
-    expect(dominantPerSongLane(p([lane, lane, "pop"]))).toBe(lane);
-    expect(dominantPerSongLane(p([lane, "pop", "pop"]))).toBeNull();
-  });
+  it.each(["yacht_rock", "disco", "punk", "reggae"])(
+    "preserves exact %s catalog routing",
+    (lane) => {
+      expect(catalogLaneToTopLane(lane)).toBe(lane);
+      expect(dominantPerSongLane(p([lane, lane, "pop"]))).toBe(lane);
+      expect(dominantPerSongLane(p([lane, "pop", "pop"]))).toBeNull();
+    },
+  );
   it("preserves legacy Alternative families rather than remapping them to Punk", () => {
     expect(catalogLaneToTopLane("punk_noise_edge")).toBe("alternative");
     expect(catalogLaneToTopLane("post_punk_new_wave")).toBe("alternative");

@@ -395,7 +395,10 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
                         {r[`${c}_title`] ? (
                           <>
                             {String(r[`${c}_title`])}
-                            <span className="text-muted-foreground"> · {String(r[`${c}_artist`] ?? "")}</span>
+                            <span className="text-muted-foreground">
+                              {" "}
+                              · {String(r[`${c}_artist`] ?? "")}
+                            </span>
                           </>
                         ) : (
                           <span className="text-muted-foreground">Unknown song</span>
@@ -989,10 +992,10 @@ function ResidualsPanel() {
             "metal",
             "country",
             "r_and_b",
-              "yacht_rock",
-              "disco",
-              "punk",
-              "reggae",
+            "yacht_rock",
+            "disco",
+            "punk",
+            "reggae",
             "general",
           ].map((l) => (
             <option key={l} value={l}>
@@ -1246,7 +1249,10 @@ function TestCoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: stri
               className={`flex w-full items-center gap-3 text-left text-xs ${trait === t ? "text-foreground" : "text-muted-foreground"}`}
             >
               <span className="w-28 font-mono">{t}</span>
-              <span className="h-2 rounded-sm bg-primary" style={{ width: `${(n / maxTrait) * 60}%` }} />
+              <span
+                className="h-2 rounded-sm bg-primary"
+                style={{ width: `${(n / maxTrait) * 60}%` }}
+              />
               <span>{n}</span>
             </button>
           ))}
@@ -1281,7 +1287,9 @@ function TestCoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: stri
               </div>
               <div className="space-y-1.5">
                 <p className="font-serif italic text-sm">
-                  {p.user_facing_tradeoff || <span className="text-muted-foreground">No saying</span>}
+                  {p.user_facing_tradeoff || (
+                    <span className="text-muted-foreground">No saying</span>
+                  )}
                 </p>
                 {(() => {
                   const issue = sayingProblem(
@@ -1290,14 +1298,22 @@ function TestCoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: stri
                   );
                   return issue ? (
                     <p className="text-xs text-destructive">
-                      Saying {issue === "duplicate" ? "reused by another matchup" : issue === "generic" ? "is generic" : "missing"}
+                      Saying{" "}
+                      {issue === "duplicate"
+                        ? "reused by another matchup"
+                        : issue === "generic"
+                          ? "is generic"
+                          : "missing"}
                     </p>
                   ) : null;
                 })()}
                 <div className="flex flex-wrap gap-1">
                   {p.tests.length ? (
                     p.tests.map((t) => (
-                      <span key={t} className="rounded-sm border hairline px-1.5 py-0.5 font-mono text-[10px]">
+                      <span
+                        key={t}
+                        className="rounded-sm border hairline px-1.5 py-0.5 font-mono text-[10px]"
+                      >
                         {t}
                       </span>
                     ))
