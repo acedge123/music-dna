@@ -114,5 +114,12 @@
     "Empty-window hosted success does not establish positive real-feedback transport or model completion.",
     "Missed-run checks are available as metadata SQL; no new Slack alert delivery was configured.",
     "AB-50 independent live denial/retention inventory limitations and AB-52 experiment/AB-30 approval application remain separate."
-  ]
+  ],
+  "known_qa_provenance": {
+    "owner_clarification": "CGPT submitted the enrolled sessions on the owner\u2019s behalf.",
+    "saved_versions": 4,
+    "distinct_sessions": 3,
+    "accuracy_feedback_present": false,
+    "interpretation": "Authenticated agent-assisted QA walkthroughs; do not treat song choices as owner-selected musical preferences or independent listener evidence."
+  }
 }
