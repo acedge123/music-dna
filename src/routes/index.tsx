@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AccountControl } from "@/components/musicdna/account-control";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -61,12 +62,7 @@ function Nav() {
           >
             How it works
           </Link>
-          <Link
-            to="/auth"
-            className="inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Sign in
-          </Link>
+          <AccountControl />
           <Link
             to="/onboarding"
             className="inline-flex min-h-11 items-center gap-2 rounded-sm border hairline-strong px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-secondary"

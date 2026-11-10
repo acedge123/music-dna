@@ -1,9 +1,9 @@
-import { createFileRoute, Outlet, redirect, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Outlet, redirect, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { adminCheck } from "@/lib/admin.functions";
-import { toast } from "sonner";
+import { AccountControl } from "@/components/musicdna/account-control";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
@@ -16,24 +16,12 @@ export const Route = createFileRoute("/_authenticated")({
 });
 
 function AuthedLayout() {
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
   const check = useServerFn(adminCheck);
   const adminQ = useQuery({
     queryKey: ["adminCheck"],
     queryFn: () => check(),
     staleTime: 5 * 60_000,
   });
-  async function signOut() {
-    await supabase.auth.signOut();
-    // Clear cached authenticated data (admin check, profile, etc.) so it
-    // can't leak into a subsequent session in the same tab. The centralized
-    // onAuthStateChange listener in __root.tsx also clears on SIGNED_OUT,
-    // but doing it here first keeps the navigate() below deterministic.
-    queryClient.clear();
-    toast.success("Signed out.");
-    navigate({ to: "/" });
-  }
   return (
     <div className="min-h-screen bg-background text-foreground">
       <header className="border-b hairline">
@@ -72,9 +60,7 @@ function AuthedLayout() {
                 Admin
               </Link>
             )}
-            <button onClick={signOut} className="text-muted-foreground hover:text-foreground">
-              Sign out
-            </button>
+            <AccountControl />
           </nav>
         </div>
       </header>

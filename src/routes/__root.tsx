@@ -131,6 +131,8 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const router = useRouter();
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Single centralized auth listener. Filter to identity transitions so we
   // don't thrash the router/cache on TOKEN_REFRESHED (~hourly) or every
@@ -144,7 +146,9 @@ function RootComponent() {
     // client into any SSR-executed path.
     void import("@/integrations/supabase/client").then(({ supabase }) => {
       if (cancelled) return;
-      const { data: sub } = supabase.auth.onAuthStateChange((event) => {
+      const { data: sub } = supabase.auth.onAuthStateChange((event, nextSession) => {
+        setSession(nextSession);
+        setLoading(false);
         if (event === "SIGNED_IN" || event === "USER_UPDATED") {
           router.invalidate();
           queryClient.invalidateQueries();
@@ -164,7 +168,9 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
-      <Outlet />
+      <AuthContext.Provider value={{ session, user: session?.user ?? null, loading }}>
+        <Outlet />
+      </AuthContext.Provider>
     </QueryClientProvider>
   );
 }
