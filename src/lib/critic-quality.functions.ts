@@ -28,6 +28,8 @@ export const criticQualityQueue = createServerFn({ method: "POST" })
       .order("id")
       .range(data.page * 25, data.page * 25 + 24);
     if (result.error) throw new Error("Quality queue unavailable");
+    // Never replace the frozen attempt with current prose. Exact result links
+    // and local previous/self-report context travel with the attempt itself.
     const ids = (result.data ?? []).map((r) => r.id);
     const reviews = ids.length
       ? await context.supabase
@@ -130,5 +132,22 @@ export const criticExposureReport = createServerFn({ method: "POST" })
       choices_without_served_record: decisions.filter(
         (d) => !(offers.data ?? []).some((o) => o.pairing_id === d.pairing_id),
       ).length,
+      partitions: [
+        ...new Set((offers.data ?? []).map((o) => `${o.lane}:${o.catalog_revision}`)),
+      ].map((key) => {
+        const group = (offers.data ?? []).filter((o) => `${o.lane}:${o.catalog_revision}` === key);
+        return {
+          key,
+          ...exposureReport(
+            group.map((o) => ({
+              id: o.id,
+              pairing_id: o.pairing_id,
+              songs: Songs.parse(o.songs),
+              shown: o.reported_shown_at !== null,
+            })),
+            decisions.filter((d) => group.some((o) => o.pairing_id === d.pairing_id)),
+          ),
+        };
+      }),
     };
   });

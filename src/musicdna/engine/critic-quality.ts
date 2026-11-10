@@ -103,6 +103,9 @@ export function exposureReport(
   const opponentCounts: Record<string, number> = {};
   for (const d of uniqueDecisions)
     opponentCounts[d.rejected.id] = (opponentCounts[d.rejected.id] ?? 0) + 1;
+  const offeredCounts: Record<string, number> = {};
+  for (const o of uniqueOffers)
+    for (const s of o.songs) offeredCounts[s.id] = (offeredCounts[s.id] ?? 0) + 1;
   return {
     served: uniqueOffers.length,
     client_reported_shown: uniqueOffers.filter((o) => o.shown).length,
@@ -114,6 +117,9 @@ export function exposureReport(
     answered_offered_songs: distribution(uniqueDecisions.flatMap((d) => [d.chosen, d.rejected])),
     chosen_songs: distribution(uniqueDecisions.map((d) => d.chosen)),
     repeated_opponents: Object.entries(opponentCounts)
+      .filter(([, count]) => count > 1)
+      .map(([song_id, count]) => ({ song_id, count })),
+    repeated_offered_songs: Object.entries(offeredCounts)
       .filter(([, count]) => count > 1)
       .map(([song_id, count]) => ({ song_id, count })),
     independent_retests: null,
