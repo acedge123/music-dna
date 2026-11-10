@@ -104,6 +104,21 @@ describe.skipIf(!process.env.AB45_TEST_DATABASE_URL)("native consented real QA",
       ),
     ).toEqual(["mixed", "accurate"]);
   });
+  it("preserves the synthetic V1 path after the real-QA migration", async () => {
+    await f.sql`INSERT INTO public.musicdna_export_scopes(source_key,environment,observed_from,expires_at,approved_by,capture_enabled,receiver_tenant_id) VALUES('music-dna-staging','staging',now()-interval '1 day',now()+interval '1 day',${OWNER},true,'tenant-a')`;
+    const id = await result();
+    await f.sql`INSERT INTO public.musicdna_learning_enrollments(result_id,session_id,owner_user_id,source_key,environment,receiver_tenant_id,subject_ref,decision_ref,result_ref,result_fingerprint,approved_by)
+      SELECT id,session_id,user_id,'music-dna-staging','staging','tenant-a',${subject},${"d_" + "d".repeat(64)},${"r_" + "b".repeat(64)},musicdna_learning_private.result_fingerprint(r),${OWNER} FROM public.session_results r WHERE id=${id}`;
+    const [r] = await f.sql`SELECT session_id FROM public.session_results WHERE id=${id}`;
+    await f.sql.begin(async (tx) => {
+      await tx`SET LOCAL ROLE authenticated`;
+      await tx`SELECT set_config('request.jwt.claim.sub',${OWNER},true)`;
+      await tx`SELECT public.save_result_feedback(${r.session_id},${tx.json({ mutation_id: randomUUID(), result_version: 1, accuracy: "accurate", rating: null, comment: null, target: null, most_accurate_sentence: null, least_accurate_sentence: null })})`;
+    });
+    const [o] = await f.sql`SELECT projection FROM public.musicdna_learning_outbox`;
+    expect(o.projection.schema_version).toBe("learning-observation.v1");
+    expect(o.projection.privacy.data_class).toBe("synthetic");
+  });
   it("does not enroll another account or backfill a pre-consent session", async () => {
     await enroll();
     await result(OTHER);
