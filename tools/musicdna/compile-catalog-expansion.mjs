@@ -1,6 +1,7 @@
 // MusicDNA catalog batch validator and deterministic SQL compiler.
 // node tools/musicdna/compile-catalog-expansion.mjs --validate <file.json>
 // node tools/musicdna/compile-catalog-expansion.mjs --sql <file.json>
+// Specialist lanes: --sql --stage-specialist <file.json> generates INACTIVE inserts only.
 // No database or file writes happen in this program.
 import { readFileSync } from "node:fs";
 
@@ -8,9 +9,14 @@ const selectedFile = process.argv.find((a) => a.endsWith(".json"));
 const fallback = new URL("../../data/musicdna/r-and-b-expansion-2026-11-10.json", import.meta.url);
 const batch = JSON.parse(readFileSync(selectedFile ?? fallback, "utf8"));
 const axes = ["movement","atmosphere","immersion","scale","community","perspective","confidence","tension","texture","transformation"];
-if (!["r_and_b","electronic"].includes(batch.lane)) throw new Error("Unsupported batch lane");
-const prefix = "musicdna:" + batch.lane + ":2026-11-10:";
+const standardLanes = new Set(["r_and_b", "electronic"]);
+const specialistLanes = new Set(["yacht_rock", "disco", "punk", "reggae"]);
+if (!standardLanes.has(batch.lane) && !specialistLanes.has(batch.lane))
+  throw new Error("Unsupported batch lane");
+const specialist = specialistLanes.has(batch.lane);
+const prefix = "musicdna:" + batch.lane + ":" + batch.date + ":";
 const primaryLane = batch.lane === "r_and_b" ? "general" : batch.lane;
+const activate = !specialist;
 const quote = (x) => "'" + String(x).replaceAll("'", "''") + "'";
 const json = (x) => quote(JSON.stringify(x)) + "::jsonb";
 const songId = (k) => "md5(" + quote(prefix + "song:" + k) + ")::uuid";
@@ -18,8 +24,19 @@ const pairId = (p) => "md5(" + quote(prefix + "pair:" + [p.a,p.b].sort().join("|
 const map = new Map(batch.songs.map((s) => [s.key,s]));
 const errors = [], seen = new Set(), artistCounts = new Map();
 const coverage = Object.fromEntries(axes.map((a) => [a,0]));
+let focusPairings = 0;
 if (JSON.stringify(batch.score_axes) !== JSON.stringify(axes)) errors.push("Axis ordering mismatch");
-if (batch.songs.length < 30 || batch.songs.length > 40) errors.push("Expected 30-40 songs");
+const songMin = specialist ? 12 : 30, songMax = specialist ? 20 : 40;
+if (batch.songs.length < songMin || batch.songs.length > songMax)
+  errors.push("Expected " + songMin + "-" + songMax + " songs");
+if (specialist) {
+  if (!Array.isArray(batch.focus_axes) || batch.focus_axes.length < 2 || batch.focus_axes.length > 4 ||
+      new Set(batch.focus_axes).size !== batch.focus_axes.length ||
+      batch.focus_axes.some((a) => !axes.includes(a)))
+    errors.push("Specialist lane needs 2-4 valid distinct focus_axes");
+  if (batch.pairings.length < 8 || batch.pairings.length > 14)
+    errors.push("Specialist lane needs 8-14 pairings");
+}
 if (map.size !== batch.songs.length) errors.push("Duplicate song key");
 for (const s of batch.songs) {
   const artist = s.artist.toLowerCase().split(" feat.")[0];
@@ -48,6 +65,14 @@ for (const p of batch.pairings) {
         errors.push(k + ": contrast below 20 on " + axis);
     }
   }
+  if (specialist && p.tests.some((axis) => batch.focus_axes.includes(axis)))
+    focusPairings++;
+}
+if (specialist) {
+  if (focusPairings < Math.ceil(batch.pairings.length * 0.8))
+    errors.push("Fewer than 80% of specialist pairings test a focus axis");
+  for (const axis of batch.focus_axes) if (coverage[axis] < 2)
+    errors.push("Under-covered specialist focus axis: " + axis);
 }
 if (errors.length) { process.stderr.write(errors.join("\n") + "\n"); process.exit(1); }
 if (!process.argv.includes("--sql")) {
@@ -56,6 +81,10 @@ if (!process.argv.includes("--sql")) {
     declared_tests: coverage, review: "editorial_provisional",
   },null,2) + "\n");
   process.exit(0);
+}
+if (specialist && !process.argv.includes("--stage-specialist")) {
+  process.stderr.write("Specialist SQL is intentionally gated: use --sql --stage-specialist to compile an INACTIVE staging import. No database connection is made.\n");
+  process.exit(2);
 }
 
 const songs = batch.songs.map((s) => {
@@ -81,6 +110,8 @@ const newPairIds = batch.pairings.map(pairId).join(",");
 const ref = (col) => "case when left(p." + col + ",3)='db:' then substr(p." + col + ",4)::uuid else md5(" + quote(prefix + "song:") + " || p." + col + ")::uuid end";
 const code = [
   "-- MusicDNA " + batch.lane + " catalog. Editorial estimates; no existing data overwritten.",
+  specialist ? "-- SPECIALIST STAGING ONLY: songs and pairings remain inactive. Routing/selector integration must be reviewed before activation." :
+    "-- Standard catalog import: active rows after audit.",
   "BEGIN;",
   "SET LOCAL lock_timeout='5s';",
   "WITH s AS (SELECT * FROM jsonb_to_recordset(" + json(songs) + ") AS s(",
@@ -94,7 +125,7 @@ const code = [
   "polarization,tradeoff_richness,pairing_density,identity_signaling,longevity,cross_genre_mapping,",
   "scoring_version,scored_at,scoring_provenance)",
   "SELECT md5(" + quote(prefix + "song:") + "||s.key)::uuid,s.title,s.artist,s.year," +
-    quote(batch.lane) + "," + quote(primaryLane) + ",s.sub_lane,true,",
+    quote(batch.lane) + "," + quote(primaryLane) + ",s.sub_lane," + activate + ",",
   ...axes.map((_,i) => "(s.scores->>" + i + ")::int,"),
   "s.canon,s.routing,s.diagnostic_power,s.primary_dimensions,s.rationale,",
   "s.polarization,s.tradeoff_richness,s.pairing_density,s.identity_signaling,s.longevity,s.cross_genre_mapping,",
@@ -115,7 +146,7 @@ const code = [
   "lane,active,diagnostic_weight,expected_split,difficulty,is_bootstrap)",
   "SELECT p.id,p.a_id,p.b_id,p.tests,p.why,",
   "p.why||' Editorial contrast only; listener split not yet measured.',p.phrase,",
-  quote(batch.lane) + ",true,p.weight,'Unmeasured; listener validation pending',2,false",
+  quote(batch.lane) + "," + activate + ",p.weight,'Unmeasured; listener validation pending',2,false",
   "FROM resolved p JOIN public.songs a ON a.id=p.a_id JOIN public.songs b ON b.id=p.b_id",
   "WHERE a.lane=" + quote(batch.lane) + " AND b.lane=" + quote(batch.lane) + " AND a.id<>b.id",
   "AND lower(a.artist)<>lower(b.artist)",
@@ -127,7 +158,7 @@ const code = [
   "SELECT count(*) INTO sc FROM public.songs WHERE id IN (" + newSongIds + ");",
   "SELECT count(*) INTO pc FROM public.pairings WHERE id IN (" + newPairIds + ");",
   "IF sc<>" + songs.length + " OR pc<>" + batch.pairings.length +
-    " THEN RAISE EXCEPTION 'Incomplete R&B batch: % songs / % pairings',sc,pc; END IF;",
+    " THEN RAISE EXCEPTION 'Incomplete catalog batch: % songs / % pairings',sc,pc; END IF;",
   "SELECT count(*) INTO bad FROM public.pairings p",
   "JOIN public.songs a ON a.id=p.song_a_id JOIN public.songs b ON b.id=p.song_b_id",
   "CROSS JOIN LATERAL unnest(p.tests) ax",
@@ -135,11 +166,11 @@ const code = [
   "ax NOT IN (" + axes.map(quote).join(",") + ")",
   "OR (to_jsonb(a)->>ax) IS NULL OR (to_jsonb(b)->>ax) IS NULL",
   "OR abs((to_jsonb(a)->>ax)::int-(to_jsonb(b)->>ax)::int)<20);",
-  "IF bad>0 THEN RAISE EXCEPTION 'Invalid R&B tests: %',bad; END IF;",
+  "IF bad>0 THEN RAISE EXCEPTION 'Invalid catalog tests: %',bad; END IF;",
   "IF EXISTS(SELECT 1 FROM public.pairings p WHERE p.id IN (" + newPairIds + ")",
   "AND (cardinality(p.tests)<1 OR cardinality(p.tests)>3 OR p.user_facing_tradeoff IS NULL",
-  "OR NOT p.active OR p.song_a_id=p.song_b_id))",
-  "THEN RAISE EXCEPTION 'Invalid R&B active-pair metadata'; END IF;",
+  "OR p.active IS DISTINCT FROM " + activate + " OR p.song_a_id=p.song_b_id))",
+  "THEN RAISE EXCEPTION 'Invalid catalog pair metadata'; END IF;",
   "END $audit$;",
   "COMMIT;",
 ].join("\n");
