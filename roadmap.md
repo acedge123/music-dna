@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — critic-quality and measurement-bias proposal
+
+- [ ] Review and approve local-only stage telemetry, independent four-axis QA, and served-versus-chosen exposure measurements; keep all export/enrollment/learning flags unchanged.
+- [ ] Implementation follows approval; production migrations require separate approval, and independent human retests require consented recruitment.
+
 ## Current — sign-in flash and sign-out
 
 - [x] Shared root session state and account/sign-out controls on home/interview/protected pages; sign-in waits for hydration and anonymous guests no longer get bounced out. Lint/build pass; guest interview → sign-in remains stable, mobile fits, no runtime errors.
