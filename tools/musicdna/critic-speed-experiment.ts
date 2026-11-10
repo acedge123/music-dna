@@ -104,7 +104,7 @@ async function runScenario(sessionId: string) {
 async function main() {
   mkdirSync(OUT, { recursive: true });
   const { data, error } = await supabaseAdmin
-    .from("sessions").select("id,started_at").eq("status", "completed")
+    .from("sessions").select("id,started_at").not("completed_at", "is", null)
     .order("started_at", { ascending: false }).limit(200);
   if (error) throw error;
   const picked: string[] = [];
