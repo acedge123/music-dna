@@ -17,6 +17,7 @@ import {
   CRITIC_VOICE_EDITORIAL as VOICE,
 } from "@/musicdna/engine/critic";
 import { callLovableAi, DEFAULT_MODEL as MODEL } from "@/musicdna/adapters/llm-gateway";
+import { revealBeats } from "@/musicdna/engine/reveal-beats";
 import { recommendForSession, type Regime } from "@/musicdna/router";
 import { toEnginePairingKnobs } from "@/musicdna/router/knobs";
 import { appliedRoutingContext } from "@/musicdna/learning/applied-routing";
@@ -1961,7 +1962,7 @@ Mode: bounded authored music criticism. Follow the versioned author/review contr
 
 export const finalizeSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
+  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid(), finishEarly: z.boolean().optional() }).parse(d))
   .handler(async ({ data, context }) =>
     finalizeSessionImpl(context.supabase, context.userId, data),
   );
@@ -1969,7 +1970,7 @@ export const finalizeSession = createServerFn({ method: "POST" })
 export async function finalizeSessionImpl(
   supabase: AuthedSupabase,
   userId: string,
-  data: { sessionId: string },
+  data: { sessionId: string; finishEarly?: boolean },
 ) {
   const { data: session, error: sErr } = await supabase
     .from("sessions")
@@ -2023,6 +2024,9 @@ export async function finalizeSessionImpl(
 
   // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
   const ledger = evidence.ledger;
+  if (data.finishEarly && !sessionCompletion({
+    answered: ledger.answered, vector: {}, dims: [], requested_finish: true,
+  }).done) throw new Error("An initial reading needs four answered choices.");
   const patterns = ledger.axes.map((a) => {
     const label = DIM_LABEL[a.axis];
     const preferred = a.direction === "hi" ? label?.hi : label?.lo;
@@ -3384,6 +3388,7 @@ type SynthPayload = {
   counter_reads: SynthCounter[];
   /** Saved result version this payload was rendered from (RES04). */
   result_version?: number | null;
+  reveal?: ReturnType<typeof revealBeats>;
 };
 
 export const finalSynthesis = createServerFn({ method: "POST" })
@@ -3523,6 +3528,7 @@ async function computeFinalSynthesis(
 
   return {
     synthesis,
+    reveal: revealBeats(ledger),
     kept_choosing,
     counter_reads,
     narration_status: narrated.status,

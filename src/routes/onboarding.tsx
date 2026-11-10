@@ -85,6 +85,10 @@ function Onboarding() {
     reactedRounds,
     reactionReply,
     entries,
+    milestone,
+    continueInterview,
+    finishEarly,
+    reveal,
     synthesis,
     auditText,
     kept,
@@ -164,7 +168,7 @@ function Onboarding() {
                 <span className="italic text-muted-foreground">Don't be shy...</span>
               </h1>
               <p className="text-sm text-muted-foreground max-w-md text-center sm:text-left">
-                First song. No committee. Just you.
+                Six choices. A few tough calls. Then I'll tell you what I think your music taste reveals—and where I'm still guessing.
               </p>
             </header>
 
@@ -298,7 +302,7 @@ function Onboarding() {
                 </p>
               </details>
             )}
-            <InterviewHistory
+            {!milestone && <InterviewHistory
               entries={entries}
               openerSongs={songs}
               allowReactions={!!pairing}
@@ -306,12 +310,25 @@ function Onboarding() {
               reactionReply={reactionReply}
               busy={busy || pendingSongId !== null || pendingSkip !== null}
               onReact={(kind) => void reactToRead(kind)}
-            />
+            />}
           </>
         )}
 
         {/* Current pairing */}
-        {pairing && phase === "playing" && (
+        {milestone && (
+          <section className="max-w-2xl space-y-6 py-8" aria-label={milestone === 3 ? "Halftime" : "Initial reading available"}>
+            <p className="eyebrow">{milestone === 3 ? "Halfway there" : "Four choices in"}</p>
+            <h2 className="display text-3xl md:text-4xl">{milestone === 3 ? "The story isn't settled." : "I have an initial reading."}</h2>
+            {milestone === 3 && <p className="whitespace-pre-wrap font-serif text-2xl leading-relaxed">{entries.at(-1)?.thesis || "Still listening. The story stays open."}</p>}
+            <p className="font-serif text-xl leading-relaxed">{milestone === 3 ? "Three more. Let's find out what holds—and what changes." : "See my take now, or give me two more picks to challenge it."}</p>
+            <div className="flex flex-wrap gap-3">
+              {milestone === 4 && <Button onClick={() => void finishEarly()} disabled={busy} variant="outline" className="min-h-11"><MessageCircle /> See my take now</Button>}
+              <Button onClick={continueInterview} disabled={busy} className="min-h-11">{milestone === 3 ? "Three more" : "Give me two more"} <ArrowRight /></Button>
+            </div>
+          </section>
+        )}
+
+        {pairing && phase === "playing" && !milestone && (
           <section ref={pairingAnchorRef} className="space-y-4 pt-2">
             <p className="font-serif text-2xl md:text-3xl">
               {entries.length === 0 ? "Pick one. First instinct." : "Which one would you keep?"}
@@ -383,6 +400,7 @@ function Onboarding() {
                   kept_choosing: kept,
                   counter_reads: counters,
                   result_version: resultVersion,
+                  reveal,
                 }}
               >
                 <div className="flex flex-col gap-3 sm:flex-row">

@@ -21,13 +21,17 @@ export const Route = createFileRoute("/api/v1/session/$id/reveal")({
           const sid = UUID.safeParse(params.id);
           if (!sid.success) return errorResponse("INVALID_INPUT", "Invalid session id", 400);
           const { supabase, userId } = await verifyBearer(request);
-          const result = await finalizeSessionImpl(supabase, userId, { sessionId: sid.data });
+          const raw = await request.text();
+          const body = z.object({ finish_early: z.boolean().optional() }).safeParse(raw.trim() ? JSON.parse(raw) : {});
+          if (!body.success) return errorResponse("INVALID_INPUT", "Invalid reveal request", 400);
+          const result = await finalizeSessionImpl(supabase, userId, { sessionId: sid.data, finishEarly: body.data.finish_early });
           if (experienceVersion(request) !== 1) return jsonResponse(result);
           const synth = await finalSynthesisImpl(supabase, userId, { sessionId: sid.data });
           const allowed = (result as { allowed_claims?: unknown[] }).allowed_claims ?? [];
           return jsonResponse({
             contract: 1,
             result_version: synth.result_version ?? null,
+            reveal: synth.reveal ?? null,
             outcome: allowed.length > 0 ? "supported" : "insufficient_evidence",
             headline: synth.synthesis,
             voice_version: synth.voice_version ?? "claim-language-v1",
