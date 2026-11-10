@@ -16,6 +16,7 @@ export type LedgerChoice = {
   choice_id?: string;
   provenance?: "pairing" | "legacy_unavailable" | "invalid_snapshot";
   pairing_revision?: string | null;
+  pairing_saying?: string | null;
   catalog_revision?: string;
   ms_to_decide?: number | null;
   pairing_id?: string | null;
@@ -29,6 +30,7 @@ export type LedgerChoice = {
 export type LedgerEntry = {
   choice_id: string | null;
   pairing_revision: string | null;
+  pairing_saying?: string | null;
   catalog_revision: string | null;
   index: number;
   pairing_id: string | null;
@@ -112,6 +114,7 @@ export function buildLedger(choices: LedgerChoice[], allDims: readonly string[])
       entries.push({
         choice_id: c.choice_id ?? null,
         pairing_revision: c.pairing_revision ?? null,
+        pairing_saying: c.pairing_saying ?? null,
         catalog_revision: c.catalog_revision ?? null,
         index,
         pairing_id: c.pairing_id ?? null,

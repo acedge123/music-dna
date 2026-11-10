@@ -41,3 +41,5 @@
 - Pairings go live only through two activation checks enforced by the `pairings_activation_checks` DB trigger and mirrored in `src/musicdna/engine/pairing-eligibility.ts`: diagnostic integrity (≥1 declared trait with ≥20-point song contrast) and editorial quality (specific, non-generic, unique saying). The live selector also filters by integrity; catalog repairs never rewrite frozen `choices.evidence`.
 
 - Specialist genres are distinct top-level opener lanes shared by web and REST; exact catalog lanes precede legacy family aliases, so activation does not silently remap historical Alternative songs.
+
+- Post-choice sayings come only from the optional editorial block frozen by the vote trigger, alongside ledger-tested directions; never reread mutable sayings for historical choices or treat editorial metaphors as claim evidence.

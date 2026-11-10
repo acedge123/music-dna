@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — post-choice pairing sayings
+
+- [x] Freeze new sayings at vote time; shared author/reviewer receive answered, revision-verified saying, tested traits and chosen direction only. No pre-pick disclosure or historical backfill.
+- [x] 35 tests, lint and preview build pass; real guest vote/readback verifies frozen saying and round advancement. Reviewer rejected that run's prose, retaining the safe fallback; voice acceptance is not claimed. Details: docs/musicdna/post-choice-sayings.md.
+
 ## Current — specialist lanes and full catalog review
 
 - [x] Imported and activated the approved 69 songs / 46 matchups; all contrasts and unique phrases pass, existing historical evidence unchanged.
