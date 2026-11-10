@@ -22,6 +22,17 @@ const OPENAI_DEFAULT_MODEL = "gpt-4o-mini";
 
 export const DEFAULT_MODEL = "google/gemini-3-flash-preview";
 
+// Critic on OpenAI direct (Vercel): the writer needs a stronger model than
+// gpt-4o-mini to hold the structured contract; the reviewer stays small/fast.
+// Env overrides allow changes in Vercel without a deploy.
+export const CRITIC_WRITER_OPENAI_DEFAULT = "gpt-4.1";
+export const CRITIC_REVIEWER_OPENAI_DEFAULT = "gpt-4.1-mini";
+export function criticOpenAiModel(role: "writer" | "reviewer") {
+  return role === "writer"
+    ? process.env.OPENAI_CRITIC_WRITER_MODEL || CRITIC_WRITER_OPENAI_DEFAULT
+    : process.env.OPENAI_CRITIC_REVIEWER_MODEL || CRITIC_REVIEWER_OPENAI_DEFAULT;
+}
+
 type ResolvedProvider = {
   url: string;
   apiKey: string;
@@ -122,13 +133,23 @@ export function createLovableLlmGateway(opts: LovableGatewayOptions = {}): LLMGa
 // `ai()` helper, but the transport now lives behind the port.
 export async function callLovableAi(
   messages: Array<{ role: string; content: string }>,
-  opts: LovableGatewayOptions & { model?: string } = {},
+  opts: LovableGatewayOptions & {
+    model?: string;
+    /** Critic writer vs reviewer: selects a stronger OpenAI model for the writer. */
+    role?: "writer" | "reviewer";
+    /** Strict structured output; the provider enforces the schema. */
+    jsonSchema?: { name: string; schema: Record<string, unknown> };
+  } = {},
 ): Promise<string> {
   const doFetch = opts.fetchImpl ?? fetch;
   const provider = opts.apiKey
     ? { url: AI_URL, apiKey: opts.apiKey, defaultModel: opts.defaultModel ?? DEFAULT_MODEL }
     : resolveProvider();
   if (!provider) throw new Error("LOVABLE_API_KEY missing (and no OPENAI_API_KEY)");
+  const roleDefault =
+    provider.url === OPENAI_URL && opts.role
+      ? criticOpenAiModel(opts.role)
+      : undefined;
   const res = await doFetch(provider.url, {
     method: "POST",
     headers: {
@@ -136,8 +157,16 @@ export async function callLovableAi(
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      model: resolveModel(provider, opts.model, opts.defaultModel),
+      model: resolveModel(provider, opts.model, roleDefault ?? opts.defaultModel),
       messages,
+      ...(opts.jsonSchema
+        ? {
+            response_format: {
+              type: "json_schema",
+              json_schema: { name: opts.jsonSchema.name, strict: true, schema: opts.jsonSchema.schema },
+            },
+          }
+        : {}),
     }),
   });
   if (!res.ok) {
@@ -150,7 +179,7 @@ export async function callLovableAi(
     usage?: { prompt_tokens?: number; completion_tokens?: number };
   };
   opts.onMeasurement?.({
-    model: json.model ?? resolveModel(provider, opts.model, opts.defaultModel),
+    model: json.model ?? resolveModel(provider, opts.model, roleDefault ?? opts.defaultModel),
     provider: provider.url === OPENAI_URL ? "openai" : "lovable",
     input_tokens: json.usage?.prompt_tokens ?? null,
     output_tokens: json.usage?.completion_tokens ?? null,
