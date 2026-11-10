@@ -2,10 +2,11 @@
 
 ## Current — journey, halftime and optional four-choice reveal
 
-- [ ] Introduce six-choice journey; pause after three with the saved read, never invented contradiction.
-- [ ] Offer optional four-choice completion; retain six-choice depth and honest completed-test counts across shared server policy.
-- [ ] Stage the saved reveal, actual twist, invitation to challenge and expandable receipts; keep routing shadow and matchups mysterious.
-- [ ] Run completion/evidence tests and fresh interview desktop/mobile checks; document client contract and deployment limitations.
+- [x] Introduced six-choice journey and halftime pause after three using the saved read, never a fabricated contradiction.
+- [x] Optional four-choice completion guarded by shared server policy; six remains default, skips/exhaustion remain valid exceptions. Completed sessions return no more pairings; reveal counts and tests use frozen evidence.
+- [x] Complete saved reveal, actual eligible-claim exception as twist, correction question and expandable receipts. Routing stays shadow; existing lane-local challenge weighting stays unchanged, so the immediate next pair is not guaranteed to test the emerging hypothesis.
+- [x] 90 focused regressions (89 initial plus added service guard), touched-file lint and preview build passed. Fresh guest four-choice exit and six-choice completion both verified, including halftime, receipts counts, exact completed reload, 390px fit and zero page errors. Shared additive reveal contract documented.
+- [ ] Production signed-in acceptance and Flutter rendering: await Vercel deployment/owner retest and mobile adoption. No flags or migrations changed.
 
 ## Current — faster replies and complete final reading
 
