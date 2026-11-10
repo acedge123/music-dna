@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { createLovableLlmGateway, callLovableAi, DEFAULT_MODEL } from "./llm-gateway";
 
 function mockFetch(responseBody: unknown, opts: { status?: number } = {}) {
@@ -113,6 +113,96 @@ describe("createLovableLlmGateway", () => {
 });
 
 describe("callLovableAi", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it.each(["writer", "reviewer"] as const)(
+    "uses the Critic %s default rather than the general GPT-4o mini override",
+    async (role) => {
+      vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
+      vi.stubEnv("OPENAI_MODEL", "gpt-4o-mini");
+      vi.stubEnv("OPENAI_CRITIC_WRITER_MODEL", "");
+      vi.stubEnv("OPENAI_CRITIC_REVIEWER_MODEL", "");
+      const { impl, calls } = mockFetch({ choices: [{ message: { content: "{}" } }] });
+      const schema = { type: "object", additionalProperties: false, properties: {}, required: [] };
+      await callLovableAi([{ role: "user", content: "Return JSON" }], {
+        model: DEFAULT_MODEL,
+        role,
+        jsonSchema: { name: "critic_contract", schema },
+        fetchImpl: impl,
+      });
+      const body = JSON.parse(calls[0].init.body as string);
+      expect(body.model).toBe(role === "writer" ? "gpt-6.1-sol" : "gpt-6.1-terra");
+      expect(body.reasoning_effort).toBe(role === "writer" ? "medium" : "low");
+      expect(body).not.toHaveProperty("temperature");
+      expect(body).not.toHaveProperty("top_p");
+      expect(body).not.toHaveProperty("max_tokens");
+      expect(body).not.toHaveProperty("max_completion_tokens");
+      expect(body.response_format).toEqual({
+        type: "json_schema",
+        json_schema: { name: "critic_contract", strict: true, schema },
+      });
+    },
+  );
+
+  it("uses Astra only when the writer override explicitly selects it", async () => {
+    vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
+    vi.stubEnv("OPENAI_CRITIC_WRITER_MODEL", "gpt-6-astra");
+    const { impl, calls } = mockFetch({ choices: [{ message: { content: "{}" } }] });
+    await callLovableAi([{ role: "user", content: "Return JSON" }], {
+      role: "writer",
+      fetchImpl: impl,
+    });
+    const body = JSON.parse(calls[0].init.body as string);
+    expect(body.model).toBe("gpt-6-astra");
+    expect(body.reasoning_effort).toBe("medium");
+  });
+
+  it("preserves explicit older-model overrides without unsupported reasoning parameters", async () => {
+    vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
+    vi.stubEnv("OPENAI_CRITIC_WRITER_MODEL", "gpt-4.1");
+    const { impl, calls } = mockFetch({ choices: [{ message: { content: "ok" } }] });
+    await callLovableAi([{ role: "user", content: "q" }], { role: "writer", fetchImpl: impl });
+    const body = JSON.parse(calls[0].init.body as string);
+    expect(body.model).toBe("gpt-4.1");
+    expect(body).not.toHaveProperty("reasoning_effort");
+  });
+
+  it("reports the actual deployed model and usage in the Critic trace", async () => {
+    vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
+    vi.stubEnv("OPENAI_CRITIC_REVIEWER_MODEL", "");
+    const { impl } = mockFetch({
+      model: "gpt-6.1-terra",
+      choices: [{ message: { content: "{}" } }],
+      usage: { prompt_tokens: 120, completion_tokens: 45 },
+    });
+    const measured = vi.fn();
+    await callLovableAi([{ role: "user", content: "q" }], {
+      role: "reviewer",
+      fetchImpl: impl,
+      onMeasurement: measured,
+    });
+    expect(measured).toHaveBeenCalledWith({
+      model: "gpt-6.1-terra",
+      provider: "openai",
+      input_tokens: 120,
+      output_tokens: 45,
+    });
+  });
+
+  it("does not retry or downgrade when the selected Critic model is unavailable", async () => {
+    vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
+    vi.stubEnv("OPENAI_CRITIC_WRITER_MODEL", "");
+    const { impl, calls } = mockFetch({ error: { code: "model_not_found" } }, { status: 404 });
+    await expect(
+      callLovableAi([{ role: "user", content: "q" }], {
+        role: "writer",
+        fetchImpl: impl,
+      }),
+    ).rejects.toThrow("AI 404");
+    expect(calls).toHaveLength(1);
+    expect(JSON.parse(calls[0].init.body as string).model).toBe("gpt-6.1-sol");
+  });
+
   it("preserves all system messages and separate user turns", async () => {
     const { impl, calls } = mockFetch({
       choices: [{ message: { content: "ok" } }],
