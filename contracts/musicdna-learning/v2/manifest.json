@@ -1,0 +1,7 @@
+{
+  "contract_version": "learning-observation.v2",
+  "module_path": "src/musicdna/contracts/learning-observation-v2.ts",
+  "fixture_path": "contracts/musicdna-learning/v2/fixture.json",
+  "validator_sha256": "45e0c129bb4e06d782417d0514612f5a90a20f9380b1604d26bdcf962fa727ac",
+  "fixture_sha256": "30541aecd8c4388188d9be4f919fb24f13bee9d57707eaf9633031ec9feec08d"
+}
