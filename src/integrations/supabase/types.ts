@@ -332,6 +332,124 @@ export type Database = {
         }
         Relationships: []
       }
+      critic_quality_attempts: {
+        Row: {
+          attempt_key: string
+          calls: Json
+          created_at: string
+          evidence_context: Json
+          id: string
+          output_fingerprint: string
+          output_text: string
+          rejection_reason: string | null
+          result_version: number | null
+          review_checks: Json | null
+          reviewer_version: string
+          session_id: string
+          stage: string
+          status: string
+          updated_at: string
+          user_id: string
+          writer_version: string
+        }
+        Insert: {
+          attempt_key: string
+          calls?: Json
+          created_at?: string
+          evidence_context: Json
+          id?: string
+          output_fingerprint: string
+          output_text: string
+          rejection_reason?: string | null
+          result_version?: number | null
+          review_checks?: Json | null
+          reviewer_version: string
+          session_id: string
+          stage: string
+          status: string
+          updated_at?: string
+          user_id: string
+          writer_version: string
+        }
+        Update: {
+          attempt_key?: string
+          calls?: Json
+          created_at?: string
+          evidence_context?: Json
+          id?: string
+          output_fingerprint?: string
+          output_text?: string
+          rejection_reason?: string | null
+          result_version?: number | null
+          review_checks?: Json | null
+          reviewer_version?: string
+          session_id?: string
+          stage?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+          writer_version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critic_quality_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      critic_quality_reviews: {
+        Row: {
+          attempt_id: string
+          conversational_relevance: number | null
+          created_at: string
+          evaluator_type: string
+          id: string
+          inference_accuracy: number | null
+          musical_specificity: number | null
+          prose_originality: number | null
+          reviewer_id: string
+          rubric_version: string
+          updated_at: string
+        }
+        Insert: {
+          attempt_id: string
+          conversational_relevance?: number | null
+          created_at?: string
+          evaluator_type?: string
+          id?: string
+          inference_accuracy?: number | null
+          musical_specificity?: number | null
+          prose_originality?: number | null
+          reviewer_id: string
+          rubric_version?: string
+          updated_at?: string
+        }
+        Update: {
+          attempt_id?: string
+          conversational_relevance?: number | null
+          created_at?: string
+          evaluator_type?: string
+          id?: string
+          inference_accuracy?: number | null
+          musical_specificity?: number | null
+          prose_originality?: number | null
+          reviewer_id?: string
+          rubric_version?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critic_quality_reviews_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "critic_quality_attempts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       decade_opening_prompts: {
         Row: {
           created_at: string
@@ -940,6 +1058,83 @@ export type Database = {
           weight?: number
         }
         Relationships: []
+      }
+      pairing_exposures: {
+        Row: {
+          catalog_revision: string
+          client: string | null
+          created_at: string
+          id: string
+          lane: string
+          offer_key: string
+          pairing_id: string
+          reported_shown_at: string | null
+          served_at: string
+          session_id: string
+          songs: Json
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          catalog_revision: string
+          client?: string | null
+          created_at?: string
+          id?: string
+          lane: string
+          offer_key: string
+          pairing_id: string
+          reported_shown_at?: string | null
+          served_at?: string
+          session_id: string
+          songs: Json
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          catalog_revision?: string
+          client?: string | null
+          created_at?: string
+          id?: string
+          lane?: string
+          offer_key?: string
+          pairing_id?: string
+          reported_shown_at?: string | null
+          served_at?: string
+          session_id?: string
+          songs?: Json
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "pairing_exposures_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["pairing_id"]
+          },
+          {
+            foreignKeyName: "pairing_exposures_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pairing_exposures_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings_with_songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pairing_exposures_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       pairings: {
         Row: {
