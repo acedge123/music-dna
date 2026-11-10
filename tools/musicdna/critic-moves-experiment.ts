@@ -116,13 +116,11 @@ async function main() {
       const t = list[next++];
       const { choices } = await loadChoiceEvidence(supabaseAdmin, t.session);
       const ledger = buildLedger(choices.slice(0, t.pick), DIMS);
+      const { data: rows } = await supabaseAdmin.from("choices").select("id,chosen_song_id,rejected_song_id,created_at").eq("session_id", t.session).order("created_at");
       const cards: Record<string, { chosen: string[]; rejected: string[] }> = {};
-      for (const c of choices.slice(0, t.pick) as Array<Record<string, any>>) {
-        const id = c.choiceId ?? c.id; if (!id) continue;
-        cards[id] = { chosen: CARDS.get(c.chosenSongId ?? c.chosen_song_id) ?? [], rejected: CARDS.get(c.rejectedSongId ?? c.rejected_song_id) ?? [] };
-      }
-      const latest = choices[t.pick - 1] as Record<string, any>;
-      const has_cards = !!CARDS.get(latest?.chosenSongId ?? latest?.chosen_song_id) || !!CARDS.get(latest?.rejectedSongId ?? latest?.rejected_song_id);
+      for (const r of rows ?? []) cards[r.id] = { chosen: CARDS.get(r.chosen_song_id) ?? [], rejected: r.rejected_song_id ? CARDS.get(r.rejected_song_id) ?? [] : [] };
+      const lr = (rows ?? [])[t.pick - 1];
+      const has_cards = !!lr && !!(cards[lr.id].chosen.length || cards[lr.id].rejected.length);
       for (let rep = 0; rep < REPS; rep++)
         for (const arm of ARMS)
           try { results.push({ session: t.session, pick: t.pick, rep, has_cards, ...(await stage(arm, ledger, t.previous, cards)) }); }
