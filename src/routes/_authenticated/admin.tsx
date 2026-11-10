@@ -351,6 +351,17 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
                           }
                         }}
                       />
+                    ) : entity === "pairings" && (c === "song_a" || c === "song_b") ? (
+                      <span title={String(r[`${c}_id`] ?? "")}>
+                        {r[`${c}_title`] ? (
+                          <>
+                            {String(r[`${c}_title`])}
+                            <span className="text-muted-foreground"> · {String(r[`${c}_artist`] ?? "")}</span>
+                          </>
+                        ) : (
+                          <span className="text-muted-foreground">Unknown song</span>
+                        )}
+                      </span>
                     ) : (
                       formatCell(r[c])
                     )}
@@ -409,9 +420,10 @@ function columnsFor(e: Entity): string[] {
   if (e === "pairings")
     return [
       "user_facing_tradeoff",
-      "song_a_id",
-      "song_b_id",
+      "song_a",
+      "song_b",
       "lane",
+      "tests",
       "diagnostic_weight",
       "recognition_score",
       "min_canon",
