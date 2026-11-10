@@ -22,7 +22,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
     }),
   },
 }));
-import { currentReadImpl } from "./musicdna.functions";
+import { currentReadImpl, finalizeSessionImpl } from "./musicdna.functions";
 
 function client(deltas: number[], owner = "user") {
   const rows = deltas.map((scale, i) => ({
@@ -62,6 +62,7 @@ function client(deltas: number[], owner = "user") {
         order: () => q,
         limit: () => q,
         maybeSingle: async () => result(),
+        single: async () => result(),
         then: (resolve: (r: ReturnType<typeof result>) => unknown) =>
           Promise.resolve(result()).then(resolve),
       };
@@ -71,6 +72,11 @@ function client(deltas: number[], owner = "user") {
 }
 
 describe("current read service boundary", () => {
+  it("rejects early reveal with only three frozen choices before any author call", async () => {
+    generate.mockReset();
+    await expect(finalizeSessionImpl(client([40, 40, 40]) as never, "user", { sessionId: "s", finishEarly: true })).rejects.toThrow("four answered choices");
+    expect(generate).not.toHaveBeenCalled();
+  });
   beforeEach(() => {
     state.events = [];
     state.failWrite = false;
