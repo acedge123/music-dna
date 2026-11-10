@@ -32,6 +32,7 @@ import { Route as ApiV1SessionIdRouteImport } from './routes/api/v1/session.$id'
 import { Route as ApiV1ShareTokenRouteImport } from './routes/api/v1/share.$token'
 import { Route as ApiV1SessionIdChatRouteImport } from './routes/api/v1/session.$id.chat'
 import { Route as ApiV1SessionIdChoiceRouteImport } from './routes/api/v1/session.$id.choice'
+import { Route as ApiV1SessionIdExposureRouteImport } from './routes/api/v1/session.$id.exposure'
 import { Route as ApiV1SessionIdFeedbackRouteImport } from './routes/api/v1/session.$id.feedback'
 import { Route as ApiV1SessionIdNextRouteImport } from './routes/api/v1/session.$id.next'
 import { Route as ApiV1SessionIdReactRouteImport } from './routes/api/v1/session.$id.react'
@@ -153,6 +154,11 @@ const ApiV1SessionIdChoiceRoute = ApiV1SessionIdChoiceRouteImport.update({
   path: '/choice',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
+const ApiV1SessionIdExposureRoute = ApiV1SessionIdExposureRouteImport.update({
+  id: '/exposure',
+  path: '/exposure',
+  getParentRoute: () => ApiV1SessionIdRoute,
+} as any)
 const ApiV1SessionIdFeedbackRoute = ApiV1SessionIdFeedbackRouteImport.update({
   id: '/feedback',
   path: '/feedback',
@@ -207,6 +213,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
+  '/api/v1/session/$id/exposure': typeof ApiV1SessionIdExposureRoute
   '/api/v1/session/$id/feedback': typeof ApiV1SessionIdFeedbackRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
@@ -237,6 +244,7 @@ export interface FileRoutesByTo {
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
+  '/api/v1/session/$id/exposure': typeof ApiV1SessionIdExposureRoute
   '/api/v1/session/$id/feedback': typeof ApiV1SessionIdFeedbackRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
@@ -269,6 +277,7 @@ export interface FileRoutesById {
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
+  '/api/v1/session/$id/exposure': typeof ApiV1SessionIdExposureRoute
   '/api/v1/session/$id/feedback': typeof ApiV1SessionIdFeedbackRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
@@ -301,6 +310,7 @@ export interface FileRouteTypes {
     | '/api/v1/share/$token'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
+    | '/api/v1/session/$id/exposure'
     | '/api/v1/session/$id/feedback'
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/react'
@@ -331,6 +341,7 @@ export interface FileRouteTypes {
     | '/api/v1/share/$token'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
+    | '/api/v1/session/$id/exposure'
     | '/api/v1/session/$id/feedback'
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/react'
@@ -362,6 +373,7 @@ export interface FileRouteTypes {
     | '/api/v1/share/$token'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
+    | '/api/v1/session/$id/exposure'
     | '/api/v1/session/$id/feedback'
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/react'
@@ -553,6 +565,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionIdChoiceRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
+    '/api/v1/session/$id/exposure': {
+      id: '/api/v1/session/$id/exposure'
+      path: '/exposure'
+      fullPath: '/api/v1/session/$id/exposure'
+      preLoaderRoute: typeof ApiV1SessionIdExposureRouteImport
+      parentRoute: typeof ApiV1SessionIdRoute
+    }
     '/api/v1/session/$id/feedback': {
       id: '/api/v1/session/$id/feedback'
       path: '/feedback'
@@ -616,6 +635,7 @@ const AuthenticatedRouteRouteWithChildren =
 interface ApiV1SessionIdRouteChildren {
   ApiV1SessionIdChatRoute: typeof ApiV1SessionIdChatRoute
   ApiV1SessionIdChoiceRoute: typeof ApiV1SessionIdChoiceRoute
+  ApiV1SessionIdExposureRoute: typeof ApiV1SessionIdExposureRoute
   ApiV1SessionIdFeedbackRoute: typeof ApiV1SessionIdFeedbackRoute
   ApiV1SessionIdNextRoute: typeof ApiV1SessionIdNextRoute
   ApiV1SessionIdReactRoute: typeof ApiV1SessionIdReactRoute
@@ -627,6 +647,7 @@ interface ApiV1SessionIdRouteChildren {
 const ApiV1SessionIdRouteChildren: ApiV1SessionIdRouteChildren = {
   ApiV1SessionIdChatRoute: ApiV1SessionIdChatRoute,
   ApiV1SessionIdChoiceRoute: ApiV1SessionIdChoiceRoute,
+  ApiV1SessionIdExposureRoute: ApiV1SessionIdExposureRoute,
   ApiV1SessionIdFeedbackRoute: ApiV1SessionIdFeedbackRoute,
   ApiV1SessionIdNextRoute: ApiV1SessionIdNextRoute,
   ApiV1SessionIdReactRoute: ApiV1SessionIdReactRoute,

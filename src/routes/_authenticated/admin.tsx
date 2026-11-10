@@ -4,6 +4,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
+import { CriticQualityPanel } from "@/components/musicdna/critic-quality-panel";
 import {
   adminCheck,
   adminList,
@@ -47,7 +48,14 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Entity = "songs" | "pairings" | "archetypes";
-type Tab = Entity | "decade_prompts" | "residuals" | "ontology" | "diagnostics" | "shadow";
+type Tab =
+  | Entity
+  | "decade_prompts"
+  | "residuals"
+  | "ontology"
+  | "diagnostics"
+  | "shadow"
+  | "critic_quality";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
   { key: "pairings", label: "Pairings" },
@@ -57,6 +65,7 @@ const ENTITIES: { key: Tab; label: string }[] = [
   { key: "residuals", label: "Residuals" },
   { key: "diagnostics", label: "Diagnostics" },
   { key: "shadow", label: "Shadow Router" },
+  { key: "critic_quality", label: "Critic QA" },
 ];
 
 type Row = Record<string, unknown> & { id: string };
@@ -136,7 +145,8 @@ function AdminPage() {
           tab !== "residuals" &&
           tab !== "ontology" &&
           tab !== "diagnostics" &&
-          tab !== "shadow" && (
+          tab !== "shadow" &&
+          tab !== "critic_quality" && (
             <button
               onClick={() => setEditing({ row: null })}
               className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
@@ -162,7 +172,9 @@ function AdminPage() {
         ))}
       </nav>
 
-      {tab === "decade_prompts" ? (
+      {tab === "critic_quality" ? (
+        <CriticQualityPanel />
+      ) : tab === "decade_prompts" ? (
         <DecadePromptsEditor />
       ) : tab === "residuals" ? (
         <ResidualsPanel />

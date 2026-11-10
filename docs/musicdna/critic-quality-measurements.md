@@ -1,0 +1,21 @@
+# Critic quality measurements — initial implementation
+
+## Implemented
+- Private `critic_quality_attempts`: each new shared read/reveal/chat generation records its exact final output/fingerprint, supplied frozen musical context/references, writer/reviewer versions, semantic checks, separate measured call durations, actual successful model/provider and token usage. Unavailable cost remains null. Failed calls have unknown provider/model/usage rather than fabricated values.
+- Choice-stage telemetry observes the already committed deterministic acknowledgement without generating new prose or mutating `choices.response`. Its status is `insufficient`, reason `deterministic_choice_no_model_call`, and calls is empty.
+- `critic_quality_reviews`: separate immutable administrator human reviews, four nullable 1–5 scores with anchored rubric v1. Existing listener feedback is unchanged. Admin → Critic QA provides pagination and evidence inspection; author/fallback labels are not in the initial review projection.
+- `pairing_exposures`: prospective server-served snapshot with lane/catalog revision and both song artists/years. The additive `pairing.exposure_id` identifies an exact offer. Web reports that identifier; REST clients can `POST /api/v1/session/:id/exposure` with `{ "pairing_id": "uuid", "exposure_id": "uuid" }` and bearer token. Retries preserve the first reported display timestamp. Missing/older clients remain unreported, never inferred as shown. Existing V1 release gates/CORS remain unchanged.
+- Per-session admin exposure inspection separates served, client-reported-shown, frozen answered-offered and chosen song distributions; reports repeated rejected opponents, missing metadata and historical exposure gaps. Independent retests remain null / not established.
+
+## Safety
+- All new tables have explicit grants, RLS, admin-only diagnostic reads and no listener writes to authoritative attempts/offers. Guest exclusions are explicit. Human reviews require the signed-in administrator's own reviewer identity. The three new policy warnings were corrected; 43 pre-existing project warnings remain outside this change.
+- Attempts/offers cascade with session deletion. No sweeps, transfer, export path, learning flag, enrollment or routing changes. Private output is never an export projection.
+- Telemetry persistence failure logs a content-free warning and does not replace a committed listener reply. Unique offer keys deduplicate identical offers at the same boundary. Each actual generation receives a new attempt UUID; saved response replay skips generation as before.
+
+## Verified and remaining
+- 39 focused tests passed; preview build and changed-file lint passed. Real authenticated anonymous guest opener → vote → running read → next round worked; database readback confirmed deterministic choice plus writer/reviewer call measurements, explicit failed semantic checks and served/shown records.
+- Registered-admin queue/scoring and production Vercel deployment remain unverified: this externally managed project cannot restore a registered browser session. No human QA scores or independent retests are claimed.
+- Attempt records target exact output/fingerprints. Forward save triggers bind exact matching reveal text to result versions and chat text to assistant-message IDs without blocking saves on diagnostic failure. Concurrent generations are separate actual attempts, not claims of distinct displayed outputs. Durable recovery of telemetry-write failures and exact running-read event linking are not implemented.
+- Local-only review context includes the previous beat and submitted self-report actually supplied to the critic, alongside frozen musical facts. Full surrounding conversation stays in the existing conversation store rather than being copied into diagnostics.
+- Exposure reports include per-session lane/catalog partitions and repeated offered-song counts; explicit skip totals and cross-session aggregate dashboards remain future reporting work. Client acknowledgement proves a report, not independent attention. Served snapshots are read just before response but not transactionally pinned with selection.
+- Flutter needs to adopt exact display acknowledgement; old clients remain compatible and their displayed exposure remains unknown.

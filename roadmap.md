@@ -1,9 +1,19 @@
 # Roadmap
 
+## Current — CGPT interview defects
+
+- [ ] Trace frozen snapshot failures; preserve invalid historical evidence rather than rebuilding it.
+- [ ] Repair prompt-echo chat fallback and distinguish writing failure from missing evidence.
+- [ ] Separate fresh starts from resume and add admin-only, tagged QA interviews isolated from listener metrics.
+- [ ] Gate archetype presentation/assignment on ledger support without rewriting saved results.
+- [ ] Run focused regressions and fresh guest interview acceptance; report production/admin access limits.
+
 ## Current — critic-quality and measurement-bias proposal
 
-- [ ] Review and approve local-only stage telemetry, independent four-axis QA, and served-versus-chosen exposure measurements; keep all export/enrollment/learning flags unchanged.
-- [ ] Implementation follows approval; production migrations require separate approval, and independent human retests require consented recruitment.
+- [x] Approved plan; private diagnostic/review/exposure schema applied through migration approval boundary, guest-policy warnings corrected. Shared stage measurements, four-axis admin review and exact web/REST offer acknowledgement implemented; 39 focused tests and guest vote/readback pass. Exports/flags unchanged.
+- [x] Added forward exact-output result/chat links, local prior-beat/self-report review context, lane/catalog partitions and repeated offered-song metrics. No saved listener content changed.
+- [ ] Durable telemetry-write recovery and running-read event linking remain incomplete; cross-session aggregate reporting is not yet available (details: docs/musicdna/critic-quality-measurements.md).
+- [ ] Registered-admin review and deployed acceptance: external-managed registered test access and updated Vercel deployment are unavailable. Independent human retests require consented recruitment; Flutter needs display acknowledgement adoption.
 
 ## Current — sign-in flash and sign-out
 

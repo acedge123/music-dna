@@ -1,0 +1,4 @@
+ALTER POLICY critic_quality_admin_read ON public.critic_quality_attempts USING ((auth.jwt()->>'is_anonymous') IS DISTINCT FROM 'true' AND public.has_role(auth.uid(),'admin'));
+ALTER POLICY critic_reviews_admin_read ON public.critic_quality_reviews USING ((auth.jwt()->>'is_anonymous') IS DISTINCT FROM 'true' AND public.has_role(auth.uid(),'admin'));
+ALTER POLICY critic_reviews_admin_insert ON public.critic_quality_reviews WITH CHECK ((auth.jwt()->>'is_anonymous') IS DISTINCT FROM 'true' AND reviewer_id=auth.uid() AND public.has_role(auth.uid(),'admin') AND rubric_version='critic-quality-rubric-v1');
+ALTER POLICY pairing_exposures_admin_read ON public.pairing_exposures USING ((auth.jwt()->>'is_anonymous') IS DISTINCT FROM 'true' AND public.has_role(auth.uid(),'admin'));

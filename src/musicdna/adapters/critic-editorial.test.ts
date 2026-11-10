@@ -132,6 +132,7 @@ describe("critic-expression-v2 boundary", () => {
       stage: "reveal",
     });
     expect(result.status).toBe("invalid_generation");
+    expect(result.review_checks?.[key]).toBe(false);
     expect(result.text).toContain("A3 over B3");
   });
   it("keeps reviewer outage distinct from evidence insufficiency", async () => {
