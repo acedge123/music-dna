@@ -2,6 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { useReadingConversation } from "@/hooks/use-reading-conversation";
 import { ReadingConversation } from "@/components/musicdna/reading-conversation";
+import { ReadingFeedback } from "@/components/musicdna/reading-feedback";
 import { ReadingResult } from "@/components/musicdna/reading-result";
 import { readingLead } from "@/lib/critic-display";
 import { Button } from "@/components/ui/button";
@@ -74,6 +75,11 @@ function Me() {
             </summary>
             <div className="py-6">
               <ReadingResult content={reading.selected.content} label="The original reading" />
+              <ReadingFeedback
+                key={`${reading.sessionId}:${reading.selected.version}`}
+                sessionId={reading.sessionId}
+                resultVersion={reading.selected.version}
+              />
             </div>
           </details>
           <ReadingConversation
@@ -98,6 +104,11 @@ function Me() {
                   evidence remain saved separately.
                 </p>
                 <ReadingResult content={latestRevision.content} label="From your own account" />
+                <ReadingFeedback
+                  key={`${reading.sessionId}:${latestRevision.version}`}
+                  sessionId={reading.sessionId}
+                  resultVersion={latestRevision.version}
+                />
               </div>
             </details>
           )}
