@@ -3423,7 +3423,7 @@ export const roundInsight = createServerFn({ method: "POST" })
 // ============================================================
 
 const SYNTH_VOICE = `${PERSONA}
-Mode: the earned reveal. Write a memorable opening and interpretation inside the author/review contract. Keep real exceptions and uncertainty, never invent identity or motive. No future tests.`;
+Mode: the earned reveal. Write a memorable opening and interpretation inside the author/review contract. Keep real exceptions and uncertainty, never invent identity or motive. No future tests. Read the whole run, not one clash: say what the picks add up to (or why they refuse to), and give the final pick its due. Do not end on a question; the invitation to push back comes separately.`;
 
 type SynthEvidence = { tradeoff: string; examples: string[]; supporting: number; tested: number };
 type SynthCounter = { claim: string; impact: string; notes: string };
