@@ -9,6 +9,7 @@ import {
 } from "../engine/claim-language";
 
 export const CRITIC_EXPRESSION_VERSION = "critic-expression-v2.1";
+export const CRITIC_REVIEW_VERSION = "critic-semantic-review-v2.1";
 export type CriticStage = "choice" | "read" | "reveal" | "chat";
 const Beat = z
   .object({
@@ -112,6 +113,7 @@ export async function authorCritic(
   generate: (prompt: string, review?: boolean) => Promise<string>,
   options: { stage: CriticStage; fallback?: string; previous?: string; selfReport?: string },
 ) {
+  let reviewChecks: Record<string, boolean> | null = null;
   const audit = deterministicNarration(ledger, labels);
   const fallback = options.fallback ?? audit;
   const fail = (
@@ -128,6 +130,7 @@ export async function authorCritic(
       voice_version: CRITIC_EXPRESSION_VERSION,
       audit_text: audit,
       validation_reason: reason,
+      review_checks: reviewChecks,
     };
   };
   if (!ledger.entries.length && options.stage !== "chat")
@@ -211,6 +214,7 @@ CANDIDATE: ${JSON.stringify(beat)}`,
       return fail("invalid_generation", "invalid_review");
     }
     const checked = Review.safeParse(review);
+    if (checked.success) reviewChecks = checked.data;
     if (!checked.success || !Object.values(checked.data).every(Boolean))
       return fail("invalid_generation", "semantic_review_rejected");
     return {
@@ -219,6 +223,7 @@ CANDIDATE: ${JSON.stringify(beat)}`,
       voice_version: CRITIC_EXPRESSION_VERSION,
       audit_text: audit,
       validation_reason: "accepted",
+      review_checks: reviewChecks,
     };
   } catch {
     return fail("narrator_failure", "generation_or_review_failed");

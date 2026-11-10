@@ -57,6 +57,7 @@ export type LovableGatewayOptions = {
   apiKey?: string; // explicit key forces the Lovable gateway transport
   defaultModel?: string;
   fetchImpl?: typeof fetch; // injectable for tests
+  onMeasurement?: (measurement: { model: string; provider: string; input_tokens: number | null; output_tokens: number | null }) => void;
 };
 
 export function createLovableLlmGateway(opts: LovableGatewayOptions = {}): LLMGateway {
@@ -136,6 +137,14 @@ export async function callLovableAi(
   }
   const json = (await res.json()) as {
     choices?: Array<{ message?: { content?: string } }>;
+    model?: string;
+    usage?: { prompt_tokens?: number; completion_tokens?: number };
   };
+  opts.onMeasurement?.({
+    model: json.model ?? resolveModel(provider, opts.model, opts.defaultModel),
+    provider: provider.url === OPENAI_URL ? "openai" : "lovable",
+    input_tokens: json.usage?.prompt_tokens ?? null,
+    output_tokens: json.usage?.completion_tokens ?? null,
+  });
   return (json.choices?.[0]?.message?.content ?? "").trim();
 }
