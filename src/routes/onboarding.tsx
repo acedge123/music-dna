@@ -94,6 +94,7 @@ function Onboarding() {
     doneAnchorRef,
     bootError,
     booting,
+    openedFresh,
     submitSlot,
     pick,
     reactToRead,
@@ -103,10 +104,10 @@ function Onboarding() {
   } = useInterview(session, fresh);
   useEffect(() => {
     // Never pin the previous render's ID while a fresh search is booting.
-    if (!booting && !bootError && pairing && sessionId && sessionId !== session) {
+    if (!booting && !bootError && openedFresh === fresh && pairing && sessionId && sessionId !== session) {
       void navigate({ to: "/onboarding", search: { session: sessionId }, replace: true });
     }
-  }, [sessionId, session, pairing, booting, bootError, navigate]);
+  }, [sessionId, session, fresh, openedFresh, pairing, booting, bootError, navigate]);
   if (booting)
     return (
       <>

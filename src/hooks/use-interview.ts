@@ -115,6 +115,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   // boot
   const [bootError, setBootError] = useState<string | null>(null);
   const [booting, setBooting] = useState(true);
+  const [openedFresh, setOpenedFresh] = useState<string | undefined>();
   const pinnedSession = useRef<string | null>(null);
   const bootGeneration = useRef(0);
   useEffect(() => {
@@ -236,7 +237,10 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         }
       })
       .finally(() => {
-        if (!cancelled) setBooting(false);
+        if (!cancelled) {
+          setOpenedFresh(fresh);
+          setBooting(false);
+        }
         cancelled = true;
       });
     return () => {
@@ -749,6 +753,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     doneAnchorRef,
     bootError,
     booting,
+    openedFresh,
     submitSlot,
     pick,
     reactToRead,
