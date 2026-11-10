@@ -48,7 +48,14 @@ export const Route = createFileRoute("/_authenticated/admin")({
 });
 
 type Entity = "songs" | "pairings" | "archetypes";
-type Tab = Entity | "decade_prompts" | "residuals" | "ontology" | "diagnostics" | "shadow" | "critic_quality";
+type Tab =
+  | Entity
+  | "decade_prompts"
+  | "residuals"
+  | "ontology"
+  | "diagnostics"
+  | "shadow"
+  | "critic_quality";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
   { key: "pairings", label: "Pairings" },
@@ -138,7 +145,8 @@ function AdminPage() {
           tab !== "residuals" &&
           tab !== "ontology" &&
           tab !== "diagnostics" &&
-          tab !== "shadow" && tab !== "critic_quality" && (
+          tab !== "shadow" &&
+          tab !== "critic_quality" && (
             <button
               onClick={() => setEditing({ row: null })}
               className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"

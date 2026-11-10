@@ -47,7 +47,11 @@ function resolveProvider(): ResolvedProvider | null {
 // Callers throughout the app pass DEFAULT_MODEL (the gateway model id) or
 // nothing. On OpenAI that id is invalid, so map the default to the provider's
 // own default and pass anything else through untouched.
-function resolveModel(provider: ResolvedProvider, requested: string | undefined, optsDefault?: string) {
+function resolveModel(
+  provider: ResolvedProvider,
+  requested: string | undefined,
+  optsDefault?: string,
+) {
   const fallback = optsDefault ?? provider.defaultModel;
   if (!requested || requested === DEFAULT_MODEL) return fallback;
   return requested;
@@ -57,7 +61,12 @@ export type LovableGatewayOptions = {
   apiKey?: string; // explicit key forces the Lovable gateway transport
   defaultModel?: string;
   fetchImpl?: typeof fetch; // injectable for tests
-  onMeasurement?: (measurement: { model: string; provider: string; input_tokens: number | null; output_tokens: number | null }) => void;
+  onMeasurement?: (measurement: {
+    model: string;
+    provider: string;
+    input_tokens: number | null;
+    output_tokens: number | null;
+  }) => void;
 };
 
 export function createLovableLlmGateway(opts: LovableGatewayOptions = {}): LLMGateway {
