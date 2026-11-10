@@ -127,6 +127,8 @@ describe("critic-expression-v2 boundary", () => {
     const generate = vi
       .fn()
       .mockResolvedValueOnce(JSON.stringify(beat))
+      .mockResolvedValueOnce(JSON.stringify({ ...review, [key]: false }))
+      .mockResolvedValueOnce(JSON.stringify(beat))
       .mockResolvedValueOnce(JSON.stringify({ ...review, [key]: false }));
     const result = await authorCritic(ledger([40, 40, 40, -40]), labels, generate, {
       stage: "reveal",
