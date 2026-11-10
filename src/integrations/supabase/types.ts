@@ -456,6 +456,133 @@ export type Database = {
           },
         ]
       }
+      critic_reaction_exposures: {
+        Row: {
+          pool_id: string
+          session_id: string | null
+          shown_at: string
+          user_id: string
+        }
+        Insert: {
+          pool_id: string
+          session_id?: string | null
+          shown_at?: string
+          user_id: string
+        }
+        Update: {
+          pool_id?: string
+          session_id?: string | null
+          shown_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critic_reaction_exposures_pool_id_fkey"
+            columns: ["pool_id"]
+            isOneToOne: false
+            referencedRelation: "critic_reaction_pool"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_reaction_exposures_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      critic_reaction_pool: {
+        Row: {
+          chosen_song_id: string
+          created_at: string
+          evidence_fingerprint: string
+          id: string
+          pairing_id: string
+          retired_reason: string | null
+          reviewer_version: string
+          source: string
+          stage: string
+          status: string
+          text: string
+          updated_at: string
+          writer_version: string
+        }
+        Insert: {
+          chosen_song_id: string
+          created_at?: string
+          evidence_fingerprint: string
+          id?: string
+          pairing_id: string
+          retired_reason?: string | null
+          reviewer_version: string
+          source: string
+          stage?: string
+          status?: string
+          text: string
+          updated_at?: string
+          writer_version: string
+        }
+        Update: {
+          chosen_song_id?: string
+          created_at?: string
+          evidence_fingerprint?: string
+          id?: string
+          pairing_id?: string
+          retired_reason?: string | null
+          reviewer_version?: string
+          source?: string
+          stage?: string
+          status?: string
+          text?: string
+          updated_at?: string
+          writer_version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critic_reaction_pool_chosen_song_id_fkey"
+            columns: ["chosen_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "critic_reaction_pool_chosen_song_id_fkey"
+            columns: ["chosen_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "critic_reaction_pool_chosen_song_id_fkey"
+            columns: ["chosen_song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_reaction_pool_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["pairing_id"]
+          },
+          {
+            foreignKeyName: "critic_reaction_pool_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_reaction_pool_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings_with_songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       critic_session_verdicts: {
         Row: {
           created_at: string
