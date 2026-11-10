@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { canStartQaInterview } from "@/musicdna/engine/reading-support";
 
 const ADMIN_TABLES = ["songs", "pairings", "archetypes"] as const;
 type AdminTable = (typeof ADMIN_TABLES)[number];
@@ -48,7 +49,7 @@ export const adminNewQaInterview = createServerFn({ method: "POST" })
       .eq("role", "admin")
       .maybeSingle();
     const auth = await context.supabase.auth.getUser();
-    if (role.error || !role.data || auth.error || !auth.data.user || auth.data.user.is_anonymous)
+    if (role.error || auth.error || !auth.data.user || !canStartQaInterview(Boolean(role.data), Boolean(auth.data.user.is_anonymous)))
       throw new Error("Forbidden: registered admin only");
     const profile = await context.supabase
       .from("profiles")

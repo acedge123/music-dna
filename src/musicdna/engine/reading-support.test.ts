@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { buildLedger } from "./evidence";
-import { hasReadingSupport, shouldResumeInterview } from "./reading-support";
+import { canStartQaInterview, hasReadingSupport, shouldResumeInterview } from "./reading-support";
 
 function ledger(deltas: number[]) {
   return buildLedger(
@@ -15,6 +15,12 @@ function ledger(deltas: number[]) {
 }
 
 describe("reading and restart policy", () => {
+  it("only a registered admin may create a tagged QA interview", () => {
+    expect(canStartQaInterview(true, false)).toBe(true);
+    expect(canStartQaInterview(false, false)).toBe(false);
+    expect(canStartQaInterview(true, true)).toBe(false);
+    expect(canStartQaInterview(false, true)).toBe(false);
+  });
   it("withholds an archetype without three supporting pairings", () => {
     expect(hasReadingSupport(ledger([40, 40]))).toBe(false);
     expect(hasReadingSupport(ledger([40, 40, 40]))).toBe(true);
