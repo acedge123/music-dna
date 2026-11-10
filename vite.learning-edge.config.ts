@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import { resolve } from "node:path";
 export default defineConfig({
+  publicDir: false,
   build: {
     ssr: resolve("src/musicdna/learning/hosted-dispatch.ts"),
     target: "es2022",

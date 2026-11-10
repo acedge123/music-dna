@@ -96,7 +96,7 @@ jobs:
       - run: npx eslint src/musicdna/learning src/musicdna/adapters/learning-*.ts tools/musicdna/learning-acceptance tools/musicdna/verify-learning-acceptance.ts
       - name: Type-check the scoped Supabase dispatcher
         run: >-
-          npm exec --yes --package deno@2.9.6 -- deno check --no-lock
+          npm exec --yes --package deno@2.9.6 -- deno check --no-lock --config supabase/functions/musicdna-learning-dispatch/deno.json
           supabase/functions/musicdna-learning-dispatch/index.ts
       - run: npm run build:learning-edge
       - run: git diff --exit-code -- supabase/functions/_shared/musicdna-dispatch.bundle.mjs
