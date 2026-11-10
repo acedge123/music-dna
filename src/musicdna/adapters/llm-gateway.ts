@@ -163,7 +163,12 @@ export async function callLovableAi(
       model: selectedModel,
       messages,
       ...(provider.url === OPENAI_URL && opts.role && reasoningModel
-        ? { reasoning_effort: opts.role === "reviewer" || (opts.stage && opts.stage !== "reveal") ? "low" : "medium" }
+        ? {
+            reasoning_effort:
+              opts.role === "reviewer" || (opts.stage && opts.stage !== "reveal")
+                ? "low"
+                : "medium",
+          }
         : {}),
       ...(opts.jsonSchema
         ? {
