@@ -1,1 +1,4 @@
 project_id = "udycgnhvaanemhrchbuj"
+
+[functions.musicdna-learning-dispatch]
+verify_jwt = false
