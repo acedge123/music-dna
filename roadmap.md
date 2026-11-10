@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — sign-in flash and sign-out
+
+- [ ] Share hydrated session state across account controls; hide the sign-in form until the session check completes; expose sign-out on home/interview and clear protected state before leaving.
+- [ ] Verify signed-in home → interview → sign-out and signed-in /auth redirect; production requires Vercel deployment.
+
 ## Current — post-choice pairing sayings
 
 - [x] Freeze new sayings at vote time; shared author/reviewer receive answered, revision-verified saying, tested traits and chosen direction only. No pre-pick disclosure or historical backfill.
