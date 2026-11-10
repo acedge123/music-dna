@@ -880,6 +880,7 @@ export type Database = {
       musicdna_learning_enrollments: {
         Row: {
           approved_by: string | null
+          data_class: string
           decision_ref: string
           enrolled_at: string
           environment: string
@@ -894,6 +895,7 @@ export type Database = {
         }
         Insert: {
           approved_by?: string | null
+          data_class?: string
           decision_ref: string
           enrolled_at?: string
           environment: string
@@ -908,6 +910,7 @@ export type Database = {
         }
         Update: {
           approved_by?: string | null
+          data_class?: string
           decision_ref?: string
           enrolled_at?: string
           environment?: string
@@ -1010,6 +1013,53 @@ export type Database = {
           },
           {
             foreignKeyName: "musicdna_learning_outbox_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: false
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_real_qa_consents: {
+        Row: {
+          approved_by: string
+          consent_ref: string
+          consented_at: string
+          environment: string
+          expires_at: string
+          policy_version: string
+          receiver_tenant_id: string
+          source_key: string
+          subject_ref: string
+          user_id: string
+        }
+        Insert: {
+          approved_by: string
+          consent_ref: string
+          consented_at: string
+          environment?: string
+          expires_at: string
+          policy_version?: string
+          receiver_tenant_id: string
+          source_key?: string
+          subject_ref: string
+          user_id: string
+        }
+        Update: {
+          approved_by?: string
+          consent_ref?: string
+          consented_at?: string
+          environment?: string
+          expires_at?: string
+          policy_version?: string
+          receiver_tenant_id?: string
+          source_key?: string
+          subject_ref?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_real_qa_consents_source_key_environment_fkey"
             columns: ["source_key", "environment"]
             isOneToOne: false
             referencedRelation: "musicdna_export_scopes"
@@ -2199,6 +2249,17 @@ export type Database = {
           p_owner_id: string
         }
         Returns: Json
+      }
+      enroll_musicdna_real_qa: {
+        Args: {
+          p_approved_by: string
+          p_consent: string
+          p_consented_at: string
+          p_expires_at: string
+          p_subject_ref: string
+          p_user: string
+        }
+        Returns: undefined
       }
       exclude_musicdna_learning_capture: {
         Args: { p_observation_id: string }
