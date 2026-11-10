@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — specialist lanes and full catalog review
+
+- [ ] Import and activate the approved 69 songs / 46 matchups without changing historical evidence.
+- [ ] Support four distinct opener lanes and admin filters; verify same-lane selection.
+- [ ] Audit all songs and pairings, document coverage and unresolved editorial issues.
+
 ## Current — Hip-hop expansion
 
 - [x] Added 20 independently scored Hip-hop songs and 24 specific matchups, all inactive; existing scores/readings and Electronic untouched. Approval would bring Hip-hop to 59 songs / 44 live matchups.

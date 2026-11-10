@@ -141,6 +141,10 @@ const LANES = [
   "metal",
   "country",
   "r_and_b",
+  "yacht_rock",
+  "disco",
+  "punk",
+  "reggae",
   "general",
 ] as const;
 type Lane = (typeof LANES)[number];
@@ -156,10 +160,14 @@ const LANE_RULES = `Lane rules:
 - r_and_b = R&B, soul, neo-soul, quiet storm, contemporary soul, vocal-led groove music. Marvin Gaye, Stevie Wonder, D'Angelo, Frank Ocean, SZA, The Weeknd, Solange.
 - classic_rock = 60s-80s mainstream rock (Stones, Zeppelin, Fleetwood Mac), hard rock, prog (Rush, Yes, Pink Floyd, King Crimson), arena rock, glam, southern rock. If it is loud guitars and not "indie/alternative" in the modern sense, it belongs here for now.
 - country = classic country, outlaw country, contemporary country, alt-country, Americana, country-pop, Nashville. Cash, Hank Williams, Willie Nelson, Sturgill Simpson, Kacey Musgraves, Chris Stapleton, Zach Bryan, Jelly Roll, Kenny Rogers, Merle Haggard, Dolly Parton, Miranda Lambert, Luke Combs, Morgan Wallen.
+- yacht_rock = late-70s/80s soft rock and studio-polished jazz/soul-inflected pop: Steely Dan, Christopher Cross, Michael McDonald, Toto. Prefer exact catalog lane over broad classic rock.
+- disco = disco-first dance records: Chic, Donna Summer, Sylvester, Sister Sledge. Do not collapse these into electronic or R&B.
+- punk = punk rock, hardcore and pop-punk: Ramones, Sex Pistols, Black Flag, Green Day. Existing post-punk/new-wave and punk_noise_edge catalog families remain alternative; use exact catalog identity first.
+- reggae = roots reggae, dub and dancehall: Bob Marley, Burning Spear, Augustus Pablo, Sister Nancy, Sean Paul. Never infer a listener identity from the genre.
 - Use "general" ONLY when the picks genuinely scatter across lanes with no center of gravity.`;
 
 // Map catalog sub-lanes (currently all alternative sub-genres) to top-level lanes.
-function catalogLaneToTopLane(sub: string | null | undefined): Lane | null {
+export function catalogLaneToTopLane(sub: string | null | undefined): Lane | null {
   if (!sub) return null;
   const s = sub.toLowerCase();
   if ((LANES as readonly string[]).includes(s)) return s as Lane;
@@ -302,7 +310,7 @@ Mode: taste-reader. You read three songs a user named as ones they love, ranked 
 
 You return a JSON object with this exact shape:
 {
-  "lane": "alternative" | "pop" | "hip_hop" | "electronic" | "classic_rock" | "metal" | "country" | "r_and_b" | "general",
+  "lane": "alternative" | "pop" | "hip_hop" | "electronic" | "classic_rock" | "metal" | "country" | "r_and_b" | "yacht_rock" | "disco" | "punk" | "reggae" | "general",
   "confidence": 0.0-1.0,
   "secondary_lanes": [lane, ...],
   "candidate_dimensions": {
@@ -311,7 +319,7 @@ You return a JSON object with this exact shape:
     "confidence": -100..100, "tension": -100..100, "texture": -100..100,
     "transformation": -100..100
   },
-  "per_song": [{"input": "...", "lane": "alternative|pop|hip_hop|electronic|classic_rock|metal|country|r_and_b|unknown"}],
+  "per_song": [{"input": "...", "lane": "alternative|pop|hip_hop|electronic|classic_rock|metal|country|r_and_b|yacht_rock|disco|punk|reggae|unknown"}],
   "reasoning": ["one short observation", "..."],
   "hypothesis": "ONE sentence, max 30 words, Rolling Stone voice. Name what these choices reveal — specific dimensions like movement, atmosphere, transformation, melody. End with 'Let's see if that holds.' or similar half-promise."
 }
@@ -546,6 +554,10 @@ const ALL_LANES: Lane[] = [
   "metal",
   "country",
   "r_and_b",
+  "yacht_rock",
+  "disco",
+  "punk",
+  "reggae",
 ];
 
 export const startSession = createServerFn({ method: "POST" })
@@ -2516,7 +2528,7 @@ Output STRICT JSON:
   "stakes": "Leave empty.",
   "reaction": "Legacy field. Copy the observation verbatim.",
   "hypothesis_v1": "Legacy field. Copy the observation verbatim.",
-  "lane_guess": "alternative" | "pop" | "hip_hop" | "electronic" | "classic_rock" | "metal" | "country" | "r_and_b" | "general",
+  "lane_guess": "alternative" | "pop" | "hip_hop" | "electronic" | "classic_rock" | "metal" | "country" | "r_and_b" | "yacht_rock" | "disco" | "punk" | "reggae" | "general",
   "confidence": 0.0-1.0,
   "suspected_dimensions": ["movement","atmosphere","immersion","scale","community","perspective","confidence","tension","texture","transformation"]
 }
@@ -2754,7 +2766,7 @@ HARD RULES:
 Return STRICT JSON, no fences:
 {
   "reaction": "short curious line, 6–18 words",
-  "lane": "alternative" | "pop" | "hip_hop" | "electronic" | "classic_rock" | "metal" | "country" | "r_and_b" | "general",
+  "lane": "alternative" | "pop" | "hip_hop" | "electronic" | "classic_rock" | "metal" | "country" | "r_and_b" | "yacht_rock" | "disco" | "punk" | "reggae" | "general",
   "candidate_claims": [
     {
       "text": "one plain-English observation about the listener's pattern",
@@ -2763,7 +2775,7 @@ Return STRICT JSON, no fences:
       "competing_explanations": ["or they just really like The Cure", "or three picks isn't enough"]
     }
   ],
-  "per_song": [{"input": "...", "lane": "alternative|pop|hip_hop|electronic|classic_rock|metal|country|r_and_b|unknown"}]
+  "per_song": [{"input": "...", "lane": "alternative|pop|hip_hop|electronic|classic_rock|metal|country|r_and_b|yacht_rock|disco|punk|reggae|unknown"}]
 }`;
 
 type EvidenceClaim = {
@@ -2977,11 +2989,11 @@ ${LANE_RULES}
 Return STRICT JSON:
 {
   "observation": "ONE short paragraph, ~25–40 words, MAX 45. Conversational, present tense, speaks to the listener. Reference at least ONE song or artist from their picks. Good: 'Two dramatic choices in a row. You seem to like emotional honesty delivered through a strong artistic lens — not raw confession.' Good: 'So far you seem more interested in perspective than pure emotion.' Bad: anything that names a fork/axis/lane/pole, previews the next matchup, or opens with 'You reward…' or 'You trust…'.",
-  "lane": "alternative" | "pop" | "hip_hop" | "electronic" | "classic_rock" | "metal" | "country" | "r_and_b" | "general",
+  "lane": "alternative" | "pop" | "hip_hop" | "electronic" | "classic_rock" | "metal" | "country" | "r_and_b" | "yacht_rock" | "disco" | "punk" | "reggae" | "general",
   "confidence": 0.0-1.0,
   "secondary_lanes": [lane, ...],
   "candidate_dimensions": { "movement": -100..100, "atmosphere": -100..100, "immersion": -100..100, "scale": -100..100, "community": -100..100, "perspective": -100..100, "confidence": -100..100, "tension": -100..100, "texture": -100..100, "transformation": -100..100 },
-  "per_song": [{"input": "...", "lane": "alternative|pop|hip_hop|electronic|classic_rock|metal|country|r_and_b|unknown"}],
+  "per_song": [{"input": "...", "lane": "alternative|pop|hip_hop|electronic|classic_rock|metal|country|r_and_b|yacht_rock|disco|punk|reggae|unknown"}],
   "reasoning": ["one short observation about the LISTENER (not the song)", "..."]
 }
 No prose, no markdown fences. Three songs is not enough for certainty — keep confidence honest (0.3–0.6). The candidate_dimensions, lane, and secondary_lanes are for the engine; the LISTENER never sees them, so do not reference them in the observation.`;
