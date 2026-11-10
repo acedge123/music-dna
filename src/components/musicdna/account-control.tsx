@@ -13,11 +13,12 @@ export function AccountControl() {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
   if (loading) return <span className="inline-block min-h-11 w-20" aria-label="Checking account" />;
-  if (!user || user.is_anonymous) return (
-    <Button asChild variant="ghost" className="min-h-11 text-muted-foreground">
-      <Link to="/auth">Sign in</Link>
-    </Button>
-  );
+  if (!user || user.is_anonymous)
+    return (
+      <Button asChild variant="ghost" className="min-h-11 text-muted-foreground">
+        <Link to="/auth">Sign in</Link>
+      </Button>
+    );
   async function signOut() {
     setBusy(true);
     setError(null);
@@ -38,10 +39,20 @@ export function AccountControl() {
       <Button asChild variant="ghost" className="min-h-11 text-muted-foreground">
         <Link to="/profile">Account</Link>
       </Button>
-      <Button variant="ghost" disabled={busy} onClick={signOut} className="min-h-11 text-muted-foreground">
-        <LogOut />{busy ? "Signing out…" : "Sign out"}
+      <Button
+        variant="ghost"
+        disabled={busy}
+        onClick={signOut}
+        className="min-h-11 text-muted-foreground"
+      >
+        <LogOut />
+        {busy ? "Signing out…" : "Sign out"}
       </Button>
-      {error && <p role="alert" className="w-full text-xs text-destructive">{error}</p>}
+      {error && (
+        <p role="alert" className="w-full text-xs text-destructive">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

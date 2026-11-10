@@ -60,11 +60,14 @@ function AuthPage() {
     }
   }
 
-  if (loading || signedIn) return (
-    <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
-      <p role="status" className="text-muted-foreground">Opening your account…</p>
-    </main>
-  );
+  if (loading || signedIn)
+    return (
+      <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
+        <p role="status" className="text-muted-foreground">
+          Opening your account…
+        </p>
+      </main>
+    );
 
   return (
     <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">

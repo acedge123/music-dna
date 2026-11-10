@@ -41,15 +41,17 @@ const PLACEHOLDERS = ["Ceremony — New Order", "Pyramid Song — Radiohead", "U
 function HomeLogo() {
   return (
     <>
-    <Link
-      to="/"
-      className="absolute top-4 left-5 z-10 flex min-h-11 items-center gap-2 opacity-80 transition-opacity hover:opacity-100"
-      aria-label="MusicDNA — home / start over"
-      title="Home / start over"
-    >
-      <img src="/music-dna-logo.png" alt="MusicDNA" className="h-12 w-auto" />
-    </Link>
-    <div className="absolute top-4 right-3 z-10"><AccountControl /></div>
+      <Link
+        to="/"
+        className="absolute top-4 left-5 z-10 flex min-h-11 items-center gap-2 opacity-80 transition-opacity hover:opacity-100"
+        aria-label="MusicDNA — home / start over"
+        title="Home / start over"
+      >
+        <img src="/music-dna-logo.png" alt="MusicDNA" className="h-12 w-auto" />
+      </Link>
+      <div className="absolute top-4 right-3 z-10">
+        <AccountControl />
+      </div>
     </>
   );
 }
