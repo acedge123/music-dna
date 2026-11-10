@@ -12,12 +12,20 @@ export type ReadingContent = {
   }>;
   counter_reads: Array<{ claim: string; notes: string }>;
   result_version?: number | null;
+  reveal?: { answered: number; twist: string | null; challenge: string };
 };
 
 const ContentSchema = z.object({
   voice_version: z.string().optional(),
   audit_text: z.string().optional(),
   synthesis: z.string(),
+  reveal: z
+    .object({
+      answered: z.number().int().nonnegative(),
+      twist: z.string().nullable(),
+      challenge: z.string(),
+    })
+    .optional(),
   kept_choosing: z.array(
     z.object({
       tradeoff: z.string(),

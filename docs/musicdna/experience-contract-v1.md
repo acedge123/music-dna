@@ -66,6 +66,11 @@ Body: `{ kind: "thats_me" | "not_quite" | "harder", pairing_id? }`
 - Reactions are never votes and never change scores.
 
 ### `POST /session/:id/reveal`: Result screen
+Optional body: `{ "finish_early": true }` explicitly ends at four or five answered pairings (400 before four). Default interview depth is six; vector confidence alone no longer auto-ends at four. Skip bounds and catalog exhaustion still allow honest shorter endings. Completed readings replay unchanged. `/next` for a completed session returns no further pairing.
+
+New results add `reveal: { answered, twist, challenge }`. `answered` counts actual choices; `twist` is an actual contrary choice to an eligible claim, otherwise null. Never invent a twist from concentration diagnostics. Legacy results omit these fields; never reconstruct them from today's catalog. Flutter can stage the complete saved `headline`, then optional twist, then challenge, and keep supporting choices/audit under Receipts. Existing v0 response shape is unchanged; no V1 enablement is implied.
+
+Web pauses after choice three using the saved running read and offers the exit after four. Selection stays on the existing lane-local selector with shadow routing; this presentation does not activate a new hypothesis-routing policy or promise a specific next test.
 ```json
 {
   "contract": 1,

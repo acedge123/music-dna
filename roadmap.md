@@ -1,5 +1,13 @@
 # Roadmap
 
+## Current — journey, halftime and optional four-choice reveal
+
+- [x] Introduced six-choice journey and halftime pause after three using the saved read, never a fabricated contradiction.
+- [x] Optional four-choice completion guarded by shared server policy; six remains default, skips/exhaustion remain valid exceptions. Completed sessions return no more pairings; reveal counts and tests use frozen evidence.
+- [x] Complete saved reveal, actual eligible-claim exception as twist, correction question and expandable receipts. Routing stays shadow; existing lane-local challenge weighting stays unchanged, so the immediate next pair is not guaranteed to test the emerging hypothesis.
+- [x] 90 focused regressions (89 initial plus added service guard), touched-file lint and preview build passed. Fresh guest four-choice exit and six-choice completion both verified, including halftime, receipts counts, exact completed reload, 390px fit and zero page errors. Shared additive reveal contract documented.
+- [ ] Production signed-in acceptance and Flutter rendering: await Vercel deployment/owner retest and mobile adoption. No flags or migrations changed.
+
 ## Current — faster replies and complete final reading
 
 - [x] Measured direct OpenAI calls: Sol writer averages 13.0s read / 11.7s reveal / 6.9s chat; Terra review adds 2.4–3.0s, retries add another round. Conversational writers now use low reasoning; final reveal retains medium. Models, schemas, evidence and independent review unchanged.

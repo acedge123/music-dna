@@ -18,10 +18,37 @@ describe("sessionCompletion", () => {
     expect(r.reason).toBeNull();
   });
 
-  it("stops early when the read is confident", () => {
+  it("keeps four choices optional even when the read is confident", () => {
     const r = sessionCompletion({ answered: 4, vector: vec(4), dims: DIMS });
-    expect(r.done).toBe(true);
-    expect(r.reason).toBe("confident");
+    expect(r.done).toBe(false);
+    expect(r.reason).toBeNull();
+  });
+
+  it("does not allow requested completion before four answered pairings", () => {
+    expect(
+      sessionCompletion({ answered: 3, requested_finish: true, vector: vec(0), dims: DIMS }).done,
+    ).toBe(false);
+  });
+  it.each([4, 5])("allows listener completion at %i answered pairings", (answered) => {
+    expect(
+      sessionCompletion({ answered, requested_finish: true, vector: vec(0), dims: DIMS }).reason,
+    ).toBe("listener_requested");
+  });
+  it("six remains the hard cap even for an explicit exit", () => {
+    expect(
+      sessionCompletion({ answered: 6, requested_finish: true, vector: vec(0), dims: DIMS }).reason,
+    ).toBe("budget");
+  });
+  it("skip endings keep their reason when a listener also requests completion", () => {
+    expect(
+      sessionCompletion({
+        answered: 4,
+        consecutive_skips: 3,
+        requested_finish: true,
+        vector: vec(0),
+        dims: DIMS,
+      }).reason,
+    ).toBe("skip_bound");
   });
 
   it("does not stop early on a weak vector", () => {
