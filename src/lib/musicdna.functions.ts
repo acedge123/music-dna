@@ -648,7 +648,7 @@ import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
 import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
-import { preparedOutcome, hypotheticalChoice, readFingerprint, revealDraftKey, revealFingerprint } from "@/musicdna/engine/prepared-read";
+import { preparedOutcome, hypotheticalChoice, readFingerprint, revealDraftKey, revealFingerprint, synthDraftKey } from "@/musicdna/engine/prepared-read";
 import { POOL_STAGE, poolEligible, poolFingerprint } from "@/musicdna/engine/reaction-pool";
 import {
   authorCritic,
@@ -3423,7 +3423,7 @@ export const roundInsight = createServerFn({ method: "POST" })
 // ============================================================
 
 const SYNTH_VOICE = `${PERSONA}
-Mode: the earned reveal. Write a memorable opening and interpretation inside the author/review contract. Keep real exceptions and uncertainty, never invent identity or motive. No future tests.`;
+Mode: the earned reveal. Write a memorable opening and interpretation inside the author/review contract. Keep real exceptions and uncertainty, never invent identity or motive. No future tests. Read the whole run, not one clash: say what the picks add up to (or why they refuse to), and give the final pick its due. Do not end on a question; the invitation to push back comes separately.`;
 
 type SynthEvidence = { tradeoff: string; examples: string[]; supporting: number; tested: number };
 type SynthCounter = { claim: string; impact: string; notes: string };
@@ -3554,15 +3554,29 @@ async function computeFinalSynthesis(
     }))
     .filter((c) => c.claim);
 
-  const narrated = await observedCritic(
-    supabase,
-    userId,
-    data.sessionId,
-    ledger,
-    DIM_LABEL,
-    [{ role: "system", content: SYNTH_VOICE }],
-    { stage: "reveal" },
-  );
+  // The full reading drafted during the final pick is reused only on an exact ledger match.
+  const lastPick = ledger.answered > 0 ? await latestChoice(supabase, data.sessionId) : null;
+  const prepared = lastPick
+    ? ((await awaitPreparedRead(
+        data.sessionId,
+        synthDraftKey(ledger.answered),
+        lastPick,
+        revealFingerprint(ledger),
+        REVEAL_WAIT_MS,
+        REVEAL_DEADLINE_MS,
+      )) as unknown as Awaited<ReturnType<typeof observedCritic>> | null)
+    : null;
+  const narrated =
+    prepared ??
+    (await observedCritic(
+      supabase,
+      userId,
+      data.sessionId,
+      ledger,
+      DIM_LABEL,
+      [{ role: "system", content: SYNTH_VOICE }],
+      { stage: "reveal" },
+    ));
   const synthesis = narrated.text;
 
   const qa = await supabase
@@ -4638,12 +4652,13 @@ export async function prepareReadsImpl(
     dims: [],
   }).done;
   const revealDrafts = finalPick
-    ? branches.map(async ([chosen, rejected]) => {
+    ? branches.flatMap(([chosen, rejected]) =>
+        ([[revealDraftKey, CRITIC_VOICE], [synthDraftKey, SYNTH_VOICE]] as const).map(async ([slot, voice]) => {
         const ledger = buildLedger([...choices, hypotheticalChoice(pairing, chosen, rejected)], DIMS);
         const key = {
           session_id: data.sessionId,
           user_id: userId,
-          answered: revealDraftKey(ledger.answered),
+          answered: slot(ledger.answered),
           pairing_id: pairing.id,
           chosen_song_id: chosen.id,
         };
@@ -4652,7 +4667,7 @@ export async function prepareReadsImpl(
         const match = { session_id: key.session_id, answered: key.answered, pairing_id: key.pairing_id, chosen_song_id: key.chosen_song_id };
         try {
           const narrated = await Promise.race([
-            observedCritic(supabase, userId, data.sessionId, ledger, DIM_LABEL, [{ role: "system", content: CRITIC_VOICE }], { stage: "reveal" }),
+            observedCritic(supabase, userId, data.sessionId, ledger, DIM_LABEL, [{ role: "system", content: voice }], { stage: "reveal" }),
             new Promise<never>((_, reject) => setTimeout(() => reject(new Error("prepare_deadline")), REVEAL_DEADLINE_MS)),
           ]);
           await supabaseAdmin
@@ -4664,7 +4679,7 @@ export async function prepareReadsImpl(
           await supabaseAdmin.from("prepared_reads" as never).update({ status: "failed", finished_at: new Date().toISOString() } as never).match(match);
           return 0;
         }
-      })
+      }))
     : [];
   const done = await Promise.all([...revealDrafts,
     ...branches.map(async ([chosen, rejected]) => {
