@@ -1,4 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { AccountControl } from "@/components/musicdna/account-control";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -47,13 +48,13 @@ function Landing() {
 function Nav() {
   return (
     <header className="border-b hairline">
-      <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-5">
+      <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-5">
         <Link to="/" className="flex items-center gap-3">
           <img src="/music-dna-logo.png" alt="MusicDNA" className="h-14 w-auto sm:h-20" />
           <span className="sr-only">MusicDNA</span>
         </Link>
 
-        <nav className="flex items-center gap-3 sm:gap-6">
+        <nav className="flex flex-wrap items-center gap-1 sm:gap-6">
           <Link
             to="/"
             hash="how-it-works"
@@ -61,12 +62,7 @@ function Nav() {
           >
             How it works
           </Link>
-          <Link
-            to="/auth"
-            className="inline-flex min-h-11 items-center text-sm text-muted-foreground transition-colors hover:text-foreground"
-          >
-            Sign in
-          </Link>
+          <AccountControl />
           <Link
             to="/onboarding"
             className="inline-flex min-h-11 items-center gap-2 rounded-sm border hairline-strong px-3 py-1.5 text-sm text-foreground transition-colors hover:bg-secondary"

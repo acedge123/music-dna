@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -25,22 +26,16 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { user, loading } = useAuth();
+  const signedIn = !!user && !user.is_anonymous;
   const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
-      if (data.user) navigate({ to: "/onboarding", replace: true });
-    });
-    const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
-      if (s && (event === "SIGNED_IN" || event === "USER_UPDATED")) {
-        navigate({ to: "/onboarding", replace: true });
-      }
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [navigate]);
+    if (!loading && signedIn) void navigate({ to: "/onboarding", replace: true });
+  }, [navigate, loading, signedIn]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -64,6 +59,15 @@ function AuthPage() {
       setBusy(false);
     }
   }
+
+  if (loading || signedIn)
+    return (
+      <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
+        <p role="status" className="text-muted-foreground">
+          Opening your account…
+        </p>
+      </main>
+    );
 
   return (
     <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
