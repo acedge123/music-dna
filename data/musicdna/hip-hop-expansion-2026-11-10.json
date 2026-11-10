@@ -674,7 +674,8 @@
       "song_b_id": "e7c363ed-78e7-4e57-a80f-829fc96055d6",
       "tests": [
         "tension",
-        "community"
+        "community",
+        "atmosphere"
       ],
       "lane": "hip_hop",
       "active": false,
@@ -778,7 +779,8 @@
       "song_b_id": "1670ab5a-270d-45cc-9ff5-dec5bd6b0bd6",
       "tests": [
         "scale",
-        "transformation"
+        "transformation",
+        "atmosphere"
       ],
       "lane": "hip_hop",
       "active": false,
@@ -869,7 +871,8 @@
       "song_b_id": "102b2a24-4900-4b44-87a5-718aa323e69a",
       "tests": [
         "tension",
-        "community"
+        "community",
+        "atmosphere"
       ],
       "lane": "hip_hop",
       "active": false,
