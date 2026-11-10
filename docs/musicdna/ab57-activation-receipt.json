@@ -1,0 +1,125 @@
+{
+  "ticket": "AB-57",
+  "verified_at_utc": "2026-11-10T15:15:00.72945Z",
+  "state": "hosted_loop_active_awaiting_real_feedback",
+  "acceptance_complete": false,
+  "source_merge": "3a81375154dad9c4a982e7a2eddbf206b4658103",
+  "echelon_merge": "39e035bb4f435e5a816ad4ec2523fef171f56b8c",
+  "source_migrations": [
+    {
+      "version": "20261110150538",
+      "name": "musicdna_worker_status",
+      "sql_sha256": "aa2dd1e020f53c1c5029e2c0ec8b2f5ba5c7f0a1f996748dfeaeb975d4ae3620",
+      "matches_reviewed_sql": true
+    },
+    {
+      "version": "20261110150542",
+      "name": "musicdna_scoped_dispatch_caller",
+      "sql_sha256": "eac5c632c333add5a82d32aca3961c58aac908db9b2bd739a43a004be2064586",
+      "matches_reviewed_sql": true
+    }
+  ],
+  "source_function": {
+    "name": "musicdna-learning-dispatch",
+    "provider_id": "407937e9-b504-4838-94a6-bae872069d5e",
+    "version": 1,
+    "verify_jwt": false,
+    "provider_created_at_ms": 1794323151514,
+    "provider_ezbr_sha256": "8e743f115ef53f54de919f0ac6f35b84143dbd5b614cc58c5679d36f894a3d15",
+    "entry_sha256": "1f7dc92bb23f2aa482d60ed0d2c9d5ae8f60fbe702b46a0e74faf26a3068f82d",
+    "shared_artifact_sha256": "7e88180fc8a9ff4211a8ea2d8e7a7dda6ead26a48a5b9b4ae0ea8e5447096886",
+    "no_auth_status": 401,
+    "wrong_key_status": 401,
+    "valid_disabled_key_status": 200
+  },
+  "echelon_migration": {
+    "id": 10,
+    "applied_at_utc": "2026-11-10T08:53:04.632Z",
+    "requested_sha256": "2b424f19a185d6915b3322b8b80cf22deb452ec43a393af52a271af7c905b0db",
+    "applied_sha256": "870f9d628a05270770b5e49bf2347e41e9ed2aef74cae22b28189957635c9d50",
+    "exact_hash_acceptance": false,
+    "independently_verified_difference": "One additional leading space before VALUES on line70; no other byte difference. Not rerun or altered in history.",
+    "native_file": "drizzle/migrations/0008_musicdna_automatic_review.sql"
+  },
+  "echelon_function": {
+    "name": "musicdna-learning-auto",
+    "native_deployment_success_reported": true,
+    "verify_jwt_submitted": false,
+    "submitted_source_settings_sha256": "d13732d6e3fd0c12df36835a0bf85224cb4ea526173a82d2f89561917c09e959",
+    "provider_version_and_bundle_inventory": "unavailable",
+    "no_auth_status": 401,
+    "wrong_key_status": 401,
+    "valid_disabled_key_status": 200
+  },
+  "railway": {
+    "project_id": "ddc9d9d6-98be-4854-93c3-94ed324e3279",
+    "service_id": "30d03692-66a2-437d-ac68-422223b7678c",
+    "service_name": "musicdna-learning",
+    "deployment_id": "bc0ccd05-d61a-459d-8a04-e5bb09c0321d",
+    "image": "sha256:de84d144a26e73677c2805e08bea3502ed28c051b824dd7ab4fe0be0e9bbea34",
+    "cron_utc": "5 * * * *",
+    "restart_policy": "NEVER",
+    "start_command": "node scripts/learning-hourly.mjs",
+    "backend_key_present": false,
+    "ingest_key_present": false,
+    "credentials": "two narrow caller keys only",
+    "configuration": "explicit serviceInstanceUpdate fields; legacy config-as-code ignored on new service",
+    "first_hosted_log_at_utc": "2026-11-10T15:15:01.434116066Z"
+  },
+  "edge_bot": {
+    "deployment_id": "2a885cdb-9c55-4896-b5dc-1154075922b0",
+    "code_source_merge": "ae42601a8f74956c1c4aae5aab701ffa25486522",
+    "local_health_status": 200,
+    "review_enabled": true,
+    "source_allowlist_count": 1,
+    "global_signal_llm_enabled": false
+  },
+  "consent_window": {
+    "from": "2026-11-10T05:34:05.187Z",
+    "until": "2026-12-10T05:34:05.187Z",
+    "accounts": 1
+  },
+  "spend": {
+    "global_daily_ceiling_micro_usd": 5000000,
+    "source_daily_limit_micro_usd": 500000,
+    "source_daily_jobs": 5,
+    "per_job_reservation_micro_usd": 50000,
+    "model": "gpt-4o-mini-2024-07-18",
+    "automatic_app_changes": false
+  },
+  "first_hosted_run": {
+    "source_state": "completed",
+    "source_started_at_utc": "2026-11-10T15:14:58.578941Z",
+    "source_finished_at_utc": "2026-11-10T15:14:59.774405Z",
+    "source_attention": false,
+    "delivery_receipts": 0,
+    "echelon_tick_at_utc": "2026-11-10T15:15:00.72945Z",
+    "echelon_state": "idle",
+    "actual_reviews": 0,
+    "model_calls": 0
+  },
+  "validation": {
+    "source_app_tests": 484,
+    "source_native_tests": 80,
+    "orchestrator_tests": 3,
+    "echelon_app_tests": 202,
+    "echelon_native_tests": 57,
+    "source_ci": 42840335128,
+    "echelon_ci": 42774057968
+  },
+  "remaining": [
+    "Actual consenting owner accuracy rating -> immutable outbox -> Echelon receipt -> Agent Brain guidance/OpenAI -> completed saved draft. No invented feedback or live synthetic demo."
+  ],
+  "limitations": [
+    "Empty-window hosted success does not establish positive real-feedback transport or model completion.",
+    "Missed-run checks are available as metadata SQL; no new Slack alert delivery was configured.",
+    "AB-50 independent live denial/retention inventory limitations and AB-52 experiment/AB-30 approval application remain separate."
+  ],
+  "known_qa_provenance": {
+    "owner_clarification": "CGPT submitted the enrolled sessions on the owner\u2019s behalf.",
+    "saved_versions": 4,
+    "distinct_sessions": 3,
+    "accuracy_feedback_present": false,
+    "interpretation": "Authenticated agent-assisted QA walkthroughs; do not treat song choices as owner-selected musical preferences or independent listener evidence."
+  }
+}
