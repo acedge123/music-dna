@@ -339,6 +339,7 @@ function Onboarding() {
                         : e.pairing.song_b.title,
                     topDim: e.topDim,
                     revised: Boolean(e.revision),
+                    direction: e.direction,
                   })),
                 )}
               </p>

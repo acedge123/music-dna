@@ -561,8 +561,15 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     if (!sid) return;
     setResultError(null);
     try {
-      await finalizeFn({ data: { sessionId: sid, finishEarly } });
-      const r = (await synthFn({ data: { sessionId: sid } })) as {
+      // Bounded wait: the server keeps writing and saves the reading, so a
+      // timeout only offers a retry that replays the saved result.
+      const r = (await withRequestDeadline(
+        (async () => {
+          await finalizeFn({ data: { sessionId: sid, finishEarly } });
+          return synthFn({ data: { sessionId: sid } });
+        })(),
+        "Reading still being written",
+      )) as {
         result_version?: number | null;
         reveal?: { answered: number; twist: string | null; challenge: string };
         synthesis: string;
@@ -586,7 +593,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     } catch (e) {
       if (generation !== bootGeneration.current) return;
       setResultError(
-        "Your choices are saved, but the reading isn’t ready yet. Retry to finish it.",
+        "Still writing your reading. Your choices are saved — retry in a moment to see it.",
       );
     }
   }
