@@ -649,10 +649,12 @@ import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
 import { hypotheticalChoice, readFingerprint } from "@/musicdna/engine/prepared-read";
+import { POOL_STAGE, poolEligible, poolFingerprint } from "@/musicdna/engine/reaction-pool";
 import {
   authorCritic,
   contextualChatFallback,
   CRITIC_EXPRESSION_VERSION,
+  CRITIC_REVIEW_VERSION,
 } from "@/musicdna/adapters/critic-editorial";
 import {
   choiceObservation,
@@ -4414,6 +4416,8 @@ type PriorRead = { axis: string; direction: "hi" | "lo"; tier: string; thesis?: 
 type ComposedRead = {
   result: CurrentReadResult;
   authored: { voice_version: string; validation_reason: string };
+  /** Set only for stand-alone first-pick drafts eligible for the reaction pool. */
+  pool?: { fingerprint: string };
 };
 
 async function composeRead(
@@ -4454,6 +4458,42 @@ async function latestChoice(supabase: AuthedSupabase, sessionId: string) {
     .limit(1)
     .maybeSingle();
   return data ?? null;
+}
+
+/**
+ * The approved reaction for the song the listener did NOT pick becomes
+ * reaction-pool inventory. Stored text only — no listener, session or chat data.
+ */
+async function poolUnusedDraft(
+  sessionId: string,
+  choice: { pairing_id: string; chosen_song_id: string },
+) {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data } = await supabaseAdmin
+    .from("prepared_reads" as never)
+    .select("chosen_song_id,status,payload")
+    .eq("session_id", sessionId)
+    .eq("answered", 1)
+    .eq("pairing_id", choice.pairing_id)
+    .neq("chosen_song_id", choice.chosen_song_id)
+    .eq("status", "ready")
+    .maybeSingle();
+  const row = data as { chosen_song_id: string; payload: ComposedRead | null } | null;
+  const fp = row?.payload?.pool?.fingerprint;
+  if (!row || !fp) return;
+  await supabaseAdmin.from("critic_reaction_pool" as never).upsert(
+    {
+      pairing_id: choice.pairing_id,
+      chosen_song_id: row.chosen_song_id,
+      stage: POOL_STAGE,
+      writer_version: CRITIC_EXPRESSION_VERSION,
+      reviewer_version: CRITIC_REVIEW_VERSION,
+      evidence_fingerprint: fp,
+      text: row.payload!.result.thesis,
+      source: "speculative_unused",
+    } as never,
+    { onConflict: "pairing_id,chosen_song_id,evidence_fingerprint,text", ignoreDuplicates: true },
+  );
 }
 
 const PREPARE_WAIT_MS = 25_000;
@@ -4585,7 +4625,25 @@ export async function prepareReadsImpl(
           .update({
             status: "ready",
             fingerprint: readFingerprint(ledger, prior?.thesis, priorProps?.answered),
-            payload: composed,
+            payload: {
+              ...composed,
+              ...(poolEligible({
+                priorChoices: choices.length,
+                hadPriorRead: !!priorProps,
+                validation_reason: composed.authored.validation_reason,
+                text: composed.result.thesis,
+              })
+                ? {
+                    pool: {
+                      fingerprint: poolFingerprint(
+                        hypotheticalChoice(pairing, chosen, rejected),
+                        CRITIC_EXPRESSION_VERSION,
+                        CRITIC_REVIEW_VERSION,
+                      ),
+                    },
+                  }
+                : {}),
+            },
             finished_at: new Date().toISOString(),
           } as never)
           .match({ session_id: key.session_id, answered: key.answered, pairing_id: key.pairing_id, chosen_song_id: key.chosen_song_id });
@@ -4658,6 +4716,9 @@ export async function currentReadImpl(
     : null;
   const { result, authored } =
     prepared ?? (await composeRead(supabase, userId, data.sessionId, ledger, prior));
+  if (prepared && lastChoice && ledger.answered === 1) {
+    await poolUnusedDraft(data.sessionId, lastChoice).catch(() => {});
+  }
   const lead = ledger.axes[0];
   const { error } = await (
     await trustedEventLog()

@@ -16,6 +16,7 @@ import {
   adminSetDiagnosticWeight,
   adminResidualQueue,
   adminOntology,
+  adminReactionPool,
   adminDiagnostics,
   adminShadowRouter,
   adminNewQaInterview,
@@ -1139,7 +1140,7 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: "wa
 }
 
 // ---------------- Ontology dashboard: catalog shape, real-session heatmap, pairing/song health ----------------
-type OntologySection = "coverage" | "tests" | "heatmap" | "pairings" | "songs";
+type OntologySection = "coverage" | "tests" | "heatmap" | "pairings" | "songs" | "pool";
 
 function OntologyPanel() {
   const load = useServerFn(adminOntology);
@@ -1187,7 +1188,7 @@ function OntologyPanel() {
       </div>
 
       <div className="flex gap-1 border-b hairline mb-4 flex-wrap">
-        {(["coverage", "tests", "heatmap", "pairings", "songs"] as OntologySection[]).map((s) => (
+        {(["coverage", "tests", "heatmap", "pairings", "songs", "pool"] as OntologySection[]).map((s) => (
           <button
             key={s}
             onClick={() => setSection(s)}
@@ -1221,11 +1222,85 @@ function OntologyPanel() {
       {section === "heatmap" && <HeatmapView d={d} laneFilter={laneFilter} />}
       {section === "pairings" && <PairingHealthView d={d} laneFilter={laneFilter} />}
       {section === "songs" && <SongHealthView d={d} laneFilter={laneFilter} />}
+      {section === "pool" && <ReactionPoolView laneFilter={laneFilter} />}
     </div>
   );
 }
 
 type OntologyData = Awaited<ReturnType<typeof adminOntology>>;
+
+// Stored, reviewer-approved Critic reactions. Inventory only: not served to listeners yet.
+function ReactionPoolView({ laneFilter }: { laneFilter: string }) {
+  const load = useServerFn(adminReactionPool);
+  const q = useQuery({ queryKey: ["admin", "reaction-pool"], queryFn: () => load(), staleTime: 60_000 });
+  if (q.isLoading) return <p className="text-sm text-muted-foreground">Loading reaction pool…</p>;
+  if (q.isError || !q.data)
+    return (
+      <p className="text-sm text-destructive">
+        {q.error instanceof Error ? q.error.message : "Failed to load reaction pool."}
+      </p>
+    );
+  const d = q.data;
+  const lanes = d.lanes.filter((l) => !laneFilter || l.lane === laneFilter);
+  const entries = d.entries.filter((e) => !laneFilter || e.lane === laneFilter);
+  return (
+    <div className="space-y-6">
+      <p className="text-sm text-muted-foreground max-w-3xl">
+        Reviewer-approved stand-alone reactions per matchup and pick. Stored only; listeners still
+        get live reactions. Stale = evidence or Critic rules changed since it was written.
+      </p>
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
+        <Stat label="Approved" value={d.totals.approved.toLocaleString()} />
+        <Stat label="Picks covered" value={`${d.totals.covered_picks}/${d.totals.song_picks}`} />
+        <Stat label="Stale" value={d.totals.stale.toLocaleString()} tone={d.totals.stale ? "warn" : undefined} />
+        <Stat label="Retired" value={d.totals.retired.toLocaleString()} />
+        <Stat label="Writer" value={d.versions.writer.replace("critic-expression-", "")} />
+      </div>
+      <table className="w-full text-xs">
+        <thead>
+          <tr className="text-left text-muted-foreground">
+            <th className="py-1">Lane</th>
+            <th>Song picks with a reaction</th>
+            <th>No reaction yet</th>
+          </tr>
+        </thead>
+        <tbody>
+          {lanes.map((l) => (
+            <tr key={l.lane} className="border-t hairline">
+              <td className="py-1">{l.lane}</td>
+              <td>
+                {l.covered}/{l.picks}
+              </td>
+              <td>{l.picks - l.covered}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+      <table className="w-full text-xs">
+        <thead>
+          <tr className="text-left text-muted-foreground">
+            <th className="py-1">Matchup</th>
+            <th>Pick</th>
+            <th>Reaction</th>
+            <th>Status</th>
+            <th>Source</th>
+          </tr>
+        </thead>
+        <tbody>
+          {entries.map((e) => (
+            <tr key={e.id} className="border-t hairline align-top">
+              <td className="py-1 pr-2">{e.matchup}</td>
+              <td className="pr-2">{e.chosen}</td>
+              <td className="pr-2 whitespace-pre-line max-w-md">{e.text}</td>
+              <td className={e.status === "approved" ? "" : "text-destructive"}>{e.status}</td>
+              <td>{e.source === "fill_script" ? "fill-up" : "unused draft"}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
 
 function TestCoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: string }) {
   const [missingOnly, setMissingOnly] = useState(false);
