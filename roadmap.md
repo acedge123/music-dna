@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — signed-in opening and conversation hangs
+
+- [ ] Repair stale session pinning on fresh Start and cancellation during restored-session opening; add bounded retryable waits without changing saved outcomes.
+- [ ] Verify regressions and preview; production registered-account acceptance requires external-managed access.
+
 ## Current — CGPT interview defects
 
 - [x] Traced reported session: first two frozen votes have no declared tests, four of six are diagnostically usable; no historical reconstruction.
