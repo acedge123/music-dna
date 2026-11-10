@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — pre-write final reading during pick 6
+
+- [x] While the default final pick is on screen, draft the reveal for both outcomes; finalize reuses only an exact frozen-ledger match, else writes live. Same writer/reviewer/rules.
+- [ ] Verify speed in a live six-pick interview after Vercel deploys.
+
 ## Current — promote tested three-moves examples, hold facts
 
 - [x] Promote the tested moves2 examples and open-question rules to the shared Critic; optional questions and no redundant uncertainty taglines. Models, complete ledger, strict checks and required independent review unchanged; song facts remain offline-only.
