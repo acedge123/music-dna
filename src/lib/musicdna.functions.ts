@@ -654,6 +654,7 @@ import {
   authorCritic,
   contextualChatFallback,
   CRITIC_EXPRESSION_VERSION,
+  CRITIC_REVIEW_VERSION,
 } from "@/musicdna/adapters/critic-editorial";
 import {
   choiceObservation,
