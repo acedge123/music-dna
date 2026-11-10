@@ -23,11 +23,12 @@ export const Route = createFileRoute("/api/v1/session/$id/reveal")({
           const { supabase, userId } = await verifyBearer(request);
           const raw = await request.text();
           let input: unknown = {};
-          try { input = raw.trim() ? JSON.parse(raw) : {}; }
-          catch { return errorResponse("INVALID_INPUT", "Invalid reveal request", 400); }
-          const body = z
-            .object({ finish_early: z.boolean().optional() })
-            .safeParse(input);
+          try {
+            input = raw.trim() ? JSON.parse(raw) : {};
+          } catch {
+            return errorResponse("INVALID_INPUT", "Invalid reveal request", 400);
+          }
+          const body = z.object({ finish_early: z.boolean().optional() }).safeParse(input);
           if (!body.success) return errorResponse("INVALID_INPUT", "Invalid reveal request", 400);
           const result = await finalizeSessionImpl(supabase, userId, {
             sessionId: sid.data,
@@ -53,7 +54,8 @@ export const Route = createFileRoute("/api/v1/session/$id/reveal")({
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);
-          if (msg === "An initial reading needs four answered choices.") return errorResponse("INVALID_INPUT", msg, 400);
+          if (msg === "An initial reading needs four answered choices.")
+            return errorResponse("INVALID_INPUT", msg, 400);
           return errorResponse("INTERNAL", msg, 500);
         }
       },

@@ -74,7 +74,12 @@ function client(deltas: number[], owner = "user") {
 describe("current read service boundary", () => {
   it("rejects early reveal with only three frozen choices before any author call", async () => {
     generate.mockReset();
-    await expect(finalizeSessionImpl(client([40, 40, 40]) as never, "user", { sessionId: "s", finishEarly: true })).rejects.toThrow("four answered choices");
+    await expect(
+      finalizeSessionImpl(client([40, 40, 40]) as never, "user", {
+        sessionId: "s",
+        finishEarly: true,
+      }),
+    ).rejects.toThrow("four answered choices");
     expect(generate).not.toHaveBeenCalled();
   });
   beforeEach(() => {

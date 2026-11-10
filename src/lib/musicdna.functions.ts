@@ -828,11 +828,20 @@ export async function nextPairingImpl(
   // Answered rounds are choices only. Skips are never preferences, so they
   // don't advance the budget — they only bound the session via skip_bound.
   const answered = new Set((usedRes.data ?? []).map((c) => c.pairing_id)).size;
-  if (session.completed_at) return {
-    pairing: null, round: answered, answered, max_rounds: 6,
-    stop_reason: sessionCompletion({ answered, vector, dims: DIMS as readonly string[], requested_finish: true }).reason,
-    done: true as const,
-  };
+  if (session.completed_at)
+    return {
+      pairing: null,
+      round: answered,
+      answered,
+      max_rounds: 6,
+      stop_reason: sessionCompletion({
+        answered,
+        vector,
+        dims: DIMS as readonly string[],
+        requested_finish: true,
+      }).reason,
+      done: true as const,
+    };
   const skippedCount = (probeState.skipped_pairing_ids ?? []).length;
   // D02: count skips since the most recent answered choice.
   const { data: recentEvents } = await supabase
@@ -2020,14 +2029,20 @@ export async function finalizeSessionImpl(
   const choices = evidence.choices.filter((c) => c.chosen && c.rejected);
 
   // -------- Layer 1: Observations --------
-  const observations = choices.flatMap((c) => c.chosen && c.rejected ? [{
-    chosen: c.chosen.title,
-    chosen_artist: c.chosen.artist,
-    rejected: c.rejected.title,
-    rejected_artist: c.rejected.artist,
-    tested_dimensions: c.tests ?? [],
-    ms_to_decide: c.ms_to_decide,
-  }] : []);
+  const observations = choices.flatMap((c) =>
+    c.chosen && c.rejected
+      ? [
+          {
+            chosen: c.chosen.title,
+            chosen_artist: c.chosen.artist,
+            rejected: c.rejected.title,
+            rejected_artist: c.rejected.artist,
+            tested_dimensions: c.tests ?? [],
+            ms_to_decide: c.ms_to_decide,
+          },
+        ]
+      : [],
+  );
 
   // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
   const ledger = evidence.ledger;
