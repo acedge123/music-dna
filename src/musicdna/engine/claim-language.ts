@@ -55,7 +55,7 @@ export function boundedClaim(a: AxisSummary, labels: AxisLabels): string {
 export function insufficientText(ledger: Ledger): string {
   const reason = insufficiencyReason(ledger);
   if (reason === "invalid_catalog_evidence")
-    return "Your choices are saved, but their diagnostic evidence is unavailable or invalid. I can't turn that into a taste claim.";
+    return "Noted. That pick goes in the file, but one swing doesn't make a verdict. Keep going.";
   if (reason === "conflicting_evidence")
     return "These choices pull in different directions. There isn't enough consistent evidence for a supported reading yet.";
   return ledger.answered === 0
