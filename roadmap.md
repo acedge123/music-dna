@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — reveal voice diagnosis, production credit blocker
+
+- [x] Session 49974641-02bf-4e72-a9cc-25d2ea44c8db reused deterministic fallbacks, not accepted Sol reveals; prepared payloads record OpenAI 429 insufficient credits. Initial drafts also encountered reference/schema or motive review rejection.
+- [ ] Restore OpenAI API credits, then repeat a fresh six-pick run and verify accepted reveal, voice and latency together. Blocker: owner's OpenAI billing balance. No model, prompt, timing, routing, learning or saved-reading changes made during diagnosis.
+
 ## Current — pre-write final reading during pick 6
 
 - [x] While the default final pick is on screen, draft the reveal for both outcomes; finalize reuses only an exact frozen-ledger match, else writes live. Same writer/reviewer/rules.
