@@ -4,6 +4,7 @@ import {
   OPENER_WEIGHT_TOTAL,
   weightedLaneShare,
   dominantPerSongLane,
+  catalogLaneToTopLane,
 } from "./musicdna.functions";
 
 const p = (lanes: Array<string>) => lanes.map((lane) => ({ lane: lane as never }));
@@ -40,5 +41,18 @@ describe("opener slot weighting", () => {
   it("returns null when all slots are unknown", () => {
     expect(weightedLaneShare(p(["unknown", "unknown", "unknown"]))).toBeNull();
     expect(dominantPerSongLane(p(["unknown", "unknown", "unknown"]))).toBeNull();
+  });
+});
+
+
+describe("specialist lane activation", () => {
+  it.each(["yacht_rock", "disco", "punk", "reggae"])("preserves exact %s catalog routing", (lane) => {
+    expect(catalogLaneToTopLane(lane)).toBe(lane);
+    expect(dominantPerSongLane(p([lane, lane, "pop"]))).toBe(lane);
+    expect(dominantPerSongLane(p([lane, "pop", "pop"]))).toBeNull();
+  });
+  it("preserves legacy Alternative families rather than remapping them to Punk", () => {
+    expect(catalogLaneToTopLane("punk_noise_edge")).toBe("alternative");
+    expect(catalogLaneToTopLane("post_punk_new_wave")).toBe("alternative");
   });
 });
