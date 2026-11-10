@@ -173,8 +173,22 @@ describe("critic-expression-v2 boundary", () => {
       ).status,
     ).toBe("ok");
     expect(l).toEqual(original);
-    expect(contextualChatFallback(l, "Karen O's vulnerable vocal")).toContain(
+    expect(contextualChatFallback(l, "Karen O's vulnerable vocal", labels)).not.toContain(
       "Karen O's vulnerable vocal",
     );
+    expect(contextualChatFallback(l, "question", labels)).toContain("A2 over B2");
+  });
+  it("rejects a full question echo even if the reviewer would accept it", async () => {
+    const question = "Why did I choose Star Guitar over Hyperballad?";
+    const generate = vi.fn().mockResolvedValueOnce(JSON.stringify({
+      headline: question, body: "What made the difference?", choice_ids: [], claims: [],
+    }));
+    const result = await authorCritic(ledger([40]), labels, generate, {
+      stage: "chat", selfReport: question,
+      fallback: contextualChatFallback(ledger([40]), question, labels),
+    });
+    expect(result.validation_reason).toBe("prompt_echo");
+    expect(result.text).not.toContain(question);
+    expect(generate).toHaveBeenCalledTimes(1);
   });
 });
