@@ -376,6 +376,7 @@ function Onboarding() {
               </div>
             ) : (
               <ReadingResult
+                showFullSynthesis
                 content={{
                   synthesis: synthesis ?? "",
                   audit_text: auditText,

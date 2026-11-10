@@ -105,9 +105,11 @@ describe("current read service boundary", () => {
     const writer = generate.mock.calls[0][1];
     const reviewer = generate.mock.calls[1][1];
     expect(writer.role).toBe("writer");
+    expect(writer.stage).toBe("read");
     expect(writer.jsonSchema.schema.properties.claims.maxItems).toBe(0);
     expect(writer.jsonSchema.schema.properties.choice_ids.items.enum).toEqual(["0"]);
     expect(reviewer.role).toBe("reviewer");
+    expect(reviewer.stage).toBe("read");
     expect(reviewer.jsonSchema.name).toBe("critic_review");
   });
   it("stores and replays the complete qualified read verbatim", async () => {
