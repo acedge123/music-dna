@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
+import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import {
   adminCheck,
   adminList,
@@ -1227,6 +1228,17 @@ function TestCoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: stri
                 <p className="font-serif italic text-sm">
                   {p.user_facing_tradeoff || <span className="text-muted-foreground">No saying</span>}
                 </p>
+                {(() => {
+                  const issue = sayingProblem(
+                    p.user_facing_tradeoff,
+                    live.filter((o) => o.id !== p.id).map((o) => o.user_facing_tradeoff),
+                  );
+                  return issue ? (
+                    <p className="text-xs text-destructive">
+                      Saying {issue === "duplicate" ? "reused by another matchup" : issue === "generic" ? "is generic" : "missing"}
+                    </p>
+                  ) : null;
+                })()}
                 <div className="flex flex-wrap gap-1">
                   {p.tests.length ? (
                     p.tests.map((t) => (

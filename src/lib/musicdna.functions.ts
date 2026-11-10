@@ -5,6 +5,7 @@ import { loadChatPage } from "@/musicdna/adapters/chat-history";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import { hasDiagnosticIntegrity } from "@/musicdna/engine/pairing-eligibility";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
 import { assignArchetype } from "@/musicdna/engine/archetypes";
@@ -728,8 +729,8 @@ export async function nextPairingImpl(
 
   const pairingSelect = `
       id, tests, diagnostic_weight, lane, is_bootstrap,
-      song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane),
-      song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane)
+      song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation),
+      song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation)
     `;
 
   const usedIds = new Set((usedRes.data ?? []).map((c) => c.pairing_id));
@@ -953,7 +954,7 @@ export async function nextPairingImpl(
           song_b?: { primary_lane?: string | null } | null;
         }
       >
-    ).filter((p) => !usedIds.has(p.id));
+    ).filter((p) => !usedIds.has(p.id) && hasDiagnosticIntegrity(p));
     // Keep only pairings that intersect the user's opener lanes. If the
     // opener produced no usable lanes (should be rare — total scatter),
     // fall back to the full bootstrap pool so we still probe.
@@ -1080,7 +1081,10 @@ export async function nextPairingImpl(
         ? "recognition_boost"
         : "diagnostic_first";
 
-  const finalPool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
+  // Live selection guard: never serve a matchup without a valid, contrasting test.
+  const finalPool = ((pairingsRes.data ?? []) as unknown as PairingCandidate[]).filter((p) =>
+    hasDiagnosticIntegrity(p as never),
+  );
 
   // Phase 4 (cursor #1 fix): consult the shadow router ONCE per pick and
   // reuse the result for both knob derivation and the event emitter.
@@ -1156,7 +1160,9 @@ export async function nextPairingImpl(
       .eq("active", true)
       .eq("lane", "general");
     if (pairingsRes.error) throw new Error(pairingsRes.error.message);
-    livePool = (pairingsRes.data ?? []) as unknown as PairingCandidate[];
+    livePool = ((pairingsRes.data ?? []) as unknown as PairingCandidate[]).filter((p) =>
+      hasDiagnosticIntegrity(p as never),
+    );
     liveMode = reactionSelectionMode("recognition_first", data.steer);
     // Reseed for the fallback attempt so shadow can reproduce it exactly.
     const fbRng = mulberry32(rngSeed ^ 0x9e3779b9);
