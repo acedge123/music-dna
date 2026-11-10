@@ -1,12 +1,20 @@
 import { z } from "zod";
 
-export const QUALITY_RUBRIC_VERSION = "critic-quality-rubric-v1";
+export const QUALITY_RUBRIC_VERSION = "critic-quality-rubric-v2";
 export const QUALITY_AXES = [
   "inference_accuracy",
   "musical_specificity",
   "prose_originality",
   "conversational_relevance",
+  "entertainment",
 ] as const;
+export const QUALITY_LABELS: Record<(typeof QUALITY_AXES)[number], string> = {
+  inference_accuracy: "Grounded in evidence",
+  musical_specificity: "Musical specificity",
+  prose_originality: "Originality",
+  conversational_relevance: "Conversational relevance",
+  entertainment: "Entertainment / want to continue",
+};
 const score = z.number().int().min(1).max(5).nullable();
 export const QualityScores = z
   .object({
@@ -14,6 +22,7 @@ export const QualityScores = z
     musical_specificity: score,
     prose_originality: score,
     conversational_relevance: score,
+    entertainment: score,
   })
   .strict();
 export const QUALITY_ANCHORS = {
@@ -44,6 +53,13 @@ export const QUALITY_ANCHORS = {
     "Addresses the turn",
     "Responds and advances it",
     "Directly engages the correction/context without inventing motive",
+  ],
+  entertainment: [
+    "Would stop here",
+    "Polite but flat",
+    "Mildly interesting",
+    "Want to reply",
+    "Can't wait to argue back",
   ],
 } as const;
 
@@ -125,5 +141,26 @@ export function exposureReport(
     independent_retests: null,
     independent_retest_status: "not_established" as const,
     historical_exposure_status: "prospective_only" as const,
+  };
+}
+
+export const KEEP_TALKING = ["yes", "maybe", "no"] as const;
+export const SessionVerdict = z
+  .object({
+    keep_talking: z.enum(KEEP_TALKING),
+    reason: z.string().trim().max(500).nullable(),
+  })
+  .strict();
+
+/** Share of completed listener sessions that chatted after the reveal. */
+export function keptTalkingRate(sessions: { session_id: string; user_turns: number }[]) {
+  const total = sessions.length;
+  const talked = sessions.filter((s) => s.user_turns > 0);
+  const turns = talked.reduce((n, s) => n + s.user_turns, 0);
+  return {
+    completed_sessions: total,
+    kept_talking: talked.length,
+    rate: total ? talked.length / total : null,
+    avg_turns_when_talking: talked.length ? turns / talked.length : null,
   };
 }

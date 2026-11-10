@@ -5,6 +5,8 @@ import {
   validateCriticBeat,
   contextualChatFallback,
   criticFacts,
+  criticBeatSchema,
+  parseModelJson,
 } from "./critic-editorial";
 
 const labels = { scale: { hi: "intimacy", lo: "spectacle" } };
@@ -127,6 +129,8 @@ describe("critic-expression-v2 boundary", () => {
     const generate = vi
       .fn()
       .mockResolvedValueOnce(JSON.stringify(beat))
+      .mockResolvedValueOnce(JSON.stringify({ ...review, [key]: false }))
+      .mockResolvedValueOnce(JSON.stringify(beat))
       .mockResolvedValueOnce(JSON.stringify({ ...review, [key]: false }));
     const result = await authorCritic(ledger([40, 40, 40, -40]), labels, generate, {
       stage: "reveal",
@@ -180,14 +184,13 @@ describe("critic-expression-v2 boundary", () => {
   });
   it("rejects a full question echo even if the reviewer would accept it", async () => {
     const question = "Why did I choose Star Guitar over Hyperballad?";
-    const generate = vi.fn().mockResolvedValueOnce(
-      JSON.stringify({
-        headline: question,
-        body: "What made the difference?",
-        choice_ids: [],
-        claims: [],
-      }),
-    );
+    const echo = JSON.stringify({
+      headline: question,
+      body: "What made the difference?",
+      choice_ids: [],
+      claims: [],
+    });
+    const generate = vi.fn().mockResolvedValueOnce(echo).mockResolvedValueOnce(echo);
     const result = await authorCritic(ledger([40]), labels, generate, {
       stage: "chat",
       selfReport: question,
@@ -195,6 +198,40 @@ describe("critic-expression-v2 boundary", () => {
     });
     expect(result.validation_reason).toBe("prompt_echo");
     expect(result.text).not.toContain(question);
-    expect(generate).toHaveBeenCalledTimes(1);
+    expect(generate).toHaveBeenCalledTimes(2);
+  });
+});
+
+describe("critic-expression-v2.3 output contract", () => {
+  it("restricts claim axes and IDs to the eligible allowlist", () => {
+    const schema = criticBeatSchema(ledger([40, 40, 40, -40])) as any;
+    expect(schema.properties.claims.items.properties.axis.enum).toEqual(["scale"]);
+    expect(schema.properties.choice_ids.items.enum).toEqual(["c0", "c1", "c2", "c3"]);
+  });
+  it("forbids claims entirely when no axis is eligible", () => {
+    expect((criticBeatSchema(ledger([40])) as any).properties.claims.maxItems).toBe(0);
+  });
+  it("repairs trailing junk after valid JSON and flags the repair", () => {
+    expect(parseModelJson('{"a":"}"}}')).toEqual({ value: { a: "}" }, repaired: true });
+    expect(parseModelJson("not json")).toBeNull();
+  });
+  it("retries once with the reviewer's failed checks, then accepts", async () => {
+    const generate = vi
+      .fn()
+      .mockResolvedValueOnce(JSON.stringify(beat))
+      .mockResolvedValueOnce(
+        JSON.stringify({ ...review, grounded: false, failed: [{ check: "lifestyle_inference", span: "needs solitude" }] }),
+      )
+      .mockResolvedValueOnce(JSON.stringify(beat))
+      .mockResolvedValueOnce(JSON.stringify(review));
+    const result = await authorCritic(ledger([40, 40, 40, -40]), labels, generate, { stage: "reveal" });
+    expect(result.status).toBe("ok");
+    expect(result.validation_reason).toBe("accepted_after_retry");
+    expect(generate.mock.calls[2][0]).toContain("lifestyle_inference");
+  });
+  it("chat fallback answers about the songs the listener names", () => {
+    const text = contextualChatFallback(ledger([40, 40]), "why did I pick A0?", labels);
+    expect(text).toContain("A0 over B0");
+    expect(text).toContain("intimacy over spectacle");
   });
 });

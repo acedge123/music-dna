@@ -1,13 +1,33 @@
 import { describe, it, expect } from "vitest";
-import { QualityScores, exposureReport } from "./critic-quality";
+import { QualityScores, SessionVerdict, exposureReport, keptTalkingRate } from "./critic-quality";
 describe("independent critic measurements", () => {
   const scores = {
     inference_accuracy: 1,
     musical_specificity: 2,
     prose_originality: 4,
     conversational_relevance: 5,
+    entertainment: 3,
   };
-  it("keeps all four 1–5 scores separate", () =>
+  it("requires the entertainment score to be 1-5", () => {
+    expect(QualityScores.safeParse({ ...scores, entertainment: 6 }).success).toBe(false);
+    expect(QualityScores.safeParse({ ...scores, entertainment: 0 }).success).toBe(false);
+    expect(QualityScores.parse({ ...scores, entertainment: 5 }).entertainment).toBe(5);
+  });
+  it("limits keep-talking verdicts to yes/maybe/no", () => {
+    expect(SessionVerdict.safeParse({ keep_talking: "yes", reason: null }).success).toBe(true);
+    expect(SessionVerdict.safeParse({ keep_talking: "sure", reason: null }).success).toBe(false);
+  });
+  it("counts sessions that chatted after the reveal", () => {
+    const r = keptTalkingRate([
+      { session_id: "a", user_turns: 0 },
+      { session_id: "b", user_turns: 2 },
+      { session_id: "c", user_turns: 4 },
+      { session_id: "d", user_turns: 0 },
+    ]);
+    expect(r.rate).toBe(0.5);
+    expect(r.avg_turns_when_talking).toBe(3);
+  });
+  it("keeps all five 1–5 scores separate", () =>
     expect(QualityScores.parse(scores)).toEqual(scores));
   it.each([0, 6, 1.5])("rejects score %s", (score) =>
     expect(QualityScores.safeParse({ ...scores, inference_accuracy: score }).success).toBe(false),

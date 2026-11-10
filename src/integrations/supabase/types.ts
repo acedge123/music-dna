@@ -337,6 +337,7 @@ export type Database = {
           attempt_key: string
           calls: Json
           created_at: string
+          decision_trace: Json | null
           evidence_context: Json
           id: string
           output_fingerprint: string
@@ -356,6 +357,7 @@ export type Database = {
           attempt_key: string
           calls?: Json
           created_at?: string
+          decision_trace?: Json | null
           evidence_context: Json
           id?: string
           output_fingerprint: string
@@ -375,6 +377,7 @@ export type Database = {
           attempt_key?: string
           calls?: Json
           created_at?: string
+          decision_trace?: Json | null
           evidence_context?: Json
           id?: string
           output_fingerprint?: string
@@ -405,6 +408,7 @@ export type Database = {
           attempt_id: string
           conversational_relevance: number | null
           created_at: string
+          entertainment: number | null
           evaluator_type: string
           id: string
           inference_accuracy: number | null
@@ -418,6 +422,7 @@ export type Database = {
           attempt_id: string
           conversational_relevance?: number | null
           created_at?: string
+          entertainment?: number | null
           evaluator_type?: string
           id?: string
           inference_accuracy?: number | null
@@ -431,6 +436,7 @@ export type Database = {
           attempt_id?: string
           conversational_relevance?: number | null
           created_at?: string
+          entertainment?: number | null
           evaluator_type?: string
           id?: string
           inference_accuracy?: number | null
@@ -446,6 +452,47 @@ export type Database = {
             columns: ["attempt_id"]
             isOneToOne: false
             referencedRelation: "critic_quality_attempts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      critic_session_verdicts: {
+        Row: {
+          created_at: string
+          id: string
+          keep_talking: string
+          reason: string | null
+          reviewer_id: string
+          rubric_version: string
+          session_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          keep_talking: string
+          reason?: string | null
+          reviewer_id: string
+          rubric_version: string
+          session_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          keep_talking?: string
+          reason?: string | null
+          reviewer_id?: string
+          rubric_version?: string
+          session_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critic_session_verdicts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
         ]

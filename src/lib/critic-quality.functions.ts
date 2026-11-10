@@ -3,6 +3,8 @@ import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import {
   QualityScores,
+  SessionVerdict,
+  keptTalkingRate,
   QUALITY_RUBRIC_VERSION,
   exposureReport,
   type ExposureSong,
@@ -21,7 +23,7 @@ export const criticQualityQueue = createServerFn({ method: "POST" })
     const result = await context.supabase
       .from("critic_quality_attempts")
       .select(
-        "id,session_id,stage,result_version,output_text,output_fingerprint,evidence_context,created_at",
+        "id,session_id,stage,status,rejection_reason,result_version,output_text,output_fingerprint,evidence_context,decision_trace,created_at",
         { count: "exact" },
       )
       .order("created_at", { ascending: false })
@@ -35,12 +37,25 @@ export const criticQualityQueue = createServerFn({ method: "POST" })
       ? await context.supabase
           .from("critic_quality_reviews")
           .select(
-            "attempt_id,inference_accuracy,musical_specificity,prose_originality,conversational_relevance,reviewer_id",
+            "attempt_id,inference_accuracy,musical_specificity,prose_originality,conversational_relevance,entertainment,reviewer_id",
           )
           .in("attempt_id", ids)
       : { data: [], error: null };
     if (reviews.error) throw new Error("Quality reviews unavailable");
-    return { rows: result.data ?? [], reviews: reviews.data ?? [], total: result.count ?? 0 };
+    const sessionIds = [...new Set((result.data ?? []).map((r) => r.session_id))];
+    const verdicts = sessionIds.length
+      ? await context.supabase
+          .from("critic_session_verdicts")
+          .select("session_id,keep_talking,reason,reviewer_id")
+          .in("session_id", sessionIds)
+      : { data: [], error: null };
+    if (verdicts.error) throw new Error("Session verdicts unavailable");
+    return {
+      rows: result.data ?? [],
+      reviews: reviews.data ?? [],
+      verdicts: verdicts.data ?? [],
+      total: result.count ?? 0,
+    };
   });
 
 export const saveCriticQualityReview = createServerFn({ method: "POST" })
@@ -149,5 +164,69 @@ export const criticExposureReport = createServerFn({ method: "POST" })
           ),
         };
       }),
+    };
+  });
+
+export const saveCriticSessionVerdict = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ sessionId: z.string().uuid(), verdict: SessionVerdict }).strict().parse(d),
+  )
+  .handler(async ({ data, context }) => {
+    const role = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (role.error || !role.data) throw new Error("Forbidden");
+    const { error } = await context.supabase.from("critic_session_verdicts").insert({
+      session_id: data.sessionId,
+      reviewer_id: context.userId,
+      rubric_version: QUALITY_RUBRIC_VERSION,
+      keep_talking: data.verdict.keep_talking,
+      reason: data.verdict.reason || null,
+    });
+    if (error?.code === "23505") throw new Error("You already gave this interview a verdict.");
+    if (error) throw new Error("Verdict could not be saved");
+    return { saved: true };
+  });
+
+/** Real listeners only: completed sessions in the last 30 days, owner-QA excluded. */
+export const criticKeptTalking = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const role = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
+    if (role.error || !role.data) throw new Error("Forbidden");
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const since = new Date(Date.now() - 30 * 86400_000).toISOString();
+    const [sessions, qa] = await Promise.all([
+      supabaseAdmin
+        .from("sessions")
+        .select("id")
+        .not("completed_at", "is", null)
+        .gte("completed_at", since)
+        .limit(1000),
+      supabaseAdmin.from("interview_qa_sessions").select("session_id").limit(5000),
+    ]);
+    if (sessions.error || qa.error) throw new Error("Kept-talking metric unavailable");
+    const qaIds = new Set((qa.data ?? []).map((r) => r.session_id));
+    const ids = (sessions.data ?? []).map((s) => s.id).filter((id) => !qaIds.has(id));
+    const turns: Record<string, number> = {};
+    for (let i = 0; i < ids.length; i += 200) {
+      const chunk = ids.slice(i, i + 200);
+      const msgs = await supabaseAdmin
+        .from("chat_messages")
+        .select("session_id")
+        .eq("role", "user")
+        .in("session_id", chunk)
+        .limit(10000);
+      if (msgs.error) throw new Error("Kept-talking metric unavailable");
+      for (const m of msgs.data ?? []) turns[m.session_id] = (turns[m.session_id] ?? 0) + 1;
+    }
+    return {
+      window_days: 30,
+      ...keptTalkingRate(ids.map((id) => ({ session_id: id, user_turns: turns[id] ?? 0 }))),
     };
   });
