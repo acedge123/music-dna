@@ -83,7 +83,10 @@ export async function measuredCritic(
       review_checks: result.review_checks,
       evidence_context: {
         ...criticFacts(ledger, labels),
-        local_review_context: { previous: options.previous ?? null, self_report: options.selfReport ?? null },
+        local_review_context: {
+          previous: options.previous ?? null,
+          self_report: options.selfReport ?? null,
+        },
         references: ledger.entries.map((e) => ({
           choice_id: e.choice_id,
           pairing_id: e.pairing_id,

@@ -132,9 +132,22 @@ export const criticExposureReport = createServerFn({ method: "POST" })
       choices_without_served_record: decisions.filter(
         (d) => !(offers.data ?? []).some((o) => o.pairing_id === d.pairing_id),
       ).length,
-      partitions: [...new Set((offers.data ?? []).map((o) => `${o.lane}:${o.catalog_revision}`))].map((key) => {
+      partitions: [
+        ...new Set((offers.data ?? []).map((o) => `${o.lane}:${o.catalog_revision}`)),
+      ].map((key) => {
         const group = (offers.data ?? []).filter((o) => `${o.lane}:${o.catalog_revision}` === key);
-        return { key, ...exposureReport(group.map((o) => ({id:o.id,pairing_id:o.pairing_id,songs:Songs.parse(o.songs),shown:o.reported_shown_at !== null})), decisions.filter((d) => group.some((o) => o.pairing_id === d.pairing_id))) };
+        return {
+          key,
+          ...exposureReport(
+            group.map((o) => ({
+              id: o.id,
+              pairing_id: o.pairing_id,
+              songs: Songs.parse(o.songs),
+              shown: o.reported_shown_at !== null,
+            })),
+            decisions.filter((d) => group.some((o) => o.pairing_id === d.pairing_id)),
+          ),
+        };
       }),
     };
   });
