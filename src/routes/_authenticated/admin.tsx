@@ -1038,7 +1038,7 @@ function Stat({ label, value, tone }: { label: string; value: string; tone?: "wa
 }
 
 // ---------------- Ontology dashboard: catalog shape, real-session heatmap, pairing/song health ----------------
-type OntologySection = "coverage" | "heatmap" | "pairings" | "songs";
+type OntologySection = "coverage" | "tests" | "heatmap" | "pairings" | "songs";
 
 function OntologyPanel() {
   const load = useServerFn(adminOntology);
@@ -1086,7 +1086,7 @@ function OntologyPanel() {
       </div>
 
       <div className="flex gap-1 border-b hairline mb-4 flex-wrap">
-        {(["coverage", "heatmap", "pairings", "songs"] as OntologySection[]).map((s) => (
+        {(["coverage", "tests", "heatmap", "pairings", "songs"] as OntologySection[]).map((s) => (
           <button
             key={s}
             onClick={() => setSection(s)}
@@ -1116,6 +1116,7 @@ function OntologyPanel() {
       </div>
 
       {section === "coverage" && <CoverageView d={d} laneFilter={laneFilter} />}
+      {section === "tests" && <TestCoverageView d={d} laneFilter={laneFilter} />}
       {section === "heatmap" && <HeatmapView d={d} laneFilter={laneFilter} />}
       {section === "pairings" && <PairingHealthView d={d} laneFilter={laneFilter} />}
       {section === "songs" && <SongHealthView d={d} laneFilter={laneFilter} />}
@@ -1124,6 +1125,127 @@ function OntologyPanel() {
 }
 
 type OntologyData = Awaited<ReturnType<typeof adminOntology>>;
+
+function TestCoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: string }) {
+  const [missingOnly, setMissingOnly] = useState(false);
+  const [trait, setTrait] = useState("");
+  const live = d.pairing_health.filter((p) => p.active && (!laneFilter || p.lane === laneFilter));
+  const lanes = [...new Set(live.map((p) => p.lane))].sort();
+  const traitCounts = new Map<string, number>();
+  for (const p of live) for (const t of p.tests) traitCounts.set(t, (traitCounts.get(t) ?? 0) + 1);
+  const traits = [...traitCounts.entries()].sort((a, b) => b[1] - a[1]);
+  const maxTrait = Math.max(1, ...traits.map(([, n]) => n));
+  const rows = live
+    .filter((p) => (!missingOnly || p.tests.length === 0) && (!trait || p.tests.includes(trait)))
+    .sort((a, b) => a.lane.localeCompare(b.lane));
+  const missing = live.filter((p) => p.tests.length === 0).length;
+
+  return (
+    <div className="space-y-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+        <Stat label="Live matchups" value={String(live.length)} />
+        <Stat label="With a test" value={String(live.length - missing)} />
+        <Stat label="Missing test" value={String(missing)} tone={missing ? "warn" : undefined} />
+        <Stat
+          label="With a saying"
+          value={String(live.filter((p) => p.user_facing_tradeoff).length)}
+        />
+      </div>
+
+      <section>
+        <p className="eyebrow mb-3">By lane</p>
+        <table className="w-full text-sm">
+          <thead className="text-left text-xs text-muted-foreground">
+            <tr>
+              <th className="py-1">Lane</th>
+              <th>Live</th>
+              <th>Tested</th>
+              <th>Missing</th>
+            </tr>
+          </thead>
+          <tbody>
+            {lanes.map((l) => {
+              const ps = live.filter((p) => p.lane === l);
+              const miss = ps.filter((p) => p.tests.length === 0).length;
+              return (
+                <tr key={l} className="border-t hairline">
+                  <td className="py-1.5 font-mono text-xs">{l}</td>
+                  <td>{ps.length}</td>
+                  <td>{ps.length - miss}</td>
+                  <td className={miss ? "text-destructive" : "text-muted-foreground"}>{miss}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <p className="eyebrow mb-3">How often each trait is tested</p>
+        <div className="space-y-1.5">
+          {traits.map(([t, n]) => (
+            <button
+              key={t}
+              onClick={() => setTrait(trait === t ? "" : t)}
+              className={`flex w-full items-center gap-3 text-left text-xs ${trait === t ? "text-foreground" : "text-muted-foreground"}`}
+            >
+              <span className="w-28 font-mono">{t}</span>
+              <span className="h-2 rounded-sm bg-primary" style={{ width: `${(n / maxTrait) * 60}%` }} />
+              <span>{n}</span>
+            </button>
+          ))}
+        </div>
+      </section>
+
+      <section>
+        <div className="mb-3 flex flex-wrap items-center gap-4">
+          <p className="eyebrow">Matchups, tests and sayings</p>
+          <label className="flex items-center gap-2 text-xs text-muted-foreground">
+            <input
+              type="checkbox"
+              checked={missingOnly}
+              onChange={(e) => setMissingOnly(e.target.checked)}
+            />
+            Missing test only
+          </label>
+          {trait && (
+            <button onClick={() => setTrait("")} className="text-xs text-primary">
+              Clear trait: {trait} ×
+            </button>
+          )}
+          <span className="text-xs text-muted-foreground">{rows.length} shown</span>
+        </div>
+        <div className="divide-y hairline border hairline rounded-sm">
+          {rows.map((p) => (
+            <div key={p.id} className="grid gap-1 p-3 md:grid-cols-[8rem_1fr_1fr] md:gap-4">
+              <span className="font-mono text-xs text-muted-foreground">{p.lane}</span>
+              <div className="text-sm">
+                <p>{p.a_title}</p>
+                <p className="text-muted-foreground">vs {p.b_title}</p>
+              </div>
+              <div className="space-y-1.5">
+                <p className="font-serif italic text-sm">
+                  {p.user_facing_tradeoff || <span className="text-muted-foreground">No saying</span>}
+                </p>
+                <div className="flex flex-wrap gap-1">
+                  {p.tests.length ? (
+                    p.tests.map((t) => (
+                      <span key={t} className="rounded-sm border hairline px-1.5 py-0.5 font-mono text-[10px]">
+                        {t}
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-destructive">No test, picks don't count</span>
+                  )}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
+    </div>
+  );
+}
 
 function CoverageView({ d, laneFilter }: { d: OntologyData; laneFilter: string }) {
   const lanes = laneFilter ? [laneFilter] : d.lanes;
