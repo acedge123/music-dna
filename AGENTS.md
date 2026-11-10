@@ -43,3 +43,5 @@
 - Specialist genres are distinct top-level opener lanes shared by web and REST; exact catalog lanes precede legacy family aliases, so activation does not silently remap historical Alternative songs.
 
 - Post-choice sayings come only from the optional editorial block frozen by the vote trigger, alongside ledger-tested directions; never reread mutable sayings for historical choices or treat editorial metaphors as claim evidence.
+
+- Account UI consumes the root's single hydrated auth context; anonymous sessions remain guests, and shared sign-out cancels queries and clears cache before ending the session and replacing navigation, avoiding misleading sign-in flashes and stale private views.
