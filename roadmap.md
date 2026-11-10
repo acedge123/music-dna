@@ -2,9 +2,10 @@
 
 ## Current — faster replies and complete final reading
 
-- [ ] Inspect measured critic latency; reduce conversational reasoning overhead without changing models, evidence validation or independent review.
-- [ ] Display the entire saved synthesis at interview completion, with supporting audit details secondary.
-- [ ] Run focused regression tests and verify the completed-reading display; report production timing separately.
+- [x] Measured direct OpenAI calls: Sol writer averages 13.0s read / 11.7s reveal / 6.9s chat; Terra review adds 2.4–3.0s, retries add another round. Conversational writers now use low reasoning; final reveal retains medium. Models, schemas, evidence and independent review unchanged.
+- [x] Entire saved synthesis is visible at interview completion; audit details remain secondary and saved content is not rewritten.
+- [x] 59 focused tests, touched-file lint and preview build pass. Fresh guest interview completed; full 302-character synthesis visible on desktop and 390px with no horizontal overflow. Signed-in production speed/quality after this change is unverified.
+- [ ] Measure actual Sol latency and acceptance after updated Vercel deployment; direct OpenAI credentials/settings are unavailable in this sandbox. Preview uses Gemini, so its timings cannot establish a Sol improvement.
 
 ## Current — approved Critic model upgrade
 
