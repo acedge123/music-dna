@@ -1,0 +1,304 @@
+{
+  "schema": "musicdna-first-hop-closeout.v1",
+  "ticket": "AB-50",
+  "decision": "accepted_with_documented_evidence_limits",
+  "owner_instruction": "Alan: ok finish and close please",
+  "scope": "Original bounded staging delivery/withdrawal acceptance; no new activation, model run or application promotion.",
+  "repository_base_sha": "14c0b19364f288be2f7058243b774de10b743fb0",
+  "historical_proof": "ab50-2026-11-07.json",
+  "later_work_references": ["AB-51", "AB-54", "AB-57", "../ab57-activation-receipt.json"],
+  "fresh_database_evidence": {
+    "receiver_scope": [
+      {
+        "status": {
+          "browser_private_table_access": 0,
+          "checked_at": "2026-11-10T17:22:05.649317+00:00",
+          "original_active_grants": 0,
+          "original_due_markers": 0,
+          "original_next_forget_after": "2026-11-16T01:10:06.666+00:00",
+          "original_receipts": 0,
+          "original_scope_expired": true,
+          "original_source_disabled": true,
+          "original_suppression_markers": 4
+        }
+      }
+    ],
+    "source_scope": [
+      {
+        "status": {
+          "checked_at": "2026-11-10T17:22:08.699128+00:00",
+          "staging_capture_enabled": false,
+          "staging_dispatch_enabled": false,
+          "staging_scope_expired": true,
+          "staging_pending_withdrawals": 0,
+          "staging_payloads": 0,
+          "browser_lifecycle_access": 0
+        }
+      }
+    ],
+    "live_database_denials": [
+      {
+        "status": {
+          "checked_at": "2026-11-10T17:24:43.249305+00:00",
+          "mode": "live_database_read_only_authorization",
+          "results": {
+            "cross_tenant_cursor": "denied_42501",
+            "revoked_staging_reviewer": "denied_42501",
+            "ungranted_actor": "denied_42501"
+          }
+        }
+      }
+    ],
+    "receiver_retention": [
+      {
+        "status": {
+          "browser_private_any_access": 0,
+          "checked_at": "2026-11-10T17:27:04.310407+00:00",
+          "original_in_progress_reviews": 0,
+          "original_remaining_drafts": 0,
+          "original_reviews": 2,
+          "rls_private_tables": 4
+        }
+      }
+    ],
+    "identity_availability": [
+      {
+        "metadata": {
+          "current_user": "postgres",
+          "original_linked_incident_jobs": 0,
+          "original_review_jobs": 2,
+          "other_tenant_non_admin_members": 0,
+          "read_function": true,
+          "same_tenant_non_admin_members": 0
+        }
+      }
+    ],
+    "source_final_payloads": [
+      {
+        "status": {
+          "checked_at": "2026-11-10T17:30:52.680666+00:00",
+          "staging_projection_or_envelope": 0,
+          "staging_pending_withdrawals": 0
+        }
+      }
+    ]
+  },
+  "http": {
+    "initial_malformed_probe": {
+      "name": "app-signal-inbound/learning",
+      "status": 400,
+      "interpretation": "Malformed envelope rejected before credential validation; not a credential-isolation result."
+    },
+    "checked_at": "2026-11-10T17:27:58.519Z",
+    "auth_probes": [
+      {
+        "name": "app-signal-inbound",
+        "mode": "no_auth",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "name": "app-signal-inbound/learning",
+        "mode": "no_auth",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "name": "app-signal-inbound/learning/delete",
+        "mode": "no_auth",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "name": "musicdna-learning-read",
+        "mode": "no_auth",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "name": "signal-source-request",
+        "mode": "no_auth",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "name": "signal-source-decide",
+        "mode": "no_auth",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "name": "signal-source-rotate-key",
+        "mode": "no_auth",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "name": "app-signal-inbound/learning",
+        "mode": "valid_shape_disabled_staging_invalid_key",
+        "status": 401,
+        "passed": true
+      },
+      {
+        "name": "musicdna-learning-dispatch",
+        "mode": "invalid_bearer_caller",
+        "status": 401,
+        "passed": true
+      }
+    ],
+    "source_version": {
+      "status": 200,
+      "git_sha": "14c0b19364f288be2f7058243b774de10b743fb0",
+      "persistence_v2": true,
+      "available_keys": ["serving_sha", "persistence_v2"]
+    }
+  },
+  "source_deployed_function": {
+    "provider_id": "407937e9-b504-4838-94a6-bae872069d5e",
+    "version": 3,
+    "updated_at_ms": 1794323692786,
+    "verify_jwt": false,
+    "ezbr_sha256": "2ad47962708317c5ba4ea4fa46caa079199f08676e6b589f4f904edde1234c35",
+    "files": [
+      {
+        "path": "supabase/functions/musicdna-learning-dispatch/index.ts",
+        "deployed_sha256": "1f7dc92bb23f2aa482d60ed0d2c9d5ae8f60fbe702b46a0e74faf26a3068f82d",
+        "repository_sha256": "1f7dc92bb23f2aa482d60ed0d2c9d5ae8f60fbe702b46a0e74faf26a3068f82d",
+        "exact_match": true
+      },
+      {
+        "path": "supabase/functions/_shared/musicdna-dispatch.bundle.mjs",
+        "deployed_sha256": "7e88180fc8a9ff4211a8ea2d8e7a7dda6ead26a48a5b9b4ae0ea8e5447096886",
+        "repository_sha256": "7e88180fc8a9ff4211a8ea2d8e7a7dda6ead26a48a5b9b4ae0ea8e5447096886",
+        "exact_match": true
+      },
+      {
+        "path": "supabase/functions/musicdna-learning-dispatch/deno.json",
+        "deployed_sha256": "f76cb3a4d50feb17e32476f23bc949badbe9d2b3f37ce5898f839c6f2d2f181e",
+        "repository_sha256": "f76cb3a4d50feb17e32476f23bc949badbe9d2b3f37ce5898f839c6f2d2f181e",
+        "exact_match": true
+      }
+    ]
+  },
+  "echelon_live_sql_definition_match": {
+    "native_postgres_version": "17.11",
+    "all_three_exact_match": true,
+    "definitions": [
+      {
+        "proname": "delete_musicdna_learning_subject",
+        "hash": "22e95e22c50aed4090f20cb436d12ed2b92b65e9bb80a0437adcb08d6fdbad6e"
+      },
+      {
+        "proname": "purge_expired_musicdna_learning",
+        "hash": "b2ce78b5adde29eaa9bc15490619ace76eab941966c5cbae9af49927a7593c95"
+      },
+      {
+        "proname": "read_musicdna_learning_window",
+        "hash": "dd9c2639f5da159df9a9f4b436a72d8ec20e47640f07934f91ccaaa1d0892909"
+      }
+    ]
+  },
+  "fresh_native_tests": {
+    "database": "disposable_loopback_postgresql_17_11",
+    "definition_digest_match": 1,
+    "receiver_isolation_lifecycle_ingest": 45,
+    "sender_outbox_dispatch_withdrawal": 81,
+    "total_passed": 127
+  },
+  "private_operator_area_metadata": [
+    {
+      "area": "ab50-private",
+      "available": true,
+      "files": 33,
+      "json_files": 15,
+      "world_or_group_readable_files": 15,
+      "content_read": false,
+      "deleted": false,
+      "directory_mode": "0o700",
+      "directory_blocks_other_users": true
+    },
+    {
+      "area": "ab51-private",
+      "available": true,
+      "files": 23,
+      "json_files": 10,
+      "world_or_group_readable_files": 11,
+      "content_read": false,
+      "deleted": false,
+      "directory_mode": "0o700",
+      "directory_blocks_other_users": true
+    },
+    {
+      "area": "ab54-private",
+      "available": true,
+      "files": 12,
+      "json_files": 4,
+      "world_or_group_readable_files": 2,
+      "content_read": false,
+      "deleted": false,
+      "directory_mode": "0o700",
+      "directory_blocks_other_users": true
+    },
+    {
+      "area": "ab57-private",
+      "available": true,
+      "files": 14,
+      "json_files": 7,
+      "world_or_group_readable_files": 4,
+      "content_read": false,
+      "deleted": false,
+      "directory_mode": "0o700",
+      "directory_blocks_other_users": true
+    }
+  ],
+  "retention": {
+    "staging_payloads": 0,
+    "receiver_receipts": 0,
+    "derived_drafts": 0,
+    "pending_withdrawals": 0,
+    "due_suppression_markers": 0,
+    "retained_suppression_hashes": 4,
+    "forget_after_utc": "2026-11-16T01:10:06.666Z",
+    "forget_after_pacific": "2026-11-15T17:10:06.666-08:00",
+    "old_scope_reopened": false,
+    "receiver_hourly_cleanup_is_source_bound": true,
+    "staging_markers_automatically_covered_by_production_tick": false,
+    "due_date_followup": "AB-53: verify metadata-only marker expiry/cleanup on or after due time. Do not reopen staging or purge early."
+  },
+  "limits": [
+    {
+      "check": "ordinary-member and other-tenant authenticated HTTP sessions",
+      "status": "not_executed",
+      "reason": "No eligible non-admin members or approved disposable sessions exist. No accounts, credentials or roles created. Live SQL denial probes, live browser privilege checks and native role/tenant tests passed; these are distinct evidence levels.",
+      "followup": "AB-53 final release acceptance, if non-admin HTTP proof is required for expansion beyond owner QA."
+    },
+    {
+      "check": "Echelon Edge provider bundle/version/JWT inventory",
+      "status": "unavailable",
+      "reason": "Lovable Cloud does not expose this inventory through available access. Prior submitted deployment receipts plus current no-auth probes are retained; exact live SQL definition hashes were independently matched. Submitted hashes are not provider bundle proof."
+    },
+    {
+      "check": "actual provider backups/PITR/log/drain retention settings and complete external-copy inventory",
+      "status": "unavailable",
+      "reason": "No provider-level backup/log controls exposed. Local directory metadata inventoried without reading contents. Application deletion does not claim physical deletion from backups/logs."
+    },
+    {
+      "check": "source-scoped provider model/Slack counters and exhaustive operational-route regressions",
+      "status": "not_independently_measured",
+      "reason": "Original audit events had zero linked incident jobs/approvals; native routing tests are separate evidence. AB-54 intentionally ran reviews later. Missing provider counters are not claimed zero."
+    }
+  ],
+  "changes_performed": {
+    "production_writes": false,
+    "flags_or_sources_changed": false,
+    "accounts_created": false,
+    "sessions_created": false,
+    "keys_read_or_exported": false,
+    "model_calls": false,
+    "deployments": false,
+    "migrations": false,
+    "clock_changes": false
+  },
+  "scope_reconciliation": "AB-50 closes the first-hop engineering acceptance with its remaining verification-method limits explicit. AB-57 retains real feedback -> saved draft proof; AB-52 retains comparison evidence; AB-30/AB-53 retain approved Music DNA release and final closed-loop acceptance. No claim of product improvement or complete public-release acceptance.",
+  "evidence_window_until_utc": "2026-11-10T17:30:52.680666+00:00"
+}

@@ -1,9 +1,11 @@
 # AB-50 — first-hop acceptance
 
-AB-50 is **In Progress** with a completed bounded delivery/recovery/withdrawal run
-and remaining deployment/access/operational evidence gaps. The current evidence record is
-[the November 7 run](acceptance/ab50-2026-11-07.json). Dates in that record are UTC;
-November 7 is the operator's America/Los_Angeles work date.
+AB-50 is **closed with documented evidence limits** following the owner-requested
+[November 10 closeout](acceptance/ab50-closeout-2026-11-10.md). The original
+[November 7 run](acceptance/ab50-2026-11-07.json) remains the historical delivery/
+recovery/withdrawal record. Current real-QA execution is tracked in AB-57; final
+release acceptance and the dated suppression-marker followup are tracked in AB-53.
+Dates in the historical record are UTC; November 7 is its operator work date.
 
 ## Approved test boundary
 
