@@ -837,3 +837,104 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
       },
     };
   });
+
+// Read-only view of the Critic reaction pool (stored inventory; not served to listeners yet).
+export const adminReactionPool = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const admin = await assertAdminAndGetClient(context.userId);
+    const { CRITIC_EXPRESSION_VERSION, CRITIC_REVIEW_VERSION } = await import(
+      "@/musicdna/adapters/critic-editorial"
+    );
+    const { hypotheticalChoice } = await import("@/musicdna/engine/prepared-read");
+    const { poolEntryStale } = await import("@/musicdna/engine/reaction-pool");
+    const songCols =
+      "id,title,artist,year,lane,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+    const [poolRes, pairingsRes] = await Promise.all([
+      admin
+        .from("critic_reaction_pool" as never)
+        .select("id,pairing_id,chosen_song_id,status,source,text,evidence_fingerprint,created_at")
+        .order("created_at", { ascending: false })
+        .limit(5000),
+      admin
+        .from("pairings")
+        .select(
+          `id,lane,tests,diagnostic_weight,updated_at,user_facing_tradeoff,song_a:songs!pairings_song_a_id_fkey(${songCols}),song_b:songs!pairings_song_b_id_fkey(${songCols})`,
+        )
+        .eq("active", true)
+        .limit(5000),
+    ]);
+    if (poolRes.error) throw new Error(poolRes.error.message);
+    if (pairingsRes.error) throw new Error(pairingsRes.error.message);
+    type Song = Record<string, unknown> & { id: string; title: string; artist: string };
+    const pairings = (pairingsRes.data ?? []) as unknown as Array<{
+      id: string;
+      lane: string;
+      tests: string[] | null;
+      diagnostic_weight: number | null;
+      updated_at: string | null;
+      user_facing_tradeoff: string | null;
+      song_a: Song;
+      song_b: Song;
+    }>;
+    const byId = new Map(pairings.map((p) => [p.id, p]));
+    const rows = (poolRes.data ?? []) as unknown as Array<{
+      id: string;
+      pairing_id: string;
+      chosen_song_id: string;
+      status: string;
+      source: string;
+      text: string;
+      evidence_fingerprint: string;
+      created_at: string;
+    }>;
+    const entries = rows.map((r) => {
+      const p = byId.get(r.pairing_id);
+      const chosen = p ? (p.song_a.id === r.chosen_song_id ? p.song_a : p.song_b) : null;
+      const rejected = p && chosen ? (chosen === p.song_a ? p.song_b : p.song_a) : null;
+      const stale =
+        r.status === "approved" &&
+        (!p ||
+          !chosen ||
+          chosen.id !== r.chosen_song_id ||
+          poolEntryStale(r, {
+            choice: hypotheticalChoice(p, chosen, rejected!),
+            writer: CRITIC_EXPRESSION_VERSION,
+            reviewer: CRITIC_REVIEW_VERSION,
+          }));
+      return {
+        id: r.id,
+        lane: p?.lane ?? "inactive",
+        matchup: p ? `${p.song_a.title} vs ${p.song_b.title}` : "inactive matchup",
+        chosen: chosen ? `${chosen.title} — ${chosen.artist}` : r.chosen_song_id,
+        status: stale ? "stale" : r.status,
+        source: r.source,
+        text: r.text,
+        created_at: r.created_at,
+      };
+    });
+    const servable = entries.filter((e) => e.status === "approved");
+    const covered = new Set(
+      rows.filter((_, i) => entries[i].status === "approved").map((r) => r.pairing_id + r.chosen_song_id),
+    );
+    const picks = pairings.flatMap((p) => [
+      { lane: p.lane, key: p.id + p.song_a.id },
+      { lane: p.lane, key: p.id + p.song_b.id },
+    ]);
+    return {
+      versions: { writer: CRITIC_EXPRESSION_VERSION, reviewer: CRITIC_REVIEW_VERSION },
+      totals: {
+        approved: servable.length,
+        stale: entries.filter((e) => e.status === "stale").length,
+        retired: entries.filter((e) => e.status === "retired").length,
+        song_picks: picks.length,
+        covered_picks: picks.filter((p) => covered.has(p.key)).length,
+      },
+      lanes: [...new Set(pairings.map((p) => p.lane))].sort().map((lane) => ({
+        lane,
+        picks: picks.filter((p) => p.lane === lane).length,
+        covered: picks.filter((p) => p.lane === lane && covered.has(p.key)).length,
+      })),
+      entries: entries.slice(0, 300),
+    };
+  });
