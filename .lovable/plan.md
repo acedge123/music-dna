@@ -1,26 +1,17 @@
-# Make the Critic faster without losing the voice
+# Trace the pick-6 wait before ChatGPT reruns
 
-The voice is landing; speed is the remaining problem. Plan: measure first on the QA session, then apply only the fixes the numbers justify.
+## Where we are
+Background drafts already record when they started and finished, and whether they succeeded. They do NOT record what happened when you tapped: whether the draft was used, didn't match, wasn't ready yet, or got thrown out so the Critic wrote live. That's the missing half of the story, so a rerun today couldn't explain a slow pick 6.
 
-## Step 1 - Measure where the seconds go (no changes)
-For QA session ff7abc43-5ecc-4271-ad1b-81412d8a080e, pull per-turn timings from the owner-QA traces and quality records:
-- Was a pre-written reaction ready when the pick landed (hit / still drafting / miss)?
-- Writer time, reviewer time, number of retries per turn
-- Reveal and chat turn times
-Output: a short table of each turn and the slowest step.
+## What I'll add (small, admin-only)
+1. For every pick that could use a background draft, save one timing record: when the matchup appeared, when each draft started and passed review, when you tapped, and the outcome — used / not ready (waited X seconds) / didn't match / failed / live fallback — plus total wait until the reading showed.
+2. Show these in the existing owner-QA trace in admin, one row per pick.
+3. Nothing changes for listeners: same Sol writer, Terra reviewer, rules, six picks. Records stay private and are never exported.
 
-## Step 2 - Likely fixes, applied only if Step 1 confirms them
-1. Pre-written reactions not ready in time: start drafting the moment the matchup appears (not after the screen settles), and for the next matchup while the current reaction is shown.
-2. Reviewer retries dominate: when the first draft fails review, skip the second full rewrite on post-pick reactions and use the already-approved alternate or a short reviewed fallback.
-3. Reviewer is serial: run the reviewer on a trimmed context (only the cited picks and rules), keeping the same reviewer model.
-4. Reveal: begin writing it in the background as soon as the last pick is saved, so it is usually done before the screen opens.
-5. Chat: keep live Sol, but trim transcript sent to the last few turns plus the saved reading.
+## Then
+- ChatGPT runs one six-pick owner-QA interview and sends the session ID.
+- I read the timeline and tell you exactly where the seconds went before we touch speed again.
 
-## Unchanged
-Sol writer, Terra reviewer, voice rules, evidence rules, frozen readings, routing, learning export, public V1 off.
-
-## Success target
-Post-pick reaction under 4s typical, reveal ready on open, chat under 8s, with reviewer pass rate no lower than today.
-
-## Check
-Re-run one guest six-pick interview in preview with timings, then ask ChatGPT to rerun a signed-in QA interview on the live site.
+## Technical details
+- Add outcome columns to `prepared_reads` (requested_at, consumed_at, outcome, wait_ms, reviewed_at) via migration; service-role only, existing RLS kept.
+- Write outcome in `currentRead`/reveal consume path; test each outcome branch.
