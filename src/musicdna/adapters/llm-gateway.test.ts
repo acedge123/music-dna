@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi, afterEach } from "vitest";
 import { createLovableLlmGateway, callLovableAi, DEFAULT_MODEL } from "./llm-gateway";
 
 function mockFetch(responseBody: unknown, opts: { status?: number } = {}) {
@@ -113,6 +113,32 @@ describe("createLovableLlmGateway", () => {
 });
 
 describe("callLovableAi", () => {
+  afterEach(() => vi.unstubAllEnvs());
+
+  it.each(["writer", "reviewer"] as const)(
+    "uses the Critic %s default rather than the general GPT-4o mini override",
+    async (role) => {
+      vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
+      vi.stubEnv("OPENAI_MODEL", "gpt-4o-mini");
+      vi.stubEnv("OPENAI_CRITIC_WRITER_MODEL", "");
+      vi.stubEnv("OPENAI_CRITIC_REVIEWER_MODEL", "");
+      const { impl, calls } = mockFetch({ choices: [{ message: { content: "{}" } }] });
+      const schema = { type: "object", additionalProperties: false, properties: {}, required: [] };
+      await callLovableAi([{ role: "user", content: "Return JSON" }], {
+        model: DEFAULT_MODEL,
+        role,
+        jsonSchema: { name: "critic_contract", schema },
+        fetchImpl: impl,
+      });
+      const body = JSON.parse(calls[0].init.body as string);
+      expect(body.model).toBe(role === "writer" ? "gpt-4.1" : "gpt-4.1-mini");
+      expect(body.response_format).toEqual({
+        type: "json_schema",
+        json_schema: { name: "critic_contract", strict: true, schema },
+      });
+    },
+  );
+
   it("preserves all system messages and separate user turns", async () => {
     const { impl, calls } = mockFetch({
       choices: [{ message: { content: "ok" } }],

@@ -2,9 +2,9 @@
 
 ## Current — mixed Critic versions in production QA
 
-- [ ] Trace why one production interview recorded v2.2 / GPT-4o mini interim reads but v2.3 / GPT-4.1 reveal/chat; verify fresh deployed calls before changing model settings.
-- [ ] Add stage/model contract regression coverage and keep zero-eligible-axis observations bounded; preserve saved results and learning/routing flags.
-- [ ] Check fresh zero-choice header isolation and report deployment/acceptance limits.
+- [x] Confirmed mixed versions in reported QA session; live SHA 792cb774c9fa97e48dfd17544e687eab55e0f8f9 already has one shared v2.3 generator. Fresh production vote in session 4afc2bf0-efd4-4fa1-ad5e-7418c94b2d3a read back accepted v2.3 / GPT-4.1 writer / GPT-4.1-mini reviewer. Exact cause of the older calls remains unproven; stale loaded clients/deployments are a hypothesis, not a confirmed diagnosis.
+- [ ] Run interim-stage/model/schema regression coverage, including zero eligible claims; preserve saved results and learning/routing flags.
+- [x] Stop restoring mutable account-profile opener prose into a resumed zero-choice interview. Fresh production entry and vote verified; registered-owner QA acceptance still requires the owner's live retest after reload.
 
 ## Current — signed-in opening and conversation hangs
 

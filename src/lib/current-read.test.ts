@@ -5,9 +5,10 @@ const state = vi.hoisted(() => ({
   events: [] as { props: Record<string, unknown> }[],
   failWrite: false,
 }));
+const generate = vi.hoisted(() => vi.fn());
 vi.mock("@/musicdna/adapters/llm-gateway", () => ({
   DEFAULT_MODEL: "test-model",
-  callLovableAi: vi.fn().mockRejectedValue(new Error("test generation unavailable")),
+  callLovableAi: generate,
 }));
 vi.mock("@/integrations/supabase/client.server", () => ({
   supabaseAdmin: {
@@ -73,6 +74,32 @@ describe("current read service boundary", () => {
   beforeEach(() => {
     state.events = [];
     state.failWrite = false;
+    generate.mockReset().mockRejectedValue(new Error("test generation unavailable"));
+  });
+  it("routes interim observations through the v2.3 writer and reviewer with zero eligible claims", async () => {
+    generate
+      .mockResolvedValueOnce(JSON.stringify({
+        headline: "A0 beat B0 in this matchup.",
+        body: "One choice leaves the larger pattern open.",
+        choice_ids: ["0"],
+        claims: [],
+      }))
+      .mockResolvedValueOnce(JSON.stringify({
+        grounded: true, ceiling_preserved: true, exceptions_preserved: true,
+        self_report_separate: true, no_invented_facts: true,
+        no_future_test_disclosure: true, responsive: true, failed: [],
+      }));
+    const result = await currentReadImpl(client([40]) as never, "user", { sessionId: "s" });
+    expect(result.voice_version).toBe("critic-expression-v2.3");
+    expect(result.narration_status).toBe("ok");
+    expect(generate).toHaveBeenCalledTimes(2);
+    const writer = generate.mock.calls[0][1];
+    const reviewer = generate.mock.calls[1][1];
+    expect(writer.role).toBe("writer");
+    expect(writer.jsonSchema.schema.properties.claims.maxItems).toBe(0);
+    expect(writer.jsonSchema.schema.properties.choice_ids.items.enum).toEqual(["0"]);
+    expect(reviewer.role).toBe("reviewer");
+    expect(reviewer.jsonSchema.name).toBe("critic_review");
   });
   it("stores and replays the complete qualified read verbatim", async () => {
     const api = client([40, 40, 40, -40]);
