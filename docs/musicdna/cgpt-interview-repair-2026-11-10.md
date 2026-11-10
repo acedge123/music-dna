@@ -17,7 +17,7 @@ The reported Electronic interview `a9ede1aa-632d-467a-92a8-2f4107b1b0c5` contain
 
 - Fresh preview Electronic interview: three openers, six votes, six snapshots with declared tests, authored running reads, saved version 1, a non-echo authored chat answer, version 2, exact transcript restored on reload, Back URL bound to the original interview, then Home Start returned to a fresh first-song screen. Desktop and 390px mobile inspected; no horizontal overflow or browser runtime errors.
 - Snapshot readback confirms the reported older interview has four tested votes out of six, versus six of six in fresh acceptance session `660bd9b1-f22d-499d-ae80-9378a0037775`.
-- Focused evidence, expression, replay, quality, and conversation regressions executed. The current-read test double was corrected to distinguish diagnostic inserts from engine events; it previously counted both as read events.
+- All 75 focused evidence, expression, replay, quality, and conversation regressions pass; changed-file lint and preview build pass. The current-read test double was corrected to distinguish diagnostic inserts from engine events; it previously counted both as read events.
 - QA tag/creation migrations applied; two introduced access warnings were corrected. 44 pre-existing security notices remain separate. The QA creation function is service-role-only and also checks the specified owner's admin role; the server verifies registered admin identity before loading the privileged client.
 
 ## Remaining acceptance
