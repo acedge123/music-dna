@@ -146,9 +146,7 @@ export async function callLovableAi(
     : resolveProvider();
   if (!provider) throw new Error("LOVABLE_API_KEY missing (and no OPENAI_API_KEY)");
   const roleDefault =
-    provider.url === OPENAI_URL && opts.role
-      ? criticOpenAiModel(opts.role)
-      : undefined;
+    provider.url === OPENAI_URL && opts.role ? criticOpenAiModel(opts.role) : undefined;
   const selectedModel = resolveModel(provider, opts.model, roleDefault ?? opts.defaultModel);
   // These text-only models support Chat Completions and strict JSON schemas.
   // Do not send unsupported sampling parameters or silently retry another model.
@@ -169,7 +167,11 @@ export async function callLovableAi(
         ? {
             response_format: {
               type: "json_schema",
-              json_schema: { name: opts.jsonSchema.name, strict: true, schema: opts.jsonSchema.schema },
+              json_schema: {
+                name: opts.jsonSchema.name,
+                strict: true,
+                schema: opts.jsonSchema.schema,
+              },
             },
           }
         : {}),
