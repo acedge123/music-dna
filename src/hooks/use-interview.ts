@@ -12,6 +12,7 @@ import {
   finalizeSession,
   finalSynthesis,
   currentRead,
+  prepareReads,
   reactToRead as reactToReadFn,
 } from "@/lib/musicdna.functions";
 import { setShared } from "@/lib/share-publish.functions";
@@ -40,6 +41,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   const finalizeFn = useServerFn(finalizeSession);
   const synthFn = useServerFn(finalSynthesis);
   const readFn = useServerFn(currentRead);
+  const prepareFn = useServerFn(prepareReads);
 
   type EventInput = {
     event_type:
@@ -251,6 +253,16 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [requestedSession, fresh]);
+
+  // While the listener decides, the Critic drafts (and reviews) its reaction to
+  // either pick so the chosen one is ready on tap. Best-effort: failures just
+  // mean the normal path writes the reaction after the pick.
+  const pairingId = pairing?.id ?? null;
+  useEffect(() => {
+    if (!sessionId || !pairingId || phase !== "playing") return;
+    prepareFn({ data: { sessionId, pairingId } }).catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sessionId, pairingId, phase]);
 
   // reveal-final choreography (after slot 3)
   useEffect(() => {
