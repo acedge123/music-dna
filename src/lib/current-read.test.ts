@@ -78,17 +78,26 @@ describe("current read service boundary", () => {
   });
   it("routes interim observations through the v2.3 writer and reviewer with zero eligible claims", async () => {
     generate
-      .mockResolvedValueOnce(JSON.stringify({
-        headline: "A0 beat B0 in this matchup.",
-        body: "One choice leaves the larger pattern open.",
-        choice_ids: ["0"],
-        claims: [],
-      }))
-      .mockResolvedValueOnce(JSON.stringify({
-        grounded: true, ceiling_preserved: true, exceptions_preserved: true,
-        self_report_separate: true, no_invented_facts: true,
-        no_future_test_disclosure: true, responsive: true, failed: [],
-      }));
+      .mockResolvedValueOnce(
+        JSON.stringify({
+          headline: "A0 beat B0 in this matchup.",
+          body: "One choice leaves the larger pattern open.",
+          choice_ids: ["0"],
+          claims: [],
+        }),
+      )
+      .mockResolvedValueOnce(
+        JSON.stringify({
+          grounded: true,
+          ceiling_preserved: true,
+          exceptions_preserved: true,
+          self_report_separate: true,
+          no_invented_facts: true,
+          no_future_test_disclosure: true,
+          responsive: true,
+          failed: [],
+        }),
+      );
     const result = await currentReadImpl(client([40]) as never, "user", { sessionId: "s" });
     expect(result.voice_version).toBe("critic-expression-v2.3");
     expect(result.narration_status).toBe("ok");
