@@ -204,9 +204,11 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
   const [search, setSearch] = useState("");
   const [lane, setLane] = useState("");
   const [status, setStatus] = useState<"all" | "active" | "inactive">("all");
+  const [page, setPage] = useState(0);
+  useEffect(() => setPage(0), [search, lane, status, entity]);
 
   const query = useQuery({
-    queryKey: ["admin", entity, search, lane, status],
+    queryKey: ["admin", entity, search, lane, status, page],
     queryFn: () =>
       list({
         data: {
@@ -214,6 +216,7 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
           search: search || undefined,
           lane: lane || undefined,
           status: entity === "archetypes" ? undefined : status,
+          page,
         },
       }),
   });
@@ -267,8 +270,40 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
             <option value="inactive">Inactive only</option>
           </select>
         )}
-        <span className="text-xs text-muted-foreground ml-auto">
-          {query.data?.rows.length ?? 0} rows{query.isFetching ? " · loading…" : ""}
+        <span className="text-xs text-muted-foreground ml-auto flex items-center gap-2">
+          {(() => {
+            const total = query.data?.total ?? 0;
+            const size = query.data?.pageSize ?? 200;
+            const pages = Math.max(1, Math.ceil(total / size));
+            const from = total === 0 ? 0 : page * size + 1;
+            const to = Math.min(total, (page + 1) * size);
+            return (
+              <>
+                {from}–{to} of {total} rows{query.isFetching ? " · loading…" : ""}
+                {pages > 1 && (
+                  <>
+                    <button
+                      className="border hairline rounded-sm px-2 py-0.5 disabled:opacity-40"
+                      disabled={page === 0}
+                      onClick={() => setPage((p) => p - 1)}
+                    >
+                      Prev
+                    </button>
+                    <span>
+                      Page {page + 1} / {pages}
+                    </span>
+                    <button
+                      className="border hairline rounded-sm px-2 py-0.5 disabled:opacity-40"
+                      disabled={page + 1 >= pages}
+                      onClick={() => setPage((p) => p + 1)}
+                    >
+                      Next
+                    </button>
+                  </>
+                )}
+              </>
+            );
+          })()}
         </span>
       </div>
 

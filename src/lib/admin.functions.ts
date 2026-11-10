@@ -38,6 +38,8 @@ export const adminCheck = createServerFn({ method: "GET" })
     return { isAdmin: true, userId: context.userId };
   });
 
+const ADMIN_PAGE_SIZE = 200;
+
 export const adminList = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
@@ -47,6 +49,7 @@ export const adminList = createServerFn({ method: "POST" })
         search: z.string().max(120).optional(),
         lane: z.string().max(40).optional(),
         status: z.enum(["all", "active", "inactive"]).optional(),
+        page: z.number().int().min(0).max(1000).optional(),
       })
       .parse(d),
   )
@@ -60,7 +63,9 @@ export const adminList = createServerFn({ method: "POST" })
     // the base table via adminUpsert/adminDelete/adminSetDiagnosticWeight.
     const readSource = table === "pairings" ? "pairings_with_songs" : table;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let q: any = (admin as any).from(readSource).select("*").limit(500);
+    let q: any = (admin as any).from(readSource).select("*", { count: "exact" });
+    const pageSize = ADMIN_PAGE_SIZE;
+    const page = data.page ?? 0;
     if (table !== "archetypes" && data.status && data.status !== "all") {
       q = q.eq("active", data.status === "active");
     }
@@ -72,7 +77,12 @@ export const adminList = createServerFn({ method: "POST" })
         const s = data.search.replace(/[%_,()."*\\]/g, "").trim();
         if (s) q = q.or(`title.ilike.%${s}%,artist.ilike.%${s}%`);
       }
-      if (data.lane) q = q.eq("primary_lane", data.lane);
+      // Older catalog rows keep primary_lane = 'general' with the real lane in
+      // `lane`, so match either column.
+      if (data.lane) {
+        const l = data.lane.replace(/[^a-z_-]/gi, "");
+        if (l) q = q.or(`lane.eq.${l},primary_lane.eq.${l}`);
+      }
     } else if (table === "pairings") {
       q = q.order("diagnostic_weight", { ascending: false });
       if (data.lane) q = q.eq("lane", data.lane);
@@ -80,7 +90,8 @@ export const adminList = createServerFn({ method: "POST" })
       q = q.order("name", { ascending: true });
     }
 
-    const { data: rows, error } = await q;
+    q = q.order("id", { ascending: true }).range(page * pageSize, page * pageSize + pageSize - 1);
+    const { data: rows, error, count } = await q;
     if (error) throw new Error(error.message);
     let out = (rows ?? []) as JsonRow[];
 
@@ -106,7 +117,7 @@ export const adminList = createServerFn({ method: "POST" })
       });
     }
 
-    return { rows: out };
+    return { rows: out, total: (count as number | null) ?? out.length, page, pageSize };
   });
 
 // Per-table input shape — accept arbitrary JSON, validate critical fields server-side.
