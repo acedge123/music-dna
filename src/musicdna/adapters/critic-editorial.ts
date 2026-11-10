@@ -230,7 +230,12 @@ export function compactCriticFacts(ledger: Ledger, labels: AxisLabels) {
   };
 }
 
-export type CriticExperiment = { compactFacts?: boolean; objective?: string };
+export type CriticExperiment = {
+  compactFacts?: boolean;
+  objective?: string;
+  /** Extra reviewer rule text, appended before FACTS. */
+  reviewRules?: string;
+};
 
 export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLabels) {
   const parsed = Beat.safeParse(raw);
@@ -403,7 +408,7 @@ post_choice_saying is optional figurative editorial copy, not evidence of a tend
 Song titles and axis labels do NOT establish details of lyrics, instrumentation, production, scenes, or music history.
 Such factual details not supplied in FACTS MUST fail no_invented_facts. Never validate using your own musical knowledge.
 Allow clearly figurative language that paraphrases a supplied chosen_pole; do not mistake "small room" for a claim about actual recording location.
-FACTS: ${JSON.stringify(facts)}
+${options.experiment?.reviewRules ? `${options.experiment.reviewRules}\n` : ""}FACTS: ${JSON.stringify(facts)}
 CONTEXT: ${JSON.stringify(context)}
 CANDIDATE: ${JSON.stringify(beat)}`;
   const attempts: Array<{ reason: string; failed?: unknown; repaired_json?: boolean }> = [];
