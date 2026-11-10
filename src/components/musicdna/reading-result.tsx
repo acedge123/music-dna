@@ -41,25 +41,26 @@ export function ReadingResult({
           </p>
         )}
       </header>
-      {!showFullSynthesis && (examples.length > 0 ? (
-        <section className="space-y-3" aria-label="Supporting choices">
-          <p className="eyebrow">The choices behind it</p>
-          <ul className="space-y-3">
-            {examples.map((example) => (
-              <li
-                key={example}
-                className="border-l-2 border-primary pl-4 font-serif text-xl leading-snug"
-              >
-                {example}
-              </li>
-            ))}
-          </ul>
-        </section>
-      ) : showInsufficientHint ? (
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          These choices don't yet support a clear tendency. The reading can stay open.
-        </p>
-      ) : null)}
+      {!showFullSynthesis &&
+        (examples.length > 0 ? (
+          <section className="space-y-3" aria-label="Supporting choices">
+            <p className="eyebrow">The choices behind it</p>
+            <ul className="space-y-3">
+              {examples.map((example) => (
+                <li
+                  key={example}
+                  className="border-l-2 border-primary pl-4 font-serif text-xl leading-snug"
+                >
+                  {example}
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : showInsufficientHint ? (
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            These choices don't yet support a clear tendency. The reading can stay open.
+          </p>
+        ) : null)}
       {!showFullSynthesis && tension && (
         <section className="space-y-2" aria-label="Unresolved evidence">
           <p className="eyebrow">Still unresolved</p>
@@ -79,7 +80,9 @@ export function ReadingResult({
       {showFullSynthesis && (
         <section className="space-y-3" aria-label="The challenge">
           <h3 className="eyebrow">The challenge</h3>
-          <p className="font-serif text-2xl leading-relaxed">{content.reveal?.challenge || "What did I miss about what pulls you into a song?"}</p>
+          <p className="font-serif text-2xl leading-relaxed">
+            {content.reveal?.challenge || "What did I miss about what pulls you into a song?"}
+          </p>
         </section>
       )}
       {children}
@@ -88,7 +91,12 @@ export function ReadingResult({
           {showFullSynthesis ? "The receipts" : "See the full reading"}
         </summary>
         <div className="space-y-5 pt-3 text-sm leading-relaxed">
-          {showFullSynthesis && content.reveal && <p>{content.reveal.answered} answered pairings. Skips are not evidence; each trait counts only its declared tests.</p>}
+          {showFullSynthesis && content.reveal && (
+            <p>
+              {content.reveal.answered} answered pairings. Skips are not evidence; each trait counts
+              only its declared tests.
+            </p>
+          )}
           {!showFullSynthesis && (
             <p className="whitespace-pre-wrap font-serif text-lg">
               {content.synthesis || "No supported interpretation has been saved yet."}

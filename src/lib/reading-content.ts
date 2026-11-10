@@ -19,7 +19,13 @@ const ContentSchema = z.object({
   voice_version: z.string().optional(),
   audit_text: z.string().optional(),
   synthesis: z.string(),
-  reveal: z.object({ answered: z.number().int().nonnegative(), twist: z.string().nullable(), challenge: z.string() }).optional(),
+  reveal: z
+    .object({
+      answered: z.number().int().nonnegative(),
+      twist: z.string().nullable(),
+      challenge: z.string(),
+    })
+    .optional(),
   kept_choosing: z.array(
     z.object({
       tradeoff: z.string(),

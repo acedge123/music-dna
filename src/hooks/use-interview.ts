@@ -100,7 +100,11 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   );
   const [entries, setEntries] = useState<Entry[]>([]);
   const [dismissedMilestones, setDismissedMilestones] = useState<number[]>([]);
-  const [reveal, setReveal] = useState<{ answered: number; twist: string | null; challenge: string }>();
+  const [reveal, setReveal] = useState<{
+    answered: number;
+    twist: string | null;
+    challenge: string;
+  }>();
   const [synthesis, setSynthesis] = useState<string | null>(null);
   const [auditText, setAuditText] = useState<string | undefined>();
   const [kept, setKept] = useState<
@@ -589,8 +593,14 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     }
   }
 
-  const milestone = phase === "playing" && pairing && [3, 4].includes(entries.length) &&
-    !dismissedMilestones.includes(entries.length) && !busy ? entries.length : null;
+  const milestone =
+    phase === "playing" &&
+    pairing &&
+    [3, 4].includes(entries.length) &&
+    !dismissedMilestones.includes(entries.length) &&
+    !busy
+      ? entries.length
+      : null;
   function continueInterview() {
     setDismissedMilestones((prev) => [...prev, entries.length]);
     startedAt.current = Date.now();

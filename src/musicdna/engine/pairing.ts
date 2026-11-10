@@ -170,7 +170,13 @@ export function shouldStop(input: {
 //      (they don't know the catalog; give an honest short result instead of
 //       hunting for confidence forever)
 // ---------------------------------------------------------------------------
-export type StopReason = "confident" | "budget" | "listener_requested" | "skip_bound" | "catalog_exhausted" | null;
+export type StopReason =
+  | "confident"
+  | "budget"
+  | "listener_requested"
+  | "skip_bound"
+  | "catalog_exhausted"
+  | null;
 
 export function sessionCompletion(input: {
   answered: number;

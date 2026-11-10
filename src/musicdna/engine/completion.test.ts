@@ -25,16 +25,30 @@ describe("sessionCompletion", () => {
   });
 
   it("does not allow requested completion before four answered pairings", () => {
-    expect(sessionCompletion({ answered: 3, requested_finish: true, vector: vec(0), dims: DIMS }).done).toBe(false);
+    expect(
+      sessionCompletion({ answered: 3, requested_finish: true, vector: vec(0), dims: DIMS }).done,
+    ).toBe(false);
   });
   it.each([4, 5])("allows listener completion at %i answered pairings", (answered) => {
-    expect(sessionCompletion({ answered, requested_finish: true, vector: vec(0), dims: DIMS }).reason).toBe("listener_requested");
+    expect(
+      sessionCompletion({ answered, requested_finish: true, vector: vec(0), dims: DIMS }).reason,
+    ).toBe("listener_requested");
   });
   it("six remains the hard cap even for an explicit exit", () => {
-    expect(sessionCompletion({ answered: 6, requested_finish: true, vector: vec(0), dims: DIMS }).reason).toBe("budget");
+    expect(
+      sessionCompletion({ answered: 6, requested_finish: true, vector: vec(0), dims: DIMS }).reason,
+    ).toBe("budget");
   });
   it("skip endings keep their reason when a listener also requests completion", () => {
-    expect(sessionCompletion({ answered: 4, consecutive_skips: 3, requested_finish: true, vector: vec(0), dims: DIMS }).reason).toBe("skip_bound");
+    expect(
+      sessionCompletion({
+        answered: 4,
+        consecutive_skips: 3,
+        requested_finish: true,
+        vector: vec(0),
+        dims: DIMS,
+      }).reason,
+    ).toBe("skip_bound");
   });
 
   it("does not stop early on a weak vector", () => {

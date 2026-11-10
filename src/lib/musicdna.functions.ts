@@ -1962,7 +1962,9 @@ Mode: bounded authored music criticism. Follow the versioned author/review contr
 
 export const finalizeSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid(), finishEarly: z.boolean().optional() }).parse(d))
+  .inputValidator((d: unknown) =>
+    z.object({ sessionId: z.string().uuid(), finishEarly: z.boolean().optional() }).parse(d),
+  )
   .handler(async ({ data, context }) =>
     finalizeSessionImpl(context.supabase, context.userId, data),
   );
@@ -2024,9 +2026,16 @@ export async function finalizeSessionImpl(
 
   // -------- Layer 2: Patterns (per axis) — from the shared evidence ledger --------
   const ledger = evidence.ledger;
-  if (data.finishEarly && !sessionCompletion({
-    answered: ledger.answered, vector: {}, dims: [], requested_finish: true,
-  }).done) throw new Error("An initial reading needs four answered choices.");
+  if (
+    data.finishEarly &&
+    !sessionCompletion({
+      answered: ledger.answered,
+      vector: {},
+      dims: [],
+      requested_finish: true,
+    }).done
+  )
+    throw new Error("An initial reading needs four answered choices.");
   const patterns = ledger.axes.map((a) => {
     const label = DIM_LABEL[a.axis];
     const preferred = a.direction === "hi" ? label?.hi : label?.lo;
