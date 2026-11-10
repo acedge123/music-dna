@@ -61,7 +61,11 @@ export function ReadingFeedback({
     try {
       const r = await transport.read(sessionId, resultVersion);
       if (g !== generation.current) return;
-      if (r.sessionId !== sessionId || r.resultVersion !== resultVersion)
+      if (
+        r.sessionId !== sessionId ||
+        r.resultVersion !== resultVersion ||
+        (r.feedback && r.feedback.resultVersion !== resultVersion)
+      )
         throw Error("Couldn't check this reading's rating.");
       setSelection(r.feedback?.accuracy ?? null);
       setStatus(r.feedback ? "saved" : "ready");
