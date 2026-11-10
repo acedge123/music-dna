@@ -21,6 +21,11 @@ export function revealDraftKey(answered: number) {
   return -answered;
 }
 
+/** Final-synthesis drafts (the full reading) get their own slot, apart from the reveal narrative. */
+export function synthDraftKey(answered: number) {
+  return -1000 - answered;
+}
+
 /** Exact identity of everything the critic sees for the final reveal. */
 export function revealFingerprint(ledger: Ledger) {
   return JSON.stringify({ reveal: ledger }, (k, v) => (VOLATILE.has(k) ? undefined : v));
