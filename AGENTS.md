@@ -2,7 +2,7 @@
 
 - Album artwork is optional release-specific catalog decoration shared by web and Flutter through `withPairingArtwork`; caller-scoped reads and documented rights/release verification gate display, and artwork never changes frozen evidence or routing.
 
-- Web song choices render approved artwork through `SongCover`, using a bundled branded fallback for null or failed images; hosted cover URLs are absolute for external clients so Vercel and Flutter do not depend on local asset paths.
+- Web song choices use `SongCover` with a branded fallback; hosted cover URLs are absolute for external clients.
 
 - The critic-first web stage keeps the active pairing and latest read primary; history and audit text stay secondary. Presentation may omit numeric parentheticals but never strengthen, fabricate or rewrite saved claims; full frozen content remains available.
 
@@ -51,4 +51,4 @@
 - AB-57 hourly learning runs in a separate Railway operator service, with a source-bound automated queue endpoint and durable metadata receipts. Railway holds only narrow caller keys; backend/ingest credentials stay inside Supabase Edge Functions and outside EdgeBot/model context; preserve source/reviewer/consent gates, global $5/day reservations, no ambiguous inference retries and draft-only output. Queue/dispatch success is never completed model work. See docs/musicdna/ab57-automation.md.
 
 - Completed-reading accuracy controls use the existing authenticated feedback write plus owner/version-scoped readback; show Saved only after matching the durable operation. Keep ratings optional, below the completed read, absent during song choices and on public shares, and reuse the per-reading/version operation key across retries/reloads.
-- Post-pick reads for both songs are pre-drafted server-only; `currentRead` reuses one only on exact `readFingerprint` match, so speed never bypasses frozen evidence or review.
+- Both post-pick reads are pre-drafted server-side; `currentRead` reuses one only on exact `readFingerprint` match.
