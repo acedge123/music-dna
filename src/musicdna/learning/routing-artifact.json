@@ -1,6 +1,6 @@
 {
   "policy_id": "musicdna-selector",
-  "version": "sha256:65ccbf22d72d5c41b77f642cc64d0cf7ae715704a34f940b9407eb7b30d5e5ea",
+  "version": "sha256:0de4f8615e0f6f18454be9b443219e19564a73088dee27c34759152bb6b2eee3",
   "files": [
     "src/lib/musicdna.functions.ts",
     "src/musicdna/engine/archetypes.ts",
@@ -24,6 +24,7 @@
     "src/musicdna/engine/prompts.ts",
     "src/musicdna/engine/read.ts",
     "src/musicdna/engine/reading-support.ts",
+    "src/musicdna/engine/reveal-beats.ts",
     "src/musicdna/engine/reveal.ts",
     "src/musicdna/engine/scoring.ts",
     "src/musicdna/engine/session.ts",

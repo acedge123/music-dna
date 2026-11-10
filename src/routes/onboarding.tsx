@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
 import { z } from "zod";
 import { useInterview } from "@/hooks/use-interview";
+import { ReadingFeedback } from "@/components/musicdna/reading-feedback";
 import { ReadingResult } from "@/components/musicdna/reading-result";
 import { InterviewHistory } from "@/components/musicdna/interview-history";
 import { OpeningSongInput as RankedInput } from "@/components/musicdna/opening-song-input";
@@ -419,58 +420,67 @@ function Onboarding() {
                 </Button>
               </div>
             ) : (
-              <ReadingResult
-                showFullSynthesis
-                content={{
-                  synthesis: synthesis ?? "",
-                  audit_text: auditText,
-                  kept_choosing: kept,
-                  counter_reads: counters,
-                  result_version: resultVersion,
-                  reveal,
-                }}
-              >
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Button
-                    type="button"
-                    disabled={resultVersion == null}
-                    onClick={() =>
-                      navigate({
-                        to: "/me",
-                        search: {
-                          session: sessionId ?? undefined,
-                          version: resultVersion ?? undefined,
-                        },
-                      })
-                    }
-                    className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
-                  >
-                    <MessageCircle /> Argue with me
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={() =>
-                      void navigate({ to: "/onboarding", search: { fresh: crypto.randomUUID() } })
-                    }
-                    className="min-h-11 rounded-sm px-5 py-3"
-                  >
-                    <ArrowRight /> Start new interview
-                  </Button>
-                  <Button
-                    type="button"
-                    variant="outline"
-                    disabled={shareBusy || resultVersion == null}
-                    onClick={() => void shareRead()}
-                    className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm disabled:opacity-50"
-                  >
-                    <Share2 /> {shareBusy ? "Preparing share…" : "Share this read"}
-                  </Button>
-                </div>
-                <p className="text-xs leading-relaxed text-muted-foreground">
-                  Sharing publishes this reading only. Your conversation stays private.
-                </p>
-              </ReadingResult>
+              <>
+                <ReadingResult
+                  showFullSynthesis
+                  content={{
+                    synthesis: synthesis ?? "",
+                    audit_text: auditText,
+                    kept_choosing: kept,
+                    counter_reads: counters,
+                    result_version: resultVersion,
+                    reveal,
+                  }}
+                >
+                  <div className="flex flex-col gap-3 sm:flex-row">
+                    <Button
+                      type="button"
+                      disabled={resultVersion == null}
+                      onClick={() =>
+                        navigate({
+                          to: "/me",
+                          search: {
+                            session: sessionId ?? undefined,
+                            version: resultVersion ?? undefined,
+                          },
+                        })
+                      }
+                      className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
+                    >
+                      <MessageCircle /> Argue with me
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() =>
+                        void navigate({ to: "/onboarding", search: { fresh: crypto.randomUUID() } })
+                      }
+                      className="min-h-11 rounded-sm px-5 py-3"
+                    >
+                      <ArrowRight /> Start new interview
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="outline"
+                      disabled={shareBusy || resultVersion == null}
+                      onClick={() => void shareRead()}
+                      className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm disabled:opacity-50"
+                    >
+                      <Share2 /> {shareBusy ? "Preparing share…" : "Share this read"}
+                    </Button>
+                  </div>
+                  <p className="text-xs leading-relaxed text-muted-foreground">
+                    Sharing publishes this reading only. Your conversation stays private.
+                  </p>
+                </ReadingResult>
+                {sessionId && resultVersion != null && (
+                  <ReadingFeedback
+                    key={`${sessionId}:${resultVersion}`}
+                    sessionId={sessionId}
+                    resultVersion={resultVersion}
+                  />
+                )}
+              </>
             )}
           </section>
         )}
