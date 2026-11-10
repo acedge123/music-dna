@@ -2,8 +2,8 @@
 
 ## Current — sign-in flash and sign-out
 
-- [ ] Share hydrated session state across account controls; hide the sign-in form until the session check completes; expose sign-out on home/interview and clear protected state before leaving.
-- [ ] Verify signed-in home → interview → sign-out and signed-in /auth redirect; production requires Vercel deployment.
+- [x] Shared root session state and account/sign-out controls on home/interview/protected pages; sign-in waits for hydration and anonymous guests no longer get bounced out. Lint/build pass; guest interview → sign-in remains stable, mobile fits, no runtime errors.
+- [ ] Registered sign-in → sign-out end-to-end and live rollout: external-managed authentication prevents restoring a registered test session; Vercel deployment and live signed-in verification remain required.
 
 ## Current — post-choice pairing sayings
 
