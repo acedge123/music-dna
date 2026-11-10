@@ -1,33 +1,43 @@
-# Advice: fixing the three remaining interview gaps (no code yet)
+# Two-phase QA for the Critic: find the cause before changing any prompts
 
-Your production retest left three problems: chat answers that don't stay tied to the listener's actual picks, critic writing that repeats itself, and an earlier reading that may carry over into a fresh QA interview. None of these causes has been confirmed yet, so each fix below starts by finding the cause.
+## Why
+In the latest test, the saved reading correctly found a 4-for-4 tendency, but chat couldn't explain it. One of three things happened:
+1. The Critic never got the full evidence.
+2. The Critic wrote an answer, but the quality check threw it out.
+3. The AI call failed, and the backup reply was shown instead.
 
-## 1. Chat answers drift away from the listener's picks
-- Start by tracing a few weak chat replies. For each one, check what evidence the critic actually received. Did it get the frozen picks, the tested traits and the sayings, or just a short summary?
-- Likely fix: send each chat turn a short list of the specific picks it can cite (song A vs. song B, the trait tested, which way the listener went). Then require every claim in the reply to name at least one of those picks.
-- Tighten the quality check so a reply that cites no pick, or cites a pick from another interview, gets rejected and replaced with an honest fallback.
-- Keep the rule that chat never rewrites saved evidence. Better grounding means better citing, not new conclusions.
+Phase 1 tells us which one happened. Phase 2 fixes only what the evidence points to.
 
-## 2. Repetitive writing
-- Measure the problem first. Use the existing Critic QA records to count repeated openings, repeated phrases and repeated sentence shapes across the reads in a session.
-- Fixes, from cheapest to most involved:
-  - Give the writer the last 2–3 lines it already said, with an instruction not to reuse their openings or key phrases.
-  - Rotate a small set of approaches per stage (contrast, provocation, callback, a question back to the listener) so consecutive reads take different angles.
-  - Lean on the pairing sayings after a pick, so the voice comes from your catalog writing and not from model filler.
-  - Add an automatic "too similar to the last line" check that asks for one rewrite before falling back.
-- Score originality separately from accuracy in the four-score human review, so a fun line doesn't hide a wrong one.
+## Phase 1: Five diagnostic runs (signed-in, fresh interviews)
+Turn on a private QA "decision trace" for owner-QA sessions only. For every read and chat turn, it records:
 
-## 3. An earlier reading may carry over into a fresh QA interview
-- Reproduce it on purpose. Sign in as an account that already has a finished reading, start a new QA interview, and check whether anything from the old session shows up: the first read, the chat, the profile wording or a cached screen.
-- Then check the three places old data can leak in:
-  - Browser cache: data the browser kept from the old session.
-  - The critic's input: any "previous reading" or account-history material passed to the critic.
-  - Profile labels: anything built from the account instead of the current session.
-- Fix rule: a new interview sees only its own picks. Use history across interviews only when the listener chose to continue, and say so on screen.
+| Captured | Purpose |
+|---|---|
+| Session ID + interview ID | Detect one session leaking into another |
+| The six picks + their declared tests | Verify the evidence reaches the Critic |
+| Pairing sayings available | Verify the writing material is there |
+| Prompt version + model | Identify which writing path ran |
+| Raw model reply | Tell weak writing apart from system failures |
+| Quality-check result + fallback reason | Explain why good answers get thrown out |
+| Previous 3 Critic replies | Diagnose repetition |
+| Outside-measurement (Echelon/Agent Brain) event status | Confirm downstream measurement |
 
-## Suggested order
-1. Carryover (it's a correctness and trust issue).
-2. Grounding (accuracy).
-3. Repetition (polish, and easier to measure once the first two are clean).
+Run 1 of the 5 repeats the 4-for-4 scenario and then asks chat to explain it. An admin "Decision trace" view shows each run step by step, labeled "missing evidence", "rejected", or "AI call failed".
 
-After each fix: run one fresh signed-in session on the preview, then the same check on www.musicdna.fm. Review the results in Critic QA before calling it fixed. Leave routing, learning and V1 settings unchanged throughout.
+Guardrails:
+- Owner-QA sessions only.
+- Raw replies stay inside MusicDNA, readable by admins only, and are never exported.
+- Saved readings, routing, learning and V1 settings stay unchanged.
+
+## Phase 2: Fix what Phase 1 shows, then 20 interviews
+- Missing evidence: send chat the frozen picks, tests and sayings it may cite.
+- Good answers thrown out: loosen or correct the specific check that rejected them.
+- AI call failed: add a retry and alerting, and make the backup reply honest.
+- Repetition: give the writer its last 3 replies and add a "too similar" check.
+- Carryover: a new interview sees only its own picks.
+
+Then run 20 interviews and score them in Critic QA on four measures: accuracy, specificity, originality and relevance.
+
+## Technical notes
+- Build on the existing `critic_quality_attempts` table: add the context fingerprint, the evidence references sent, the raw reply (admin-only and only on QA-tagged sessions), the prior-reply references, and the downstream-measurement status.
+- The Phase 1 deliverable is a short report for each run that names cause 1, 2 or 3.
