@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — promote tested three-moves examples, hold facts
+
+- [x] Promote the tested moves2 examples and open-question rules to the shared Critic; optional questions and no redundant uncertainty taglines. Models, complete ledger, strict checks and required independent review unchanged; song facts remain offline-only.
+- [x] 31 focused regressions passed, including one-line acceptance with mandatory review and facts excluded from live calls; preview compilation passed.
+- [ ] CGPT production retest: waits on Vercel deploying this revision; saved replies remain immutable.
+
 ## Current — journey, halftime and optional four-choice reveal
 
 - [x] Introduced six-choice journey and halftime pause after three using the saved read, never a fabricated contradiction.

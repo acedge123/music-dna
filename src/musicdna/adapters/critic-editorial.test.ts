@@ -38,6 +38,23 @@ const review = {
 };
 
 describe("critic-expression-v2 boundary", () => {
+  it("accepts a reviewed one-line observation without adding a question or a claim", async () => {
+    const candidate = {
+      headline: "The small room wins.",
+      body: "",
+      choice_ids: ["c0"],
+      claims: [],
+    };
+    const generate = vi
+      .fn()
+      .mockResolvedValueOnce(JSON.stringify(candidate))
+      .mockResolvedValueOnce(JSON.stringify(review));
+    const result = await authorCritic(ledger([40]), labels, generate, { stage: "read" });
+    expect(result.status).toBe("ok");
+    expect(result.text).toBe(candidate.headline);
+    expect(result.validation_reason).toBe("accepted");
+    expect(generate).toHaveBeenCalledTimes(2);
+  });
   it("supplies only the answered saying with its valid tested direction to author and reviewer", async () => {
     const l = buildLedger(
       [
@@ -204,12 +221,12 @@ describe("critic-expression-v2 boundary", () => {
 
 describe("critic-expression-v2.3 output contract", () => {
   it("restricts claim axes and IDs to the eligible allowlist", () => {
-    const schema = criticBeatSchema(ledger([40, 40, 40, -40])) as any;
-    expect(schema.properties.claims.items.properties.axis.enum).toEqual(["scale"]);
+    const schema = criticBeatSchema(ledger([40, 40, 40, -40]));
+    expect(schema.properties.claims.items.properties?.axis.enum).toEqual(["scale"]);
     expect(schema.properties.choice_ids.items.enum).toEqual(["c0", "c1", "c2", "c3"]);
   });
   it("forbids claims entirely when no axis is eligible", () => {
-    expect((criticBeatSchema(ledger([40])) as any).properties.claims.maxItems).toBe(0);
+    expect(criticBeatSchema(ledger([40])).properties.claims.maxItems).toBe(0);
   });
   it("repairs trailing junk after valid JSON and flags the repair", () => {
     expect(parseModelJson('{"a":"}"}}')).toEqual({ value: { a: "}" }, repaired: true });
@@ -220,11 +237,17 @@ describe("critic-expression-v2.3 output contract", () => {
       .fn()
       .mockResolvedValueOnce(JSON.stringify(beat))
       .mockResolvedValueOnce(
-        JSON.stringify({ ...review, grounded: false, failed: [{ check: "lifestyle_inference", span: "needs solitude" }] }),
+        JSON.stringify({
+          ...review,
+          grounded: false,
+          failed: [{ check: "lifestyle_inference", span: "needs solitude" }],
+        }),
       )
       .mockResolvedValueOnce(JSON.stringify(beat))
       .mockResolvedValueOnce(JSON.stringify(review));
-    const result = await authorCritic(ledger([40, 40, 40, -40]), labels, generate, { stage: "reveal" });
+    const result = await authorCritic(ledger([40, 40, 40, -40]), labels, generate, {
+      stage: "reveal",
+    });
     expect(result.status).toBe("ok");
     expect(result.validation_reason).toBe("accepted_after_retry");
     expect(generate.mock.calls[2][0]).toContain("lifestyle_inference");
