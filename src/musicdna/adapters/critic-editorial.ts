@@ -223,6 +223,10 @@ export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLab
   return beat;
 }
 
+const escapeRegExp = (v: string) => v.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+const mentions = (text: string, name: string) =>
+  new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRegExp(name)}($|[^\\p{L}\\p{N}])`, "u").test(text);
+
 export function contextualChatFallback(
   ledger: Ledger,
   selfReport: string,
@@ -236,7 +240,7 @@ export function contextualChatFallback(
         (v) =>
           typeof v === "string" &&
           v.trim().length >= 2 &&
-          new RegExp(`(^|[^\\p{L}\\p{N}])${v.toLowerCase().replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}($|[^\\p{L}\\p{N}])`, "u").test(q),
+          mentions(q, v.toLowerCase()),
       ),
   );
   if (named.length) {
