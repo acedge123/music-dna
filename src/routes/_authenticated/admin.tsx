@@ -250,6 +250,10 @@ function EntityTable({ entity, onEdit }: { entity: Entity; onEdit: (row: Row) =>
               "metal",
               "country",
               "r_and_b",
+              "yacht_rock",
+              "disco",
+              "punk",
+              "reggae",
               "general",
             ].map((l) => (
               <option key={l} value={l}>
@@ -631,7 +635,7 @@ function fieldsFor(e: Entity): Field[] {
       {
         key: "primary_lane",
         type: "text",
-        hint: "alternative · pop · hip_hop · electronic · classic_rock · metal · country · r_and_b · general",
+        hint: "alternative · pop · hip_hop · electronic · classic_rock · metal · country · r_and_b · yacht_rock · disco · punk · reggae · general",
       },
       { key: "lane", type: "text", hint: "granular sub-lane, e.g. post_punk_new_wave" },
       // --- Diagnostic Power Score (DPS): six components, sum = diagnostic_power ---
@@ -985,6 +989,10 @@ function ResidualsPanel() {
             "metal",
             "country",
             "r_and_b",
+              "yacht_rock",
+              "disco",
+              "punk",
+              "reggae",
             "general",
           ].map((l) => (
             <option key={l} value={l}>
