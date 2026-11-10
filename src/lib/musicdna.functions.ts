@@ -1965,11 +1965,24 @@ export async function finalizeSessionImpl(
 ) {
   const { data: session, error: sErr } = await supabase
     .from("sessions")
-    .select("vector,user_id")
+    .select("vector,user_id,completed_at,archetype_id,interpretation")
     .eq("id", data.sessionId)
     .single();
   if (sErr || !session) throw new Error(sErr?.message ?? "session not found");
   if (session.user_id !== userId) throw new Error("forbidden");
+  if (session.completed_at) {
+    const [reasoning, archetype] = await Promise.all([
+      supabase.from("session_reasoning").select("allowed_claims,counterarguments").eq("session_id", data.sessionId).maybeSingle(),
+      session.archetype_id
+        ? supabase.from("archetypes").select("name").eq("id", session.archetype_id).maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
+    return {
+      archetypeId: session.archetype_id, archetypeName: archetype.data?.name ?? "",
+      interpretation: session.interpretation ?? "", vector: session.vector,
+      allowed_claims: reasoning.data?.allowed_claims ?? [], counterarguments: reasoning.data?.counterarguments ?? [],
+    };
+  }
 
   // -------- Pull raw evidence --------
   const [archRes, evidence] = await Promise.all([
