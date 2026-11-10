@@ -5,6 +5,9 @@ on:
     paths:
       - 'src/musicdna/learning/**'
       - 'src/lib/musicdna.functions.ts'
+      - 'src/lib/reading-feedback*'
+      - 'src/musicdna/adapters/reading-feedback*'
+      - 'src/components/musicdna/reading-feedback*'
       - 'src/musicdna/engine/**'
       - 'src/musicdna/router/**'
       - 'scripts/check-routing-artifact.mjs'
@@ -32,6 +35,9 @@ on:
     paths:
       - 'src/musicdna/learning/**'
       - 'src/lib/musicdna.functions.ts'
+      - 'src/lib/reading-feedback*'
+      - 'src/musicdna/adapters/reading-feedback*'
+      - 'src/components/musicdna/reading-feedback*'
       - 'src/musicdna/engine/**'
       - 'src/musicdna/router/**'
       - 'scripts/check-routing-artifact.mjs'
