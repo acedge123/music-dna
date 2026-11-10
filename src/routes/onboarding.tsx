@@ -1,4 +1,5 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
+import { halftimeSummary } from "@/musicdna/engine/halftime";
 import { z } from "zod";
 import { useInterview } from "@/hooks/use-interview";
 import { ReadingFeedback } from "@/components/musicdna/reading-feedback";
@@ -330,12 +331,21 @@ function Onboarding() {
             </h2>
             {milestone === 3 && (
               <p className="whitespace-pre-wrap font-serif text-2xl leading-relaxed">
-                {entries.at(-1)?.thesis || "Still listening. The story stays open."}
+                {halftimeSummary(
+                  entries.map((e) => ({
+                    chosenTitle:
+                      e.chosenSongId === e.pairing.song_a.id
+                        ? e.pairing.song_a.title
+                        : e.pairing.song_b.title,
+                    topDim: e.topDim,
+                    revised: Boolean(e.revision),
+                  })),
+                )}
               </p>
             )}
             <p className="font-serif text-xl leading-relaxed">
               {milestone === 3
-                ? "Three more. Let's find out what holds—and what changes."
+                ? null
                 : "See my take now, or give me two more picks to challenge it."}
             </p>
             <div className="flex flex-wrap gap-3">
