@@ -1937,6 +1937,82 @@ export type Database = {
           },
         ]
       }
+      song_facts: {
+        Row: {
+          check_note: string | null
+          confidence: number
+          created_at: string
+          drafted_by: string
+          id: string
+          kind: string
+          reviewed_at: string | null
+          reviewed_by: string | null
+          song_id: string
+          source_title: string | null
+          source_url: string | null
+          status: string
+          text: string
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          check_note?: string | null
+          confidence?: number
+          created_at?: string
+          drafted_by?: string
+          id?: string
+          kind: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          song_id: string
+          source_title?: string | null
+          source_url?: string | null
+          status?: string
+          text: string
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          check_note?: string | null
+          confidence?: number
+          created_at?: string
+          drafted_by?: string
+          id?: string
+          kind?: string
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          song_id?: string
+          source_title?: string | null
+          source_url?: string | null
+          status?: string
+          text?: string
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "song_facts_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "song_facts_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "song_facts_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       songs: {
         Row: {
           active: boolean

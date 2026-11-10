@@ -5,6 +5,7 @@ import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import { CriticQualityPanel } from "@/components/musicdna/critic-quality-panel";
+import { SongFactsPanel } from "@/components/musicdna/song-facts-panel";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
 import {
@@ -58,9 +59,11 @@ type Tab =
   | "ontology"
   | "diagnostics"
   | "shadow"
-  | "critic_quality";
+  | "critic_quality"
+  | "song_facts";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
+  { key: "song_facts", label: "Facts" },
   { key: "pairings", label: "Pairings" },
   { key: "archetypes", label: "Archetypes" },
   { key: "decade_prompts", label: "Decade Prompts" },
@@ -170,7 +173,8 @@ function AdminPage() {
           tab !== "ontology" &&
           tab !== "diagnostics" &&
           tab !== "shadow" &&
-          tab !== "critic_quality" && (
+          tab !== "critic_quality" &&
+          tab !== "song_facts" && (
             <button
               onClick={() => setEditing({ row: null })}
               className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
@@ -196,7 +200,9 @@ function AdminPage() {
         ))}
       </nav>
 
-      {tab === "critic_quality" ? (
+      {tab === "song_facts" ? (
+        <SongFactsPanel />
+      ) : tab === "critic_quality" ? (
         <CriticQualityPanel />
       ) : tab === "decade_prompts" ? (
         <DecadePromptsEditor />
