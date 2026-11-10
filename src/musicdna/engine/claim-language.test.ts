@@ -55,7 +55,7 @@ describe("versioned claim language ceilings", () => {
     expect(insufficiencyReason(ledger([40, 40, -40, -40]))).toBe("conflicting_evidence");
     const invalid = buildLedger([{ pairing_id: "p", chosen: null, rejected: null }], ["scale"]);
     expect(insufficiencyReason(invalid)).toBe("invalid_catalog_evidence");
-    expect(deterministicNarration(invalid, labels)).toContain("choices are saved");
+    expect(deterministicNarration(invalid, labels)).toContain("doesn't make a verdict");
   });
   it.each([
     { claims: [{ axis: "unknown", direction: "hi", choice_ids: ["c0"] }] },
