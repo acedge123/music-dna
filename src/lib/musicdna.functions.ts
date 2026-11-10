@@ -4457,6 +4457,7 @@ async function latestChoice(supabase: AuthedSupabase, sessionId: string) {
 }
 
 const PREPARE_WAIT_MS = 25_000;
+const PREPARE_DEADLINE_MS = 20_000;
 async function awaitPreparedRead(
   sessionId: string,
   answered: number,
@@ -4483,7 +4484,9 @@ async function awaitPreparedRead(
     if (!row || row.status === "failed") return null;
     if (row.status === "ready") return row.fingerprint === fingerprint ? row.payload : null;
     // Pending: wait for the in-flight draft unless it has gone stale.
-    if (Date.now() > deadline || Date.now() - Date.parse(row.started_at) > 60_000) return null;
+    // A draft past its own deadline is abandoned; write the reaction live instead.
+    if (Date.now() > deadline || Date.now() - Date.parse(row.started_at) > PREPARE_DEADLINE_MS + 2_000)
+      return null;
     await new Promise((r) => setTimeout(r, 400));
   }
 }
@@ -4571,7 +4574,12 @@ export async function prepareReadsImpl(
         .insert({ ...key, status: "pending" } as never);
       if (claim.error) return 0;
       try {
-        const composed = await composeRead(supabase, userId, data.sessionId, ledger, prior);
+        const composed = await Promise.race([
+          composeRead(supabase, userId, data.sessionId, ledger, prior),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("prepare_deadline")), PREPARE_DEADLINE_MS),
+          ),
+        ]);
         await supabaseAdmin
           .from("prepared_reads" as never)
           .update({
