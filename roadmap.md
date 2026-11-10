@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — Hip-hop expansion
+
+- [ ] Add independently scored Hip-hop songs and at least 20 diagnostic, specific matchups; preserve existing scores and frozen readings, keep additions inactive for review. Electronic is handled separately by ChatGPT.
+- [ ] Verify saved catalog counts, declared-test contrast, editorial uniqueness and regression tests; report activation as awaiting Alan's review.
+
 ## Current — critic audit review
 
 - [x] Reviewed CRITIC_IMPLEMENTATION_GAP_AUDIT.md against current code: agree expression contract blocks authored critic prose; preserve evidence/replay/privacy, reject revealing next tests, reuse persona/one bounded editorial seam. No critic changes made.
