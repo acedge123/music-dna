@@ -246,6 +246,9 @@ function ProfilePage() {
                   )}
                 </>
               )}
+              {!latest.archetype && (
+                <h1 className="display text-4xl md:text-5xl mb-3">An open reading</h1>
+              )}
             </div>
             <div className="shrink-0 flex flex-col items-end gap-2">
               <button

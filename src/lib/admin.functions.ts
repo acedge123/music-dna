@@ -38,6 +38,37 @@ export const adminCheck = createServerFn({ method: "GET" })
     return { isAdmin: true, userId: context.userId };
   });
 
+export const adminNewQaInterview = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .handler(async ({ context }) => {
+    const role = await context.supabase.from("user_roles").select("role")
+      .eq("user_id", context.userId).eq("role", "admin").maybeSingle();
+    const auth = await context.supabase.auth.getUser();
+    if (role.error || !role.data || auth.error || !auth.data.user || auth.data.user.is_anonymous)
+      throw new Error("Forbidden: registered admin only");
+    const profile = await context.supabase.from("profiles")
+      .select("opening_lane,opening_lane_confidence,opening_analysis_json")
+      .eq("user_id", context.userId).maybeSingle();
+    if (profile.error) throw new Error("Could not load opening songs.");
+    if (!profile.data?.opening_lane) throw new Error("Complete three opening songs before starting QA.");
+    const { buildStartSessionSeed } = await import("@/musicdna/engine/session");
+    const { LANES } = await import("@/musicdna/engine/types");
+    const seed = buildStartSessionSeed({ profile: profile.data as never, all_lanes: LANES, rng: { next: () => Math.random() } });
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const result = await supabaseAdmin.rpc("create_interview_qa", {
+      p_owner: context.userId, p_vector: seed.seed_vector,
+      p_lane: seed.lane, p_confidence: seed.lane_confidence, p_candidates: seed.probe_candidate_lanes,
+    });
+    if (result.error || !result.data) throw new Error("Could not create QA interview.");
+    return { sessionId: result.data };
+  });
+
+async function qaSessionIds(admin: Awaited<ReturnType<typeof assertAdminAndGetClient>>) {
+  const { data, error } = await admin.from("interview_qa_sessions").select("session_id");
+  if (error) throw new Error("Could not isolate QA activity.");
+  return new Set((data ?? []).map((row) => row.session_id));
+}
+
 const ADMIN_PAGE_SIZE = 200;
 
 export const adminList = createServerFn({ method: "POST" })
@@ -310,15 +341,16 @@ export const adminOntology = createServerFn({ method: "GET" })
       .order("completed_at", { ascending: false })
       .limit(2000);
     if (sessionsRes.error) throw new Error(sessionsRes.error.message);
-    const sessions = sessionsRes.data ?? [];
+    const qa = await qaSessionIds(admin);
+    const sessions = (sessionsRes.data ?? []).filter((row) => !qa.has(row.id));
 
     const choicesRes = await admin
       .from("choices")
-      .select("pairing_id, chosen_song_id, rejected_song_id, ms_to_decide")
+      .select("session_id, pairing_id, chosen_song_id, rejected_song_id, ms_to_decide")
       .order("created_at", { ascending: false })
       .limit(5000);
     if (choicesRes.error) throw new Error(choicesRes.error.message);
-    const choices = choicesRes.data ?? [];
+    const choices = (choicesRes.data ?? []).filter((row) => !qa.has(row.session_id));
 
     // ---- coverage: lane × archetype-signal from the catalog ----
     // songs.archetype_signals is a free-form array; we count each signal
@@ -629,10 +661,12 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
       created_at: string;
       props: Record<string, unknown> | null;
     };
-    const regimeRows = (regimeRes.data ?? []) as Row[];
-    const choiceRows = (choiceRes.data ?? []) as Row[];
-    const skipRows = (skipRes.data ?? []) as Row[];
-    const sessions = (sessionRes.data ?? []) as Array<{
+    const qa = await qaSessionIds(admin);
+    const notQa = (row: Row) => !row.session_id || !qa.has(row.session_id);
+    const regimeRows = ((regimeRes.data ?? []) as Row[]).filter(notQa);
+    const choiceRows = ((choiceRes.data ?? []) as Row[]).filter(notQa);
+    const skipRows = ((skipRes.data ?? []) as Row[]).filter(notQa);
+    const sessions = ((sessionRes.data ?? []) as Array<{
       id: string;
       lane: string | null;
       lane_confidence: number | null;
@@ -640,7 +674,7 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
       archetype_margin: number | null;
       vector: Record<string, number> | null;
       created_at: string;
-    }>;
+    }>).filter((row) => !qa.has(row.id));
 
     // ---- Regime distribution + confidence ----
     const regimeCounts: Record<string, number> = {

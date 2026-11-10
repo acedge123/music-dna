@@ -115,6 +115,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   const [bootError, setBootError] = useState<string | null>(null);
   const [booting, setBooting] = useState(true);
   useEffect(() => {
+    // Pinning a newly-created ID in the address bar must not reboot its live state.
+    if (requestedSession && requestedSession === sessionId) return;
     let cancelled = false;
     setBooting(true);
     setBootError(null);

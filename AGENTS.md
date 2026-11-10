@@ -47,3 +47,5 @@
 - Account UI consumes the root's single hydrated auth context; anonymous sessions remain guests, and shared sign-out cancels queries and clears cache before ending the session and replacing navigation, avoiding misleading sign-in flashes and stale private views.
 
 - Critic quality stays local and separate from inference/feedback: shared attempts retain nullable measurements, admin-only rubric scores target exact output, and client-reported exposure binds to a trusted offer ID; none automatically promotes routing or learning.
+- Fresh interview URLs bypass implicit resume; active IDs are pinned for reload/Back. Operator QA sessions are atomically tagged, excluded from listener diagnostics, and never imply synthetic export eligibility or pilot consent.
+- Archetype assignment and profile presentation require frozen-ledger support; historical saved content stays immutable, and rejected chat generations must not echo the user's question.

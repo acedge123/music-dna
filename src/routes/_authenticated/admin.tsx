@@ -1,10 +1,12 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useEffect, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
 import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import { CriticQualityPanel } from "@/components/musicdna/critic-quality-panel";
+import { Button } from "@/components/ui/button";
+import { Plus } from "lucide-react";
 import {
   adminCheck,
   adminList,
@@ -15,6 +17,7 @@ import {
   adminOntology,
   adminDiagnostics,
   adminShadowRouter,
+  adminNewQaInterview,
 } from "@/lib/admin.functions";
 import {
   listDecadePrompts,
@@ -72,6 +75,9 @@ type Row = Record<string, unknown> & { id: string };
 
 function AdminPage() {
   const check = useServerFn(adminCheck);
+  const newQa = useServerFn(adminNewQaInterview);
+  const navigate = useNavigate();
+  const [qaBusy, setQaBusy] = useState(false);
   // Component-level gate. Retry a few times because the first server-fn call
   // after hydration can race the bearer-token attacher reading the session.
   const gate = useQuery({
@@ -137,6 +143,15 @@ function AdminPage() {
         <div>
           <p className="eyebrow mb-3">Admin</p>
           <h1 className="display text-4xl">Catalog</h1>
+          <Button variant="outline" disabled={qaBusy} className="mt-4" onClick={async () => {
+            setQaBusy(true);
+            try {
+              const result = await newQa();
+              await navigate({ to: "/onboarding", search: { session: result.sessionId } });
+            } catch (error) {
+              toast.error(error instanceof Error ? error.message : "Could not start QA.");
+            } finally { setQaBusy(false); }
+          }}><Plus /> {qaBusy ? "Opening QA…" : "New QA interview"}</Button>
           <p className="text-sm text-muted-foreground mt-1">
             Edit songs, pairings, and archetypes. Changes go live immediately.
           </p>
