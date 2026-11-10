@@ -60,11 +60,10 @@ export async function measuredCritic(
       .order("version", { ascending: false })
       .limit(1)
       .maybeSingle();
-    const version =
-      saved.data &&
-      JSON.stringify(saved.data.content).includes(JSON.stringify(result.text).slice(1, -1))
-        ? saved.data.version
-        : null;
+    const content = saved.data?.content;
+    const version = content && typeof content === "object" && !Array.isArray(content) &&
+      (content.synthesis === result.text || content.narrative === result.text || content.reply === result.text)
+      ? saved.data?.version ?? null : null;
     const { error } = await supabaseAdmin.from("critic_quality_attempts").insert({
       session_id: sessionId,
       user_id: userId,
