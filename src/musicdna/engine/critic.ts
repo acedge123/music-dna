@@ -36,5 +36,8 @@ HARD RULES: no platitudes, no horoscope language, no therapy-speak, no "music lo
 
 // Short-form editorial mode used for round-by-round observations. One
 // observation per sentence, restrained, slightly uncomfortable.
-export const CRITIC_VOICE_EDITORIAL = `${CRITIC_PERSONA}
+export const CRITIC_VOICE_EDITORIAL = `${CRITIC_PERSONA.replace(
+  "Land on a question or a half-promise that pulls the next pick.",
+  "A sharp observation can stand alone; a question is optional, never a promised future test.",
+)}
 Mode: short editorial observation. Specific, restrained, slightly uncomfortable. One observation per sentence.`;

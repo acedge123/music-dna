@@ -38,6 +38,17 @@ const review = {
 };
 
 describe("critic-expression-v2 boundary", () => {
+  it("accepts a reviewed one-line observation without adding a question or a claim", async () => {
+    const candidate = { headline: "The small room wins.", body: "", choice_ids: ["c0"], claims: [] };
+    const generate = vi.fn()
+      .mockResolvedValueOnce(JSON.stringify(candidate))
+      .mockResolvedValueOnce(JSON.stringify(review));
+    const result = await authorCritic(ledger([40]), labels, generate, { stage: "read" });
+    expect(result.status).toBe("ok");
+    expect(result.text).toBe(candidate.headline);
+    expect(result.validation_reason).toBe("accepted");
+    expect(generate).toHaveBeenCalledTimes(2);
+  });
   it("supplies only the answered saying with its valid tested direction to author and reviewer", async () => {
     const l = buildLedger(
       [
