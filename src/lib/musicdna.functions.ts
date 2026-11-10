@@ -648,7 +648,7 @@ import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
 import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
-import { hypotheticalChoice, readFingerprint, revealDraftKey, revealFingerprint } from "@/musicdna/engine/prepared-read";
+import { preparedOutcome, hypotheticalChoice, readFingerprint, revealDraftKey, revealFingerprint } from "@/musicdna/engine/prepared-read";
 import { POOL_STAGE, poolEligible, poolFingerprint } from "@/musicdna/engine/reaction-pool";
 import {
   authorCritic,
@@ -4525,15 +4525,14 @@ async function awaitPreparedRead(
   draftDeadlineMs = PREPARE_DEADLINE_MS,
 ): Promise<ComposedRead | null> {
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const requestedAt = new Date();
   const deadline = Date.now() + waitMs;
+  const match = { session_id: sessionId, answered, pairing_id: choice.pairing_id, chosen_song_id: choice.chosen_song_id };
   for (;;) {
     const { data } = await supabaseAdmin
       .from("prepared_reads" as never)
       .select("status,fingerprint,payload,started_at")
-      .eq("session_id", sessionId)
-      .eq("answered", answered)
-      .eq("pairing_id", choice.pairing_id)
-      .eq("chosen_song_id", choice.chosen_song_id)
+      .match(match)
       .maybeSingle();
     const row = data as {
       status: string;
@@ -4541,12 +4540,25 @@ async function awaitPreparedRead(
       payload: ComposedRead | null;
       started_at: string;
     } | null;
-    if (!row || row.status === "failed") return null;
-    if (row.status === "ready") return row.fingerprint === fingerprint ? row.payload : null;
-    // Pending: wait for the in-flight draft unless it has gone stale.
     // A draft past its own deadline is abandoned; write the reaction live instead.
-    if (Date.now() > deadline || Date.now() - Date.parse(row.started_at) > draftDeadlineMs + 2_000)
-      return null;
+    const timedOut =
+      Date.now() > deadline || (!!row && Date.now() - Date.parse(row.started_at) > draftDeadlineMs + 2_000);
+    const outcome = preparedOutcome(row, fingerprint, timedOut);
+    if (outcome) {
+      // Admin-only timing trace; never blocks or changes what the listener sees.
+      if (row)
+        await supabaseAdmin
+          .from("prepared_reads" as never)
+          .update({
+            requested_at: requestedAt.toISOString(),
+            consumed_at: new Date().toISOString(),
+            outcome,
+            wait_ms: Date.now() - requestedAt.getTime(),
+          } as never)
+          .match(match)
+          .then(() => undefined, () => undefined);
+      return outcome === "used" ? row!.payload : null;
+    }
     await new Promise((r) => setTimeout(r, 400));
   }
 }
