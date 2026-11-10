@@ -1,3 +1,4 @@
+import { acknowledgeExposure } from "@/musicdna/adapters/exposure";
 import { measuredCritic, recordServedOffer } from "@/musicdna/adapters/critic-quality";
 import type { CallMeasurement } from "@/musicdna/engine/critic-quality";
 import { requireVisibleSession } from "@/musicdna/adapters/session-access";
@@ -2292,32 +2293,14 @@ export const recordEvent = createServerFn({ method: "POST" })
       typeof data.props?.exposure_id === "string" &&
       !data.props?.skipped
     ) {
-      const owned = await supabase
-        .from("sessions")
-        .select("user_id")
-        .eq("id", data.session_id)
-        .eq("user_id", userId)
-        .maybeSingle();
-      if (owned.error || !owned.data) throw new Error("Exposure ownership unavailable");
-      const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-      const offered = await supabaseAdmin
-        .from("pairing_exposures")
-        .select("id,reported_shown_at")
-        .eq("session_id", data.session_id)
-        .eq("pairing_id", data.pairing_id)
-        .eq("id", String(data.props.exposure_id))
-        .order("served_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      if (offered.error) throw new Error("Exposure measurement unavailable");
-      if (offered.data && !offered.data.reported_shown_at) {
-        const updated = await supabaseAdmin
-          .from("pairing_exposures")
-          .update({ reported_shown_at: new Date().toISOString(), client: data.client ?? "web" })
-          .eq("id", offered.data.id)
-          .is("reported_shown_at", null);
-        if (updated.error) throw new Error("Exposure measurement unavailable");
-      }
+      await acknowledgeExposure(
+        supabase,
+        userId,
+        data.session_id,
+        data.pairing_id,
+        String(data.props.exposure_id),
+        data.client ?? "web",
+      );
     }
     const { error } = await supabase.from("event_log").insert({
       user_id: userId,
