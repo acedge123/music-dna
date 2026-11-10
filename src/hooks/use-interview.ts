@@ -189,13 +189,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       if (restored.length === 0 && !requestedSession) return;
       playStartedRef.current = true;
       setEntries(restored);
-      if (!resumed.completed && resumed.opener?.hypothesis) {
-        setRefined({
-          hypothesis: resumed.opener.hypothesis,
-          lane: resumed.opener.lane,
-          confidence: 0,
-        });
-      }
+      // Resume has session-frozen exchanges, but its opener comes from the
+      // mutable account profile. Never present that as this interview's read.
       setPhase("playing");
       if (resumed.completed) {
         // Finished reading (e.g. browser Back from chat): show the result.
