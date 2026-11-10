@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — faster replies and complete final reading
+
+- [ ] Inspect measured critic latency; reduce conversational reasoning overhead without changing models, evidence validation or independent review.
+- [ ] Display the entire saved synthesis at interview completion, with supporting audit details secondary.
+- [ ] Run focused regression tests and verify the completed-reading display; report production timing separately.
+
 ## Current — approved Critic model upgrade
 
 - [x] Upgrade direct OpenAI Critic writer to GPT-6.1 Sol (medium reasoning), reviewer to GPT-6.1 Terra (low); strict schemas, replay and inference boundaries unchanged. Astra remains an explicit experimental writer override, not an automatic fallback. General LLM/preview calls unchanged.
