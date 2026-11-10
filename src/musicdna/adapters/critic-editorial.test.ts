@@ -222,7 +222,7 @@ describe("critic-expression-v2 boundary", () => {
 describe("critic-expression-v2.3 output contract", () => {
   it("restricts claim axes and IDs to the eligible allowlist", () => {
     const schema = criticBeatSchema(ledger([40, 40, 40, -40]));
-    expect(schema.properties.claims.items.properties.axis.enum).toEqual(["scale"]);
+    expect(schema.properties.claims.items.properties?.axis.enum).toEqual(["scale"]);
     expect(schema.properties.choice_ids.items.enum).toEqual(["c0", "c1", "c2", "c3"]);
   });
   it("forbids claims entirely when no axis is eligible", () => {
