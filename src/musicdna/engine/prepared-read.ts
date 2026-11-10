@@ -59,3 +59,17 @@ export function hypotheticalChoice(
     provenance: "pairing",
   };
 }
+
+export type PreparedOutcome = "used" | "mismatch" | "failed" | "not_ready" | "missing";
+
+/** What a pick found when it asked for its background draft. Null = keep waiting. */
+export function preparedOutcome(
+  row: { status: string; fingerprint: string | null } | null,
+  fingerprint: string,
+  timedOut: boolean,
+): PreparedOutcome | null {
+  if (!row) return "missing";
+  if (row.status === "failed") return "failed";
+  if (row.status === "ready") return row.fingerprint === fingerprint ? "used" : "mismatch";
+  return timedOut ? "not_ready" : null;
+}

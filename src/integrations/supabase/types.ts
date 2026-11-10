@@ -1572,38 +1572,50 @@ export type Database = {
         Row: {
           answered: number
           chosen_song_id: string
+          consumed_at: string | null
           fingerprint: string | null
           finished_at: string | null
+          outcome: string | null
           pairing_id: string
           payload: Json | null
+          requested_at: string | null
           session_id: string
           started_at: string
           status: string
           user_id: string
+          wait_ms: number | null
         }
         Insert: {
           answered: number
           chosen_song_id: string
+          consumed_at?: string | null
           fingerprint?: string | null
           finished_at?: string | null
+          outcome?: string | null
           pairing_id: string
           payload?: Json | null
+          requested_at?: string | null
           session_id: string
           started_at?: string
           status?: string
           user_id: string
+          wait_ms?: number | null
         }
         Update: {
           answered?: number
           chosen_song_id?: string
+          consumed_at?: string | null
           fingerprint?: string | null
           finished_at?: string | null
+          outcome?: string | null
           pairing_id?: string
           payload?: Json | null
+          requested_at?: string | null
           session_id?: string
           started_at?: string
           status?: string
           user_id?: string
+          wait_ms?: number | null
         }
         Relationships: [
           {
