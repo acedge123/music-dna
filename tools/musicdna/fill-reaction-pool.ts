@@ -74,8 +74,10 @@ async function main() {
   }
   if (!has("--fill")) return;
   let calls = 0, added = 0, rejected = 0;
+  const tried = new Set<string>();
   for (const [p, chosen, rejectedSong] of slots.sort(([a, ca], [b, cb]) => count(a.id, ca.id) - count(b.id, cb.id))) {
-    if (count(p.id, chosen.id) >= TARGET) continue;
+    if (count(p.id, chosen.id) >= TARGET || tried.has(p.id + chosen.id)) continue;
+    tried.add(p.id + chosen.id);
     if (calls >= MAX_CALLS) break;
     const choice = hypotheticalChoice(p, chosen, rejectedSong);
     calls++;
