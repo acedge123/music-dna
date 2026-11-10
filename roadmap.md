@@ -2,9 +2,10 @@
 
 ## Current — specialist lanes and full catalog review
 
-- [ ] Import and activate the approved 69 songs / 46 matchups without changing historical evidence.
-- [ ] Support four distinct opener lanes and admin filters; verify same-lane selection.
-- [ ] Audit all songs and pairings, document coverage and unresolved editorial issues.
+- [x] Imported and activated the approved 69 songs / 46 matchups; all contrasts and unique phrases pass, existing historical evidence unchanged.
+- [x] Added four distinct shared opener lanes and admin filters; 49 focused tests pass, guest Yacht Rock opener → same-lane choice → next round verified.
+- [x] Audited all 721 songs / 487 pairings; findings and coverage documented in docs/musicdna/catalog-audit-2026-11-10.md (review only, existing catalog not silently repaired).
+- [ ] Production specialist interview and authenticated admin acceptance: waits on updated Vercel classifier deployment and external-managed signed-in test access; preview guest flow verified.
 
 ## Current — Hip-hop expansion
 
