@@ -4678,6 +4678,7 @@ export async function currentReadImpl(
       language: CLAIM_LANGUAGE_VERSION,
       voice_version: authored.voice_version,
       validation_reason: authored.validation_reason,
+      prepared_before_pick: !!prepared,
       result,
       revised: !!result.revision,
       revision: result.revision,
