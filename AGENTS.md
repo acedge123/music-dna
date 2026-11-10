@@ -7,7 +7,6 @@
 - The critic-first web stage keeps the active pairing and latest read primary; history and audit text stay secondary. Presentation may omit numeric parentheticals but never strengthen, fabricate or rewrite saved claims; full frozen content remains available.
 
 - Every claim about a listener (running read, final reasoning, chat context, share card) derives from `buildLedger` in `src/musicdna/engine/evidence.ts` and `evaluateClaim` in `claims.ts` — so no two surfaces can disagree about what the choices show.
-- Critic prose uses `critic-editorial` author/reference/semantic review; rejected drafts keep audit text and saved results replay untouched. Reveal twists come only from frozen-ledger exceptions.
 - `sessionCompletion` owns stops: optional listener exit after four, six by default; clients trust server completion.
 - The "next question" prompt is generated from the pairing actually selected (`engine/prompts.ts`), never from the prior read — so the critic can't promise a test the next matchup doesn't run.
 - Revisions are detected against the last `read_shown` event in `event_log`, not by comparing top axes client-side — so "revising" always means the evidence moved.
@@ -42,11 +41,9 @@
 
 - Specialist genres are distinct top-level opener lanes shared by web and REST; exact catalog lanes precede legacy family aliases, so activation does not silently remap historical Alternative songs.
 
-- Post-choice sayings come only from the optional editorial block frozen by the vote trigger, alongside ledger-tested directions; never reread mutable sayings for historical choices or treat editorial metaphors as claim evidence.
 
 - Account UI consumes the root's single hydrated auth context; anonymous sessions remain guests, and shared sign-out cancels queries and clears cache before ending the session and replacing navigation, avoiding misleading sign-in flashes and stale private views.
 
-- Critic quality stays local and separate from inference/feedback: shared attempts retain nullable measurements, admin-only rubric scores target exact output, and client-reported exposure binds to a trusted offer ID; none automatically promotes routing or learning.
 - Fresh interview URLs bypass implicit resume; active IDs are pinned for reload/Back. Operator QA sessions are atomically tagged, excluded from listener diagnostics, and never imply synthetic export eligibility or pilot consent.
 - Archetype assignment and profile presentation require frozen-ledger support; historical saved content stays immutable, and rejected chat generations must not echo the user's question.
 - Interview URL pinning waits for restore completion and never carries an old session into fresh Start; bounded conversation waits preserve pending mutation IDs because a timeout does not prove a failed write.
@@ -54,4 +51,3 @@
 - AB-57 hourly learning runs in a separate Railway operator service, with a source-bound automated queue endpoint and durable metadata receipts. Railway holds only narrow caller keys; backend/ingest credentials stay inside Supabase Edge Functions and outside EdgeBot/model context; preserve source/reviewer/consent gates, global $5/day reservations, no ambiguous inference retries and draft-only output. Queue/dispatch success is never completed model work. See docs/musicdna/ab57-automation.md.
 
 - Completed-reading accuracy controls use the existing authenticated feedback write plus owner/version-scoped readback; show Saved only after matching the durable operation. Keep ratings optional, below the completed read, absent during song choices and on public shares, and reuse the per-reading/version operation key across retries/reloads.
-- Song fact cards (`song_facts`) are admin-reviewed, source-cited catalog color; only approved rows may reach the critic, they never count as listener evidence, and live use must be frozen into the vote snapshot behind a default-off flag.
