@@ -7,10 +7,10 @@ describe.skipIf(!process.env.AB45_TEST_DATABASE_URL)("native worker operational 
   beforeAll(async () => {
     f = await createOutboxTestDatabase(true);
     await f.sql.unsafe(
-      readSourceFile("supabase/migrations/20261110064656_musicdna_worker_status.sql"),
+      readSourceFile("supabase/migrations/20261110150538_musicdna_worker_status.sql"),
     );
     await f.sql.unsafe(
-      readSourceFile("supabase/migrations/20261110085105_musicdna_scoped_dispatch_caller.sql"),
+      readSourceFile("supabase/migrations/20261110150542_musicdna_scoped_dispatch_caller.sql"),
     );
     await f.sql`INSERT INTO public.musicdna_export_scopes(source_key,environment,observed_from,expires_at,approved_by) VALUES('music-dna','production',now(),now()+interval '1 day',${OWNER})`;
   }, 30000);
