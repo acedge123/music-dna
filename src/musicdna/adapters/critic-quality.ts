@@ -9,6 +9,7 @@ import {
   CRITIC_EXPRESSION_VERSION,
   CRITIC_REVIEW_VERSION,
   type CriticStage,
+  type CriticGenerate,
 } from "./critic-editorial";
 
 export async function measuredCritic(
@@ -17,7 +18,7 @@ export async function measuredCritic(
   sessionId: string,
   ledger: Ledger,
   labels: AxisLabels,
-  generate: (prompt: string, review?: boolean) => Promise<string>,
+  generate: CriticGenerate,
   options: {
     stage: CriticStage;
     fallback?: string;

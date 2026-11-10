@@ -122,7 +122,11 @@ function criticGenerator(
   messages: Array<{ role: string; content: string }>,
   calls: CallMeasurement[],
 ) {
-  return async (prompt: string, review = false) => {
+  return async (
+    prompt: string,
+    review = false,
+    jsonSchema?: { name: string; schema: Record<string, unknown> },
+  ) => {
     const start = Date.now();
     let metadata: {
       model: string;
@@ -145,6 +149,8 @@ function criticGenerator(
           : [...messages, { role: "user", content: prompt }],
         {
           model: MODEL,
+          role: review ? "reviewer" : "writer",
+          jsonSchema,
           onMeasurement: (m) => {
             metadata = m;
           },
