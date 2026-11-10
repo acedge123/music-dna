@@ -2,8 +2,8 @@
 
 ## Current — Hip-hop expansion
 
-- [ ] Add independently scored Hip-hop songs and at least 20 diagnostic, specific matchups; preserve existing scores and frozen readings, keep additions inactive for review. Electronic is handled separately by ChatGPT.
-- [ ] Verify saved catalog counts, declared-test contrast, editorial uniqueness and regression tests; report activation as awaiting Alan's review.
+- [x] Added 20 independently scored Hip-hop songs and 24 specific matchups, all inactive; existing scores/readings and Electronic untouched. Approval would bring Hip-hop to 59 songs / 44 live matchups.
+- [x] Database readback verifies zero weak tests, ten-trait coverage and unique sayings; pinned fixture and focused regression tests added. Activation awaits Alan's review; predictive validation remains unproven.
 
 ## Current — critic audit review
 
