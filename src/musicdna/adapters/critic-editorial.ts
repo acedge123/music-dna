@@ -8,8 +8,8 @@ import {
   type AxisLabels,
 } from "../engine/claim-language";
 
-export const CRITIC_EXPRESSION_VERSION = "critic-expression-v2.2";
-export const CRITIC_REVIEW_VERSION = "critic-semantic-review-v2.2";
+export const CRITIC_EXPRESSION_VERSION = "critic-expression-v2.3";
+export const CRITIC_REVIEW_VERSION = "critic-semantic-review-v2.3";
 export type CriticStage = "choice" | "read" | "reveal" | "chat";
 const Beat = z
   .object({
@@ -38,8 +38,133 @@ const Review = z
     no_invented_facts: z.boolean(),
     no_future_test_disclosure: z.boolean(),
     responsive: z.boolean(),
+    failed: z
+      .array(z.object({ check: z.string(), span: z.string() }).strict())
+      .max(10)
+      .default([]),
   })
   .strict();
+
+export const REVIEW_CHECKS = [
+  "grounded",
+  "ceiling_preserved",
+  "exceptions_preserved",
+  "self_report_separate",
+  "no_invented_facts",
+  "no_future_test_disclosure",
+  "responsive",
+] as const;
+// Named failure checks the reviewer must cite, so rejections are diagnosable.
+export const REVIEW_FAILURE_CODES = [
+  "unsupported_motive",
+  "lifestyle_inference",
+  "overclaims_count",
+  "missing_exception",
+  "invented_music_fact",
+  "uncited_song",
+  "ignores_question",
+  "prompt_echo",
+  "repeats_previous",
+  "future_test_disclosure",
+  "self_report_as_vote",
+  "concentration_as_preference",
+] as const;
+
+export type CriticGenerate = (
+  prompt: string,
+  review?: boolean,
+  jsonSchema?: { name: string; schema: Record<string, unknown> },
+) => Promise<string>;
+
+/** Strict output schema with claim axes and IDs restricted to the stage allowlist. */
+export function criticBeatSchema(ledger: Ledger) {
+  const ids = [...new Set(ledger.entries.map(evidenceId))];
+  const axes = ledger.axes.filter((a) => a.eligible).map((a) => a.axis);
+  const idSchema = ids.length ? { type: "string", enum: ids } : { type: "string", enum: ["none"] };
+  return {
+    type: "object",
+    additionalProperties: false,
+    required: ["headline", "body", "choice_ids", "claims"],
+    properties: {
+      headline: { type: "string" },
+      body: { type: "string" },
+      choice_ids: { type: "array", items: idSchema },
+      claims: axes.length
+        ? {
+            type: "array",
+            items: {
+              type: "object",
+              additionalProperties: false,
+              required: ["axis", "direction", "choice_ids"],
+              properties: {
+                axis: { type: "string", enum: axes },
+                direction: { type: "string", enum: ["hi", "lo"] },
+                choice_ids: { type: "array", items: idSchema },
+              },
+            },
+          }
+        : { type: "array", maxItems: 0, items: { type: "string" } },
+    },
+  };
+}
+
+export const REVIEW_SCHEMA = {
+  type: "object",
+  additionalProperties: false,
+  required: [...REVIEW_CHECKS, "failed"],
+  properties: {
+    ...Object.fromEntries(REVIEW_CHECKS.map((c) => [c, { type: "boolean" }])),
+    failed: {
+      type: "array",
+      items: {
+        type: "object",
+        additionalProperties: false,
+        required: ["check", "span"],
+        properties: {
+          check: { type: "string", enum: [...REVIEW_FAILURE_CODES] },
+          span: { type: "string" },
+        },
+      },
+    },
+  },
+};
+
+/** Parses model JSON; trailing junk after the first balanced object is repaired, never silently. */
+export function parseModelJson(raw: string): { value: unknown; repaired: boolean } | null {
+  const text = raw
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/, "");
+  try {
+    return { value: JSON.parse(text), repaired: false };
+  } catch {
+    // Scan for the end of the first balanced top-level object.
+    const start = text.indexOf("{");
+    if (start < 0) return null;
+    let depth = 0;
+    let inStr = false;
+    let esc = false;
+    for (let i = start; i < text.length; i++) {
+      const ch = text[i];
+      if (inStr) {
+        if (esc) esc = false;
+        else if (ch === "\\") esc = true;
+        else if (ch === '"') inStr = false;
+        continue;
+      }
+      if (ch === '"') inStr = true;
+      else if (ch === "{") depth++;
+      else if (ch === "}" && --depth === 0) {
+        try {
+          return { value: JSON.parse(text.slice(start, i + 1)), repaired: true };
+        } catch {
+          return null;
+        }
+      }
+    }
+    return null;
+  }
+}
 
 export function criticFacts(ledger: Ledger, labels: AxisLabels) {
   return {
@@ -100,9 +225,34 @@ export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLab
 
 export function contextualChatFallback(
   ledger: Ledger,
-  _selfReport: string,
+  selfReport: string,
   labels: AxisLabels = {},
 ) {
+  // When the listener names picks, answer about THOSE picks' frozen tested contrasts.
+  const q = selfReport.toLowerCase();
+  const named = [...new Map(ledger.entries.map((e) => [evidenceId(e), e])).values()].filter(
+    (e) =>
+      [e.chosen, e.chosen_artist, e.rejected, e.rejected_artist].some(
+        (v) => typeof v === "string" && v.trim().length >= 3 && q.includes(v.toLowerCase()),
+      ),
+  );
+  if (named.length) {
+    const lines = named.slice(0, 3).map((e) => {
+      const tests = ledger.entries
+        .filter((o) => evidenceId(o) === evidenceId(e) && Math.abs(o.delta) >= 20)
+        .map((o) => {
+          const pole = labels[o.axis];
+          const c = o.delta > 0 ? pole?.hi : pole?.lo;
+          const r = o.delta > 0 ? pole?.lo : pole?.hi;
+          return c && r ? `${c} over ${r}` : null;
+        })
+        .filter(Boolean);
+      return tests.length
+        ? `${e.chosen} over ${e.rejected}: that matchup tested ${tests.join(" and ")}, and you took the first side.`
+        : `${e.chosen} over ${e.rejected}: recorded, but that matchup had no usable declared test.`;
+    });
+    return `Fair challenge. Here's what those picks actually show. ${lines.join(" ")} That's what the matchups measured, not a claim about why you chose them. What pulled you there?`;
+  }
   const latest = [...ledger.entries].sort((a, b) => b.index - a.index)[0];
   if (!latest) {
     return ledger.answered
@@ -122,7 +272,7 @@ export function contextualChatFallback(
 export async function authorCritic(
   ledger: Ledger,
   labels: AxisLabels,
-  generate: (prompt: string, review?: boolean) => Promise<string>,
+  generate: CriticGenerate,
   options: { stage: CriticStage; fallback?: string; previous?: string; selfReport?: string },
 ) {
   let reviewChecks: Record<string, boolean> | null = null;
