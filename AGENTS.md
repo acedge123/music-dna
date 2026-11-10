@@ -50,3 +50,4 @@
 - Fresh interview URLs bypass implicit resume; active IDs are pinned for reload/Back. Operator QA sessions are atomically tagged, excluded from listener diagnostics, and never imply synthetic export eligibility or pilot consent.
 - Archetype assignment and profile presentation require frozen-ledger support; historical saved content stays immutable, and rejected chat generations must not echo the user's question.
 - Interview URL pinning waits for restore completion and never carries an old session into fresh Start; bounded conversation waits preserve pending mutation IDs because a timeout does not prove a failed write.
+- Raw critic writer/reviewer output is stored in `critic_quality_attempts.decision_trace` only for owner-QA sessions (admin-read, never exported), so failures can be diagnosed without retaining listener prose.

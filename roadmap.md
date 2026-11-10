@@ -143,3 +143,7 @@
 - D06 implementation: deferred until launch.
 
 - [ ] 2000–2026 catalog (CAT06–08): 37 inactive pilot songs recalibrated and 30 inactive pairings saved; activation still awaits editorial/recording review, coverage completion and listener testing (docs/musicdna/cat06-recalibration-2026-10-20.md).
+
+- [x] Critic decision trace for owner-QA sessions (Phase 1 instrumentation)
+- [ ] Run 5 signed-in owner-QA diagnostic interviews and report cause per run (needs admin sign-in on www.musicdna.fm after deploy)
+- [ ] Phase 2: fix chat rejections (invalid_json / bad references / reviewer rejections on gpt-4o-mini)
