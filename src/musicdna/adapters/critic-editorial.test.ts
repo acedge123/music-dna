@@ -39,8 +39,14 @@ const review = {
 
 describe("critic-expression-v2 boundary", () => {
   it("accepts a reviewed one-line observation without adding a question or a claim", async () => {
-    const candidate = { headline: "The small room wins.", body: "", choice_ids: ["c0"], claims: [] };
-    const generate = vi.fn()
+    const candidate = {
+      headline: "The small room wins.",
+      body: "",
+      choice_ids: ["c0"],
+      claims: [],
+    };
+    const generate = vi
+      .fn()
       .mockResolvedValueOnce(JSON.stringify(candidate))
       .mockResolvedValueOnce(JSON.stringify(review));
     const result = await authorCritic(ledger([40]), labels, generate, { stage: "read" });
@@ -231,11 +237,17 @@ describe("critic-expression-v2.3 output contract", () => {
       .fn()
       .mockResolvedValueOnce(JSON.stringify(beat))
       .mockResolvedValueOnce(
-        JSON.stringify({ ...review, grounded: false, failed: [{ check: "lifestyle_inference", span: "needs solitude" }] }),
+        JSON.stringify({
+          ...review,
+          grounded: false,
+          failed: [{ check: "lifestyle_inference", span: "needs solitude" }],
+        }),
       )
       .mockResolvedValueOnce(JSON.stringify(beat))
       .mockResolvedValueOnce(JSON.stringify(review));
-    const result = await authorCritic(ledger([40, 40, 40, -40]), labels, generate, { stage: "reveal" });
+    const result = await authorCritic(ledger([40, 40, 40, -40]), labels, generate, {
+      stage: "reveal",
+    });
     expect(result.status).toBe("ok");
     expect(result.validation_reason).toBe("accepted_after_retry");
     expect(generate.mock.calls[2][0]).toContain("lifestyle_inference");
