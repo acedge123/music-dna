@@ -2,8 +2,9 @@
 
 ## Current — critic-quality and measurement-bias proposal
 
-- [ ] Review and approve local-only stage telemetry, independent four-axis QA, and served-versus-chosen exposure measurements; keep all export/enrollment/learning flags unchanged.
-- [ ] Implementation follows approval; production migrations require separate approval, and independent human retests require consented recruitment.
+- [x] Approved plan; private diagnostic/review/exposure schema applied through migration approval boundary, guest-policy warnings corrected. Shared stage measurements, four-axis admin review and exact web/REST offer acknowledgement implemented; 39 focused tests and guest vote/readback pass. Exports/flags unchanged.
+- [ ] Finish commit-bound attempt links/recovery, full review conversation context and aggregate bias reporting; these are not yet implemented (details: docs/musicdna/critic-quality-measurements.md).
+- [ ] Registered-admin review and deployed acceptance: external-managed registered test access and updated Vercel deployment are unavailable. Independent human retests require consented recruitment; Flutter needs display acknowledgement adoption.
 
 ## Current — sign-in flash and sign-out
 
