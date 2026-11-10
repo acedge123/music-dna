@@ -1,6 +1,6 @@
 {
   "policy_id": "musicdna-selector",
-  "version": "sha256:86e53929bc8b4db9075f2ca5b049dcd9ab7294efd7a3a1522f24397fde8779e6",
+  "version": "sha256:4cb35faa6ed9367473fe58b9f7b3cb746fa30d5b2ca720c6b0f4be3ad8077af4",
   "files": [
     "src/lib/musicdna.functions.ts",
     "src/musicdna/engine/archetypes.ts",
@@ -23,6 +23,7 @@
     "src/musicdna/engine/priors.ts",
     "src/musicdna/engine/prompts.ts",
     "src/musicdna/engine/read.ts",
+    "src/musicdna/engine/reading-support.ts",
     "src/musicdna/engine/reveal.ts",
     "src/musicdna/engine/scoring.ts",
     "src/musicdna/engine/session.ts",
