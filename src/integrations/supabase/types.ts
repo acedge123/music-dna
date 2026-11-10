@@ -2259,6 +2259,7 @@ export type Database = {
           p_candidates: Json
           p_confidence: number
           p_lane: string
+          p_owner: string
           p_vector: Json
         }
         Returns: string

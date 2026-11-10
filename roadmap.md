@@ -2,11 +2,12 @@
 
 ## Current — CGPT interview defects
 
-- [ ] Trace frozen snapshot failures; preserve invalid historical evidence rather than rebuilding it.
-- [ ] Repair prompt-echo chat fallback and distinguish writing failure from missing evidence.
-- [ ] Separate fresh starts from resume and add admin-only, tagged QA interviews isolated from listener metrics.
-- [ ] Gate archetype presentation/assignment on ledger support without rewriting saved results.
-- [ ] Run focused regressions and fresh guest interview acceptance; report production/admin access limits.
+- [x] Traced reported session: first two frozen votes have no declared tests, four of six are diagnostically usable; no historical reconstruction.
+- [x] Shared v2.2 chat fallback reports failure without quoting prompts; full prompt echoes rejected and reasons measured locally.
+- [x] Fresh Start, pinned resume IDs, result restart and atomic registered-admin owner-QA creation implemented; QA excluded from five diagnostic views, ontology, residual and shadow summaries. Tags imply no export eligibility.
+- [x] New archetype assignment and profile labels require frozen-ledger support; completed finalization replays stored interpretation. Saved results unchanged.
+- [x] 75 focused tests, changed-file lint and preview build pass; fresh guest Electronic six-choice result, non-echo chat, exact reload and fresh Start verified; 390px fits. Receipt: docs/musicdna/cgpt-interview-repair-2026-11-10.md.
+- [ ] Registered-admin QA creation/profile acceptance and Vercel deployed acceptance: external-managed registered browser access and verified updated serving revision unavailable. 44 pre-existing security notices remain separate; no new migration warnings remain.
 
 ## Current — critic-quality and measurement-bias proposal
 

@@ -21,8 +21,9 @@ import { toast } from "sonner";
 import type { CurrentReadResult } from "@/musicdna/engine/read";
 import type { Phase, Refined, Pairing, Entry } from "@/lib/interview-model";
 import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
+import { shouldResumeInterview } from "@/musicdna/engine/reading-support";
 
-export function useInterview(requestedSession?: string) {
+export function useInterview(requestedSession?: string, fresh?: string) {
   const reducedMotion = usePrefersReducedMotion();
   const reactOneFn = useServerFn(reactToOne);
   const commitFn = useServerFn(commitOpeningThree);
@@ -114,6 +115,8 @@ export function useInterview(requestedSession?: string) {
   const [bootError, setBootError] = useState<string | null>(null);
   const [booting, setBooting] = useState(true);
   useEffect(() => {
+    // Pinning a newly-created ID in the address bar must not reboot its live state.
+    if (requestedSession && requestedSession === sessionId) return;
     let cancelled = false;
     setBooting(true);
     setBootError(null);
@@ -140,7 +143,9 @@ export function useInterview(requestedSession?: string) {
         track({ event_type: "onboarding_viewed", variant: o.variant_key });
 
         // Resume an unfinished interview with its full conversation.
-        const resumed = await resumeFn({ data: { sessionId: requestedSession } });
+        const resumed = shouldResumeInterview({ session: requestedSession, fresh })
+          ? await resumeFn({ data: { sessionId: requestedSession } })
+          : null;
         if (cancelled || !resumed) return;
         const ex = resumed.exchanges;
         const restored: Entry[] = [];
@@ -176,7 +181,7 @@ export function useInterview(requestedSession?: string) {
             revision: rr?.revision as CurrentReadResult["revision"],
           });
         });
-        if (restored.length === 0) return;
+        if (restored.length === 0 && !requestedSession) return;
         playStartedRef.current = true;
         setSessionId(resumed.sessionId);
         setEntries(restored);
@@ -225,7 +230,7 @@ export function useInterview(requestedSession?: string) {
       cancelled = true;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [requestedSession]);
+  }, [requestedSession, fresh]);
 
   // reveal-final choreography (after slot 3)
   useEffect(() => {

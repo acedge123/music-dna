@@ -636,6 +636,7 @@ import { buildStartSessionSeed } from "@/musicdna/engine/session";
 import { LEDGER_VERSION, type Ledger } from "@/musicdna/engine/evidence";
 import { ENGINE_VERSION } from "@/musicdna/engine/versions";
 import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
+import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
 import {
@@ -1964,11 +1965,31 @@ export async function finalizeSessionImpl(
 ) {
   const { data: session, error: sErr } = await supabase
     .from("sessions")
-    .select("vector,user_id")
+    .select("vector,user_id,completed_at,archetype_id,interpretation")
     .eq("id", data.sessionId)
     .single();
   if (sErr || !session) throw new Error(sErr?.message ?? "session not found");
   if (session.user_id !== userId) throw new Error("forbidden");
+  if (session.completed_at) {
+    const [reasoning, archetype] = await Promise.all([
+      supabase
+        .from("session_reasoning")
+        .select("allowed_claims,counterarguments")
+        .eq("session_id", data.sessionId)
+        .maybeSingle(),
+      session.archetype_id
+        ? supabase.from("archetypes").select("name").eq("id", session.archetype_id).maybeSingle()
+        : Promise.resolve({ data: null }),
+    ]);
+    return {
+      archetypeId: session.archetype_id,
+      archetypeName: archetype.data?.name ?? "",
+      interpretation: session.interpretation ?? "",
+      vector: session.vector,
+      allowed_claims: reasoning.data?.allowed_claims ?? [],
+      counterarguments: reasoning.data?.counterarguments ?? [],
+    };
+  }
 
   // -------- Pull raw evidence --------
   const [archRes, evidence] = await Promise.all([
@@ -2073,6 +2094,7 @@ export async function finalizeSessionImpl(
     ? { id: assignment.id, name: assignment.name, score: assignment.score }
     : { id: null as string | null, name: "", score: -Infinity };
   const margin = assignment?.margin ?? 0;
+  const supported = hasReadingSupport(ledger);
 
   // -------- Log Analyst (deterministic, no model call) --------
   await supabase.from("llm_calls").insert({
@@ -2165,20 +2187,20 @@ export async function finalizeSessionImpl(
   await supabase
     .from("sessions")
     .update({
-      archetype_id: best.id,
+      archetype_id: supported ? best.id : null,
       archetype_top3: top3,
       archetype_score: assignment ? assignment.score : null,
       archetype_margin: assignment ? assignment.margin : null,
-      archetype_flagged: archetypeFlagged,
-      archetype_flag_reason: archetypeFlagReason,
+      archetype_flagged: !supported || archetypeFlagged,
+      archetype_flag_reason: supported ? archetypeFlagReason : "insufficient_evidence",
       interpretation: narrative,
       completed_at: new Date().toISOString(),
     })
     .eq("id", data.sessionId);
 
   return {
-    archetypeId: best.id,
-    archetypeName: best.name,
+    archetypeId: supported ? best.id : null,
+    archetypeName: supported ? best.name : "",
     interpretation: narrative,
     vector,
     allowed_claims,
@@ -2203,7 +2225,14 @@ export async function getMyResultImpl(supabase: AuthedSupabase, userId: string) 
       .order("started_at", { ascending: false })
       .limit(20),
   ]);
-  const latest = sessions?.[0];
+  // Presentation is ledger-gated; stored historical results remain untouched.
+  const presentedSessions = await Promise.all(
+    (sessions ?? []).map(async (session) => {
+      const { ledger } = await loadChoiceEvidence(supabase, session.id);
+      return { ...session, archetype: hasReadingSupport(ledger) ? session.archetype : null };
+    }),
+  );
+  const latest = presentedSessions[0];
   let definingChoices: Array<{
     chosen: string;
     chosenArtist: string;
@@ -2245,7 +2274,7 @@ export async function getMyResultImpl(supabase: AuthedSupabase, userId: string) 
     }));
     reasoning = (reasoningRes.data as unknown as typeof reasoning) ?? null;
   }
-  return { profile, sessions: sessions ?? [], definingChoices, reasoning };
+  return { profile, sessions: presentedSessions, definingChoices, reasoning };
 }
 
 // ============ Instrumentation: events + feedback ============
@@ -3475,7 +3504,14 @@ async function computeFinalSynthesis(
   );
   const synthesis = narrated.text;
 
-  await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
+  const qa = await supabase
+    .from("interview_qa_sessions")
+    .select("session_id")
+    .eq("session_id", data.sessionId)
+    .maybeSingle();
+  if (qa.error) throw new Error("Could not verify interview purpose.");
+  if (!qa.data)
+    await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
 
   return {
     synthesis,
@@ -4017,7 +4053,7 @@ Reactions, skips, opener priors and conversation are separate self-report, never
       stage: "chat",
       previous: previousReply,
       selfReport: data.message,
-      fallback: contextualChatFallback(chatLedger, data.message),
+      fallback: contextualChatFallback(chatLedger, data.message, DIM_LABEL),
     },
   );
   const reply = authored.text;
@@ -4237,7 +4273,7 @@ Reactions, skips, opener priors and conversation are separate self-report, never
         stage: "chat",
         previous: previousReply,
         selfReport: data.message,
-        fallback: contextualChatFallback(chatLedger, data.message),
+        fallback: contextualChatFallback(chatLedger, data.message, DIM_LABEL),
       },
     );
     const reply = authored.text;

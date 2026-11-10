@@ -27,7 +27,7 @@ export const resumeLatestSession = createServerFn({ method: "POST" })
     if (data.sessionId && !s) throw new Error("Reading not available for this account.");
     if (!s) return null;
     const exchanges: Exchange[] = await loadSessionHistory(supabase, s.id);
-    if (!exchanges.some((e) => e.type === "choice")) return null;
+    if (!data.sessionId && !exchanges.some((e) => e.type === "choice")) return null;
     const { data: profile } = await supabase
       .from("profiles")
       .select("opening_hypothesis, opening_lane")
