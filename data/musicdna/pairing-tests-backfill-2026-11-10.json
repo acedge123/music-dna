@@ -1,0 +1,1815 @@
+{
+  "batch": "pairing-tests-backfill-2026-11-10-v1",
+  "review": "Editorial rule, not empirically validated",
+  "rule": "Declare up to 3 traits where the two songs' scores differ by at least 25 points (largest first); song scores unchanged",
+  "pairings": [
+    {
+      "id": "a689de0a-08c3-4d00-8fca-6150311c3c0c",
+      "lane": "alternative",
+      "song_a": "Ceremony / New Order",
+      "song_b": "Dreaming of Me / Depeche Mode",
+      "tradeoff": "Become someone new, or carry the old you forward?",
+      "gaps": {
+        "scale": 37,
+        "tension": 45,
+        "texture": -46,
+        "movement": 23,
+        "community": 19,
+        "immersion": 62,
+        "atmosphere": 18,
+        "confidence": -15,
+        "perspective": 5,
+        "transformation": 24
+      },
+      "tests": [
+        "immersion",
+        "texture",
+        "tension"
+      ]
+    },
+    {
+      "id": "b788a34b-7948-4460-900f-c8b4397620d4",
+      "lane": "alternative",
+      "song_a": "Born Slippy .NUXX / Underworld",
+      "song_b": "Teardrop / Massive Attack",
+      "tradeoff": "Music that moves through you, or music that settles around you?",
+      "gaps": {
+        "scale": 60,
+        "tension": 20,
+        "texture": -15,
+        "movement": 50,
+        "community": 48,
+        "immersion": -40,
+        "atmosphere": -14,
+        "confidence": 5,
+        "perspective": -10,
+        "transformation": 20
+      },
+      "tests": [
+        "scale",
+        "movement",
+        "community"
+      ]
+    },
+    {
+      "id": "aaafa897-55bd-4be5-99bf-1a52c422f965",
+      "lane": "alternative",
+      "song_a": "Vapour Trail / Ride",
+      "song_b": "Only Shallow / My Bloody Valentine",
+      "tradeoff": "Lift, or texture?",
+      "gaps": {
+        "scale": -5,
+        "tension": -35,
+        "texture": 50,
+        "movement": 24,
+        "community": 18,
+        "immersion": -15,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": 15,
+        "transformation": 12
+      },
+      "tests": [
+        "texture",
+        "tension"
+      ]
+    },
+    {
+      "id": "93c9a677-6246-4959-85f5-9dea10bb7973",
+      "lane": "alternative",
+      "song_a": "Ceremony / New Order",
+      "song_b": "A Forest / The Cure",
+      "tradeoff": "Come back new, or stay in the fog?",
+      "gaps": {
+        "scale": 12,
+        "tension": -20,
+        "texture": -8,
+        "movement": 7,
+        "community": 34,
+        "immersion": 0,
+        "atmosphere": -4,
+        "confidence": -60,
+        "perspective": -47,
+        "transformation": 24
+      },
+      "tests": [
+        "confidence",
+        "perspective",
+        "community"
+      ]
+    },
+    {
+      "id": "a8e8a07c-2c71-4093-80a5-df90cdecb523",
+      "lane": "alternative",
+      "song_a": "Born Slippy .NUXX / Underworld",
+      "song_b": "Paranoid Android / Radiohead",
+      "tradeoff": "Hits the body, or hits the head?",
+      "gaps": {
+        "scale": 10,
+        "tension": -3,
+        "texture": 2,
+        "movement": 36,
+        "community": 46,
+        "immersion": -50,
+        "atmosphere": 3,
+        "confidence": 0,
+        "perspective": -5,
+        "transformation": 9
+      },
+      "tests": [
+        "immersion",
+        "community",
+        "movement"
+      ]
+    },
+    {
+      "id": "d91b441d-ad74-430c-938d-4e9a3dde7678",
+      "lane": "alternative",
+      "song_a": "Dreaming of Me / Depeche Mode",
+      "song_b": "Just Like Heaven / The Cure",
+      "tradeoff": "A mood you sink into, or a line you have to answer?",
+      "gaps": {
+        "scale": -35,
+        "tension": -15,
+        "texture": -12,
+        "movement": 22,
+        "community": 5,
+        "immersion": 0,
+        "atmosphere": 20,
+        "confidence": -50,
+        "perspective": 25,
+        "transformation": 26
+      },
+      "tests": [
+        "confidence",
+        "scale",
+        "transformation"
+      ]
+    },
+    {
+      "id": "88014529-0ec9-4636-9477-4d159316df5d",
+      "lane": "alternative",
+      "song_a": "Stars / Hum",
+      "song_b": "Vapour Trail / Ride",
+      "tradeoff": "Stare in wonder, or just keep moving?",
+      "gaps": {
+        "scale": 7,
+        "tension": 10,
+        "texture": -25,
+        "movement": -28,
+        "community": -8,
+        "immersion": -30,
+        "atmosphere": -40,
+        "confidence": -5,
+        "perspective": -5,
+        "transformation": -38
+      },
+      "tests": [
+        "atmosphere",
+        "transformation",
+        "immersion"
+      ]
+    },
+    {
+      "id": "84dffb01-4539-4b74-8878-9e5ca59ad3b8",
+      "lane": "alternative",
+      "song_a": "Breaking Into Heaven / The Stone Roses",
+      "song_b": "Born Slippy .NUXX / Underworld",
+      "tradeoff": "Slow climb to transcendence, or one sudden release?",
+      "gaps": {
+        "scale": -7,
+        "tension": -11,
+        "texture": 12,
+        "movement": -48,
+        "community": -40,
+        "immersion": 50,
+        "atmosphere": -32,
+        "confidence": -15,
+        "perspective": 35,
+        "transformation": -44
+      },
+      "tests": [
+        "immersion",
+        "movement",
+        "transformation"
+      ]
+    },
+    {
+      "id": "5f4b4f46-8d55-408d-9f9e-db077005839f",
+      "lane": "alternative",
+      "song_a": "Temptation / New Order",
+      "song_b": "This Charming Man / The Smiths",
+      "tradeoff": "Lost in the groove, or stuck on a line?",
+      "gaps": {
+        "scale": 26,
+        "tension": 3,
+        "texture": -41,
+        "movement": 24,
+        "community": 8,
+        "immersion": 25,
+        "atmosphere": 44,
+        "confidence": -35,
+        "perspective": -50,
+        "transformation": 48
+      },
+      "tests": [
+        "perspective",
+        "transformation",
+        "atmosphere"
+      ]
+    },
+    {
+      "id": "0b5f3d24-578b-42ce-abd4-9f36fd0cf915",
+      "lane": "alternative",
+      "song_a": "A Forest / The Cure",
+      "song_b": "The Killing Moon / Echo & the Bunnymen",
+      "tradeoff": "Vanish into the woods, or watch the woods from your window?",
+      "gaps": {
+        "scale": -20,
+        "tension": 13,
+        "texture": -48,
+        "movement": 34,
+        "community": -14,
+        "immersion": 17,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": 22,
+        "transformation": 10
+      },
+      "tests": [
+        "texture",
+        "movement"
+      ]
+    },
+    {
+      "id": "12bd8260-1e4e-4344-9ec1-1eb2fd374e32",
+      "lane": "alternative",
+      "song_a": "Fools Gold / The Stone Roses",
+      "song_b": "There She Goes / The La's",
+      "tradeoff": "Ride the groove, or fall for the hook?",
+      "gaps": {
+        "scale": 25,
+        "tension": 42,
+        "texture": -20,
+        "movement": -5,
+        "community": -3,
+        "immersion": 78,
+        "atmosphere": -6,
+        "confidence": -5,
+        "perspective": 60,
+        "transformation": -2
+      },
+      "tests": [
+        "immersion",
+        "perspective",
+        "tension"
+      ]
+    },
+    {
+      "id": "37cc0ec7-4914-47e6-8713-6b9895da0749",
+      "lane": "alternative",
+      "song_a": "Breaking Into Heaven / The Stone Roses",
+      "song_b": "She Bangs the Drums / The Stone Roses",
+      "tradeoff": "Slow climb to heaven, or anthem on the first beat?",
+      "gaps": {
+        "scale": 38,
+        "tension": 54,
+        "texture": -13,
+        "movement": -30,
+        "community": -38,
+        "immersion": 83,
+        "atmosphere": -24,
+        "confidence": -10,
+        "perspective": 50,
+        "transformation": -32
+      },
+      "tests": [
+        "immersion",
+        "tension",
+        "perspective"
+      ]
+    },
+    {
+      "id": "7a1bc29a-425d-44ec-9de6-0dcf7060d87d",
+      "lane": "alternative",
+      "song_a": "Blue / The Verve",
+      "song_b": "History / The Verve",
+      "tradeoff": "Whisper in your ear, or sermon from the mountain?",
+      "gaps": {
+        "scale": -15,
+        "tension": 15,
+        "texture": -45,
+        "movement": 7,
+        "community": -6,
+        "immersion": 10,
+        "atmosphere": -7,
+        "confidence": -10,
+        "perspective": -20,
+        "transformation": -3
+      },
+      "tests": [
+        "texture"
+      ]
+    },
+    {
+      "id": "6c8e5589-7bfb-4c40-84a8-22995049dc15",
+      "lane": "alternative",
+      "song_a": "Would? / Alice in Chains",
+      "song_b": "Black / Pearl Jam",
+      "tradeoff": "Sit in the ache, or let it crack you open?",
+      "gaps": {
+        "scale": 24,
+        "tension": 17,
+        "texture": 10,
+        "movement": 0,
+        "community": -7,
+        "immersion": -15,
+        "atmosphere": -9,
+        "confidence": 0,
+        "perspective": 27,
+        "transformation": 7
+      },
+      "tests": [
+        "perspective"
+      ]
+    },
+    {
+      "id": "1e2bb5e6-5431-4951-9d6e-b9b01826214c",
+      "lane": "alternative",
+      "song_a": "Spaceboy / The Smashing Pumpkins",
+      "song_b": "Mayonaise / The Smashing Pumpkins",
+      "tradeoff": "Stare at the stars, or stare at the ceiling?",
+      "gaps": {
+        "scale": -50,
+        "tension": -25,
+        "texture": -5,
+        "movement": -16,
+        "community": -24,
+        "immersion": -20,
+        "atmosphere": 14,
+        "confidence": -5,
+        "perspective": -10,
+        "transformation": 24
+      },
+      "tests": [
+        "scale",
+        "tension"
+      ]
+    },
+    {
+      "id": "18d03937-c966-4bca-b397-2f78f6e78a1a",
+      "lane": "alternative",
+      "song_a": "Slow Down / The Feelies",
+      "song_b": "This Charming Man / The Smiths",
+      "tradeoff": "Trance you out, or charm you stupid?",
+      "gaps": {
+        "scale": -17,
+        "tension": 57,
+        "texture": -65,
+        "movement": -22,
+        "community": -28,
+        "immersion": 40,
+        "atmosphere": 12,
+        "confidence": -5,
+        "perspective": -25,
+        "transformation": 8
+      },
+      "tests": [
+        "texture",
+        "tension",
+        "immersion"
+      ]
+    },
+    {
+      "id": "5bc3214c-4617-4ee8-8dd5-e98b507e751e",
+      "lane": "alternative",
+      "song_a": "Fools Gold / The Stone Roses",
+      "song_b": "Blue Monday / New Order",
+      "tradeoff": "Human pulse, or machine pulse?",
+      "gaps": {
+        "scale": -28,
+        "tension": -6,
+        "texture": -24,
+        "movement": -1,
+        "community": 22,
+        "immersion": 48,
+        "atmosphere": -10,
+        "confidence": 0,
+        "perspective": 0,
+        "transformation": -6
+      },
+      "tests": [
+        "immersion",
+        "scale"
+      ]
+    },
+    {
+      "id": "87642919-e2d8-4f1a-b6b6-ab5f3e9fa470",
+      "lane": "pop",
+      "song_a": "Style / Taylor Swift",
+      "song_b": "Toxic / Britney Spears",
+      "tradeoff": "Effortless cool, or full Broadway?",
+      "gaps": {
+        "scale": 10,
+        "tension": -45,
+        "texture": 0,
+        "movement": 0,
+        "community": 0,
+        "immersion": 15,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": 10,
+        "transformation": 0
+      },
+      "tests": [
+        "tension"
+      ]
+    },
+    {
+      "id": "f032cd75-f833-47b2-abce-e916f1fe1665",
+      "lane": "pop",
+      "song_a": "All Too Well (10 Minute Version) / Taylor Swift",
+      "song_b": "Rolling in the Deep / Adele",
+      "tradeoff": "A small memory held close, or a voice big enough to break it open?",
+      "gaps": {
+        "scale": -20,
+        "tension": -17,
+        "texture": 0,
+        "movement": 0,
+        "community": 0,
+        "immersion": 75,
+        "atmosphere": 0,
+        "confidence": -1,
+        "perspective": -7,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion"
+      ]
+    },
+    {
+      "id": "4f7eb984-39d6-4d7c-af36-5ce2cc45d6d1",
+      "lane": "pop",
+      "song_a": "The Archer / Taylor Swift",
+      "song_b": "Shake It Off / Taylor Swift",
+      "tradeoff": "A slow turn into someone new, or hit the bridge and let go?",
+      "gaps": {
+        "scale": -20,
+        "tension": 62,
+        "texture": -20,
+        "movement": 0,
+        "community": 0,
+        "immersion": 73,
+        "atmosphere": 0,
+        "confidence": -5,
+        "perspective": -33,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion",
+        "tension",
+        "perspective"
+      ]
+    },
+    {
+      "id": "4c2dde40-d401-41b4-b076-7bf2d94c4660",
+      "lane": "pop",
+      "song_a": "Ocean Eyes / Billie Eilish",
+      "song_b": "bad guy / Billie Eilish",
+      "tradeoff": "Soft-focus and bruised, or stripped down and untouchable?",
+      "gaps": {
+        "scale": 5,
+        "tension": -30,
+        "texture": -7,
+        "movement": 0,
+        "community": 0,
+        "immersion": 55,
+        "atmosphere": 0,
+        "confidence": 3,
+        "perspective": -10,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion",
+        "tension"
+      ]
+    },
+    {
+      "id": "866383ad-c1e1-4ccd-9041-8f03dcb858cb",
+      "lane": "pop",
+      "song_a": "Cruel Summer / Taylor Swift",
+      "song_b": "Someone Like You / Adele",
+      "tradeoff": "Need it right now, or miss what's already gone?",
+      "gaps": {
+        "scale": 45,
+        "tension": 29,
+        "texture": 28,
+        "movement": 0,
+        "community": 0,
+        "immersion": -18,
+        "atmosphere": 0,
+        "confidence": -3,
+        "perspective": 0,
+        "transformation": 0
+      },
+      "tests": [
+        "scale",
+        "tension",
+        "texture"
+      ]
+    },
+    {
+      "id": "38ca2f01-a715-47c9-932f-c6f03b5bd1ec",
+      "lane": "pop",
+      "song_a": "Espresso / Sabrina Carpenter",
+      "song_b": "Vampire / Olivia Rodrigo",
+      "tradeoff": "A clever jab, or full courtroom drama?",
+      "gaps": {
+        "scale": -35,
+        "tension": -67,
+        "texture": 14,
+        "movement": 0,
+        "community": 0,
+        "immersion": -28,
+        "atmosphere": 0,
+        "confidence": 3,
+        "perspective": 32,
+        "transformation": 0
+      },
+      "tests": [
+        "tension",
+        "scale",
+        "perspective"
+      ]
+    },
+    {
+      "id": "6538954a-2ef9-46e4-87ed-25c8a2c97557",
+      "lane": "pop",
+      "song_a": "Green Light / Lorde",
+      "song_b": "Bad Romance / Lady Gaga",
+      "tradeoff": "Driving past their house, or staking it out?",
+      "gaps": {
+        "scale": -18,
+        "tension": -27,
+        "texture": -24,
+        "movement": 0,
+        "community": 0,
+        "immersion": 23,
+        "atmosphere": 0,
+        "confidence": -7,
+        "perspective": -27,
+        "transformation": 0
+      },
+      "tests": [
+        "tension",
+        "perspective"
+      ]
+    },
+    {
+      "id": "d74ef670-0a2f-4119-81c0-5085a95e0f63",
+      "lane": "pop",
+      "song_a": "Blank Space / Taylor Swift",
+      "song_b": "Rehab / Amy Winehouse",
+      "tradeoff": "The character you built, or the person underneath it?",
+      "gaps": {
+        "scale": 20,
+        "tension": -21,
+        "texture": 33,
+        "movement": -34,
+        "community": -24,
+        "immersion": 23,
+        "atmosphere": 19,
+        "confidence": 6,
+        "perspective": 44,
+        "transformation": 28
+      },
+      "tests": [
+        "perspective",
+        "movement",
+        "texture"
+      ]
+    },
+    {
+      "id": "6317b904-c537-41df-ae26-ff73f79b49bf",
+      "lane": "pop",
+      "song_a": "Teenage Dream / Katy Perry",
+      "song_b": "Video Games / Lana Del Rey",
+      "tradeoff": "Top of the world in love, or in love and going down?",
+      "gaps": {
+        "scale": -2,
+        "tension": -33,
+        "texture": 12,
+        "movement": 60,
+        "community": 80,
+        "immersion": -30,
+        "atmosphere": -50,
+        "confidence": 57,
+        "perspective": 6,
+        "transformation": -20
+      },
+      "tests": [
+        "community",
+        "movement",
+        "confidence"
+      ]
+    },
+    {
+      "id": "73a2c57d-b756-4710-bb74-d939c18b748d",
+      "lane": "pop",
+      "song_a": "Lights Up / Harry Styles",
+      "song_b": "Chandelier / Sia",
+      "tradeoff": "A confession, almost whispered, or a scream you can't take back?",
+      "gaps": {
+        "scale": -19,
+        "tension": -51,
+        "texture": 10,
+        "movement": -32,
+        "community": -26,
+        "immersion": 22,
+        "atmosphere": -18,
+        "confidence": 14,
+        "perspective": -4,
+        "transformation": 6
+      },
+      "tests": [
+        "tension",
+        "movement",
+        "community"
+      ]
+    },
+    {
+      "id": "b1f87bce-a957-48dc-a795-188b5bbd61d5",
+      "lane": "pop",
+      "song_a": "Bury a Friend / Billie Eilish",
+      "song_b": "Into You / Ariana Grande",
+      "tradeoff": "Pretty and wrong, or pure want, no friction?",
+      "gaps": {
+        "scale": -56,
+        "tension": 36,
+        "texture": -52,
+        "movement": 0,
+        "community": 0,
+        "immersion": 20,
+        "atmosphere": 0,
+        "confidence": 3,
+        "perspective": -2,
+        "transformation": 0
+      },
+      "tests": [
+        "scale",
+        "texture",
+        "tension"
+      ]
+    },
+    {
+      "id": "ddbaaff8-2064-48ba-b2f0-5589115bd761",
+      "lane": "pop",
+      "song_a": "Royals / Lorde",
+      "song_b": "We Found Love / Rihanna feat. Calvin Harris",
+      "tradeoff": "Side-eye at the world, or hands in the air?",
+      "gaps": {
+        "scale": -47,
+        "tension": 5,
+        "texture": -4,
+        "movement": 12,
+        "community": 35,
+        "immersion": 13,
+        "atmosphere": 24,
+        "confidence": -7,
+        "perspective": 51,
+        "transformation": -28
+      },
+      "tests": [
+        "perspective",
+        "scale",
+        "community"
+      ]
+    },
+    {
+      "id": "1184edeb-e889-4b43-8ad1-bbfcca2450d4",
+      "lane": "pop",
+      "song_a": "Running Up That Hill / Kate Bush",
+      "song_b": "Like a Prayer / Madonna",
+      "tradeoff": "A secret you whispered to the moon, or the whole room knowing at once?",
+      "gaps": {
+        "scale": -7,
+        "tension": 34,
+        "texture": -17,
+        "movement": 0,
+        "community": 0,
+        "immersion": 72,
+        "atmosphere": 0,
+        "confidence": -5,
+        "perspective": 2,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion",
+        "tension"
+      ]
+    },
+    {
+      "id": "d108ee19-da5d-495e-b778-cc0146032bd8",
+      "lane": "pop",
+      "song_a": "Good 4 U / Olivia Rodrigo",
+      "song_b": "Watermelon Sugar / Harry Styles",
+      "tradeoff": "Speeding away pissed, or melting in the heat?",
+      "gaps": {
+        "scale": -12,
+        "tension": 58,
+        "texture": -46,
+        "movement": 0,
+        "community": 0,
+        "immersion": -8,
+        "atmosphere": 0,
+        "confidence": 5,
+        "perspective": -25,
+        "transformation": 0
+      },
+      "tests": [
+        "tension",
+        "texture",
+        "perspective"
+      ]
+    },
+    {
+      "id": "aa289362-1506-4e30-92f5-49f6262dd435",
+      "lane": "pop",
+      "song_a": "Billie Jean / Michael Jackson",
+      "song_b": "Material Girl / Madonna",
+      "tradeoff": "Looking over your shoulder, or owning the room?",
+      "gaps": {
+        "scale": 20,
+        "tension": 53,
+        "texture": 8,
+        "movement": 0,
+        "community": 0,
+        "immersion": 15,
+        "atmosphere": 0,
+        "confidence": 5,
+        "perspective": -10,
+        "transformation": 0
+      },
+      "tests": [
+        "tension"
+      ]
+    },
+    {
+      "id": "15d8955e-255b-43cd-9f1f-82d2d99b83ae",
+      "lane": "pop",
+      "song_a": "Paparazzi / Lady Gaga",
+      "song_b": "Love Story / Taylor Swift",
+      "tradeoff": "In love with being seen, or in love with one person?",
+      "gaps": {
+        "scale": 7,
+        "tension": 50,
+        "texture": -6,
+        "movement": 0,
+        "community": 0,
+        "immersion": 27,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": 5,
+        "transformation": 0
+      },
+      "tests": [
+        "tension",
+        "immersion"
+      ]
+    },
+    {
+      "id": "e57c8db1-97ab-4018-ae78-2de710eed0b2",
+      "lane": "pop",
+      "song_a": "Nothing Compares 2 U / Sinead O'Connor",
+      "song_b": "Firework / Katy Perry",
+      "tradeoff": "Cry in the car, or a chorus that carries you out?",
+      "gaps": {
+        "scale": -46,
+        "tension": 31,
+        "texture": -16,
+        "movement": -66,
+        "community": -81,
+        "immersion": 76,
+        "atmosphere": 36,
+        "confidence": -50,
+        "perspective": -16,
+        "transformation": -21
+      },
+      "tests": [
+        "community",
+        "immersion",
+        "movement"
+      ]
+    },
+    {
+      "id": "fb6a730c-5e0b-4c9c-9aca-785a216269df",
+      "lane": "hip_hop",
+      "song_a": "Money Trees / Kendrick Lamar",
+      "song_b": "N.Y. State of Mind / Nas",
+      "tradeoff": "Lost in the haze, or pinned to the corner?",
+      "gaps": {
+        "scale": 7,
+        "tension": -24,
+        "texture": 50,
+        "movement": 0,
+        "community": 0,
+        "immersion": 4,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": -40,
+        "transformation": 0
+      },
+      "tests": [
+        "texture",
+        "perspective"
+      ]
+    },
+    {
+      "id": "243da1df-6778-4f5e-a4b2-7eaeb8627c81",
+      "lane": "hip_hop",
+      "song_a": "Runaway / Kanye West",
+      "song_b": "HUMBLE. / Kendrick Lamar",
+      "tradeoff": "Open the vein, or hold the room?",
+      "gaps": {
+        "scale": 39,
+        "tension": 0,
+        "texture": -3,
+        "movement": 0,
+        "community": 0,
+        "immersion": 72,
+        "atmosphere": 0,
+        "confidence": 5,
+        "perspective": 0,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion",
+        "scale"
+      ]
+    },
+    {
+      "id": "0eb61865-48cd-4846-b992-958248b16996",
+      "lane": "hip_hop",
+      "song_a": "Devil in a New Dress / Kanye West",
+      "song_b": "Gin and Juice / Snoop Dogg",
+      "tradeoff": "Diamonds and Cristal, or your crew on the porch?",
+      "gaps": {
+        "scale": 50,
+        "tension": 40,
+        "texture": 20,
+        "movement": 0,
+        "community": 0,
+        "immersion": 65,
+        "atmosphere": 0,
+        "confidence": 5,
+        "perspective": -20,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion",
+        "scale",
+        "tension"
+      ]
+    },
+    {
+      "id": "6ddbd3c8-099d-4bf1-a9ca-f66784c5eb57",
+      "lane": "hip_hop",
+      "song_a": "Sing About Me, I'm Dying of Thirst / Kendrick Lamar",
+      "song_b": "C.R.E.A.M. / Wu-Tang Clan",
+      "tradeoff": "Right and wrong, or what you had to do?",
+      "gaps": {
+        "scale": -15,
+        "tension": -4,
+        "texture": 4,
+        "movement": -18,
+        "community": -8,
+        "immersion": 56,
+        "atmosphere": -32,
+        "confidence": 19,
+        "perspective": 63,
+        "transformation": 15
+      },
+      "tests": [
+        "perspective",
+        "immersion",
+        "atmosphere"
+      ]
+    },
+    {
+      "id": "f859a64c-a950-4319-97e4-e1848f38bf81",
+      "lane": "hip_hop",
+      "song_a": "Stan / Eminem",
+      "song_b": "Alright / Kendrick Lamar",
+      "tradeoff": "One man's haunted, or a city that won't quit?",
+      "gaps": {
+        "scale": -17,
+        "tension": 5,
+        "texture": -25,
+        "movement": 0,
+        "community": 0,
+        "immersion": -1,
+        "atmosphere": 0,
+        "confidence": 3,
+        "perspective": 50,
+        "transformation": 0
+      },
+      "tests": [
+        "perspective",
+        "texture"
+      ]
+    },
+    {
+      "id": "4501639d-0cf2-4afe-87da-d150f47ef3aa",
+      "lane": "hip_hop",
+      "song_a": "Shook Ones Pt. II / Mobb Deep",
+      "song_b": "Juicy / The Notorious B.I.G.",
+      "tradeoff": "Watch your back, or watch me win?",
+      "gaps": {
+        "scale": -20,
+        "tension": 68,
+        "texture": -65,
+        "movement": 0,
+        "community": 0,
+        "immersion": 50,
+        "atmosphere": 0,
+        "confidence": -5,
+        "perspective": -10,
+        "transformation": 0
+      },
+      "tests": [
+        "tension",
+        "texture",
+        "immersion"
+      ]
+    },
+    {
+      "id": "07e0bfd2-5fec-4b73-838d-319caeeda88d",
+      "lane": "hip_hop",
+      "song_a": "Ms. Jackson / Outkast",
+      "song_b": "Lose Yourself / Eminem",
+      "tradeoff": "Sorry on a melody, or hungry and won't stop?",
+      "gaps": {
+        "scale": -7,
+        "tension": -33,
+        "texture": -3,
+        "movement": 0,
+        "community": 0,
+        "immersion": 15,
+        "atmosphere": 0,
+        "confidence": -1,
+        "perspective": 2,
+        "transformation": 0
+      },
+      "tests": [
+        "tension"
+      ]
+    },
+    {
+      "id": "d75c58ee-088b-40a2-b894-3e294eb3b0f5",
+      "lane": "hip_hop",
+      "song_a": "Can I Kick It? / A Tribe Called Quest",
+      "song_b": "X Gon' Give It To Ya / DMX",
+      "tradeoff": "Pass the blunt, or pick the fight?",
+      "gaps": {
+        "scale": -25,
+        "tension": -72,
+        "texture": 20,
+        "movement": 0,
+        "community": 0,
+        "immersion": 30,
+        "atmosphere": 0,
+        "confidence": -5,
+        "perspective": 20,
+        "transformation": 0
+      },
+      "tests": [
+        "tension",
+        "immersion",
+        "scale"
+      ]
+    },
+    {
+      "id": "02a581d3-f6c5-478d-a581-489710b60370",
+      "lane": "hip_hop",
+      "song_a": "Alright / Kendrick Lamar",
+      "song_b": "Sicko Mode / Travis Scott",
+      "tradeoff": "We're still here, or look what I built?",
+      "gaps": {
+        "scale": -18,
+        "tension": 5,
+        "texture": -27,
+        "movement": 0,
+        "community": 0,
+        "immersion": 11,
+        "atmosphere": 0,
+        "confidence": 2,
+        "perspective": -10,
+        "transformation": 0
+      },
+      "tests": [
+        "texture"
+      ]
+    },
+    {
+      "id": "2e74359c-85dd-4769-8640-956b99095ad8",
+      "lane": "hip_hop",
+      "song_a": "Passin' Me By / The Pharcyde",
+      "song_b": "Hotline Bling / Drake",
+      "tradeoff": "Cringe at the memory, or cool right through it?",
+      "gaps": {
+        "scale": -10,
+        "tension": 6,
+        "texture": -50,
+        "movement": 0,
+        "community": 0,
+        "immersion": 15,
+        "atmosphere": 0,
+        "confidence": -4,
+        "perspective": -3,
+        "transformation": 0
+      },
+      "tests": [
+        "texture"
+      ]
+    },
+    {
+      "id": "69a391ce-9b77-4cf9-8248-d6a74f8b7420",
+      "lane": "hip_hop",
+      "song_a": "They Reminisce Over You / Pete Rock & CL Smooth",
+      "song_b": "No Role Modelz / J. Cole",
+      "tradeoff": "Mourn the ones gone, or stand up for who's left?",
+      "gaps": {
+        "scale": 10,
+        "tension": -15,
+        "texture": 5,
+        "movement": 0,
+        "community": 0,
+        "immersion": -10,
+        "atmosphere": 0,
+        "confidence": 5,
+        "perspective": 35,
+        "transformation": 0
+      },
+      "tests": [
+        "perspective"
+      ]
+    },
+    {
+      "id": "8fcb6e13-2d20-4ae1-a56c-db407b192972",
+      "lane": "hip_hop",
+      "song_a": "Changes / 2Pac",
+      "song_b": "Mo Money Mo Problems / The Notorious B.I.G.",
+      "tradeoff": "Cry for the block, or floss while it burns?",
+      "gaps": {
+        "scale": -25,
+        "tension": 27,
+        "texture": -24,
+        "movement": 0,
+        "community": 0,
+        "immersion": 5,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": 35,
+        "transformation": 0
+      },
+      "tests": [
+        "perspective",
+        "tension",
+        "scale"
+      ]
+    },
+    {
+      "id": "4ebb58d0-7901-4ad3-9fd1-dcf79dff4046",
+      "lane": "hip_hop",
+      "song_a": "Dear Mama / 2Pac",
+      "song_b": "Power / Kanye West",
+      "tradeoff": "Open your chest, or stake your throne?",
+      "gaps": {
+        "scale": -50,
+        "tension": -38,
+        "texture": -32,
+        "movement": 0,
+        "community": 0,
+        "immersion": 0,
+        "atmosphere": 0,
+        "confidence": -3,
+        "perspective": -30,
+        "transformation": 0
+      },
+      "tests": [
+        "scale",
+        "tension",
+        "texture"
+      ]
+    },
+    {
+      "id": "3e64314c-39e6-437d-8de7-859e04310c52",
+      "lane": "hip_hop",
+      "song_a": "Pursuit of Happiness / Kid Cudi",
+      "song_b": "Mask Off / Future",
+      "tradeoff": "Float above it alone, or sink into it with the room?",
+      "gaps": {
+        "scale": -12,
+        "tension": -5,
+        "texture": 0,
+        "movement": 0,
+        "community": 0,
+        "immersion": 5,
+        "atmosphere": 0,
+        "confidence": 5,
+        "perspective": -35,
+        "transformation": 0
+      },
+      "tests": [
+        "perspective"
+      ]
+    },
+    {
+      "id": "71b667d6-143d-474e-a017-52f292ee0bca",
+      "lane": "electronic",
+      "song_a": "Windowlicker / Aphex Twin",
+      "song_b": "Born Slippy .NUXX / Underworld",
+      "tradeoff": "Get weird, or get wrecked?",
+      "gaps": {
+        "scale": -30,
+        "tension": -4,
+        "texture": 22,
+        "movement": 0,
+        "community": 0,
+        "immersion": 3,
+        "atmosphere": 0,
+        "confidence": 3,
+        "perspective": 17,
+        "transformation": 0
+      },
+      "tests": [
+        "scale"
+      ]
+    },
+    {
+      "id": "b3d4a3ad-f713-4e43-8f72-d4adb2f3dcc4",
+      "lane": "electronic",
+      "song_a": "Teardrop / Massive Attack",
+      "song_b": "Firestarter / The Prodigy",
+      "tradeoff": "Float, or get hit?",
+      "gaps": {
+        "scale": -7,
+        "tension": -28,
+        "texture": 56,
+        "movement": -8,
+        "community": -38,
+        "immersion": 83,
+        "atmosphere": 42,
+        "confidence": -57,
+        "perspective": -8,
+        "transformation": -15
+      },
+      "tests": [
+        "immersion",
+        "confidence",
+        "texture"
+      ]
+    },
+    {
+      "id": "f501dd0e-6db4-4874-ad34-516c710267a2",
+      "lane": "electronic",
+      "song_a": "Unfinished Sympathy / Massive Attack",
+      "song_b": "Insomnia / Faithless",
+      "tradeoff": "A voice that grabs you, or a beat that won't sit down?",
+      "gaps": {
+        "scale": -2,
+        "tension": -33,
+        "texture": 14,
+        "movement": 0,
+        "community": 0,
+        "immersion": 23,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": 45,
+        "transformation": 0
+      },
+      "tests": [
+        "perspective",
+        "tension"
+      ]
+    },
+    {
+      "id": "64113c09-8f5d-483e-8f06-9d7b9e04b1f7",
+      "lane": "electronic",
+      "song_a": "Strobe / Deadmau5",
+      "song_b": "Levels / Avicii",
+      "tradeoff": "Eight minutes to liftoff, or up in eight bars?",
+      "gaps": {
+        "scale": 0,
+        "tension": 20,
+        "texture": -4,
+        "movement": 0,
+        "community": 0,
+        "immersion": 85,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": 0,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion"
+      ]
+    },
+    {
+      "id": "dfe46f5f-ce5d-449b-9dd7-8784c4827ed7",
+      "lane": "electronic",
+      "song_a": "Archangel / Burial",
+      "song_b": "Around the World / Daft Punk",
+      "tradeoff": "A voice in an empty room, or a machine that won't stop?",
+      "gaps": {
+        "scale": -23,
+        "tension": 52,
+        "texture": -83,
+        "movement": 0,
+        "community": 0,
+        "immersion": 45,
+        "atmosphere": 0,
+        "confidence": 2,
+        "perspective": -50,
+        "transformation": 0
+      },
+      "tests": [
+        "texture",
+        "tension",
+        "perspective"
+      ]
+    },
+    {
+      "id": "57bed0f8-aa72-4ca0-a6fb-51be0b10413f",
+      "lane": "electronic",
+      "song_a": "Porcelain / Moby",
+      "song_b": "Block Rockin' Beats / The Chemical Brothers",
+      "tradeoff": "Sad and drifting, or sad and swinging fists?",
+      "gaps": {
+        "scale": 3,
+        "tension": -25,
+        "texture": 11,
+        "movement": -48,
+        "community": -28,
+        "immersion": 67,
+        "atmosphere": 20,
+        "confidence": 2,
+        "perspective": -60,
+        "transformation": 10
+      },
+      "tests": [
+        "immersion",
+        "perspective",
+        "movement"
+      ]
+    },
+    {
+      "id": "8abace0e-a89d-41bd-9cd2-c88681aa80b1",
+      "lane": "electronic",
+      "song_a": "Little Fluffy Clouds / The Orb",
+      "song_b": "Smack My Bitch Up / The Prodigy",
+      "tradeoff": "Dream it, or take it in the chest?",
+      "gaps": {
+        "scale": -7,
+        "tension": -79,
+        "texture": 40,
+        "movement": -48,
+        "community": -38,
+        "immersion": 67,
+        "atmosphere": -22,
+        "confidence": -10,
+        "perspective": 3,
+        "transformation": 10
+      },
+      "tests": [
+        "tension",
+        "immersion",
+        "movement"
+      ]
+    },
+    {
+      "id": "6313c578-0f0d-40c3-bed2-0ae5c3f7b904",
+      "lane": "electronic",
+      "song_a": "Hyperballad / Bjork",
+      "song_b": "Star Guitar / The Chemical Brothers",
+      "tradeoff": "Feel something, or watch the lights move?",
+      "gaps": {
+        "scale": 11,
+        "tension": 26,
+        "texture": 2,
+        "movement": 32,
+        "community": -12,
+        "immersion": -6,
+        "atmosphere": 38,
+        "confidence": -46,
+        "perspective": -83,
+        "transformation": 24
+      },
+      "tests": [
+        "perspective",
+        "confidence",
+        "atmosphere"
+      ]
+    },
+    {
+      "id": "d34bb49c-c9c3-4f27-bb5a-b3cb00790966",
+      "lane": "electronic",
+      "song_a": "Chime / Orbital",
+      "song_b": "Sandstorm / Darude",
+      "tradeoff": "Watch it build for ten minutes, or hit the hook now?",
+      "gaps": {
+        "scale": -8,
+        "tension": -37,
+        "texture": 0,
+        "movement": -10,
+        "community": -1,
+        "immersion": 30,
+        "atmosphere": 23,
+        "confidence": -19,
+        "perspective": -3,
+        "transformation": 44
+      },
+      "tests": [
+        "transformation",
+        "tension",
+        "immersion"
+      ]
+    },
+    {
+      "id": "681f892b-8008-48c9-986b-42d224e6450b",
+      "lane": "electronic",
+      "song_a": "Roygbiv / Boards of Canada",
+      "song_b": "Windowlicker / Aphex Twin",
+      "tradeoff": "Something that feels like home, or something you've never heard?",
+      "gaps": {
+        "scale": -24,
+        "tension": -43,
+        "texture": -18,
+        "movement": 18,
+        "community": -36,
+        "immersion": -7,
+        "atmosphere": 39,
+        "confidence": -53,
+        "perspective": -20,
+        "transformation": -28
+      },
+      "tests": [
+        "confidence",
+        "tension",
+        "atmosphere"
+      ]
+    },
+    {
+      "id": "77b1a228-76ff-45f6-ad6e-df785dfd0f02",
+      "lane": "electronic",
+      "song_a": "Inner City Life / Goldie",
+      "song_b": "Children / Robert Miles",
+      "tradeoff": "City pain, or the chorus that lifts you out of it?",
+      "gaps": {
+        "scale": 5,
+        "tension": 30,
+        "texture": -10,
+        "movement": 0,
+        "community": 0,
+        "immersion": 38,
+        "atmosphere": 0,
+        "confidence": 5,
+        "perspective": -15,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion",
+        "tension"
+      ]
+    },
+    {
+      "id": "a239c5f6-b0e8-4636-bde9-b869f978360e",
+      "lane": "classic_rock",
+      "song_a": "White Rabbit / Jefferson Airplane",
+      "song_b": "Tiny Dancer / Elton John",
+      "tradeoff": "Bad-trip swirl, or top-down singalong?",
+      "gaps": {
+        "scale": -30,
+        "tension": 52,
+        "texture": -44,
+        "movement": 0,
+        "community": 0,
+        "immersion": 15,
+        "atmosphere": 0,
+        "confidence": -2,
+        "perspective": 13,
+        "transformation": 0
+      },
+      "tests": [
+        "tension",
+        "texture",
+        "scale"
+      ]
+    },
+    {
+      "id": "c65c2540-d098-49bb-83c9-3a0a1519274a",
+      "lane": "classic_rock",
+      "song_a": "Rebel Rebel / David Bowie",
+      "song_b": "Space Oddity / David Bowie",
+      "tradeoff": "Sequins under the spotlight, or a lonely signal from space?",
+      "gaps": {
+        "scale": -50,
+        "tension": -23,
+        "texture": -17,
+        "movement": 38,
+        "community": 42,
+        "immersion": -71,
+        "atmosphere": -18,
+        "confidence": 5,
+        "perspective": -9,
+        "transformation": -32
+      },
+      "tests": [
+        "immersion",
+        "scale",
+        "community"
+      ]
+    },
+    {
+      "id": "64ff48ec-7abd-4f10-9d0a-b18d538288f3",
+      "lane": "classic_rock",
+      "song_a": "Thunder Road / Bruce Springsteen",
+      "song_b": "Landslide / Fleetwood Mac",
+      "tradeoff": "Run away with her, or write the letter you'll never send?",
+      "gaps": {
+        "scale": 73,
+        "tension": 0,
+        "texture": 15,
+        "movement": 0,
+        "community": 0,
+        "immersion": 30,
+        "atmosphere": 0,
+        "confidence": -6,
+        "perspective": 75,
+        "transformation": 0
+      },
+      "tests": [
+        "perspective",
+        "scale",
+        "immersion"
+      ]
+    },
+    {
+      "id": "139e6781-de8b-47c5-b167-4996d95bbaf0",
+      "lane": "classic_rock",
+      "song_a": "Wish You Were Here / Pink Floyd",
+      "song_b": "You Really Got Me / The Kinks",
+      "tradeoff": "What's gone, or what's hitting you right now?",
+      "gaps": {
+        "scale": 7,
+        "tension": -48,
+        "texture": 53,
+        "movement": 0,
+        "community": 0,
+        "immersion": 63,
+        "atmosphere": 0,
+        "confidence": -5,
+        "perspective": 59,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion",
+        "perspective",
+        "texture"
+      ]
+    },
+    {
+      "id": "fb5a8fdd-09ca-4008-b059-1fd6e1b13630",
+      "lane": "classic_rock",
+      "song_a": "The Chain / Fleetwood Mac",
+      "song_b": "Free Bird / Lynyrd Skynyrd",
+      "tradeoff": "One explosion, or fifteen minutes of running?",
+      "gaps": {
+        "scale": -8,
+        "tension": 34,
+        "texture": 31,
+        "movement": 39,
+        "community": 24,
+        "immersion": -23,
+        "atmosphere": 18,
+        "confidence": -2,
+        "perspective": -24,
+        "transformation": 41
+      },
+      "tests": [
+        "transformation",
+        "movement",
+        "tension"
+      ]
+    },
+    {
+      "id": "50b60193-757e-4f15-a79c-5856a6dea1d1",
+      "lane": "classic_rock",
+      "song_a": "Sympathy for the Devil / The Rolling Stones",
+      "song_b": "Carry On Wayward Son / Kansas",
+      "tradeoff": "A grin with a knife, or a hero with a heavy heart?",
+      "gaps": {
+        "scale": -42,
+        "tension": 30,
+        "texture": -31,
+        "movement": 0,
+        "community": 0,
+        "immersion": 0,
+        "atmosphere": 0,
+        "confidence": 9,
+        "perspective": 14,
+        "transformation": 0
+      },
+      "tests": [
+        "scale",
+        "texture",
+        "tension"
+      ]
+    },
+    {
+      "id": "3e345d69-9900-4456-bf76-84f8744d16ad",
+      "lane": "classic_rock",
+      "song_a": "Go Your Own Way / Fleetwood Mac",
+      "song_b": "Hotel California / Eagles",
+      "tradeoff": "Peel out of the driveway, or stay for one more drink?",
+      "gaps": {
+        "scale": -4,
+        "tension": 10,
+        "texture": -53,
+        "movement": 0,
+        "community": 0,
+        "immersion": -50,
+        "atmosphere": 0,
+        "confidence": -5,
+        "perspective": -80,
+        "transformation": 0
+      },
+      "tests": [
+        "perspective",
+        "texture",
+        "immersion"
+      ]
+    },
+    {
+      "id": "f1cadc80-4a13-4f1b-9d2b-e22470e8ff95",
+      "lane": "classic_rock",
+      "song_a": "Fortunate Son / Creedence Clearwater Revival",
+      "song_b": "Imagine / John Lennon",
+      "tradeoff": "Throw the brick, or sing the prayer?",
+      "gaps": {
+        "scale": 10,
+        "tension": 73,
+        "texture": -50,
+        "movement": 0,
+        "community": 0,
+        "immersion": -15,
+        "atmosphere": 0,
+        "confidence": 2,
+        "perspective": 0,
+        "transformation": 0
+      },
+      "tests": [
+        "tension",
+        "texture"
+      ]
+    },
+    {
+      "id": "c99e6110-1e4a-49bf-8d7a-6337ce5ab722",
+      "lane": "classic_rock",
+      "song_a": "Whole Lotta Love / Led Zeppelin",
+      "song_b": "Bohemian Rhapsody / Queen",
+      "tradeoff": "A riff to the chest, or a whole movie in one song?",
+      "gaps": {
+        "scale": -13,
+        "tension": 14,
+        "texture": -70,
+        "movement": -28,
+        "community": -42,
+        "immersion": 6,
+        "atmosphere": -34,
+        "confidence": 2,
+        "perspective": -23,
+        "transformation": -46
+      },
+      "tests": [
+        "texture",
+        "transformation",
+        "community"
+      ]
+    },
+    {
+      "id": "fae611d9-18cf-48aa-9bde-8b0fd04f8417",
+      "lane": "classic_rock",
+      "song_a": "Proud Mary / Tina Turner",
+      "song_b": "House of the Rising Sun / The Animals",
+      "tradeoff": "Sweat it out, or surrender to it?",
+      "gaps": {
+        "scale": 25,
+        "tension": -3,
+        "texture": 15,
+        "movement": 0,
+        "community": 0,
+        "immersion": 15,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": -25,
+        "transformation": 0
+      },
+      "tests": [
+        "scale",
+        "perspective"
+      ]
+    },
+    {
+      "id": "b0356b03-be48-476e-b5a8-e68f7961c153",
+      "lane": "classic_rock",
+      "song_a": "Dreams / Fleetwood Mac",
+      "song_b": "Baba O'Riley / The Who",
+      "tradeoff": "Whisper in your ear, or shout from the bleachers?",
+      "gaps": {
+        "scale": -35,
+        "tension": -5,
+        "texture": 27,
+        "movement": 0,
+        "community": 0,
+        "immersion": -5,
+        "atmosphere": 0,
+        "confidence": 1,
+        "perspective": -62,
+        "transformation": 0
+      },
+      "tests": [
+        "perspective",
+        "scale",
+        "texture"
+      ]
+    },
+    {
+      "id": "f1e120ef-86aa-4cc4-848f-5efe6b76c518",
+      "lane": "classic_rock",
+      "song_a": "Gimme Shelter / The Rolling Stones",
+      "song_b": "Kashmir / Led Zeppelin",
+      "tradeoff": "The world ending tonight, or a cathedral that won't fall?",
+      "gaps": {
+        "scale": -7,
+        "tension": 9,
+        "texture": -36,
+        "movement": 0,
+        "community": -10,
+        "immersion": 32,
+        "atmosphere": 0,
+        "confidence": -15,
+        "perspective": -8,
+        "transformation": -19
+      },
+      "tests": [
+        "texture",
+        "immersion"
+      ]
+    },
+    {
+      "id": "9be71b22-805a-4580-aa0a-893f9902a4ce",
+      "lane": "classic_rock",
+      "song_a": "Don't Stop Believin' / Journey",
+      "song_b": "Paint It Black / The Rolling Stones",
+      "tradeoff": "Hold hands in the dark, or just sit in the dark?",
+      "gaps": {
+        "scale": 18,
+        "tension": -43,
+        "texture": 47,
+        "movement": 35,
+        "community": 48,
+        "immersion": -20,
+        "atmosphere": -20,
+        "confidence": -4,
+        "perspective": 50,
+        "transformation": -10
+      },
+      "tests": [
+        "perspective",
+        "community",
+        "texture"
+      ]
+    },
+    {
+      "id": "f350dadc-4946-4724-ae92-3e70b227b50f",
+      "lane": "classic_rock",
+      "song_a": "Heart of Gold / Neil Young",
+      "song_b": "Won't Get Fooled Again / The Who",
+      "tradeoff": "A guy at the kitchen table, or 80,000 people screaming no?",
+      "gaps": {
+        "scale": -80,
+        "tension": -58,
+        "texture": -38,
+        "movement": 0,
+        "community": 0,
+        "immersion": 0,
+        "atmosphere": 0,
+        "confidence": 3,
+        "perspective": -68,
+        "transformation": 0
+      },
+      "tests": [
+        "scale",
+        "perspective",
+        "tension"
+      ]
+    },
+    {
+      "id": "aa437b2c-ab17-4028-8cce-b3e332b62dfe",
+      "lane": "classic_rock",
+      "song_a": "American Girl / Tom Petty and the Heartbreakers",
+      "song_b": "Riders on the Storm / The Doors",
+      "tradeoff": "Keep driving, or pull over and listen to the ghosts?",
+      "gaps": {
+        "scale": -33,
+        "tension": -25,
+        "texture": -23,
+        "movement": 0,
+        "community": 0,
+        "immersion": -82,
+        "atmosphere": 0,
+        "confidence": 4,
+        "perspective": -44,
+        "transformation": 0
+      },
+      "tests": [
+        "immersion",
+        "perspective",
+        "scale"
+      ]
+    },
+    {
+      "id": "07f6374e-330c-47d5-9803-ad1145210bb0",
+      "lane": "classic_rock",
+      "song_a": "Paranoid / Black Sabbath",
+      "song_b": "More Than a Feeling / Boston",
+      "tradeoff": "Doom you can feel in your teeth, or a memory in amber?",
+      "gaps": {
+        "scale": -53,
+        "tension": 55,
+        "texture": -72,
+        "movement": 0,
+        "community": 0,
+        "immersion": -30,
+        "atmosphere": 0,
+        "confidence": 10,
+        "perspective": -15,
+        "transformation": 0
+      },
+      "tests": [
+        "texture",
+        "tension",
+        "scale"
+      ]
+    },
+    {
+      "id": "3a0b2df9-1086-47e7-8e78-74f952ab90ca",
+      "lane": "classic_rock",
+      "song_a": "Comfortably Numb / Pink Floyd",
+      "song_b": "Born to Run / Bruce Springsteen",
+      "tradeoff": "Float out the window, or run for the highway?",
+      "gaps": {
+        "scale": -1,
+        "tension": -8,
+        "texture": 20,
+        "movement": -60,
+        "community": -49,
+        "immersion": 67,
+        "atmosphere": 17,
+        "confidence": -53,
+        "perspective": -3,
+        "transformation": 14
+      },
+      "tests": [
+        "immersion",
+        "movement",
+        "confidence"
+      ]
+    },
+    {
+      "id": "22ca05ba-7385-48d0-8ed1-da25be5d676b",
+      "lane": "classic_rock",
+      "song_a": "Layla / Derek and the Dominos",
+      "song_b": "Wild Horses / The Rolling Stones",
+      "tradeoff": "Beg her to stay, or stare at the empty chair?",
+      "gaps": {
+        "scale": 60,
+        "tension": 40,
+        "texture": 13,
+        "movement": 0,
+        "community": 0,
+        "immersion": 27,
+        "atmosphere": 0,
+        "confidence": 0,
+        "perspective": 10,
+        "transformation": 0
+      },
+      "tests": [
+        "scale",
+        "tension",
+        "immersion"
+      ]
+    }
+  ]
+}
