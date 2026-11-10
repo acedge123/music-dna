@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildLedger } from "./evidence";
 import { DIMS } from "./axes";
 import { expectedCatalog, snapshotChoice } from "./evidence-snapshot";
-import { hypotheticalChoice, readFingerprint } from "./prepared-read";
+import { hypotheticalChoice, readFingerprint, revealDraftKey, revealFingerprint } from "./prepared-read";
 
 const vals = (n: number) => Object.fromEntries(DIMS.map((d) => [d, n]));
 const a = { id: "a", title: "Firework", artist: "Katy Perry", year: 2010, lane: "pop", primary_lane: "pop", ...vals(80) };
@@ -34,5 +34,14 @@ describe("prepared reads", () => {
     const pre = readFingerprint(buildLedger([hypotheticalChoice(pairing, a, b)], DIMS), "prior", 0);
     expect(pre).not.toBe(readFingerprint(buildLedger([frozen(a, b, "Edited.")], DIMS), "prior", 0));
     expect(pre).not.toBe(readFingerprint(buildLedger([frozen(a, b)], DIMS), "other prior", 0));
+  });
+  it("a reveal drafted during the final pick matches only the song actually chosen", () => {
+    const real = revealFingerprint(buildLedger([frozen(a, b)], DIMS));
+    expect(revealFingerprint(buildLedger([hypotheticalChoice(pairing, a, b)], DIMS))).toBe(real);
+    expect(revealFingerprint(buildLedger([hypotheticalChoice(pairing, b, a)], DIMS))).not.toBe(real);
+  });
+  it("reveal drafts never share a slot with the post-pick reaction for pick 6", () => {
+    expect(revealDraftKey(6)).not.toBe(6);
+    expect(revealFingerprint(buildLedger([frozen(a, b)], DIMS))).not.toBe(readFingerprint(buildLedger([frozen(a, b)], DIMS), null, null));
   });
 });
