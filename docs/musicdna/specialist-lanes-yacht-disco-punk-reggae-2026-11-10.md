@@ -1,6 +1,6 @@
 # MusicDNA specialist catalog proposal — Yacht Rock, Disco, Punk, Reggae
 
-**Status:** review-only source catalog; **not inserted into Supabase and not activated**. 2026-11-10. This proposal adds no runtime behavior or migration and is safe to merge while Lovable is working; it does **not** make these songs playable by itself.
+**Status:** review-only source catalog; **not inserted into Supabase and not activated**. 2026-11-10. This proposal adds no runtime behavior or migration and is safe to **review** while Lovable is working; defer the **merge** until the Lovable editor is idle or its work is synced, because any push to main can trigger a Lovable reconciliation warning. Merging this PR does **not** make these songs playable by itself.
 
 ## Why small lanes
 
