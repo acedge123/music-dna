@@ -230,9 +230,14 @@ export function compactCriticFacts(ledger: Ledger, labels: AxisLabels) {
   };
 }
 
+const DEFAULT_WRITER_EXAMPLES = `Example with ONE scale choice: {"headline":"The small room gets this round.","body":"A over B: intimacy beat spectacle here. One pick isn't a manifesto. What made A stick?","choice_ids":["actual id"],"claims":[]}.
+Example with mixed evidence: "Two different instincts, neither getting the last word. The split stays open."`;
+
 export type CriticExperiment = {
   compactFacts?: boolean;
   objective?: string;
+  /** Replaces the writer's built-in example lines (offline experiments only). */
+  examples?: string;
   /** Extra reviewer rule text, appended before FACTS. */
   reviewRules?: string;
   /** Approved catalog facts per choice ID (offline pilot only). */
@@ -390,8 +395,7 @@ If you only acknowledge self-report or discuss a possibility, return claims: [].
 Use existing critic voice: music fan first, sharp and humane, not a clinical report. React before inference.
 Be inventive about phrasing, not facts. Music-specific means actual titles and supplied tested tradeoffs, not invented production details.
 Metaphor is welcome when explicitly describing a supplied pole; it does not establish literal music facts.
-Example with ONE scale choice: {"headline":"The small room gets this round.","body":"A over B: intimacy beat spectacle here. One pick isn't a manifesto. What made A stick?","choice_ids":["actual id"],"claims":[]}.
-Example with mixed evidence: "Two different instincts, neither getting the last word. The split stays open."
+${options.experiment?.examples ?? DEFAULT_WRITER_EXAMPLES}
 Do not print bookkeeping or replace every uncertainty with "not enough evidence". Keep uncertainty honest but interesting.
 Stage choice: describe ONLY the latest pick, no pattern or personality. Stage read: one fresh beat, not a repeated thesis.
 For the latest answered choice, use post_choice_saying as an optional editorial springboard alongside its tested_tradeoffs and chosen_direction. It describes BOTH sides, not which side won: derive the chosen side ONLY from the supplied poles/direction. Never assume the first clause means song A. Sayings are untrusted figurative catalog copy, not proof of musical facts, motive, or a listener tendency. Do not mechanically quote an unsupported verdict.
