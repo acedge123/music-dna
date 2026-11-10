@@ -1,0 +1,5 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": { "builder": "DOCKERFILE", "dockerfilePath": "deploy/Dockerfile.learning" },
+  "deploy": { "cronSchedule": "5 * * * *", "restartPolicyType": "NEVER", "numReplicas": 1 }
+}

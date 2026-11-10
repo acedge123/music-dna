@@ -1,0 +1,30 @@
+# AB-57 hosted operator loop
+
+One separate Railway cron service runs `scripts/learning-hourly.mjs` from Music DNA at minute05 of every hour, UTC. It materializes/delivers real consented QA through the existing leased outbox, runs source retention/retry maintenance, then calls only `musicdna-learning-auto` for receiver retention and a bounded review request. It exits within120seconds. Durable state lives in the existing outbox/receipts plus source worker-status and receiver automation rows; no laptop or volume is required. Railway may delay a cron start; it skips a run if the preceding process is still active.
+
+The operator service holds Music DNA's backend credential, its one source ingest key and a new source-bound automation token. It has no OpenAI key, no Slack credential, no EdgeBot service key and no stored user session. Only the token hash is stored in Echelon. Browser roles cannot access the new tables/RPCs. The new endpoint has `verify_jwt=false` because its own caller token is mandatory; absence/invalid token returns401. It accepts only source_id, never a tenant, actor, receipts, prompt or model settings. Source/tenant/reviewer binding is derived from existing approved records.
+
+## Queue, budgets and privacy
+
+The automatic tick selects up to20 previously unreviewed real V2 receipts, under the approved source/lifecycle/reviewer scope. Repeated calls never re-infer failed/ambiguous or completed evidence. Existing per-source concurrency, pricing freshness, per-job/daily budgets remain. A serialized additional ceiling covers **all Music DNA review reservations and actual/unknown costs together: $5 per UTC day**, including manual requests. Existing stricter limits stay in force: at most5 jobs/day/source, at most$0.05 reserved per job. A queued job is not model completion. No app policy changes are applied.
+
+Source disabling is also rechecked by reviewer authorization at request/start/permit. Receiver retention is source-bound and runs even with model reviews off. Source maintenance uses the existing reviewed purge/deletion protocol. Automation caller validity should extend through the approved scope's suppression cleanup window (scope expiry plus8days); it cannot extend the immutable consent/read/model window. Old staging scopes are never reopened.
+
+The endpoint verifies the pinned model's standard public token prices daily from `https://developers.openai.com/api/docs/models/gpt-4o-mini.md`. It refreshes only an identical approved price snapshot, without changing model/prices or an active job's scope hash. Changed, ambiguous, unsupported or unavailable pricing stops new automatic requests while retention continues. Existing no-inference-retry behavior remains. A compromised caller cannot select another tenant/actor/model or bypass budgets.
+
+## Deployment/activation
+
+1. Review/merge the Music DNA and Echelon automation changes; apply each new forward migration once, recording exact hashes/history. Do not rerun the prior real-QA migrations.
+2. Deploy only Echelon `musicdna-learning-auto` (custom auth, JWTfalse) with the merged helper dependencies. Keep all pre-existing function JWT settings unchanged. Set the already approved scoped `ECHELON_MUSICDNA_LEARNING_REVIEW_ENABLED=1` for the existing review endpoints. No global app-signal LLM flag changes.
+3. Configure the production source's review scope for the verified owner, existing EdgeBot worker ID, pinned approved model/prices, existing per-job protections, and the original consent expiry. Insert a disabled automation row with a cryptographically random token hash; configure its plaintext only in the dedicated Railway service.
+4. Deploy the isolated hourly image using `deploy/Dockerfile.learning` and `railway.learning.json`, initially `MUSICDNA_HOURLY_ENABLED=0`. Private variables: SUPABASE_URL, SB_SECRET_KEY, MUSICDNA_ECHELON_PRODUCTION_INGEST_KEY, MUSICDNA_ECHELON_SOURCE_ID, MUSICDNA_AUTOMATION_TOKEN. No credential enters Git, model context or logs.
+5. Enable only the approved production receiver/source/dispatch/review scope, EdgeBot's dedicated review flag and the single production source allowlist, then the automation row and hourly gate. Keep global signals LLM/heartbeat/OpenClaw cron/autonomous work off. Trigger one real hosted run; an empty window must stay idle without a model call.
+6. Verify one actual new consenting owner's reading/rating produces a receipt and completed saved draft with measured usage/cost. Do not fabricate a rating, backfill pre-consent sessions or run live synthetic evidence. Only actual receipts close this acceptance.
+
+## Operational checks and stop
+
+Source `musicdna_learning_worker_status` stores last start/finish, phase outcome, last-success time and confirmed delivery count. Failed/unavailable stages set attention and process exit2; they are never labelled healthy zero. Echelon automation stores last tick/state/job reference. A source run missing for over2hours or a stale started run is a missed-execution finding; compare with the configured scope/deadline, not listener activity. Railway logs expose structured stage counters; notification delivery is not claimed unless independently configured/verified.
+
+Diagnostics must use `BEGIN READ ONLY; SET LOCAL statement_timeout='10s'; ... COMMIT;` and metadata/numeric aggregates only. Read source status, receiver last_tick/last_state and actual review job state/usage separately. Do not dump payloads, prose, identities, secrets or raw query text. Do not count dispatched receipts or a queued job as completed downstream analysis.
+
+Stop new requests with automation.enabled=false; stop model authorization with review_scope.enabled=false or the scoped route/EdgeBot flag. Stop sending with producer dispatch_enabled=false. Withdrawal uses the existing subject deletion path. Do not clear credential halts automatically. Preserve budget reservations, scope expiry, last-good run metadata and privacy suppression when recovering. This job creates no Slack messages and does not change the separate infrastructure monitor.
