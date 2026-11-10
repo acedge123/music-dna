@@ -1,7 +1,7 @@
 import {
-  validateMusicDnaLearningEnvelopeV1,
+  validateMusicDnaLearningEnvelope,
   validateMusicDnaLearningReceiptV1,
-} from "../contracts/learning-observation-v1";
+} from "../contracts/learning-observation";
 import {
   validateLearningDeletionV1,
   validateLearningDeletionReceiptV1,
@@ -157,7 +157,7 @@ async function validOutgoing(
       parsed.deletion_id === lease.work_id
     );
   }
-  const parsed = validateMusicDnaLearningEnvelopeV1(decoded);
+  const parsed = validateMusicDnaLearningEnvelope(decoded);
   if (
     !parsed.ok ||
     parsed.value.source !== scope.source ||

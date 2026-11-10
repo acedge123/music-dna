@@ -15,7 +15,7 @@ vi.mock("@/integrations/supabase/client.server", () => ({
       insert: async (row: { props: Record<string, unknown> }) => {
         if (table !== "event_log") return { error: null };
         if (state.failWrite) return { error: { message: "write failed" } };
-        state.events.unshift(row);
+        if (table === "event_log") state.events.unshift(row);
         return { error: null };
       },
     }),

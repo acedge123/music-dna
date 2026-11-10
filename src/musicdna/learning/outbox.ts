@@ -1,9 +1,9 @@
 import {
   LEARNING_OBSERVATION_MAX_BYTES,
   LEARNING_OBSERVATION_SUMMARY,
-  validateMusicDnaLearningEnvelopeV1,
-  type MusicDnaLearningEnvelopeV1,
-} from "../contracts/learning-observation-v1";
+  validateMusicDnaLearningEnvelope,
+  type MusicDnaLearningEnvelope,
+} from "../contracts/learning-observation";
 
 export type LearningScope = {
   source: "music-dna" | "music-dna-staging";
@@ -67,7 +67,7 @@ function safeScope(scope: LearningScope): boolean {
 export async function mapLearningCapture(
   record: CaptureRecord,
   references: LearningReferences,
-): Promise<MusicDnaLearningEnvelopeV1 | null> {
+): Promise<MusicDnaLearningEnvelope | null> {
   if (
     !safeScope(record.scope) ||
     !/^[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/.test(
@@ -94,10 +94,13 @@ export async function mapLearningCapture(
     environment: record.scope.environment,
     severity: "low",
     summary: LEARNING_OBSERVATION_SUMMARY,
-    correlation_id: "music-dna:learning:v1:" + record.observationId,
+    correlation_id:
+      "music-dna:learning:" +
+      (observation.schema_version === "learning-observation.v2" ? "v2:" : "v1:") +
+      record.observationId,
     metadata: { purpose: "learning_observation", observation },
   };
-  const result = validateMusicDnaLearningEnvelopeV1(envelope);
+  const result = validateMusicDnaLearningEnvelope(envelope);
   if (
     !result.ok ||
     new TextEncoder().encode(JSON.stringify(envelope)).byteLength > LEARNING_OBSERVATION_MAX_BYTES
