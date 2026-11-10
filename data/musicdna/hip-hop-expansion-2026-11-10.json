@@ -7,7 +7,7 @@
   },
   "songs": [
     {
-      "id": "6c999d3c-90b8-4368-9286-1999e0232e4e",
+      "id": "0ea6e0e6-6371-418b-9984-02158b755fe5",
       "title": "Fight the Power",
       "artist": "Public Enemy",
       "year": 1989,
@@ -35,12 +35,12 @@
       "tradeoff_richness": 18,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 14,
+      "longevity": 9,
       "cross_genre_mapping": 8,
-      "diagnostic_power": 87
+      "diagnostic_power": 82
     },
     {
-      "id": "e7c363ed-78e7-4e57-a80f-829fc96055d6",
+      "id": "45f7acc1-236f-44b9-ae57-cbeecca34e92",
       "title": "It Was a Good Day",
       "artist": "Ice Cube",
       "year": 1992,
@@ -68,12 +68,12 @@
       "tradeoff_richness": 17,
       "pairing_density": 13,
       "identity_signaling": 14,
-      "longevity": 14,
+      "longevity": 9,
       "cross_genre_mapping": 8,
-      "diagnostic_power": 81
+      "diagnostic_power": 76
     },
     {
-      "id": "1670ab5a-270d-45cc-9ff5-dec5bd6b0bd6",
+      "id": "b5f92e72-b3a1-461b-b294-20b2e9ba98cc",
       "title": "Paid in Full",
       "artist": "Eric B. & Rakim",
       "year": 1987,
@@ -101,12 +101,12 @@
       "tradeoff_richness": 15,
       "pairing_density": 13,
       "identity_signaling": 14,
-      "longevity": 14,
+      "longevity": 9,
       "cross_genre_mapping": 8,
-      "diagnostic_power": 78
+      "diagnostic_power": 73
     },
     {
-      "id": "a382bf4f-b634-4a62-af2c-ce46ec28bf4f",
+      "id": "f7d2edb9-606b-48ea-919b-37c639cf8063",
       "title": "Mind Playing Tricks on Me",
       "artist": "Geto Boys",
       "year": 1991,
@@ -134,12 +134,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 14,
-      "longevity": 13,
+      "longevity": 9,
       "cross_genre_mapping": 7,
-      "diagnostic_power": 85
+      "diagnostic_power": 81
     },
     {
-      "id": "753f9d00-2904-4585-b2a1-a38b6c623cc7",
+      "id": "93c6d081-6d48-4c47-a696-742ce7e4646d",
       "title": "Respiration",
       "artist": "Black Star feat. Common",
       "year": 1998,
@@ -167,12 +167,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 14,
-      "longevity": 13,
+      "longevity": 9,
       "cross_genre_mapping": 7,
-      "diagnostic_power": 84
+      "diagnostic_power": 80
     },
     {
-      "id": "8db875f4-a843-42a6-9087-abb8d834a983",
+      "id": "d9da906a-2be8-45ea-a186-7180aa66ce80",
       "title": "You Got Me",
       "artist": "The Roots feat. Erykah Badu & Eve",
       "year": 1999,
@@ -200,12 +200,12 @@
       "tradeoff_richness": 18,
       "pairing_density": 14,
       "identity_signaling": 13,
-      "longevity": 13,
+      "longevity": 9,
       "cross_genre_mapping": 9,
-      "diagnostic_power": 83
+      "diagnostic_power": 79
     },
     {
-      "id": "67897b6c-e712-446e-87e8-4c43916a39cb",
+      "id": "08c82412-18a8-46c4-aff0-7f058b81e87c",
       "title": "Ms. Fat Booty",
       "artist": "Mos Def",
       "year": 1999,
@@ -233,12 +233,12 @@
       "tradeoff_richness": 18,
       "pairing_density": 13,
       "identity_signaling": 14,
-      "longevity": 13,
+      "longevity": 9,
       "cross_genre_mapping": 8,
-      "diagnostic_power": 82
+      "diagnostic_power": 78
     },
     {
-      "id": "7489524d-8374-46da-ad13-859a354c03d7",
+      "id": "ec984571-d377-4de0-a117-af266a430b90",
       "title": "U.N.I.T.Y.",
       "artist": "Queen Latifah",
       "year": 1993,
@@ -266,12 +266,12 @@
       "tradeoff_richness": 18,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 14,
+      "longevity": 9,
       "cross_genre_mapping": 8,
-      "diagnostic_power": 86
+      "diagnostic_power": 81
     },
     {
-      "id": "bc62d8cc-0a35-4d47-8411-729bfbef64d7",
+      "id": "35796cdc-dbf5-46c0-b76d-6c6301ef3c6c",
       "title": "Ruffneck",
       "artist": "MC Lyte",
       "year": 1993,
@@ -299,12 +299,12 @@
       "tradeoff_richness": 17,
       "pairing_density": 12,
       "identity_signaling": 14,
-      "longevity": 13,
+      "longevity": 9,
       "cross_genre_mapping": 7,
-      "diagnostic_power": 79
+      "diagnostic_power": 75
     },
     {
-      "id": "102b2a24-4900-4b44-87a5-718aa323e69a",
+      "id": "5a0d9ddb-45ba-4b7c-be7b-5012174ebcbf",
       "title": "Push It",
       "artist": "Salt-N-Pepa",
       "year": 1987,
@@ -332,12 +332,12 @@
       "tradeoff_richness": 17,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 14,
+      "longevity": 9,
       "cross_genre_mapping": 9,
-      "diagnostic_power": 85
+      "diagnostic_power": 80
     },
     {
-      "id": "4fc22bac-4440-42d7-ad3e-c23902b5ccb4",
+      "id": "af4cedca-bbb3-4887-9191-1f2f996f7d2b",
       "title": "Get Ur Freak On",
       "artist": "Missy Elliott",
       "year": 2001,
@@ -365,12 +365,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 14,
+      "longevity": 9,
       "cross_genre_mapping": 10,
-      "diagnostic_power": 90
+      "diagnostic_power": 85
     },
     {
-      "id": "55b6ba01-2877-4001-8946-76ee895fc02c",
+      "id": "9dd19595-b411-4654-9eaa-1804166e70aa",
       "title": "B.O.B. (Bombs Over Baghdad)",
       "artist": "Outkast",
       "year": 2000,
@@ -398,12 +398,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 14,
+      "longevity": 9,
       "cross_genre_mapping": 10,
-      "diagnostic_power": 90
+      "diagnostic_power": 85
     },
     {
-      "id": "34bd4299-e3a9-4a99-b362-7fa3e0623932",
+      "id": "3400af0d-33ce-495b-aa78-c6193ea5ee15",
       "title": "Int'l Players Anthem (I Choose You)",
       "artist": "UGK feat. Outkast",
       "year": 2007,
@@ -431,12 +431,12 @@
       "tradeoff_richness": 18,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 13,
+      "longevity": 9,
       "cross_genre_mapping": 9,
-      "diagnostic_power": 86
+      "diagnostic_power": 82
     },
     {
-      "id": "22bbe552-1792-4bcd-a9d6-cac318c43b7d",
+      "id": "73fdabbb-34ee-4f79-ae67-9f0c2c1e9ba4",
       "title": "Grindin'",
       "artist": "Clipse",
       "year": 2002,
@@ -464,12 +464,12 @@
       "tradeoff_richness": 18,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 14,
+      "longevity": 9,
       "cross_genre_mapping": 7,
-      "diagnostic_power": 86
+      "diagnostic_power": 81
     },
     {
-      "id": "6ea8230a-6be1-4e26-ad0d-3be0c9169d2d",
+      "id": "af2f94cb-3d0e-4f58-a0a7-a460a610dbaa",
       "title": "Dreams and Nightmares",
       "artist": "Meek Mill",
       "year": 2012,
@@ -497,12 +497,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 12,
+      "longevity": 8,
       "cross_genre_mapping": 8,
-      "diagnostic_power": 86
+      "diagnostic_power": 82
     },
     {
-      "id": "71432da7-c338-42f2-b860-3fa897251d7e",
+      "id": "f29d8824-d945-42cc-affa-a5d0421557b4",
       "title": "Love Yourz",
       "artist": "J. Cole",
       "year": 2014,
@@ -530,12 +530,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 14,
-      "longevity": 12,
+      "longevity": 8,
       "cross_genre_mapping": 8,
-      "diagnostic_power": 84
+      "diagnostic_power": 80
     },
     {
-      "id": "b506c2b8-ed06-4b3c-a9fd-98415a994eed",
+      "id": "c4e951f3-3ce0-4fa8-bf68-b844203b7298",
       "title": "4:44",
       "artist": "Jay-Z",
       "year": 2017,
@@ -563,12 +563,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 12,
+      "longevity": 8,
       "cross_genre_mapping": 7,
-      "diagnostic_power": 85
+      "diagnostic_power": 81
     },
     {
-      "id": "9c391cbc-2e76-424b-97ba-ea41e5187c1a",
+      "id": "47b1741d-5189-467d-afde-e8e0a3f8109d",
       "title": "DNA.",
       "artist": "Kendrick Lamar",
       "year": 2017,
@@ -596,12 +596,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 13,
+      "longevity": 9,
       "cross_genre_mapping": 8,
-      "diagnostic_power": 87
+      "diagnostic_power": 83
     },
     {
-      "id": "01646d38-adf7-4042-9951-71a03640f01d",
+      "id": "2698c50f-49df-47b2-9621-63cf475bbebf",
       "title": "Introvert",
       "artist": "Little Simz",
       "year": 2021,
@@ -629,12 +629,12 @@
       "tradeoff_richness": 19,
       "pairing_density": 14,
       "identity_signaling": 15,
-      "longevity": 11,
+      "longevity": 7,
       "cross_genre_mapping": 9,
-      "diagnostic_power": 86
+      "diagnostic_power": 82
     },
     {
-      "id": "a230fa16-1069-4f62-924a-c02d7e34b4df",
+      "id": "d382fc83-c304-4801-adc9-a0be0f53f559",
       "title": "Anxiety",
       "artist": "Doechii",
       "year": 2025,
@@ -662,16 +662,15 @@
       "tradeoff_richness": 18,
       "pairing_density": 14,
       "identity_signaling": 14,
-      "longevity": 6,
+      "longevity": 4,
       "cross_genre_mapping": 9,
-      "diagnostic_power": 78
+      "diagnostic_power": 76
     }
   ],
   "pairings": [
     {
-      "id": "7030c9fc-11d5-4960-bde9-50ab5d4f749a",
-      "song_a_id": "6c999d3c-90b8-4368-9286-1999e0232e4e",
-      "song_b_id": "e7c363ed-78e7-4e57-a80f-829fc96055d6",
+      "song_a_id": "0ea6e0e6-6371-418b-9984-02158b755fe5",
+      "song_b_id": "45f7acc1-236f-44b9-ae57-cbeecca34e92",
       "tests": [
         "tension",
         "community",
@@ -683,9 +682,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "78e6de4a-58c3-4409-8220-27b73094494e",
-      "song_a_id": "1670ab5a-270d-45cc-9ff5-dec5bd6b0bd6",
-      "song_b_id": "a382bf4f-b634-4a62-af2c-ce46ec28bf4f",
+      "song_a_id": "b5f92e72-b3a1-461b-b294-20b2e9ba98cc",
+      "song_b_id": "f7d2edb9-606b-48ea-919b-37c639cf8063",
       "tests": [
         "confidence",
         "tension"
@@ -696,9 +694,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "d04e24c4-815f-44db-9910-e89b13c6888a",
-      "song_a_id": "753f9d00-2904-4585-b2a1-a38b6c623cc7",
-      "song_b_id": "102b2a24-4900-4b44-87a5-718aa323e69a",
+      "song_a_id": "93c6d081-6d48-4c47-a696-742ce7e4646d",
+      "song_b_id": "5a0d9ddb-45ba-4b7c-be7b-5012174ebcbf",
       "tests": [
         "immersion",
         "perspective"
@@ -709,9 +706,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "8db51bc6-ae74-4864-a230-7d3ea4d06d74",
-      "song_a_id": "8db875f4-a843-42a6-9087-abb8d834a983",
-      "song_b_id": "22bbe552-1792-4bcd-a9d6-cac318c43b7d",
+      "song_a_id": "d9da906a-2be8-45ea-a186-7180aa66ce80",
+      "song_b_id": "73fdabbb-34ee-4f79-ae67-9f0c2c1e9ba4",
       "tests": [
         "texture",
         "transformation"
@@ -722,9 +718,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "701afd8a-8899-4660-ac9d-b905d6de4cb8",
-      "song_a_id": "67897b6c-e712-446e-87e8-4c43916a39cb",
-      "song_b_id": "b506c2b8-ed06-4b3c-a9fd-98415a994eed",
+      "song_a_id": "08c82412-18a8-46c4-aff0-7f058b81e87c",
+      "song_b_id": "c4e951f3-3ce0-4fa8-bf68-b844203b7298",
       "tests": [
         "perspective",
         "confidence"
@@ -735,9 +730,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "eb2ea34c-ef64-442d-8fc8-89917d980d21",
-      "song_a_id": "7489524d-8374-46da-ad13-859a354c03d7",
-      "song_b_id": "a230fa16-1069-4f62-924a-c02d7e34b4df",
+      "song_a_id": "ec984571-d377-4de0-a117-af266a430b90",
+      "song_b_id": "d382fc83-c304-4801-adc9-a0be0f53f559",
       "tests": [
         "confidence",
         "perspective"
@@ -748,9 +742,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "a2b32386-2495-4c19-be32-a884a21cfc2d",
-      "song_a_id": "bc62d8cc-0a35-4d47-8411-729bfbef64d7",
-      "song_b_id": "71432da7-c338-42f2-b860-3fa897251d7e",
+      "song_a_id": "35796cdc-dbf5-46c0-b76d-6c6301ef3c6c",
+      "song_b_id": "f29d8824-d945-42cc-affa-a5d0421557b4",
       "tests": [
         "movement",
         "confidence"
@@ -761,9 +754,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "28dcad06-9211-4b0d-87ad-e096e1a794db",
-      "song_a_id": "4fc22bac-4440-42d7-ad3e-c23902b5ccb4",
-      "song_b_id": "753f9d00-2904-4585-b2a1-a38b6c623cc7",
+      "song_a_id": "af4cedca-bbb3-4887-9191-1f2f996f7d2b",
+      "song_b_id": "93c6d081-6d48-4c47-a696-742ce7e4646d",
       "tests": [
         "movement",
         "community"
@@ -774,13 +766,11 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "4f7266c7-5f6e-4fe4-a6e6-10acc9b37424",
-      "song_a_id": "55b6ba01-2877-4001-8946-76ee895fc02c",
-      "song_b_id": "1670ab5a-270d-45cc-9ff5-dec5bd6b0bd6",
+      "song_a_id": "9dd19595-b411-4654-9eaa-1804166e70aa",
+      "song_b_id": "b5f92e72-b3a1-461b-b294-20b2e9ba98cc",
       "tests": [
         "scale",
-        "transformation",
-        "atmosphere"
+        "transformation"
       ],
       "lane": "hip_hop",
       "active": false,
@@ -788,9 +778,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "778767af-621d-4e81-967c-bc7165d88d1c",
-      "song_a_id": "34bd4299-e3a9-4a99-b362-7fa3e0623932",
-      "song_b_id": "a382bf4f-b634-4a62-af2c-ce46ec28bf4f",
+      "song_a_id": "3400af0d-33ce-495b-aa78-c6193ea5ee15",
+      "song_b_id": "f7d2edb9-606b-48ea-919b-37c639cf8063",
       "tests": [
         "community",
         "tension"
@@ -801,9 +790,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "5410f8ea-fd3e-45f0-aea0-a24488468a1f",
-      "song_a_id": "6ea8230a-6be1-4e26-ad0d-3be0c9169d2d",
-      "song_b_id": "8db875f4-a843-42a6-9087-abb8d834a983",
+      "song_a_id": "af2f94cb-3d0e-4f58-a0a7-a460a610dbaa",
+      "song_b_id": "d9da906a-2be8-45ea-a186-7180aa66ce80",
       "tests": [
         "tension",
         "community"
@@ -814,9 +802,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "dd76e81f-04b7-4e45-aa28-cd9d6a5fcf66",
-      "song_a_id": "9c391cbc-2e76-424b-97ba-ea41e5187c1a",
-      "song_b_id": "01646d38-adf7-4042-9951-71a03640f01d",
+      "song_a_id": "47b1741d-5189-467d-afde-e8e0a3f8109d",
+      "song_b_id": "2698c50f-49df-47b2-9621-63cf475bbebf",
       "tests": [
         "immersion",
         "texture"
@@ -827,9 +814,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "3d327960-abdb-4955-987f-fb319fe7efc2",
-      "song_a_id": "6c999d3c-90b8-4368-9286-1999e0232e4e",
-      "song_b_id": "b506c2b8-ed06-4b3c-a9fd-98415a994eed",
+      "song_a_id": "0ea6e0e6-6371-418b-9984-02158b755fe5",
+      "song_b_id": "c4e951f3-3ce0-4fa8-bf68-b844203b7298",
       "tests": [
         "confidence",
         "community"
@@ -840,9 +826,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "862c172e-4b65-4f81-897c-823d7942df41",
-      "song_a_id": "e7c363ed-78e7-4e57-a80f-829fc96055d6",
-      "song_b_id": "9c391cbc-2e76-424b-97ba-ea41e5187c1a",
+      "song_a_id": "45f7acc1-236f-44b9-ae57-cbeecca34e92",
+      "song_b_id": "47b1741d-5189-467d-afde-e8e0a3f8109d",
       "tests": [
         "tension",
         "movement"
@@ -853,9 +838,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "50112264-dcc0-4e99-983f-6d34932673f7",
-      "song_a_id": "1670ab5a-270d-45cc-9ff5-dec5bd6b0bd6",
-      "song_b_id": "01646d38-adf7-4042-9951-71a03640f01d",
+      "song_a_id": "b5f92e72-b3a1-461b-b294-20b2e9ba98cc",
+      "song_b_id": "2698c50f-49df-47b2-9621-63cf475bbebf",
       "tests": [
         "scale",
         "texture"
@@ -866,9 +850,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "fa134354-079c-4046-a011-dcaa03c453ec",
-      "song_a_id": "a382bf4f-b634-4a62-af2c-ce46ec28bf4f",
-      "song_b_id": "102b2a24-4900-4b44-87a5-718aa323e69a",
+      "song_a_id": "f7d2edb9-606b-48ea-919b-37c639cf8063",
+      "song_b_id": "5a0d9ddb-45ba-4b7c-be7b-5012174ebcbf",
       "tests": [
         "tension",
         "community",
@@ -880,9 +863,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "093b648f-34e5-4015-88f9-ccf82a6bed67",
-      "song_a_id": "753f9d00-2904-4585-b2a1-a38b6c623cc7",
-      "song_b_id": "bc62d8cc-0a35-4d47-8411-729bfbef64d7",
+      "song_a_id": "93c6d081-6d48-4c47-a696-742ce7e4646d",
+      "song_b_id": "35796cdc-dbf5-46c0-b76d-6c6301ef3c6c",
       "tests": [
         "perspective",
         "immersion"
@@ -893,9 +875,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "ec0642a2-3e93-4a81-adaf-9758fedfc71e",
-      "song_a_id": "8db875f4-a843-42a6-9087-abb8d834a983",
-      "song_b_id": "55b6ba01-2877-4001-8946-76ee895fc02c",
+      "song_a_id": "d9da906a-2be8-45ea-a186-7180aa66ce80",
+      "song_b_id": "9dd19595-b411-4654-9eaa-1804166e70aa",
       "tests": [
         "scale",
         "movement"
@@ -906,9 +887,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "30c26baf-9628-45ea-b830-ef6cb3b9ffb1",
-      "song_a_id": "67897b6c-e712-446e-87e8-4c43916a39cb",
-      "song_b_id": "7489524d-8374-46da-ad13-859a354c03d7",
+      "song_a_id": "08c82412-18a8-46c4-aff0-7f058b81e87c",
+      "song_b_id": "ec984571-d377-4de0-a117-af266a430b90",
       "tests": [
         "community",
         "confidence"
@@ -919,9 +899,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "2999a60f-af9b-4996-b8fe-6fe9a43c9603",
-      "song_a_id": "4fc22bac-4440-42d7-ad3e-c23902b5ccb4",
-      "song_b_id": "b506c2b8-ed06-4b3c-a9fd-98415a994eed",
+      "song_a_id": "af4cedca-bbb3-4887-9191-1f2f996f7d2b",
+      "song_b_id": "c4e951f3-3ce0-4fa8-bf68-b844203b7298",
       "tests": [
         "confidence",
         "community"
@@ -932,9 +911,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "a210e5df-8aa3-42ba-a32d-1b0b756b4706",
-      "song_a_id": "34bd4299-e3a9-4a99-b362-7fa3e0623932",
-      "song_b_id": "22bbe552-1792-4bcd-a9d6-cac318c43b7d",
+      "song_a_id": "3400af0d-33ce-495b-aa78-c6193ea5ee15",
+      "song_b_id": "73fdabbb-34ee-4f79-ae67-9f0c2c1e9ba4",
       "tests": [
         "texture",
         "transformation"
@@ -945,9 +923,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "0e1c731d-3c75-4035-b239-2cf65e1f9ca1",
-      "song_a_id": "6ea8230a-6be1-4e26-ad0d-3be0c9169d2d",
-      "song_b_id": "71432da7-c338-42f2-b860-3fa897251d7e",
+      "song_a_id": "af2f94cb-3d0e-4f58-a0a7-a460a610dbaa",
+      "song_b_id": "f29d8824-d945-42cc-affa-a5d0421557b4",
       "tests": [
         "transformation",
         "tension"
@@ -958,9 +935,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "c67d1e55-cfb3-4db6-9b2f-056b6e970ea5",
-      "song_a_id": "01646d38-adf7-4042-9951-71a03640f01d",
-      "song_b_id": "a230fa16-1069-4f62-924a-c02d7e34b4df",
+      "song_a_id": "2698c50f-49df-47b2-9621-63cf475bbebf",
+      "song_b_id": "d382fc83-c304-4801-adc9-a0be0f53f559",
       "tests": [
         "scale",
         "immersion"
@@ -971,9 +947,8 @@
       "diagnostic_weight": 80
     },
     {
-      "id": "5253f8a7-6e03-4e6e-8beb-8b6625dfff7b",
-      "song_a_id": "9c391cbc-2e76-424b-97ba-ea41e5187c1a",
-      "song_b_id": "7489524d-8374-46da-ad13-859a354c03d7",
+      "song_a_id": "47b1741d-5189-467d-afde-e8e0a3f8109d",
+      "song_b_id": "ec984571-d377-4de0-a117-af266a430b90",
       "tests": [
         "transformation",
         "texture"
