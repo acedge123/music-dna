@@ -16,8 +16,9 @@ describe("request deadline", () => {
   });
   it("cleans up the deadline after a rejected request", async () => {
     vi.useFakeTimers();
-    await expect(withRequestDeadline(Promise.reject(new Error("offline")), "retry"))
-      .rejects.toThrow("offline");
+    await expect(
+      withRequestDeadline(Promise.reject(new Error("offline")), "retry"),
+    ).rejects.toThrow("offline");
     expect(vi.getTimerCount()).toBe(0);
   });
 });

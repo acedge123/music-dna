@@ -69,7 +69,8 @@ export function useReadingConversation(sessionId: string | undefined, resultVers
     try {
       await withRequestDeadline(ensureAnonSession(), "Sign in again to open this reading.");
       const { data: auth } = await withRequestDeadline(
-        supabase.auth.getSession(), "Sign in again to open this reading.",
+        supabase.auth.getSession(),
+        "Sign in again to open this reading.",
       );
       const owner = auth.session?.user.id;
       if (!owner) throw new Error("Sign in again to open this reading.");
@@ -154,9 +155,12 @@ export function useReadingConversation(sessionId: string | undefined, resultVers
       setDraft("");
       setPending(null);
       pendingRef.current = null;
-      const saved = await withRequestDeadline(readingFn({
-        data: { sessionId: reading.sessionId, resultVersion: reading.selected.version },
-      }), "Your reply is saved, but the reading couldn't refresh. Reload to see it.");
+      const saved = await withRequestDeadline(
+        readingFn({
+          data: { sessionId: reading.sessionId, resultVersion: reading.selected.version },
+        }),
+        "Your reply is saved, but the reading couldn't refresh. Reload to see it.",
+      );
       if (requestGeneration === generation.current) setReading(saved);
     } catch (error) {
       if (requestGeneration === generation.current)
