@@ -3,7 +3,8 @@
 ## Current — critic-quality and measurement-bias proposal
 
 - [x] Approved plan; private diagnostic/review/exposure schema applied through migration approval boundary, guest-policy warnings corrected. Shared stage measurements, four-axis admin review and exact web/REST offer acknowledgement implemented; 39 focused tests and guest vote/readback pass. Exports/flags unchanged.
-- [ ] Finish commit-bound attempt links/recovery, full review conversation context and aggregate bias reporting; these are not yet implemented (details: docs/musicdna/critic-quality-measurements.md).
+- [x] Added forward exact-output result/chat links, local prior-beat/self-report review context, lane/catalog partitions and repeated offered-song metrics. No saved listener content changed.
+- [ ] Durable telemetry-write recovery and running-read event linking remain incomplete; cross-session aggregate reporting is not yet available (details: docs/musicdna/critic-quality-measurements.md).
 - [ ] Registered-admin review and deployed acceptance: external-managed registered test access and updated Vercel deployment are unavailable. Independent human retests require consented recruitment; Flutter needs display acknowledgement adoption.
 
 ## Current — sign-in flash and sign-out
