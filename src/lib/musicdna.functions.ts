@@ -121,6 +121,7 @@ async function ai(messages: Array<{ role: string; content: string }>) {
 function criticGenerator(
   messages: Array<{ role: string; content: string }>,
   calls: CallMeasurement[],
+  stage: Parameters<typeof authorCritic>[3]["stage"],
 ) {
   return async (
     prompt: string,
@@ -150,6 +151,7 @@ function criticGenerator(
         {
           model: MODEL,
           role: review ? "reviewer" : "writer",
+          stage,
           jsonSchema,
           onMeasurement: (m) => {
             metadata = m;
@@ -196,7 +198,7 @@ async function observedCritic(
     sessionId,
     ledger,
     labels,
-    criticGenerator(messages, calls),
+    criticGenerator(messages, calls, options.stage),
     options,
     calls,
   );
