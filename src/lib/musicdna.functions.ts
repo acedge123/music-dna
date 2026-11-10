@@ -2206,10 +2206,12 @@ export async function getMyResultImpl(supabase: AuthedSupabase, userId: string) 
       .limit(20),
   ]);
   // Presentation is ledger-gated; stored historical results remain untouched.
-  const presentedSessions = await Promise.all((sessions ?? []).map(async (session) => {
-    const { ledger } = await loadChoiceEvidence(supabase, session.id);
-    return { ...session, archetype: hasReadingSupport(ledger) ? session.archetype : null };
-  }));
+  const presentedSessions = await Promise.all(
+    (sessions ?? []).map(async (session) => {
+      const { ledger } = await loadChoiceEvidence(supabase, session.id);
+      return { ...session, archetype: hasReadingSupport(ledger) ? session.archetype : null };
+    }),
+  );
   const latest = presentedSessions[0];
   let definingChoices: Array<{
     chosen: string;
@@ -3482,9 +3484,14 @@ async function computeFinalSynthesis(
   );
   const synthesis = narrated.text;
 
-  const qa = await supabase.from("interview_qa_sessions").select("session_id").eq("session_id", data.sessionId).maybeSingle();
+  const qa = await supabase
+    .from("interview_qa_sessions")
+    .select("session_id")
+    .eq("session_id", data.sessionId)
+    .maybeSingle();
   if (qa.error) throw new Error("Could not verify interview purpose.");
-  if (!qa.data) await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
+  if (!qa.data)
+    await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
 
   return {
     synthesis,

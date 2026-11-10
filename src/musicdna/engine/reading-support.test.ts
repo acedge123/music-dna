@@ -3,9 +3,15 @@ import { buildLedger } from "./evidence";
 import { hasReadingSupport, shouldResumeInterview } from "./reading-support";
 
 function ledger(deltas: number[]) {
-  return buildLedger(deltas.map((scale, i) => ({
-    pairing_id: `p${i}`, tests: ["scale"], chosen: { scale }, rejected: { scale: 0 },
-  })), ["scale"]);
+  return buildLedger(
+    deltas.map((scale, i) => ({
+      pairing_id: `p${i}`,
+      tests: ["scale"],
+      chosen: { scale },
+      rejected: { scale: 0 },
+    })),
+    ["scale"],
+  );
 }
 
 describe("reading and restart policy", () => {

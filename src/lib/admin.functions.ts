@@ -41,23 +41,50 @@ export const adminCheck = createServerFn({ method: "GET" })
 export const adminNewQaInterview = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const role = await context.supabase.from("user_roles").select("role")
-      .eq("user_id", context.userId).eq("role", "admin").maybeSingle();
+    const role = await context.supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", context.userId)
+      .eq("role", "admin")
+      .maybeSingle();
     const auth = await context.supabase.auth.getUser();
     if (role.error || !role.data || auth.error || !auth.data.user || auth.data.user.is_anonymous)
       throw new Error("Forbidden: registered admin only");
-    const profile = await context.supabase.from("profiles")
+    const profile = await context.supabase
+      .from("profiles")
       .select("opening_lane,opening_lane_confidence,opening_analysis_json")
-      .eq("user_id", context.userId).maybeSingle();
+      .eq("user_id", context.userId)
+      .maybeSingle();
     if (profile.error) throw new Error("Could not load opening songs.");
-    if (!profile.data?.opening_lane) throw new Error("Complete three opening songs before starting QA.");
+    if (!profile.data?.opening_lane)
+      throw new Error("Complete three opening songs before starting QA.");
     const { buildStartSessionSeed } = await import("@/musicdna/engine/session");
-    const lanes = ["alternative", "pop", "hip_hop", "electronic", "classic_rock", "metal", "country", "r_and_b", "yacht_rock", "disco", "punk", "reggae"];
-    const seed = buildStartSessionSeed({ profile: profile.data as never, all_lanes: lanes, rng: { next: () => Math.random() } });
+    const lanes = [
+      "alternative",
+      "pop",
+      "hip_hop",
+      "electronic",
+      "classic_rock",
+      "metal",
+      "country",
+      "r_and_b",
+      "yacht_rock",
+      "disco",
+      "punk",
+      "reggae",
+    ];
+    const seed = buildStartSessionSeed({
+      profile: profile.data as never,
+      all_lanes: lanes,
+      rng: { next: () => Math.random() },
+    });
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const result = await supabaseAdmin.rpc("create_interview_qa", {
-      p_owner: context.userId, p_vector: seed.seed_vector,
-      p_lane: seed.lane, p_confidence: seed.lane_confidence, p_candidates: seed.probe_candidate_lanes,
+      p_owner: context.userId,
+      p_vector: seed.seed_vector,
+      p_lane: seed.lane,
+      p_confidence: seed.lane_confidence,
+      p_candidates: seed.probe_candidate_lanes,
     });
     if (result.error || !result.data) throw new Error("Could not create QA interview.");
     return { sessionId: result.data };
@@ -675,15 +702,17 @@ export const adminShadowRouter = createServerFn({ method: "POST" })
     const regimeRows = ((regimeRes.data ?? []) as Row[]).filter(notQa);
     const choiceRows = ((choiceRes.data ?? []) as Row[]).filter(notQa);
     const skipRows = ((skipRes.data ?? []) as Row[]).filter(notQa);
-    const sessions = ((sessionRes.data ?? []) as Array<{
-      id: string;
-      lane: string | null;
-      lane_confidence: number | null;
-      completed_at: string | null;
-      archetype_margin: number | null;
-      vector: Record<string, number> | null;
-      created_at: string;
-    }>).filter((row) => !qa.has(row.id));
+    const sessions = (
+      (sessionRes.data ?? []) as Array<{
+        id: string;
+        lane: string | null;
+        lane_confidence: number | null;
+        completed_at: string | null;
+        archetype_margin: number | null;
+        vector: Record<string, number> | null;
+        created_at: string;
+      }>
+    ).filter((row) => !qa.has(row.id));
 
     // ---- Regime distribution + confidence ----
     const regimeCounts: Record<string, number> = {

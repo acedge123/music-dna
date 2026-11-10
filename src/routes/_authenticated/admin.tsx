@@ -143,15 +143,24 @@ function AdminPage() {
         <div>
           <p className="eyebrow mb-3">Admin</p>
           <h1 className="display text-4xl">Catalog</h1>
-          <Button variant="outline" disabled={qaBusy} className="mt-4" onClick={async () => {
-            setQaBusy(true);
-            try {
-              const result = await newQa();
-              await navigate({ to: "/onboarding", search: { session: result.sessionId } });
-            } catch (error) {
-              toast.error(error instanceof Error ? error.message : "Could not start QA.");
-            } finally { setQaBusy(false); }
-          }}><Plus /> {qaBusy ? "Opening QA…" : "New QA interview"}</Button>
+          <Button
+            variant="outline"
+            disabled={qaBusy}
+            className="mt-4"
+            onClick={async () => {
+              setQaBusy(true);
+              try {
+                const result = await newQa();
+                await navigate({ to: "/onboarding", search: { session: result.sessionId } });
+              } catch (error) {
+                toast.error(error instanceof Error ? error.message : "Could not start QA.");
+              } finally {
+                setQaBusy(false);
+              }
+            }}
+          >
+            <Plus /> {qaBusy ? "Opening QA…" : "New QA interview"}
+          </Button>
           <p className="text-sm text-muted-foreground mt-1">
             Edit songs, pairings, and archetypes. Changes go live immediately.
           </p>

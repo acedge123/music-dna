@@ -98,7 +98,11 @@ export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLab
   return beat;
 }
 
-export function contextualChatFallback(ledger: Ledger, _selfReport: string, labels: AxisLabels = {}) {
+export function contextualChatFallback(
+  ledger: Ledger,
+  _selfReport: string,
+  labels: AxisLabels = {},
+) {
   const latest = [...ledger.entries].sort((a, b) => b.index - a.index)[0];
   if (!latest) {
     return ledger.answered
@@ -108,9 +112,10 @@ export function contextualChatFallback(ledger: Ledger, _selfReport: string, labe
   const pole = labels[latest.axis];
   const chosen = latest.delta > 0 ? pole?.hi : pole?.lo;
   const rejected = latest.delta > 0 ? pole?.lo : pole?.hi;
-  const observation = chosen && rejected
-    ? ` On that matchup's declared test, ${chosen} beat ${rejected}; that's an observation, not your motive.`
-    : " That choice is recorded, but it doesn't settle your motive.";
+  const observation =
+    chosen && rejected
+      ? ` On that matchup's declared test, ${chosen} beat ${rejected}; that's an observation, not your motive.`
+      : " That choice is recorded, but it doesn't settle your motive.";
   return `I couldn't produce a grounded answer to your question. The last verified choice was ${latest.chosen} over ${latest.rejected}.${observation}`;
 }
 
@@ -188,7 +193,11 @@ CONTEXT: ${JSON.stringify(context)}`);
     const beat = validateCriticBeat(decoded, ledger, labels);
     if (!beat) return fail("invalid_generation", "invalid_references_or_schema");
     if (options.stage === "chat" && options.selfReport?.trim()) {
-      const normalize = (text: string) => text.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
+      const normalize = (text: string) =>
+        text
+          .toLowerCase()
+          .replace(/[^\p{L}\p{N}]+/gu, " ")
+          .trim();
       const question = normalize(options.selfReport);
       const reply = normalize(`${beat.headline} ${beat.body}`);
       if (question.length >= 20 && reply.includes(question))

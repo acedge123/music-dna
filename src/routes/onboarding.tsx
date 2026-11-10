@@ -13,7 +13,10 @@ import { useEffect } from "react";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
-  validateSearch: (search) => z.object({ session: z.string().uuid().optional(), fresh: z.string().max(80).optional() }).parse(search),
+  validateSearch: (search) =>
+    z
+      .object({ session: z.string().uuid().optional(), fresh: z.string().max(80).optional() })
+      .parse(search),
   head: () => ({
     meta: [
       { title: "MusicDNA — Interview" },
@@ -392,7 +395,9 @@ function Onboarding() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => void navigate({ to: "/onboarding", search: { fresh: crypto.randomUUID() } })}
+                    onClick={() =>
+                      void navigate({ to: "/onboarding", search: { fresh: crypto.randomUUID() } })
+                    }
                     className="min-h-11 rounded-sm px-5 py-3"
                   >
                     <ArrowRight /> Start new interview

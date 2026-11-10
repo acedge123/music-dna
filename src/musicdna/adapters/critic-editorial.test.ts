@@ -180,11 +180,17 @@ describe("critic-expression-v2 boundary", () => {
   });
   it("rejects a full question echo even if the reviewer would accept it", async () => {
     const question = "Why did I choose Star Guitar over Hyperballad?";
-    const generate = vi.fn().mockResolvedValueOnce(JSON.stringify({
-      headline: question, body: "What made the difference?", choice_ids: [], claims: [],
-    }));
+    const generate = vi.fn().mockResolvedValueOnce(
+      JSON.stringify({
+        headline: question,
+        body: "What made the difference?",
+        choice_ids: [],
+        claims: [],
+      }),
+    );
     const result = await authorCritic(ledger([40]), labels, generate, {
-      stage: "chat", selfReport: question,
+      stage: "chat",
+      selfReport: question,
       fallback: contextualChatFallback(ledger([40]), question, labels),
     });
     expect(result.validation_reason).toBe("prompt_echo");
