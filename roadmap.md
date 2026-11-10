@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — approved Critic model upgrade
+
+- [ ] Upgrade direct OpenAI Critic writer to GPT-6.1 Sol (medium reasoning), reviewer to GPT-6.1 Terra (low); preserve strict schemas, replay and inference boundaries. Astra remains an explicit experimental writer override, not an automatic fallback.
+- [ ] Test model selection/request compatibility and verify production model readback when the updated deployment is available; existing Vercel overrides may require operator updates.
+
 ## Current — mixed Critic versions in production QA
 
 - [x] Confirmed mixed versions in reported QA session; live SHA 792cb774c9fa97e48dfd17544e687eab55e0f8f9 already has one shared v2.3 generator. Fresh production vote in session 4afc2bf0-efd4-4fa1-ad5e-7418c94b2d3a read back accepted v2.3 / GPT-4.1 writer / GPT-4.1-mini reviewer. Exact cause of the older calls remains unproven; stale loaded clients/deployments are a hypothesis, not a confirmed diagnosis.
