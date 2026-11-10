@@ -32,3 +32,20 @@ Source type checking, contract guards and worker build pass. The whole Music DNA
 ## Stop
 
 Disable dispatch to pause sending. Disable capture to clear queued local details under existing scope rules. Withdraw the subject to request downstream erasure and revoke reviewer access to deny reads. Preserve immutable receipts and unknown-cost reservations. Reconcile pending deletion tasks and suppression/expiry state before any restore or subsequent activation.
+
+## Live activation receipt — November 9, 2026 Pacific
+
+Capture for Alan's verified Music DNA account is **on**, effective `2026-11-10T05:34:05.187Z`, through `2026-12-10T05:34:05.187Z` (30 days). One tester is consented. This database capture applies to future completed readings saved by both web and TestFlight, independent of this computer. No historical backfill or invented feedback was performed. At `2026-11-10T05:36Z`, real captures were zero: a real saved feedback receipt is still pending tester activity, not claimed as passed.
+
+**Dispatch remains off; Echelon delivery and EdgeBot model review are not live.** Echelon PR #25 needs its forward migration and four named functions deployed, and EdgeBot PR #23 needs worker deployment. The daily automatic-review cap/schedule is unanswered; no model request or automatic schedule was started. No new source key, reviewer grant or receiver scope was created. The expired staging scope stayed off and unchanged.
+
+Applied source migrations, exactly once; retained filenames match history and hashes match stored SQL:
+
+- `20261110053326_musicdna_real_qa_learning.sql`: SHA-256 `4c310a9926e5af1070271b3f30f2d861b2cf72a6489009e5760e113e64c2b5e9`.
+- `20261110053647_musicdna_real_qa_approver_cleanup.sql`: SHA-256 `a50d3d1e2710e1837f3eb19cfa3bdbb8a171227671f023585972d7b0e25b6880`. This forward correction makes approver-account deletion cascade through consent withdrawal instead of blocking deletion when other testers are invited. The applied earlier SQL/history was not edited or rerun.
+
+Hosted ACL verification: consent RLS on; guest/signed-in browser table reads and enrollment RPC execution denied; service-role enrollment allowed; approver deletion cascade confirmed. Security advisors retained 27 existing warnings; the private table is included in the intentional no-policy informational finding. No advisor warning was reported as resolved by this change.
+
+Latest source validation on concurrent main `57b99d0`: 461 application checks passed, 104 native-environment checks skipped in the general run; 76 separate native source/outbox/dispatcher checks passed. Lovable's concurrent work was retained with a regular merge. A test double was corrected to keep private critic measurement writes separate from event-log writes; production critic behavior was not changed. Source type-check, touched-file lint, contract guards and operator-worker build passed.
+
+Reviewable changes: Music DNA PR #34, Echelon PR #25, EdgeBot PR #23. AB-57 is In Progress under AB-6 on board 101-133, Sprint 171. End-to-end real delivery and a completed real model draft remain outstanding, separately from code verification.

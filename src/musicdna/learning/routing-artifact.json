@@ -1,6 +1,6 @@
 {
   "policy_id": "musicdna-selector",
-  "version": "sha256:eee81e843ecf8610fd212702dd38138ce154ca646a5a56871cd283e7a66593b6",
+  "version": "sha256:86e53929bc8b4db9075f2ca5b049dcd9ab7294efd7a3a1522f24397fde8779e6",
   "files": [
     "src/lib/musicdna.functions.ts",
     "src/musicdna/engine/archetypes.ts",
@@ -9,6 +9,7 @@
     "src/musicdna/engine/claim-language.ts",
     "src/musicdna/engine/claims.ts",
     "src/musicdna/engine/critic-effects.ts",
+    "src/musicdna/engine/critic-quality.ts",
     "src/musicdna/engine/critic.ts",
     "src/musicdna/engine/descriptors.ts",
     "src/musicdna/engine/errors.ts",

@@ -22,7 +22,10 @@ describe.skipIf(!process.env.AB45_TEST_DATABASE_URL)("native consented real QA",
       "ALTER TABLE auth.users ADD COLUMN email_confirmed_at timestamptz DEFAULT now(),ADD COLUMN is_anonymous boolean DEFAULT false",
     );
     await f.sql.unsafe(
-      readSourceFile("supabase/migrations/20261110051239_musicdna_real_qa_learning.sql"),
+      readSourceFile("supabase/migrations/20261110053326_musicdna_real_qa_learning.sql"),
+    );
+    await f.sql.unsafe(
+      readSourceFile("supabase/migrations/20261110053647_musicdna_real_qa_approver_cleanup.sql"),
     );
   }, 30000);
   afterAll(async () => {
@@ -117,6 +120,19 @@ describe.skipIf(!process.env.AB45_TEST_DATABASE_URL)("native consented real QA",
     await f.sql`UPDATE auth.users SET is_anonymous=true WHERE id=${OWNER}`;
     await expect(enroll()).rejects.toMatchObject({ code: "42501" });
     await f.sql`UPDATE auth.users SET is_anonymous=false WHERE id=${OWNER}`;
+  });
+  it("deleting an approver withdraws other tester consents instead of blocking account deletion", async () => {
+    await f.sql.begin(async (tx) => {
+      await tx`SET LOCAL ROLE service_role`;
+      await tx`SELECT public.enroll_musicdna_real_qa(${OTHER},${randomUUID()},${OWNER},${"s_" + "e".repeat(64)},now()-interval '1 second',now()+interval '12 hours')`;
+    });
+    await result(OTHER);
+    await f.sql`DELETE FROM auth.users WHERE id=${OWNER}`;
+    expect(await f.sql`SELECT user_id FROM public.musicdna_real_qa_consents`).toHaveLength(0);
+    expect(
+      await f.sql`SELECT observation_id FROM public.musicdna_learning_outbox WHERE projection IS NOT NULL OR canonical_envelope IS NOT NULL`,
+    ).toHaveLength(0);
+    await f.sql`INSERT INTO auth.users(id) VALUES(${OWNER})`;
   });
   it("withdrawal clears pending detail and prevents further capture", async () => {
     await enroll();
