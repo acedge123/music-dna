@@ -2,8 +2,9 @@
 
 ## Current — approved Critic model upgrade
 
-- [ ] Upgrade direct OpenAI Critic writer to GPT-6.1 Sol (medium reasoning), reviewer to GPT-6.1 Terra (low); preserve strict schemas, replay and inference boundaries. Astra remains an explicit experimental writer override, not an automatic fallback.
-- [ ] Test model selection/request compatibility and verify production model readback when the updated deployment is available; existing Vercel overrides may require operator updates.
+- [x] Upgrade direct OpenAI Critic writer to GPT-6.1 Sol (medium reasoning), reviewer to GPT-6.1 Terra (low); strict schemas, replay and inference boundaries unchanged. Astra remains an explicit experimental writer override, not an automatic fallback. General LLM/preview calls unchanged.
+- [x] 44 focused tests and touched-file lint pass; preview build OK. Role routing, strict schemas, reasoning effort, explicit overrides, actual model measurement and no silent downgrade covered. Handoff: docs/musicdna/critic-model-upgrade-2026-11-10.md.
+- [ ] Production model readback: Vercel serves 08acb9a95a8e088cd3123249778447012fc020e5, whose defaults are still GPT-4.1/GPT-4.1-mini. Waits on updated deployment; existing Vercel role overrides may also need updating. No direct OpenAI key or Vercel settings access in sandbox; account-specific access and signed-in owner-QA acceptance remain unverified.
 
 ## Current — mixed Critic versions in production QA
 
