@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — mixed Critic versions in production QA
+
+- [ ] Trace why one production interview recorded v2.2 / GPT-4o mini interim reads but v2.3 / GPT-4.1 reveal/chat; verify fresh deployed calls before changing model settings.
+- [ ] Add stage/model contract regression coverage and keep zero-eligible-axis observations bounded; preserve saved results and learning/routing flags.
+- [ ] Check fresh zero-choice header isolation and report deployment/acceptance limits.
+
 ## Current — signed-in opening and conversation hangs
 
 - [x] Repair stale session pinning on fresh Start and cancellation during restored-session opening; add bounded retryable waits without changing saved outcomes. Repeated same-user sign-in events no longer invalidate the interview.
