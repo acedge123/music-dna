@@ -22,6 +22,7 @@ import type { CurrentReadResult } from "@/musicdna/engine/read";
 import type { Phase, Refined, Pairing, Entry } from "@/lib/interview-model";
 import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
 import { shouldResumeInterview } from "@/musicdna/engine/reading-support";
+import { withRequestDeadline } from "@/lib/request-deadline";
 
 export function useInterview(requestedSession?: string, fresh?: string) {
   const reducedMotion = usePrefersReducedMotion();
@@ -114,9 +115,13 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   // boot
   const [bootError, setBootError] = useState<string | null>(null);
   const [booting, setBooting] = useState(true);
+  const pinnedSession = useRef<string | null>(null);
+  const bootGeneration = useRef(0);
   useEffect(() => {
     // Pinning a newly-created ID in the address bar must not reboot its live state.
-    if (requestedSession && requestedSession === sessionId) return;
+    if (requestedSession && requestedSession === pinnedSession.current) return;
+    pinnedSession.current = null;
+    const generation = ++bootGeneration.current;
     let cancelled = false;
     setBooting(true);
     setBootError(null);
@@ -134,8 +139,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     setReactionReply(null);
     setReactedRounds([]);
     playStartedRef.current = false;
-    (async () => {
-      try {
+    const opening = (async () => {
         await ensureAnonSession();
         const o = (await getOpenerFn()) as OnboardingOpener;
         if (cancelled) return;
@@ -183,7 +187,6 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         });
         if (restored.length === 0 && !requestedSession) return;
         playStartedRef.current = true;
-        setSessionId(resumed.sessionId);
         setEntries(restored);
         if (!resumed.completed && resumed.opener?.hypothesis) {
           setRefined({
@@ -196,6 +199,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         if (resumed.completed) {
           // Finished reading (e.g. browser Back from chat): show the result.
           await loadFinalRead(resumed.sessionId);
+          if (cancelled) return;
+          setSessionId(resumed.sessionId);
           setPhase("done");
           return;
         }
@@ -211,21 +216,27 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         if (nx.prompt) setNextPrompt(nx.prompt);
         if (nx.done || !nx.pairing) {
           await loadFinalRead(resumed.sessionId);
+          if (cancelled) return;
+          setSessionId(resumed.sessionId);
           setPhase("done");
           return;
         }
         setPairing(nx.pairing);
+        setSessionId(resumed.sessionId);
         setRound(nx.round);
         startedAt.current = Date.now();
         toast("Picked up where you left off.");
-      } catch (e) {
+    })();
+    void withRequestDeadline(opening, "Interview opening timed out").catch(() => {
+      if (!cancelled) {
         setBootError(
           "We couldn’t restore this interview. Try again, or return home to start a reading.",
         );
-      } finally {
-        if (!cancelled) setBooting(false);
       }
-    })();
+    }).finally(() => {
+        if (!cancelled) setBooting(false);
+        cancelled = true;
+    });
     return () => {
       cancelled = true;
     };
@@ -255,6 +266,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     (async () => {
       try {
         const { sessionId } = await startFn({});
+        pinnedSession.current = sessionId;
         setSessionId(sessionId);
         const { pairing, round, selection_reason, done, prompt, max_rounds } = (await nextFn({
           data: { sessionId },
@@ -523,6 +535,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   // Pulling the closing read is shared by the choice path and the
   // repeated-skip path — a skipped-out session still gets an honest result.
   async function loadFinalRead(sidOverride?: string) {
+    const generation = bootGeneration.current;
     const sid = sidOverride ?? sessionId;
     if (!sid) return;
     setResultError(null);
@@ -541,12 +554,14 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         counter_reads: Array<{ claim: string; notes: string }>;
       };
       if (!r.synthesis || r.result_version == null) throw new Error("Reading not saved yet");
+      if (generation !== bootGeneration.current) return;
       setResultVersion(r.result_version);
       setSynthesis(r.synthesis);
       setAuditText(r.audit_text);
       setKept(r.kept_choosing ?? []);
       setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
     } catch (e) {
+      if (generation !== bootGeneration.current) return;
       setResultError(
         "Your choices are saved, but the reading isn’t ready yet. Retry to finish it.",
       );
