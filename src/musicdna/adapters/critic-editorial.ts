@@ -235,7 +235,13 @@ export type CriticExperiment = {
   objective?: string;
   /** Extra reviewer rule text, appended before FACTS. */
   reviewRules?: string;
+  /** Approved catalog facts per choice ID (offline pilot only). */
+  songFacts?: Record<string, { chosen: string[]; rejected: string[] }>;
 };
+
+export const SONG_FACT_REVIEW_RULE = `SONG FACT CARDS: chosen_song_facts/rejected_song_facts are approved, source-checked catalog facts.
+Music facts that match a card ARE supplied facts: do not fail no_invented_facts for them. Any music fact NOT on a card still fails.
+Card facts describe songs, never the listener: "the fretless bass" is fine; "you love fretless bass" or using a card fact as proof of a tendency fails ceiling_preserved (code unsupported_motive).`;
 
 export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLabels) {
   const parsed = Beat.safeParse(raw);
@@ -350,9 +356,20 @@ export async function authorCritic(
   };
   if (!ledger.entries.length && options.stage !== "chat")
     return fail("insufficient", "no_verified_choices");
-  const facts = options.experiment?.compactFacts
+  const baseFacts = options.experiment?.compactFacts
     ? compactCriticFacts(ledger, labels)
     : criticFacts(ledger, labels);
+  const cards = options.experiment?.songFacts;
+  const facts = cards
+    ? {
+        ...baseFacts,
+        choices: baseFacts.choices.map((c) => ({
+          ...c,
+          chosen_song_facts: cards[c.id ?? ""]?.chosen ?? [],
+          rejected_song_facts: cards[c.id ?? ""]?.rejected ?? [],
+        })),
+      }
+    : baseFacts;
   {
     const f = JSON.stringify(facts);
     trace.facts_summary = {
