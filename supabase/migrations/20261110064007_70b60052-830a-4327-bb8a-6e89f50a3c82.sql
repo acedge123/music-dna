@@ -1,0 +1,2 @@
+ALTER TABLE public.critic_quality_attempts ADD COLUMN IF NOT EXISTS decision_trace jsonb;
+COMMENT ON COLUMN public.critic_quality_attempts.decision_trace IS 'Owner-QA sessions only: raw writer/reviewer replies, prior replies, failure detail. Admin-only, never exported.';
