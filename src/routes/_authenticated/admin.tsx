@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { toast } from "sonner";
+import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import {
   adminCheck,
   adminList,
