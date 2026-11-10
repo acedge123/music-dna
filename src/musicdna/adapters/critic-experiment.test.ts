@@ -29,3 +29,17 @@ describe("critic speed experiment hook", () => {
     expect(sayings).toEqual(["saying 2"]);
   });
 });
+
+describe("song fact cards", () => {
+  it("are supplied to the critic only when the experiment passes them", async () => {
+    const prompts: string[] = [];
+    const id = l.entries[0].choice_id!;
+    await authorCritic(l, labels, async (p) => (prompts.push(p), "x"), {
+      stage: "read",
+      experiment: { songFacts: { [id]: { chosen: ["String coda outlasts the band."], rejected: [] } } },
+    });
+    await authorCritic(l, labels, async (p) => (prompts.push(p), "x"), { stage: "read" });
+    expect(prompts[0]).toContain("String coda outlasts the band.");
+    expect(prompts.at(-1)).not.toContain("chosen_song_facts");
+  });
+});
