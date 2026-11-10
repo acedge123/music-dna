@@ -292,6 +292,11 @@ function Onboarding() {
             <p className="font-serif text-2xl md:text-3xl">
               {entries.length === 0 ? "Pick one. First instinct." : "Which one would you keep?"}
             </p>
+            {entries.length === 0 && (
+              <p className="max-w-xl text-sm text-muted-foreground">
+                Now the head-to-heads. Each pick sharpens my read on you, so go with your gut.
+              </p>
+            )}
             <SongChoices
               songs={[pairing.song_a, pairing.song_b]}
               selectedId={pendingSongId}
