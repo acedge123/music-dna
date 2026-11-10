@@ -22,6 +22,7 @@ import type { CurrentReadResult } from "@/musicdna/engine/read";
 import type { Phase, Refined, Pairing, Entry } from "@/lib/interview-model";
 import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
 import { shouldResumeInterview } from "@/musicdna/engine/reading-support";
+import { withRequestDeadline } from "@/lib/request-deadline";
 
 export function useInterview(requestedSession?: string, fresh?: string) {
   const reducedMotion = usePrefersReducedMotion();
@@ -114,9 +115,14 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   // boot
   const [bootError, setBootError] = useState<string | null>(null);
   const [booting, setBooting] = useState(true);
+  const [openedFresh, setOpenedFresh] = useState<string | undefined>();
+  const pinnedSession = useRef<string | null>(null);
+  const bootGeneration = useRef(0);
   useEffect(() => {
     // Pinning a newly-created ID in the address bar must not reboot its live state.
-    if (requestedSession && requestedSession === sessionId) return;
+    if (requestedSession && requestedSession === pinnedSession.current) return;
+    pinnedSession.current = null;
+    const generation = ++bootGeneration.current;
     let cancelled = false;
     setBooting(true);
     setBootError(null);
@@ -134,98 +140,109 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     setReactionReply(null);
     setReactedRounds([]);
     playStartedRef.current = false;
-    (async () => {
-      try {
-        await ensureAnonSession();
-        const o = (await getOpenerFn()) as OnboardingOpener;
-        if (cancelled) return;
-        setOpener(o);
-        track({ event_type: "onboarding_viewed", variant: o.variant_key });
+    const opening = (async () => {
+      await ensureAnonSession();
+      const o = (await getOpenerFn()) as OnboardingOpener;
+      if (cancelled) return;
+      setOpener(o);
+      track({ event_type: "onboarding_viewed", variant: o.variant_key });
 
-        // Resume an unfinished interview with its full conversation.
-        const resumed = shouldResumeInterview({ session: requestedSession, fresh })
-          ? await resumeFn({ data: { sessionId: requestedSession } })
-          : null;
-        if (cancelled || !resumed) return;
-        const ex = resumed.exchanges;
-        const restored: Entry[] = [];
-        ex.forEach((e, i) => {
-          if (e.type !== "choice" || !e.pairing || !e.chosen) return;
-          const after = ex.slice(i + 1);
-          const nextChoice = after.findIndex((x) => x.type === "choice");
-          const r = (nextChoice === -1 ? after : after.slice(0, nextChoice)).find(
-            (x) => x.type === "read",
-          );
-          const rr = r && r.type === "read" ? r : null;
-          restored.push({
-            round: restored.length + 1,
-            pairing: {
-              ...e.pairing,
-              hypothesis: null,
-              why_good: null,
-              song_a: { ...e.pairing.song_a, lane: e.pairing.song_a.lane ?? "" },
-              song_b: { ...e.pairing.song_b, lane: e.pairing.song_b.lane ?? "" },
-            } as Pairing,
-            chosenSongId: e.chosen.id,
-            reaction: e.feedback
-              ? e.feedback.why
-                ? `${e.feedback.verdict}\n${e.feedback.why}`
-                : e.feedback.verdict
-              : `${e.chosen.title}.`,
-            thesis: rr?.thesis ?? "",
-            hook: "",
-            direction: (rr?.direction as Entry["direction"]) ?? "forming",
-            topDim: null,
-            tier: (rr?.tier as Entry["tier"]) ?? "observation",
-            question: "",
-            revision: rr?.revision as CurrentReadResult["revision"],
-          });
-        });
-        if (restored.length === 0 && !requestedSession) return;
-        playStartedRef.current = true;
-        setSessionId(resumed.sessionId);
-        setEntries(restored);
-        if (!resumed.completed && resumed.opener?.hypothesis) {
-          setRefined({
-            hypothesis: resumed.opener.hypothesis,
-            lane: resumed.opener.lane,
-            confidence: 0,
-          });
-        }
-        setPhase("playing");
-        if (resumed.completed) {
-          // Finished reading (e.g. browser Back from chat): show the result.
-          await loadFinalRead(resumed.sessionId);
-          setPhase("done");
-          return;
-        }
-        const nx = (await nextFn({ data: { sessionId: resumed.sessionId } })) as {
-          pairing: Pairing | null;
-          round: number;
-          done: boolean;
-          max_rounds?: number;
-          prompt?: string;
-        };
-        if (cancelled) return;
-        if (nx.max_rounds) setMaxRounds(nx.max_rounds);
-        if (nx.prompt) setNextPrompt(nx.prompt);
-        if (nx.done || !nx.pairing) {
-          await loadFinalRead(resumed.sessionId);
-          setPhase("done");
-          return;
-        }
-        setPairing(nx.pairing);
-        setRound(nx.round);
-        startedAt.current = Date.now();
-        toast("Picked up where you left off.");
-      } catch (e) {
-        setBootError(
-          "We couldn’t restore this interview. Try again, or return home to start a reading.",
+      // Resume an unfinished interview with its full conversation.
+      const resumed = shouldResumeInterview({ session: requestedSession, fresh })
+        ? await resumeFn({ data: { sessionId: requestedSession } })
+        : null;
+      if (cancelled || !resumed) return;
+      const ex = resumed.exchanges;
+      const restored: Entry[] = [];
+      ex.forEach((e, i) => {
+        if (e.type !== "choice" || !e.pairing || !e.chosen) return;
+        const after = ex.slice(i + 1);
+        const nextChoice = after.findIndex((x) => x.type === "choice");
+        const r = (nextChoice === -1 ? after : after.slice(0, nextChoice)).find(
+          (x) => x.type === "read",
         );
-      } finally {
-        if (!cancelled) setBooting(false);
+        const rr = r && r.type === "read" ? r : null;
+        restored.push({
+          round: restored.length + 1,
+          pairing: {
+            ...e.pairing,
+            hypothesis: null,
+            why_good: null,
+            song_a: { ...e.pairing.song_a, lane: e.pairing.song_a.lane ?? "" },
+            song_b: { ...e.pairing.song_b, lane: e.pairing.song_b.lane ?? "" },
+          } as Pairing,
+          chosenSongId: e.chosen.id,
+          reaction: e.feedback
+            ? e.feedback.why
+              ? `${e.feedback.verdict}\n${e.feedback.why}`
+              : e.feedback.verdict
+            : `${e.chosen.title}.`,
+          thesis: rr?.thesis ?? "",
+          hook: "",
+          direction: (rr?.direction as Entry["direction"]) ?? "forming",
+          topDim: null,
+          tier: (rr?.tier as Entry["tier"]) ?? "observation",
+          question: "",
+          revision: rr?.revision as CurrentReadResult["revision"],
+        });
+      });
+      if (restored.length === 0 && !requestedSession) return;
+      playStartedRef.current = true;
+      setEntries(restored);
+      if (!resumed.completed && resumed.opener?.hypothesis) {
+        setRefined({
+          hypothesis: resumed.opener.hypothesis,
+          lane: resumed.opener.lane,
+          confidence: 0,
+        });
       }
+      setPhase("playing");
+      if (resumed.completed) {
+        // Finished reading (e.g. browser Back from chat): show the result.
+        await loadFinalRead(resumed.sessionId);
+        if (cancelled) return;
+        setSessionId(resumed.sessionId);
+        setPhase("done");
+        return;
+      }
+      const nx = (await nextFn({ data: { sessionId: resumed.sessionId } })) as {
+        pairing: Pairing | null;
+        round: number;
+        done: boolean;
+        max_rounds?: number;
+        prompt?: string;
+      };
+      if (cancelled) return;
+      if (nx.max_rounds) setMaxRounds(nx.max_rounds);
+      if (nx.prompt) setNextPrompt(nx.prompt);
+      if (nx.done || !nx.pairing) {
+        await loadFinalRead(resumed.sessionId);
+        if (cancelled) return;
+        setSessionId(resumed.sessionId);
+        setPhase("done");
+        return;
+      }
+      setPairing(nx.pairing);
+      setSessionId(resumed.sessionId);
+      setRound(nx.round);
+      startedAt.current = Date.now();
+      toast("Picked up where you left off.");
     })();
+    void withRequestDeadline(opening, "Interview opening timed out")
+      .catch(() => {
+        if (!cancelled) {
+          setBootError(
+            "We couldn’t restore this interview. Try again, or return home to start a reading.",
+          );
+        }
+      })
+      .finally(() => {
+        if (!cancelled) {
+          setOpenedFresh(fresh);
+          setBooting(false);
+        }
+        cancelled = true;
+      });
     return () => {
       cancelled = true;
     };
@@ -255,6 +272,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     (async () => {
       try {
         const { sessionId } = await startFn({});
+        pinnedSession.current = sessionId;
         setSessionId(sessionId);
         const { pairing, round, selection_reason, done, prompt, max_rounds } = (await nextFn({
           data: { sessionId },
@@ -523,6 +541,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   // Pulling the closing read is shared by the choice path and the
   // repeated-skip path — a skipped-out session still gets an honest result.
   async function loadFinalRead(sidOverride?: string) {
+    const generation = bootGeneration.current;
     const sid = sidOverride ?? sessionId;
     if (!sid) return;
     setResultError(null);
@@ -541,12 +560,14 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         counter_reads: Array<{ claim: string; notes: string }>;
       };
       if (!r.synthesis || r.result_version == null) throw new Error("Reading not saved yet");
+      if (generation !== bootGeneration.current) return;
       setResultVersion(r.result_version);
       setSynthesis(r.synthesis);
       setAuditText(r.audit_text);
       setKept(r.kept_choosing ?? []);
       setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
     } catch (e) {
+      if (generation !== bootGeneration.current) return;
       setResultError(
         "Your choices are saved, but the reading isn’t ready yet. Retry to finish it.",
       );
@@ -732,6 +753,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     doneAnchorRef,
     bootError,
     booting,
+    openedFresh,
     submitSlot,
     pick,
     reactToRead,

@@ -142,6 +142,8 @@ function RootComponent() {
   useEffect(() => {
     let cancelled = false;
     let unsubscribe: (() => void) | null = null;
+    let identity: string | null | undefined;
+    let refreshTimer: ReturnType<typeof setTimeout> | undefined;
     // Dynamically import so this useEffect body never pulls the browser
     // client into any SSR-executed path.
     void import("@/integrations/supabase/client").then(({ supabase }) => {
@@ -149,9 +151,17 @@ function RootComponent() {
       const { data: sub } = supabase.auth.onAuthStateChange((event, nextSession) => {
         setSession(nextSession);
         setLoading(false);
-        if (event === "SIGNED_IN" || event === "USER_UPDATED") {
-          router.invalidate();
-          queryClient.invalidateQueries();
+        const nextIdentity = nextSession?.user.id ?? null;
+        const changed = identity !== undefined && identity !== nextIdentity;
+        identity = nextIdentity;
+        if ((event === "SIGNED_IN" && changed) || event === "USER_UPDATED") {
+          // Route/cache work may re-enter auth. Run only after notification returns.
+          clearTimeout(refreshTimer);
+          refreshTimer = setTimeout(() => {
+            if (cancelled) return;
+            void router.invalidate();
+            void queryClient.invalidateQueries();
+          }, 0);
         } else if (event === "SIGNED_OUT") {
           router.invalidate();
           queryClient.clear();
@@ -161,6 +171,7 @@ function RootComponent() {
     });
     return () => {
       cancelled = true;
+      clearTimeout(refreshTimer);
       unsubscribe?.();
     };
   }, [queryClient, router]);

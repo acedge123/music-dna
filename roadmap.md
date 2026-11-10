@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — signed-in opening and conversation hangs
+
+- [x] Repair stale session pinning on fresh Start and cancellation during restored-session opening; add bounded retryable waits without changing saved outcomes. Repeated same-user sign-in events no longer invalidate the interview.
+- [x] 17 regression tests and lint/build pass; preview guest opener → pairing → exact reload and fresh Start pass; skip-ended conversation saves and reads back after reload. No page errors. Live public root/interview/auth work; no deployment configuration changes needed.
+- [ ] Production registered-account opening/chat acceptance remains blocked by external-managed browser access and deployment of this fix; registered hangs are not claimed verified.
+
 ## Current — CGPT interview defects
 
 - [x] Traced reported session: first two frozen votes have no declared tests, four of six are diagnostically usable; no historical reconstruction.

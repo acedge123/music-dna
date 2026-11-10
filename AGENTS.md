@@ -49,3 +49,4 @@
 - Critic quality stays local and separate from inference/feedback: shared attempts retain nullable measurements, admin-only rubric scores target exact output, and client-reported exposure binds to a trusted offer ID; none automatically promotes routing or learning.
 - Fresh interview URLs bypass implicit resume; active IDs are pinned for reload/Back. Operator QA sessions are atomically tagged, excluded from listener diagnostics, and never imply synthetic export eligibility or pilot consent.
 - Archetype assignment and profile presentation require frozen-ledger support; historical saved content stays immutable, and rejected chat generations must not echo the user's question.
+- Interview URL pinning waits for restore completion and never carries an old session into fresh Start; bounded conversation waits preserve pending mutation IDs because a timeout does not prove a failed write.

@@ -4,6 +4,7 @@ import { chatTurn, listChat } from "@/lib/musicdna.functions";
 import { getSavedReading } from "@/lib/saved-reading.functions";
 import { ensureAnonSession } from "@/lib/anon-auth";
 import { supabase } from "@/integrations/supabase/client";
+import { withRequestDeadline } from "@/lib/request-deadline";
 import {
   mergeConversation,
   submitConversationTurn,
@@ -30,9 +31,15 @@ export function useReadingConversation(sessionId: string | undefined, resultVers
   const transport = useMemo<ConversationTransport>(
     () => ({
       list: async (id, cursor) =>
-        (await listFn({ data: { sessionId: id || undefined, cursor } })) as ConversationPage,
+        (await withRequestDeadline(
+          listFn({ data: { sessionId: id || undefined, cursor } }),
+          "Couldn't load your conversation in time. Please retry.",
+        )) as ConversationPage,
       send: (id, turn) =>
-        sendFn({ data: { sessionId: id, message: turn.message, mutationId: turn.mutationId } }),
+        withRequestDeadline(
+          sendFn({ data: { sessionId: id, message: turn.message, mutationId: turn.mutationId } }),
+          "Couldn't confirm your reply in time. Retry this same message.",
+        ),
     }),
     [listFn, sendFn],
   );
@@ -60,14 +67,20 @@ export function useReadingConversation(sessionId: string | undefined, resultVers
     setReading(null);
     setMessages([]);
     try {
-      await ensureAnonSession();
-      const { data: auth } = await supabase.auth.getSession();
+      await withRequestDeadline(ensureAnonSession(), "Sign in again to open this reading.");
+      const { data: auth } = await withRequestDeadline(
+        supabase.auth.getSession(),
+        "Sign in again to open this reading.",
+      );
       const owner = auth.session?.user.id;
       if (!owner) throw new Error("Sign in again to open this reading.");
       const id = sessionId ?? (await transport.list("")).sessionId;
       if (!id) throw new Error("Finish a reading before starting a conversation.");
       const [saved, page] = await Promise.all([
-        readingFn({ data: { sessionId: id, resultVersion } }),
+        withRequestDeadline(
+          readingFn({ data: { sessionId: id, resultVersion } }),
+          "Couldn't open your reading in time. Please retry.",
+        ),
         transport.list(id),
       ]);
       if (requestGeneration !== generation.current) return;
@@ -142,9 +155,12 @@ export function useReadingConversation(sessionId: string | undefined, resultVers
       setDraft("");
       setPending(null);
       pendingRef.current = null;
-      const saved = await readingFn({
-        data: { sessionId: reading.sessionId, resultVersion: reading.selected.version },
-      });
+      const saved = await withRequestDeadline(
+        readingFn({
+          data: { sessionId: reading.sessionId, resultVersion: reading.selected.version },
+        }),
+        "Your reply is saved, but the reading couldn't refresh. Reload to see it.",
+      );
       if (requestGeneration === generation.current) setReading(saved);
     } catch (error) {
       if (requestGeneration === generation.current)
