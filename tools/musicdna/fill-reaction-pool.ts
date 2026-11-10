@@ -82,7 +82,7 @@ async function main() {
     const choice = hypotheticalChoice(p, chosen, rejectedSong);
     calls++;
     const out = await authorCritic(buildLedger([choice], DIMS), LABELS, gen, { stage: "read" });
-    if (has("--verbose")) console.log(out.status, out.validation_reason, (out.trace as { error?: string } | undefined)?.error ?? "", out.text.slice(0, 120));
+    if (has("--verbose")) console.log(out.status, out.validation_reason, (out.trace as { error?: string } | undefined)?.error ?? "", out.text.slice(0, 120), JSON.stringify((out.trace as { attempts?: unknown[] } | undefined)?.attempts ?? []).slice(0, 600));
     if (!poolEligible({ priorChoices: 0, hadPriorRead: false, validation_reason: out.validation_reason, text: out.status === "ok" ? out.text : null })) { rejected++; continue; }
     const { error } = await supabaseAdmin.from("critic_reaction_pool" as never).upsert({
       pairing_id: p.id, chosen_song_id: chosen.id, stage: POOL_STAGE, writer_version: W, reviewer_version: R,
