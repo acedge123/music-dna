@@ -1,10 +1,9 @@
 # Roadmap
 
-## Current — rescue final reveal voice without losing precomputation
+## Current — reveal voice diagnosis, production credit blocker
 
-- [ ] Diagnose whether reported mechanical prose is accepted writing or rejected-writing fallback.
-- [ ] Restore reveal-specific editorial writing, keep deterministic receipts/exceptions and exact draft matching; no model, timing, routing or learning changes.
-- [ ] Run focused regressions and verify new reading presentation; production Sol quality remains subject to owner-QA retest.
+- [x] Session 49974641-02bf-4e72-a9cc-25d2ea44c8db reused deterministic fallbacks, not accepted Sol reveals; prepared payloads record OpenAI 429 insufficient credits. Initial drafts also encountered reference/schema or motive review rejection.
+- [ ] Restore OpenAI API credits, then repeat a fresh six-pick run and verify accepted reveal, voice and latency together. Blocker: owner's OpenAI billing balance. No model, prompt, timing, routing, learning or saved-reading changes made during diagnosis.
 
 ## Current — pre-write final reading during pick 6
 
