@@ -65,7 +65,27 @@ export function CriticQualityPanel() {
                   Exposure
                 </Button>
               </div>
+              <p className="text-sm text-muted-foreground">
+                {row.status} · {row.rejection_reason ?? "—"}
+                {row.decision_trace ? (
+                  <>
+                    {" "}
+                    · cause:{" "}
+                    <strong>
+                      {String((row.decision_trace as { cause?: string }).cause ?? "unknown")}
+                    </strong>
+                  </>
+                ) : null}
+              </p>
               <p className="font-serif text-xl whitespace-pre-wrap">{row.output_text}</p>
+              {row.decision_trace ? (
+                <details>
+                  <summary className="cursor-pointer text-sm">Decision trace (QA only)</summary>
+                  <pre className="mt-3 overflow-auto text-xs max-h-96 whitespace-pre-wrap">
+                    {JSON.stringify(row.decision_trace, null, 2)}
+                  </pre>
+                </details>
+              ) : null}
               <details>
                 <summary className="cursor-pointer text-sm">Frozen evidence supplied</summary>
                 <pre className="mt-3 overflow-auto text-xs max-h-80">

@@ -337,6 +337,7 @@ export type Database = {
           attempt_key: string
           calls: Json
           created_at: string
+          decision_trace: Json | null
           evidence_context: Json
           id: string
           output_fingerprint: string
@@ -356,6 +357,7 @@ export type Database = {
           attempt_key: string
           calls?: Json
           created_at?: string
+          decision_trace?: Json | null
           evidence_context: Json
           id?: string
           output_fingerprint: string
@@ -375,6 +377,7 @@ export type Database = {
           attempt_key?: string
           calls?: Json
           created_at?: string
+          decision_trace?: Json | null
           evidence_context?: Json
           id?: string
           output_fingerprint?: string

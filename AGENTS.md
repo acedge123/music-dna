@@ -38,7 +38,7 @@
 
 - AB-52 uses operator-only consented invitations under `ab52.*` in existing experiment_assignments, two default-off pilot/instrumentation flags, and the pinned local selector. Never classify owner QA as an independent randomized cohort, infer consent, rebucket on resume, export human pilot feedback via the synthetic outbox, or record unavailable error/latency/cost counters as healthy zero. Separate AB-57 consent can authorize truthful V2 real-QA export; it does not alter AB-52 assignment, its original consent, or its experiment metric. See docs/musicdna/ab52-pilot-plan.md and docs/musicdna/real-qa-learning.md.
 
-- Pairings go live only through two activation checks enforced by the `pairings_activation_checks` DB trigger and mirrored in `src/musicdna/engine/pairing-eligibility.ts`: diagnostic integrity (≥1 declared trait with ≥20-point song contrast) and editorial quality (specific, non-generic, unique saying). The live selector also filters by integrity; catalog repairs never rewrite frozen `choices.evidence`.
+- Pairings activate only via the `pairings_activation_checks` trigger (mirrored in `engine/pairing-eligibility.ts`): ≥1 declared trait with ≥20-point contrast plus a specific unique saying; repairs never rewrite frozen evidence.
 
 - Specialist genres are distinct top-level opener lanes shared by web and REST; exact catalog lanes precede legacy family aliases, so activation does not silently remap historical Alternative songs.
 

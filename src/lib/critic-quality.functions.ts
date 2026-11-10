@@ -21,7 +21,7 @@ export const criticQualityQueue = createServerFn({ method: "POST" })
     const result = await context.supabase
       .from("critic_quality_attempts")
       .select(
-        "id,session_id,stage,result_version,output_text,output_fingerprint,evidence_context,created_at",
+        "id,session_id,stage,status,rejection_reason,result_version,output_text,output_fingerprint,evidence_context,decision_trace,created_at",
         { count: "exact" },
       )
       .order("created_at", { ascending: false })
