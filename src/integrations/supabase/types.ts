@@ -588,6 +588,38 @@ export type Database = {
         }
         Relationships: []
       }
+      interview_qa_sessions: {
+        Row: {
+          created_at: string
+          created_by: string
+          purpose: string
+          session_id: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by: string
+          purpose: string
+          session_id: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string
+          purpose?: string
+          session_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "interview_qa_sessions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       llm_calls: {
         Row: {
           confidence: number | null
@@ -2178,24 +2210,6 @@ export type Database = {
           winner_archetype_id: string | null
           winner_fit: number | null
         }
-        Insert: {
-          created_at?: string | null
-          is_final?: never
-          margin?: never
-          round_number?: never
-          session_id?: string | null
-          winner_archetype_id?: never
-          winner_fit?: never
-        }
-        Update: {
-          created_at?: string | null
-          is_final?: never
-          margin?: never
-          round_number?: never
-          session_id?: string | null
-          winner_archetype_id?: never
-          winner_fit?: never
-        }
         Relationships: [
           {
             foreignKeyName: "event_log_session_id_fkey"
@@ -2239,6 +2253,15 @@ export type Database = {
           p_session_id: string
         }
         Returns: Json
+      }
+      create_interview_qa: {
+        Args: {
+          p_candidates: Json
+          p_confidence: number
+          p_lane: string
+          p_vector: Json
+        }
+        Returns: string
       }
       enroll_musicdna_pilot_participant: {
         Args: {
