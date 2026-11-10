@@ -3,6 +3,7 @@
 ## Model
 - On Vercel the Critic uses `gpt-4o-mini` (the default when `OPENAI_MODEL` isn't set). In preview it uses Gemini 3 Flash through the Lovable gateway. That's why preview and production behave differently.
 - Proposal: point the writer at a stronger model and keep a cheaper, fast model for the semantic reviewer. On Vercel that means setting `OPENAI_MODEL`, or preferably sending the writer through the Lovable gateway's default model so preview and production match. I'll confirm which option you want before switching.
+- Who does it: I can't open your Vercel dashboard, but I can make the change without Codex. I'll set the app's built-in production default to a stronger OpenAI model for the writer and keep a small model for the reviewer. It goes live with the next GitHub auto-deploy and uses the same OpenAI key, so no new key is needed. Afterward, you could also set `OPENAI_MODEL` in Vercel to override it with no code change.
 
 ## Step 1: check QA isolation (read-only first)
 - Find out why the chat attempt recorded `learning_enrollment: enrolled` while reading/reveal showed `not_enrolled`. It could be a labeling bug in the trace, or a real enrollment row.
