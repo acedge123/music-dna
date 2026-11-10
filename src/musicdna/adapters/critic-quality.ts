@@ -70,7 +70,9 @@ export async function measuredCritic(
         content.reply === result.text)
         ? (saved.data?.version ?? null)
         : null;
+    const decisionTrace = await buildDecisionTrace(supabaseAdmin, sessionId, result, calls);
     const { error } = await supabaseAdmin.from("critic_quality_attempts").insert({
+      decision_trace: decisionTrace as never,
       session_id: sessionId,
       user_id: userId,
       attempt_key: crypto.randomUUID(),
@@ -106,6 +108,77 @@ export async function measuredCritic(
     console.warn("[critic-quality] measurement_write_unavailable", options.stage);
   }
   return result;
+}
+
+/** Classifies a trace into the three Phase-1 causes (or ok/no-model). */
+export function classifyTrace(t: {
+  status: string;
+  rejection_reason: string | null;
+  facts_summary?: { entries: number } | null;
+  error?: string | null;
+}) {
+  if (t.status === "ok") return "accepted";
+  if (t.rejection_reason === "deterministic_choice_no_model_call") return "no_model_call";
+  if (t.status === "narrator_failure" || t.error) return "ai_call_failed";
+  if (t.status === "insufficient" || (t.facts_summary && t.facts_summary.entries === 0))
+    return "missing_evidence";
+  return "rejected";
+}
+
+async function buildDecisionTrace(
+  admin: SupabaseClient<Database>,
+  sessionId: string,
+  result: { status: string; validation_reason: string; trace?: unknown },
+  calls: CallMeasurement[],
+) {
+  const qa = await admin
+    .from("interview_qa_sessions")
+    .select("session_id")
+    .eq("session_id", sessionId)
+    .maybeSingle();
+  if (!qa.data) return null; // listener sessions never store raw replies
+  const [prior, enrolled] = await Promise.all([
+    admin
+      .from("critic_quality_attempts")
+      .select("id,stage,output_text,created_at")
+      .eq("session_id", sessionId)
+      .order("created_at", { ascending: false })
+      .limit(3),
+    admin
+      .from("musicdna_learning_enrollments")
+      .select("result_id")
+      .eq("session_id", sessionId)
+      .limit(1),
+  ]);
+  const t = (result.trace ?? {}) as {
+    facts_summary?: { entries: number } | null;
+    error?: string | null;
+  };
+  return {
+    trace_version: "decision-trace-v1",
+    session_id: sessionId,
+    writer_version: CRITIC_EXPRESSION_VERSION,
+    reviewer_version: CRITIC_REVIEW_VERSION,
+    models: calls.map((c) => ({ phase: c.phase, model: c.model, status: c.status })),
+    ...(result.trace as object),
+    cause: classifyTrace({
+      status: result.status,
+      rejection_reason: result.validation_reason,
+      ...t,
+    }),
+    previous_replies: (prior.data ?? []).map((p) => ({
+      id: p.id,
+      stage: p.stage,
+      text: p.output_text,
+    })),
+    downstream: {
+      learning_enrollment: enrolled.error
+        ? "unknown"
+        : enrolled.data?.length
+          ? "enrolled"
+          : "not_enrolled",
+    },
+  };
 }
 
 export async function recordServedOffer(
