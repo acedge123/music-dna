@@ -99,6 +99,12 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     null,
   );
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [dismissedMilestones, setDismissedMilestones] = useState<number[]>([]);
+  const [reveal, setReveal] = useState<{
+    answered: number;
+    twist: string | null;
+    challenge: string;
+  }>();
   const [synthesis, setSynthesis] = useState<string | null>(null);
   const [auditText, setAuditText] = useState<string | undefined>();
   const [kept, setKept] = useState<
@@ -128,6 +134,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     setBootError(null);
     setPhase("slot1");
     setEntries([]);
+    setDismissedMilestones([]);
+    setReveal(undefined);
     setSongs([]);
     setReactions([]);
     setRefined(null);
@@ -535,15 +543,16 @@ export function useInterview(requestedSession?: string, fresh?: string) {
 
   // Pulling the closing read is shared by the choice path and the
   // repeated-skip path — a skipped-out session still gets an honest result.
-  async function loadFinalRead(sidOverride?: string) {
+  async function loadFinalRead(sidOverride?: string, finishEarly = false) {
     const generation = bootGeneration.current;
     const sid = sidOverride ?? sessionId;
     if (!sid) return;
     setResultError(null);
     try {
-      await finalizeFn({ data: { sessionId: sid } });
+      await finalizeFn({ data: { sessionId: sid, finishEarly } });
       const r = (await synthFn({ data: { sessionId: sid } })) as {
         result_version?: number | null;
+        reveal?: { answered: number; twist: string | null; challenge: string };
         synthesis: string;
         audit_text?: string;
         kept_choosing: Array<{
@@ -557,6 +566,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       if (!r.synthesis || r.result_version == null) throw new Error("Reading not saved yet");
       if (generation !== bootGeneration.current) return;
       setResultVersion(r.result_version);
+      setReveal(r.reveal);
       setSynthesis(r.synthesis);
       setAuditText(r.audit_text);
       setKept(r.kept_choosing ?? []);
@@ -567,6 +577,33 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         "Your choices are saved, but the reading isn’t ready yet. Retry to finish it.",
       );
     }
+  }
+
+  async function finishEarly() {
+    if (busy || actionRef.current || entries.length < 4 || pendingSongId || pendingSkip) return;
+    actionRef.current = true;
+    setBusy(true);
+    try {
+      await loadFinalRead(undefined, true);
+      setPairing(null);
+      setPhase("done");
+    } finally {
+      actionRef.current = false;
+      setBusy(false);
+    }
+  }
+
+  const milestone =
+    phase === "playing" &&
+    pairing &&
+    [3, 4].includes(entries.length) &&
+    !dismissedMilestones.includes(entries.length) &&
+    !busy
+      ? entries.length
+      : null;
+  function continueInterview() {
+    setDismissedMilestones((prev) => [...prev, entries.length]);
+    startedAt.current = Date.now();
   }
 
   // Reaction row. "That's me" is acknowledgement only. The other two change
@@ -739,6 +776,10 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     reactedRounds,
     reactionReply,
     entries,
+    milestone,
+    continueInterview,
+    finishEarly,
+    reveal,
     synthesis,
     auditText,
     kept,
