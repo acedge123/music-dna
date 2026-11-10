@@ -642,12 +642,13 @@ export const startSession = createServerFn({ method: "POST" })
 // shared by any future caller (see src/musicdna/engine/priors.ts).
 import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/priors";
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
-import { LEDGER_VERSION, type Ledger } from "@/musicdna/engine/evidence";
+import { LEDGER_VERSION, buildLedger, type Ledger } from "@/musicdna/engine/evidence";
 import { ENGINE_VERSION } from "@/musicdna/engine/versions";
 import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
 import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
+import { hypotheticalChoice, readFingerprint } from "@/musicdna/engine/prepared-read";
 import {
   authorCritic,
   contextualChatFallback,
@@ -4408,6 +4409,206 @@ export const listChat = createServerFn({ method: "GET" })
 // ============================================================
 export type { CurrentReadResult } from "@/musicdna/engine/read";
 
+
+type PriorRead = { axis: string; direction: "hi" | "lo"; tier: string; thesis?: string } | null;
+type ComposedRead = {
+  result: CurrentReadResult;
+  authored: { voice_version: string; validation_reason: string };
+};
+
+async function composeRead(
+  supabase: AuthedSupabase,
+  userId: string,
+  sessionId: string,
+  ledger: Ledger,
+  prior: PriorRead,
+): Promise<ComposedRead> {
+  const result = projectRead(ledger, DIM_LABEL, prior);
+  const authored = await observedCritic(
+    supabase,
+    userId,
+    sessionId,
+    ledger,
+    DIM_LABEL,
+    [{ role: "system", content: VOICE }],
+    { stage: "read", previous: prior?.thesis, fallback: result.thesis },
+  );
+  result.audit_text = result.thesis;
+  result.voice_version = authored.voice_version;
+  result.narration_status = authored.status;
+  result.thesis = authored.text;
+  if (result.revision) result.revision.new_interpretation = authored.text;
+  return {
+    result,
+    authored: { voice_version: authored.voice_version, validation_reason: authored.validation_reason },
+  };
+}
+
+async function latestChoice(supabase: AuthedSupabase, sessionId: string) {
+  const { data } = await supabase
+    .from("choices")
+    .select("pairing_id,chosen_song_id")
+    .eq("session_id", sessionId)
+    .order("created_at", { ascending: false })
+    .order("id", { ascending: false })
+    .limit(1)
+    .maybeSingle();
+  return data ?? null;
+}
+
+const PREPARE_WAIT_MS = 25_000;
+const PREPARE_DEADLINE_MS = 20_000;
+async function awaitPreparedRead(
+  sessionId: string,
+  answered: number,
+  choice: { pairing_id: string; chosen_song_id: string },
+  fingerprint: string,
+): Promise<ComposedRead | null> {
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const deadline = Date.now() + PREPARE_WAIT_MS;
+  for (;;) {
+    const { data } = await supabaseAdmin
+      .from("prepared_reads" as never)
+      .select("status,fingerprint,payload,started_at")
+      .eq("session_id", sessionId)
+      .eq("answered", answered)
+      .eq("pairing_id", choice.pairing_id)
+      .eq("chosen_song_id", choice.chosen_song_id)
+      .maybeSingle();
+    const row = data as {
+      status: string;
+      fingerprint: string | null;
+      payload: ComposedRead | null;
+      started_at: string;
+    } | null;
+    if (!row || row.status === "failed") return null;
+    if (row.status === "ready") return row.fingerprint === fingerprint ? row.payload : null;
+    // Pending: wait for the in-flight draft unless it has gone stale.
+    // A draft past its own deadline is abandoned; write the reaction live instead.
+    if (Date.now() > deadline || Date.now() - Date.parse(row.started_at) > PREPARE_DEADLINE_MS + 2_000)
+      return null;
+    await new Promise((r) => setTimeout(r, 400));
+  }
+}
+
+/**
+ * Drafts and reviews the read for both possible picks while the listener
+ * decides. Same writer, reviewer and rules as the live path; results are
+ * server-only and used only on an exact evidence match.
+ */
+export async function prepareReadsImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string; pairingId: string },
+) {
+  const { data: session } = await supabase
+    .from("sessions")
+    .select("user_id,completed_at")
+    .eq("id", data.sessionId)
+    .maybeSingle();
+  if (!session || session.user_id !== userId || session.completed_at) return { prepared: 0 };
+  const songCols =
+    "id,title,artist,year,lane,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+  const [{ data: pairingRow }, { choices }, { data: shown }] = await Promise.all([
+    supabase
+      .from("pairings")
+      .select(
+        `id,tests,diagnostic_weight,updated_at,user_facing_tradeoff,song_a:songs!pairings_song_a_id_fkey(${songCols}),song_b:songs!pairings_song_b_id_fkey(${songCols})`,
+      )
+      .eq("id", data.pairingId)
+      .maybeSingle(),
+    loadChoiceEvidence(supabase, data.sessionId),
+    supabase
+      .from("event_log")
+      .select("props")
+      .eq("session_id", data.sessionId)
+      .eq("event_type", "read_shown")
+      .order("created_at", { ascending: false })
+      .limit(1),
+  ]);
+  const pairing = pairingRow as unknown as {
+    id: string;
+    tests: string[] | null;
+    diagnostic_weight: number | null;
+    updated_at: string | null;
+    user_facing_tradeoff: string | null;
+    song_a: Record<string, unknown> & { id: string };
+    song_b: Record<string, unknown> & { id: string };
+  } | null;
+  if (!pairing?.song_a || !pairing.song_b) return { prepared: 0 };
+  if (choices.some((c) => c.pairing_id === pairing.id)) return { prepared: 0 };
+  const priorProps = (shown?.[0]?.props ?? null) as {
+    axis?: string;
+    direction?: "hi" | "lo";
+    tier?: string;
+    answered?: number;
+    thesis?: string;
+  } | null;
+  const prior: PriorRead =
+    priorProps?.axis && priorProps.direction
+      ? {
+          axis: priorProps.axis,
+          direction: priorProps.direction,
+          tier: priorProps.tier ?? "theory",
+          thesis: priorProps.thesis,
+        }
+      : null;
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const branches = [
+    [pairing.song_a, pairing.song_b],
+    [pairing.song_b, pairing.song_a],
+  ] as const;
+  const done = await Promise.all(
+    branches.map(async ([chosen, rejected]) => {
+      const ledger = buildLedger([...choices, hypotheticalChoice(pairing, chosen, rejected)], DIMS);
+      const key = {
+        session_id: data.sessionId,
+        user_id: userId,
+        answered: ledger.answered,
+        pairing_id: pairing.id,
+        chosen_song_id: chosen.id,
+      };
+      // Claim the slot once; a repeated prepare call never doubles the cost.
+      const claim = await supabaseAdmin
+        .from("prepared_reads" as never)
+        .insert({ ...key, status: "pending" } as never);
+      if (claim.error) return 0;
+      try {
+        const composed = await Promise.race([
+          composeRead(supabase, userId, data.sessionId, ledger, prior),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("prepare_deadline")), PREPARE_DEADLINE_MS),
+          ),
+        ]);
+        await supabaseAdmin
+          .from("prepared_reads" as never)
+          .update({
+            status: "ready",
+            fingerprint: readFingerprint(ledger, prior?.thesis, priorProps?.answered),
+            payload: composed,
+            finished_at: new Date().toISOString(),
+          } as never)
+          .match({ session_id: key.session_id, answered: key.answered, pairing_id: key.pairing_id, chosen_song_id: key.chosen_song_id });
+        return 1;
+      } catch {
+        await supabaseAdmin
+          .from("prepared_reads" as never)
+          .update({ status: "failed", finished_at: new Date().toISOString() } as never)
+          .match({ session_id: key.session_id, answered: key.answered, pairing_id: key.pairing_id, chosen_song_id: key.chosen_song_id });
+        return 0;
+      }
+    }),
+  );
+  return { prepared: done.reduce<number>((a, b) => a + b, 0) };
+}
+
+export const prepareReads = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z.object({ sessionId: z.string().uuid(), pairingId: z.string().uuid() }).parse(d),
+  )
+  .handler(async ({ data, context }) => prepareReadsImpl(context.supabase, context.userId, data));
+
 export async function currentReadImpl(
   supabase: AuthedSupabase,
   userId: string,
@@ -4448,21 +4649,15 @@ export async function currentReadImpl(
           thesis: priorProps.thesis,
         }
       : null;
-  const result = projectRead(ledger, DIM_LABEL, prior);
-  const authored = await observedCritic(
-    supabase,
-    userId,
-    data.sessionId,
-    ledger,
-    DIM_LABEL,
-    [{ role: "system", content: VOICE }],
-    { stage: "read", previous: prior?.thesis, fallback: result.thesis },
-  );
-  result.audit_text = result.thesis;
-  result.voice_version = authored.voice_version;
-  result.narration_status = authored.status;
-  result.thesis = authored.text;
-  if (result.revision) result.revision.new_interpretation = authored.text;
+  // A reaction drafted and reviewed while the listener decided is reused only
+  // when everything the critic would see is identical to the frozen vote.
+  const fingerprint = readFingerprint(ledger, prior?.thesis, priorProps?.answered);
+  const lastChoice = ledger.answered > 0 ? await latestChoice(supabase, data.sessionId) : null;
+  const prepared = lastChoice
+    ? await awaitPreparedRead(data.sessionId, ledger.answered, lastChoice, fingerprint)
+    : null;
+  const { result, authored } =
+    prepared ?? (await composeRead(supabase, userId, data.sessionId, ledger, prior));
   const lead = ledger.axes[0];
   const { error } = await (
     await trustedEventLog()
@@ -4483,6 +4678,7 @@ export async function currentReadImpl(
       language: CLAIM_LANGUAGE_VERSION,
       voice_version: authored.voice_version,
       validation_reason: authored.validation_reason,
+      prepared_before_pick: !!prepared,
       result,
       revised: !!result.revision,
       revision: result.revision,
