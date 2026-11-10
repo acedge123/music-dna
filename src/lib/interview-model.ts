@@ -21,6 +21,7 @@ export type Song = {
 };
 export type Pairing = {
   id: string;
+  exposure_id?: string | null;
   tests: string[];
   hypothesis: string | null;
   why_good: string | null;

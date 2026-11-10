@@ -276,7 +276,7 @@ export function useInterview(requestedSession?: string) {
             event_type: "pairing_shown",
             session_id: sessionId,
             pairing_id: (pairing as unknown as Pairing).id,
-            props: { round, tests: (pairing as unknown as Pairing).tests, selection_reason },
+            props: { round, tests: (pairing as unknown as Pairing).tests, selection_reason, exposure_id: (pairing as unknown as Pairing).exposure_id },
           });
         }
       } catch (err) {
@@ -493,7 +493,7 @@ export function useInterview(requestedSession?: string) {
         event_type: "pairing_shown",
         session_id: sessionId,
         pairing_id: (nxt as unknown as Pairing).id,
-        props: { round: nr, tests: (nxt as unknown as Pairing).tests, selection_reason },
+        props: { round: nr, tests: (nxt as unknown as Pairing).tests, selection_reason, exposure_id: (nxt as unknown as Pairing).exposure_id },
       });
       setBusy(false);
     } catch (err) {
@@ -669,6 +669,7 @@ export function useInterview(requestedSession?: string) {
           tests: (nxt as unknown as Pairing).tests,
           selection_reason,
           after_skip: true,
+          exposure_id: (nxt as unknown as Pairing).exposure_id,
         },
       });
       setBusy(false);

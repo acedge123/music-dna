@@ -1081,7 +1081,7 @@ export async function nextPairingImpl(
         selection_reason: bootReason,
         is_bootstrap: true,
       });
-      await recordServedOffer(
+      const exposureId = await recordServedOffer(
         supabase,
         session.user_id,
         data.sessionId,
@@ -1089,7 +1089,7 @@ export async function nextPairingImpl(
         `${round}:${usedIds.size}`,
       );
       return {
-        pairing: await withPairingArtwork(supabase, stripPrivatePairingFields(bootPicked)),
+        pairing: { ...await withPairingArtwork(supabase, stripPrivatePairingFields(bootPicked)), exposure_id: exposureId },
         prompt: nextPromptFor((bootPicked.tests ?? []) as string[]),
         round: round + 1,
         answered,
@@ -1336,7 +1336,7 @@ export async function nextPairingImpl(
     actualKnobs: (liveKnobs ?? null) as Record<string, unknown> | null,
     fallback: livePool !== finalPool,
   });
-  await recordServedOffer(
+  const exposureId = await recordServedOffer(
     supabase,
     session.user_id,
     data.sessionId,
@@ -1346,7 +1346,7 @@ export async function nextPairingImpl(
   return {
     // why_good / hypothesis are the critic's private notes — never ship them
     // to a client before the choice is made.
-    pairing: await withPairingArtwork(supabase, stripPrivatePairingFields(picked.pairing)),
+    pairing: { ...await withPairingArtwork(supabase, stripPrivatePairingFields(picked.pairing)), exposure_id: exposureId },
     prompt: nextPromptFor(
       ((picked.pairing as { tests?: string[] | null }).tests ?? []) as string[],
       topLeadAxis(vector),
@@ -1661,6 +1661,13 @@ export async function recordChoiceImpl(
     }
     throw new Error(rpcErr.message);
   }
+
+  // Observe the existing deterministic acknowledgement without changing the
+  // committed response or making a second critic generation after the vote.
+  try {
+    const { ledger } = await loadChoiceEvidence(supabase, data.sessionId);
+    await measuredCritic(supabase,userId,data.sessionId,ledger,DIM_LABEL,async()=>"",{stage:"choice",savedText:`${verdict}\n${why}`},[]);
+  } catch { console.warn("[critic-quality] choice_measurement_unavailable"); }
 
   // Fire-and-forget promotion event. Diagnostics only.
   if (bootstrapEvent) {
@@ -2265,6 +2272,7 @@ export const recordEvent = createServerFn({ method: "POST" })
       data.event_type === "pairing_shown" &&
       data.session_id &&
       data.pairing_id &&
+      typeof data.props?.exposure_id === "string" &&
       !data.props?.skipped
     ) {
       const owned = await supabase
@@ -2280,6 +2288,7 @@ export const recordEvent = createServerFn({ method: "POST" })
         .select("id,reported_shown_at")
         .eq("session_id", data.session_id)
         .eq("pairing_id", data.pairing_id)
+        .eq("id", String(data.props.exposure_id))
         .order("served_at", { ascending: false })
         .limit(1)
         .maybeSingle();
