@@ -18,14 +18,26 @@ export async function measuredCritic(
   ledger: Ledger,
   labels: AxisLabels,
   generate: (prompt: string, review?: boolean) => Promise<string>,
-  options: { stage: CriticStage; fallback?: string; previous?: string; selfReport?: string; savedText?: string },
+  options: {
+    stage: CriticStage;
+    fallback?: string;
+    previous?: string;
+    selfReport?: string;
+    savedText?: string;
+  },
   calls: CallMeasurement[],
 ) {
-  const result = options.savedText !== undefined ? {
-    text: options.savedText, status: "insufficient" as const,
-    validation_reason: "deterministic_choice_no_model_call", review_checks: null,
-    voice_version: CRITIC_EXPRESSION_VERSION, audit_text: options.savedText,
-  } : await authorCritic(ledger, labels, generate, options);
+  const result =
+    options.savedText !== undefined
+      ? {
+          text: options.savedText,
+          status: "insufficient" as const,
+          validation_reason: "deterministic_choice_no_model_call",
+          review_checks: null,
+          voice_version: CRITIC_EXPRESSION_VERSION,
+          audit_text: options.savedText,
+        }
+      : await authorCritic(ledger, labels, generate, options);
   // This helper only receives sessions already ownership-checked by callers;
   // revalidate before any privileged diagnostic write, never for auth decisions.
   try {
@@ -41,8 +53,18 @@ export async function measuredCritic(
       b.toString(16).padStart(2, "0"),
     ).join("");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
-    const saved = await client.from("session_results").select("version,content").eq("session_id", sessionId).order("version",{ascending:false}).limit(1).maybeSingle();
-    const version = saved.data && JSON.stringify(saved.data.content).includes(JSON.stringify(result.text).slice(1,-1)) ? saved.data.version : null;
+    const saved = await client
+      .from("session_results")
+      .select("version,content")
+      .eq("session_id", sessionId)
+      .order("version", { ascending: false })
+      .limit(1)
+      .maybeSingle();
+    const version =
+      saved.data &&
+      JSON.stringify(saved.data.content).includes(JSON.stringify(result.text).slice(1, -1))
+        ? saved.data.version
+        : null;
     const { error } = await supabaseAdmin.from("critic_quality_attempts").insert({
       session_id: sessionId,
       user_id: userId,
@@ -126,7 +148,12 @@ export async function recordServedOffer(
       { onConflict: "session_id,offer_key", ignoreDuplicates: true },
     );
     if (error) throw error;
-    const stored = await supabaseAdmin.from("pairing_exposures").select("id").eq("session_id",sessionId).eq("offer_key",offerKey).single();
+    const stored = await supabaseAdmin
+      .from("pairing_exposures")
+      .select("id")
+      .eq("session_id", sessionId)
+      .eq("offer_key", offerKey)
+      .single();
     if (stored.error) throw stored.error;
     return stored.data.id;
   } catch {

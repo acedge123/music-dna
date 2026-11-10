@@ -1089,7 +1089,10 @@ export async function nextPairingImpl(
         `${round}:${usedIds.size}`,
       );
       return {
-        pairing: { ...await withPairingArtwork(supabase, stripPrivatePairingFields(bootPicked)), exposure_id: exposureId },
+        pairing: {
+          ...(await withPairingArtwork(supabase, stripPrivatePairingFields(bootPicked))),
+          exposure_id: exposureId,
+        },
         prompt: nextPromptFor((bootPicked.tests ?? []) as string[]),
         round: round + 1,
         answered,
@@ -1346,7 +1349,10 @@ export async function nextPairingImpl(
   return {
     // why_good / hypothesis are the critic's private notes — never ship them
     // to a client before the choice is made.
-    pairing: { ...await withPairingArtwork(supabase, stripPrivatePairingFields(picked.pairing)), exposure_id: exposureId },
+    pairing: {
+      ...(await withPairingArtwork(supabase, stripPrivatePairingFields(picked.pairing))),
+      exposure_id: exposureId,
+    },
     prompt: nextPromptFor(
       ((picked.pairing as { tests?: string[] | null }).tests ?? []) as string[],
       topLeadAxis(vector),
@@ -1666,8 +1672,19 @@ export async function recordChoiceImpl(
   // committed response or making a second critic generation after the vote.
   try {
     const { ledger } = await loadChoiceEvidence(supabase, data.sessionId);
-    await measuredCritic(supabase,userId,data.sessionId,ledger,DIM_LABEL,async()=>"",{stage:"choice",savedText:`${verdict}\n${why}`},[]);
-  } catch { console.warn("[critic-quality] choice_measurement_unavailable"); }
+    await measuredCritic(
+      supabase,
+      userId,
+      data.sessionId,
+      ledger,
+      DIM_LABEL,
+      async () => "",
+      { stage: "choice", savedText: `${verdict}\n${why}` },
+      [],
+    );
+  } catch {
+    console.warn("[critic-quality] choice_measurement_unavailable");
+  }
 
   // Fire-and-forget promotion event. Diagnostics only.
   if (bootstrapEvent) {
