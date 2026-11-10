@@ -233,7 +233,10 @@ export function contextualChatFallback(
   const named = [...new Map(ledger.entries.map((e) => [evidenceId(e), e])).values()].filter(
     (e) =>
       [e.chosen, e.chosen_artist, e.rejected, e.rejected_artist].some(
-        (v) => typeof v === "string" && v.trim().length >= 3 && q.includes(v.toLowerCase()),
+        (v) =>
+          typeof v === "string" &&
+          v.trim().length >= 2 &&
+          new RegExp(`(^|[^\\p{L}\\p{N}])${v.toLowerCase().replace(/[.*+?^${}()|[\\]\\\\]/g, "\\\\$&")}($|[^\\p{L}\\p{N}])`, "u").test(q),
       ),
   );
   if (named.length) {
