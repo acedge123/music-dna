@@ -1099,6 +1099,85 @@ export type Database = {
           },
         ]
       }
+      musicdna_learning_worker_callers: {
+        Row: {
+          enabled: boolean
+          environment: string
+          last_claim_at: string | null
+          source_key: string
+          token_hash: string
+          valid_until: string
+        }
+        Insert: {
+          enabled?: boolean
+          environment: string
+          last_claim_at?: string | null
+          source_key: string
+          token_hash: string
+          valid_until: string
+        }
+        Update: {
+          enabled?: boolean
+          environment?: string
+          last_claim_at?: string | null
+          source_key?: string
+          token_hash?: string
+          valid_until?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_learning_worker_callers_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: true
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_learning_worker_status: {
+        Row: {
+          attention: boolean
+          delivered: number
+          environment: string
+          finished_at: string | null
+          last_success_at: string | null
+          run_id: string
+          source_key: string
+          started_at: string
+          state: string
+        }
+        Insert: {
+          attention?: boolean
+          delivered?: number
+          environment: string
+          finished_at?: string | null
+          last_success_at?: string | null
+          run_id: string
+          source_key: string
+          started_at?: string
+          state: string
+        }
+        Update: {
+          attention?: boolean
+          delivered?: number
+          environment?: string
+          finished_at?: string | null
+          last_success_at?: string | null
+          run_id?: string
+          source_key?: string
+          started_at?: string
+          state?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_learning_worker_status_source_key_environment_fkey"
+            columns: ["source_key", "environment"]
+            isOneToOne: true
+            referencedRelation: "musicdna_export_scopes"
+            referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
       musicdna_real_qa_consents: {
         Row: {
           approved_by: string
@@ -2291,6 +2370,10 @@ export type Database = {
         Args: { p_environment: string; p_source: string }
         Returns: Json
       }
+      claim_musicdna_learning_worker: {
+        Args: { p_token_hash: string }
+        Returns: Json
+      }
       complete_chat_turn: {
         Args: {
           p_lease_token: string
@@ -2436,6 +2519,15 @@ export type Database = {
           p_update: Json
         }
         Returns: string
+      }
+      record_musicdna_learning_worker_run: {
+        Args: {
+          p_attention?: boolean
+          p_delivered?: number
+          p_run_id: string
+          p_state: string
+        }
+        Returns: undefined
       }
       release_chat_turn: {
         Args: {
