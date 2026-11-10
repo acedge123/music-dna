@@ -20,11 +20,28 @@ async function ai(model: string, prompt: string, schema: Record<string, unknown>
   return JSON.parse((await res.json()).choices[0].message.content);
 }
 
+// Wikipedia throttles bursts with a plain-text body; serialize and back off.
+let wikiChain: Promise<unknown> = Promise.resolve();
+async function wjson(url: string): Promise<any> {
+  const run = async () => {
+    for (let i = 0; i < 5; i++) {
+      await new Promise((r) => setTimeout(r, 400 + i * 2000));
+      const res = await fetch(url, { headers: { "User-Agent": "MusicDNA-facts/1.0 (catalog research; contact admin@musicdna.fm)" } });
+      const body = await res.text();
+      if (res.ok && body.startsWith("{")) return JSON.parse(body);
+    }
+    throw new Error("wikipedia_unavailable");
+  };
+  const p = wikiChain.then(run, run);
+  wikiChain = p.catch(() => undefined);
+  return p;
+}
+
 async function wiki(title: string, artist: string) {
   const q = encodeURIComponent(`${title} ${artist} song`);
-  const s = await (await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}&srlimit=3&format=json`, { headers: { "User-Agent": "MusicDNA-facts/1.0" } })).json();
+  const s = await wjson(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${q}&srlimit=3&format=json`);
   for (const hit of s?.query?.search ?? []) {
-    const p = await (await fetch(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&titles=${encodeURIComponent(hit.title)}&format=json`, { headers: { "User-Agent": "MusicDNA-facts/1.0" } })).json();
+    const p = await wjson(`https://en.wikipedia.org/w/api.php?action=query&prop=extracts&explaintext=1&titles=${encodeURIComponent(hit.title)}&format=json`);
     const page = Object.values(p?.query?.pages ?? {})[0] as { title: string; extract?: string } | undefined;
     const text = page?.extract ?? "";
     // Must be about this song: title mentioned and artist named.
