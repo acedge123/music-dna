@@ -11,8 +11,9 @@ vi.mock("@/musicdna/adapters/llm-gateway", () => ({
 }));
 vi.mock("@/integrations/supabase/client.server", () => ({
   supabaseAdmin: {
-    from: () => ({
+    from: (table: string) => ({
       insert: async (row: { props: Record<string, unknown> }) => {
+        if (table !== "event_log") return { error: null };
         if (state.failWrite) return { error: { message: "write failed" } };
         state.events.unshift(row);
         return { error: null };
