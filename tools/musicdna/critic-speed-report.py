@@ -2,12 +2,13 @@
 import json, glob, random, re, statistics as st, sys
 d = sys.argv[1] if len(sys.argv) > 1 else "/tmp/critic-exp"
 out = sys.argv[2] if len(sys.argv) > 2 else d
-rows = [r for f in sorted(glob.glob(f"{d}/scenario-*.json")) for r in json.load(open(f))]
+allrows = [r for f in sorted(glob.glob(f"{d}/scenario-*.json")) for r in json.load(open(f))]
+rows = [r for r in allrows if not r.get("transport_error")]  # gateway outages/credit stops are not quality results
 def pct(xs, p):
     xs = sorted(xs); return xs[min(len(xs)-1, int(round(p*(len(xs)-1))))] if xs else 0
 def grams(t, n=4):
     w = re.findall(r"[a-z']+", (t or "").lower()); return {tuple(w[i:i+n]) for i in range(len(w)-n+1)}
-lines = ["# Critic speed experiment: Current vs Faster", "", f"Scenarios: {len({r['session'] for r in rows})}, stage runs: {len(rows)}", ""]
+lines = ["# Critic speed experiment: Current vs Faster", "", f"Scenarios: {len({r['session'] for r in rows})}, scored stage runs: {len(rows)} (excluded {len(allrows)-len(rows)} runs that failed to reach the model)", ""]
 lines += ["| Arm | Stage | Runs | First-pass accepted | Accepted at all | Fallback | Unsupported-claim rejections | Median s | p95 s | Writer median s | Reviewer median s | Avg words | Repeated 4-grams vs own earlier replies |", "|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
 for arm in ["current", "faster"]:
     for kind in ["read", "chat"]:
