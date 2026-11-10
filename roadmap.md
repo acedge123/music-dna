@@ -1,5 +1,12 @@
 # Roadmap
 
+## Current — journey, halftime and optional four-choice reveal
+
+- [ ] Introduce six-choice journey; pause after three with the saved read, never invented contradiction.
+- [ ] Offer optional four-choice completion; retain six-choice depth and honest completed-test counts across shared server policy.
+- [ ] Stage the saved reveal, actual twist, invitation to challenge and expandable receipts; keep routing shadow and matchups mysterious.
+- [ ] Run completion/evidence tests and fresh interview desktop/mobile checks; document client contract and deployment limitations.
+
 ## Current — faster replies and complete final reading
 
 - [x] Measured direct OpenAI calls: Sol writer averages 13.0s read / 11.7s reveal / 6.9s chat; Terra review adds 2.4–3.0s, retries add another round. Conversational writers now use low reasoning; final reveal retains medium. Models, schemas, evidence and independent review unchanged.
