@@ -215,7 +215,7 @@ export function compactCriticFacts(ledger: Ledger, labels: AxisLabels) {
   const full = criticFacts(ledger, labels);
   const latest = ledger.entries.length ? evidenceId(ledger.entries[ledger.entries.length - 1]) : null;
   const axes = full.axes.filter((a) => a.eligible || a.supporting + a.contradicting > 0);
-  const cited = new Set<string>(latest ? [latest] : []);
+  const cited = new Set<string | null>(latest ? [latest] : []);
   for (const a of axes)
     if (a.eligible) {
       a.supports.forEach((id) => cited.add(id));
