@@ -378,6 +378,7 @@ function Onboarding() {
             ) : (
               <>
                 <ReadingResult
+                  showFullSynthesis
                   content={{
                     synthesis: synthesis ?? "",
                     audit_text: auditText,

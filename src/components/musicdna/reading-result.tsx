@@ -7,21 +7,34 @@ export function ReadingResult({
   children,
   label = "The read",
   showInsufficientHint = true,
+  showFullSynthesis = false,
 }: {
   content: ReadingContent;
   children?: ReactNode;
   label?: string;
   showInsufficientHint?: boolean;
+  showFullSynthesis?: boolean;
 }) {
   const examples = readingExamples(content);
   const tension = content.counter_reads[0];
   return (
     <section className="space-y-8 break-words" aria-label={label}>
       <header className="space-y-3">
-        <p className="eyebrow">{label}</p>
-        <h2 className="display text-4xl leading-tight md:text-5xl">
-          {readingLead(content.synthesis) || "Not enough evidence to call it yet."}
-        </h2>
+        {showFullSynthesis ? (
+          <>
+            <h2 className="eyebrow">{label}</h2>
+            <p className="whitespace-pre-wrap font-serif text-2xl leading-relaxed md:text-3xl">
+              {content.synthesis || "Not enough evidence to call it yet."}
+            </p>
+          </>
+        ) : (
+          <>
+            <p className="eyebrow">{label}</p>
+            <h2 className="display text-4xl leading-tight md:text-5xl">
+              {readingLead(content.synthesis) || "Not enough evidence to call it yet."}
+            </h2>
+          </>
+        )}
         {content.result_version != null && (
           <p className="font-mono text-xs text-muted-foreground">
             Saved reading · version {content.result_version}
@@ -59,12 +72,14 @@ export function ReadingResult({
       {children}
       <details id="full-reading" className="border-t hairline pt-4">
         <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium">
-          See the full reading
+          {showFullSynthesis ? "Evidence and qualifications" : "See the full reading"}
         </summary>
         <div className="space-y-5 pt-3 text-sm leading-relaxed">
-          <p className="whitespace-pre-wrap font-serif text-lg">
-            {content.synthesis || "No supported interpretation has been saved yet."}
-          </p>
+          {!showFullSynthesis && (
+            <p className="whitespace-pre-wrap font-serif text-lg">
+              {content.synthesis || "No supported interpretation has been saved yet."}
+            </p>
+          )}
           {content.audit_text && content.audit_text !== content.synthesis && (
             <p className="whitespace-pre-wrap text-muted-foreground">{content.audit_text}</p>
           )}

@@ -157,6 +157,41 @@ describe("callLovableAi", () => {
     expect(body.reasoning_effort).toBe("medium");
   });
 
+  it.each(["choice", "read", "chat"] as const)(
+    "uses low writer reasoning for %s without changing Sol or strict output",
+    async (stage) => {
+      vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
+      vi.stubEnv("OPENAI_CRITIC_WRITER_MODEL", "");
+      const { impl, calls } = mockFetch({ choices: [{ message: { content: "{}" } }] });
+      await callLovableAi([{ role: "user", content: "Return JSON" }], {
+        role: "writer",
+        stage,
+        fetchImpl: impl,
+        jsonSchema: {
+          name: "critic_contract",
+          schema: { type: "object", additionalProperties: false, properties: {}, required: [] },
+        },
+      });
+      const body = JSON.parse(calls[0].init.body as string);
+      expect(body.model).toBe("gpt-6.1-sol");
+      expect(body.reasoning_effort).toBe("low");
+      expect(body.response_format.json_schema.strict).toBe(true);
+      expect(calls).toHaveLength(1);
+    },
+  );
+
+  it("retains medium writer reasoning for the final reveal", async () => {
+    vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
+    vi.stubEnv("OPENAI_CRITIC_WRITER_MODEL", "");
+    const { impl, calls } = mockFetch({ choices: [{ message: { content: "{}" } }] });
+    await callLovableAi([{ role: "user", content: "Return JSON" }], {
+      role: "writer",
+      stage: "reveal",
+      fetchImpl: impl,
+    });
+    expect(JSON.parse(calls[0].init.body as string).reasoning_effort).toBe("medium");
+  });
+
   it("preserves explicit older-model overrides without unsupported reasoning parameters", async () => {
     vi.stubEnv("OPENAI_API_KEY", "test-openai-key");
     vi.stubEnv("OPENAI_CRITIC_WRITER_MODEL", "gpt-4.1");

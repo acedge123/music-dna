@@ -136,6 +136,8 @@ export async function callLovableAi(
     model?: string;
     /** Critic writer vs reviewer: selects a stronger OpenAI model for the writer. */
     role?: "writer" | "reviewer";
+    /** Fast conversational beats; final synthesis keeps the deeper writer pass. */
+    stage?: "choice" | "read" | "reveal" | "chat";
     /** Strict structured output; the provider enforces the schema. */
     jsonSchema?: { name: string; schema: Record<string, unknown> };
   } = {},
@@ -161,7 +163,12 @@ export async function callLovableAi(
       model: selectedModel,
       messages,
       ...(provider.url === OPENAI_URL && opts.role && reasoningModel
-        ? { reasoning_effort: opts.role === "reviewer" ? "low" : "medium" }
+        ? {
+            reasoning_effort:
+              opts.role === "reviewer" || (opts.stage && opts.stage !== "reveal")
+                ? "low"
+                : "medium",
+          }
         : {}),
       ...(opts.jsonSchema
         ? {

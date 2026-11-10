@@ -1,5 +1,12 @@
 # Roadmap
 
+## Current — faster replies and complete final reading
+
+- [x] Measured direct OpenAI calls: Sol writer averages 13.0s read / 11.7s reveal / 6.9s chat; Terra review adds 2.4–3.0s, retries add another round. Conversational writers now use low reasoning; final reveal retains medium. Models, schemas, evidence and independent review unchanged.
+- [x] Entire saved synthesis is visible at interview completion; audit details remain secondary and saved content is not rewritten.
+- [x] 59 focused tests, touched-file lint and preview build pass. Fresh guest interview completed; full 302-character synthesis visible on desktop and 390px with no horizontal overflow. Signed-in production speed/quality after this change is unverified.
+- [ ] Measure actual Sol latency and acceptance after updated Vercel deployment; direct OpenAI credentials/settings are unavailable in this sandbox. Preview uses Gemini, so its timings cannot establish a Sol improvement.
+
 ## Current — approved Critic model upgrade
 
 - [x] Upgrade direct OpenAI Critic writer to GPT-6.1 Sol (medium reasoning), reviewer to GPT-6.1 Terra (low); strict schemas, replay and inference boundaries unchanged. Astra remains an explicit experimental writer override, not an automatic fallback. General LLM/preview calls unchanged.

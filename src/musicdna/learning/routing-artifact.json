@@ -1,6 +1,6 @@
 {
   "policy_id": "musicdna-selector",
-  "version": "sha256:65ccbf22d72d5c41b77f642cc64d0cf7ae715704a34f940b9407eb7b30d5e5ea",
+  "version": "sha256:b82a0f76759fd9fe75f107042fc8116297baad76133791ead23d7c98b8b84e47",
   "files": [
     "src/lib/musicdna.functions.ts",
     "src/musicdna/engine/archetypes.ts",
