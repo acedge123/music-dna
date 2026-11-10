@@ -1,5 +1,13 @@
 # Roadmap
 
+## Current — CGPT interview defects
+
+- [ ] Trace frozen snapshot failures; preserve invalid historical evidence rather than rebuilding it.
+- [ ] Repair prompt-echo chat fallback and distinguish writing failure from missing evidence.
+- [ ] Separate fresh starts from resume and add admin-only, tagged QA interviews isolated from listener metrics.
+- [ ] Gate archetype presentation/assignment on ledger support without rewriting saved results.
+- [ ] Run focused regressions and fresh guest interview acceptance; report production/admin access limits.
+
 ## Current — critic-quality and measurement-bias proposal
 
 - [x] Approved plan; private diagnostic/review/exposure schema applied through migration approval boundary, guest-policy warnings corrected. Shared stage measurements, four-axis admin review and exact web/REST offer acknowledgement implemented; 39 focused tests and guest vote/readback pass. Exports/flags unchanged.
