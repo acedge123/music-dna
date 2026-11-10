@@ -49,7 +49,12 @@ export const adminNewQaInterview = createServerFn({ method: "POST" })
       .eq("role", "admin")
       .maybeSingle();
     const auth = await context.supabase.auth.getUser();
-    if (role.error || auth.error || !auth.data.user || !canStartQaInterview(Boolean(role.data), Boolean(auth.data.user.is_anonymous)))
+    if (
+      role.error ||
+      auth.error ||
+      !auth.data.user ||
+      !canStartQaInterview(Boolean(role.data), Boolean(auth.data.user.is_anonymous))
+    )
       throw new Error("Forbidden: registered admin only");
     const profile = await context.supabase
       .from("profiles")
