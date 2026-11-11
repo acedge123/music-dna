@@ -29,7 +29,7 @@ export const Route = createFileRoute("/api/v1/session/$id")({
           const { data: session, error } = await supabase
             .from("sessions")
             .select(
-              "id, lane, lane_confidence, vector, started_at, completed_at, is_public, share_token, archetype_id, interpretation",
+              "id, lane, lane_confidence, vector, started_at, completed_at, is_public, share_token, archetype_id, interpretation, mode, decade, parent_session_id",
             )
             .eq("id", parsed.data)
             .maybeSingle();
@@ -54,6 +54,9 @@ export const Route = createFileRoute("/api/v1/session/$id")({
             share_token: session.share_token,
             archetype_id: session.archetype_id,
             interpretation: session.interpretation,
+            mode: (session as { mode?: string }).mode ?? "discover",
+            decade: (session as { decade?: number | null }).decade ?? null,
+            parent_session_id: (session as { parent_session_id?: string | null }).parent_session_id ?? null,
           };
           if (experienceVersion(request) !== 1) return jsonResponse(base);
 
