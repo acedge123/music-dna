@@ -54,3 +54,5 @@
 - Post-pick reads are pre-drafted and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
 - Decade runs are `sessions.mode=explore` children of a finished reading; `exploreNextPairing` leaves discover routing untouched; comparisons use frozen ledgers.
+
+- The final reading is one Sol/Terra cycle (`finalSynthesisImpl`, saved as result v1); `finalizeSessionImpl` is deterministic, and legacy interpretation fields copy v1 only when empty — so every surface shows one reading.
