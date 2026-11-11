@@ -84,3 +84,20 @@ describe("comparison", () => {
     expect(kinds).toEqual({ texture: "held", tension: "flipped", scale: "quiet", movement: "new" });
   });
 });
+
+describe("decade review fixes", () => {
+  it("caps the comparison at k", () => {
+    const axes = ["texture", "tension", "scale", "movement", "community", "immersion"];
+    const o = axes.map((axis) => ({ axis, direction: "hi" as const, eligible: true, magnitude: 1 }));
+    expect(compareToOriginal(o, o, 3)).toHaveLength(3);
+    expect(compareToOriginal(o, o)).toHaveLength(4);
+  });
+  it("coverage counts only matchups the selector can serve", async () => {
+    const { playableDecadePool } = await import("./decades");
+    const song = (year: number, v: number) => ({ id: String(year + v), year, texture: v, tension: 50 });
+    const good = { id: "g", lane: "pop", tests: ["texture"], is_bootstrap: false, song_a: song(1985, 10), song_b: song(1986, 90) };
+    const flat = { ...good, id: "f", song_b: song(1986, 15) };
+    const boot = { ...good, id: "b", is_bootstrap: true };
+    expect(playableDecadePool([good, flat, boot] as never, 1980).map((p: { id: string }) => p.id)).toEqual(["g"]);
+  });
+});
