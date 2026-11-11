@@ -34,8 +34,10 @@ export const Route = createFileRoute("/api/v1/session/$id/reveal")({
             sessionId: sid.data,
             finishEarly: body.data.finish_early,
           });
-          if (experienceVersion(request) !== 1) return jsonResponse(result);
+          // One authoritative reading: v0 clients receive the saved synthesis as interpretation.
           const synth = await finalSynthesisImpl(supabase, userId, { sessionId: sid.data });
+          if (experienceVersion(request) !== 1)
+            return jsonResponse({ ...result, interpretation: synth.synthesis || result.interpretation });
           const allowed = (result as { allowed_claims?: unknown[] }).allowed_claims ?? [];
           return jsonResponse({
             contract: 1,
@@ -48,7 +50,7 @@ export const Route = createFileRoute("/api/v1/session/$id/reveal")({
             narration_status: synth.narration_status ?? "ok",
             supporting_choices: synth.kept_choosing,
             tension: synth.counter_reads[0] ?? null,
-            full: result,
+            full: { ...result, interpretation: synth.synthesis || result.interpretation },
             share_token: (result as { share_token?: string }).share_token ?? null,
           });
         } catch (e) {
