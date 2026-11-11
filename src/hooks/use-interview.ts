@@ -581,8 +581,19 @@ export function useInterview(requestedSession?: string, fresh?: string) {
           tested: number;
         }>;
         counter_reads: Array<{ claim: string; notes: string }>;
+        narration_status?: string;
       };
-      if (!r.synthesis || r.result_version == null) throw new Error("Reading not saved yet");
+      if (!r.synthesis) throw new Error("Reading not saved yet");
+      if (generation !== bootGeneration.current) return;
+      if (r.result_version == null) {
+        // Unsaved safety text: show it, but invite a retry for the real reading.
+        setReveal(r.reveal);
+        setSynthesis(r.synthesis);
+        setKept(r.kept_choosing ?? []);
+        setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
+        setResultError("The Critic is still finishing your full reading — retry in a moment.");
+        return;
+      }
       if (generation !== bootGeneration.current) return;
       setResultVersion(r.result_version);
       setReveal(r.reveal);
