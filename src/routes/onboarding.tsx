@@ -10,6 +10,7 @@ import { SongChoices } from "@/components/musicdna/song-choices";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Share2, MessageCircle } from "lucide-react";
 import { readingLead } from "@/lib/critic-display";
+import { DecadeComparison, ExploreDecades } from "@/components/musicdna/explore-decades";
 import { AccountControl } from "@/components/musicdna/account-control";
 import { useEffect } from "react";
 
@@ -489,6 +490,12 @@ function Onboarding() {
                     sessionId={sessionId}
                     resultVersion={resultVersion}
                   />
+                )}
+                {sessionId && resultVersion != null && (
+                  <>
+                    <DecadeComparison sessionId={sessionId} />
+                    <ExploreDecades sessionId={sessionId} />
+                  </>
                 )}
               </>
             )}
