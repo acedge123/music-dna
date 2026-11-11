@@ -82,7 +82,6 @@ function Onboarding() {
     resultError,
     resultVersion,
     shareBusy,
-    round,
     maxRounds,
     reactedRounds,
     reactionReply,
