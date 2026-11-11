@@ -82,7 +82,6 @@ function Onboarding() {
     resultError,
     resultVersion,
     shareBusy,
-    round,
     maxRounds,
     reactedRounds,
     reactionReply,
@@ -283,7 +282,7 @@ function Onboarding() {
                 aria-label={`${entries.length} of up to ${maxRounds} choices answered`}
               >
                 <span className="font-mono text-xs text-muted-foreground">
-                  {pairing ? `Round ${round} / ${maxRounds}` : `${entries.length} / ${maxRounds}`}
+                  {pairing ? `Round ${Math.min(entries.length + 1, maxRounds)} / ${maxRounds}` : `${entries.length} / ${maxRounds}`}
                 </span>
                 <div className="flex gap-1.5" aria-hidden="true">
                   {Array.from({ length: maxRounds }, (_, i) => (
