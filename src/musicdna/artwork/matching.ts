@@ -15,7 +15,7 @@ export type Recording = {
   "artist-credit"?: ArtistCredit[];
   releases?: Release[];
 };
-export function normalize(value: string) {
+function normalize(value: string) {
   return value
     .normalize("NFKD")
     .replace(/[\u0300-\u036f]/g, "")

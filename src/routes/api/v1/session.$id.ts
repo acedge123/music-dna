@@ -56,7 +56,8 @@ export const Route = createFileRoute("/api/v1/session/$id")({
             interpretation: session.interpretation,
             mode: (session as { mode?: string }).mode ?? "discover",
             decade: (session as { decade?: number | null }).decade ?? null,
-            parent_session_id: (session as { parent_session_id?: string | null }).parent_session_id ?? null,
+            parent_session_id:
+              (session as { parent_session_id?: string | null }).parent_session_id ?? null,
           };
           if (experienceVersion(request) !== 1) return jsonResponse(base);
 

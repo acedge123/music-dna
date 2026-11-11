@@ -6,7 +6,7 @@ import {
   type AxisLabels,
 } from "@/musicdna/engine/claim-language";
 
-export const NARRATOR_PROMPT = `Select up to two distinct eligible claims from the supplied ledger.
+const NARRATOR_PROMPT = `Select up to two distinct eligible claims from the supplied ledger.
 Return only JSON: {"claims":[{"axis":"<supplied axis>","direction":"hi|lo","choice_ids":["<supplied supporting choice id>"]}]}.
 Never invent IDs, songs, claims or prose. Qualified claims retain every exception in the renderer.`;
 

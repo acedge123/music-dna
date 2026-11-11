@@ -1905,6 +1905,7 @@ export type Database = {
           completed_at: string | null
           created_at: string
           decade: number | null
+          explore_start_key: string | null
           id: string
           interpretation: string | null
           is_public: boolean
@@ -1933,6 +1934,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           decade?: number | null
+          explore_start_key?: string | null
           id?: string
           interpretation?: string | null
           is_public?: boolean
@@ -1961,6 +1963,7 @@ export type Database = {
           completed_at?: string | null
           created_at?: string
           decade?: number | null
+          explore_start_key?: string | null
           id?: string
           interpretation?: string | null
           is_public?: boolean

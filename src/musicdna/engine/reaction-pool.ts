@@ -33,5 +33,7 @@ export function poolEntryStale(
   entry: { evidence_fingerprint: string },
   current: { choice: LedgerChoice; writer: string; reviewer: string },
 ) {
-  return entry.evidence_fingerprint !== poolFingerprint(current.choice, current.writer, current.reviewer);
+  return (
+    entry.evidence_fingerprint !== poolFingerprint(current.choice, current.writer, current.reviewer)
+  );
 }

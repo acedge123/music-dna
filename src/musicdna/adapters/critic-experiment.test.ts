@@ -36,7 +36,9 @@ describe("song fact cards", () => {
     const id = l.entries[0].choice_id!;
     await authorCritic(l, labels, async (p) => (prompts.push(p), "x"), {
       stage: "read",
-      experiment: { songFacts: { [id]: { chosen: ["String coda outlasts the band."], rejected: [] } } },
+      experiment: {
+        songFacts: { [id]: { chosen: ["String coda outlasts the band."], rejected: [] } },
+      },
     });
     await authorCritic(l, labels, async (p) => (prompts.push(p), "x"), { stage: "read" });
     expect(prompts[0]).toContain("String coda outlasts the band.");

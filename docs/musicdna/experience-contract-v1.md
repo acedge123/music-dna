@@ -177,7 +177,8 @@ Both are owner-only and share the web implementation (`submitFeedbackImpl`).
 Available after a discover reading is completed. A decade run is an ordinary session (`mode: "explore"`); after it starts, use the usual `/next`, `/choice`, `/skip` and `/reveal` calls. Its matchups stay inside the decade.
 
 - `GET /api/v1/session/:id/explore` takes either a reading id or a decade-run id and returns `{ root_session_id, decades: [{ decade, ready, pairings }], runs: [{ session_id, decade, completed, started_at }] }`.
-- `POST /api/v1/session/:id/explore` with body `{ "decade": 1980 }` returns `{ session_id, mode: "explore", decade }`. It returns 400 when the decade is unknown or not ready, or when the reading isn't finished.
+- `POST /api/v1/session/:id/explore` with body `{ "decade": 1980, "operation_id": "<uuid>" }` returns `{ session_id, mode: "explore", decade, replayed }`. Send a new `operation_id` for each deliberate start and reuse the same one when retrying; a repeat returns the same run with `replayed: true`. It returns 400 when the decade is unknown or not ready, or when the reading isn't finished.
+- Decade runs do not pre-draft reads: `prepare` returns `{ prepared: 0, skipped: "explore_mode" }`. Coverage readiness and matchup selection use the same eligibility rules. Deleting an original reading also deletes its decade runs.
 - `GET /api/v1/session/:id/comparison` for a decade run returns `{ decade, root_session_id, shifts: [{ axis, kind: "held"|"flipped"|"new"|"quiet", original, decade }] }`. Both sides come from frozen ledgers. It returns 404 when the session is not a decade run.
 - `GET /api/v1/session/:id` now also returns `mode`, `decade` and `parent_session_id`.
 

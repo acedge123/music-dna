@@ -1195,19 +1195,21 @@ function OntologyPanel() {
       </div>
 
       <div className="flex gap-1 border-b hairline mb-4 flex-wrap">
-        {(["coverage", "tests", "heatmap", "pairings", "songs", "pool"] as OntologySection[]).map((s) => (
-          <button
-            key={s}
-            onClick={() => setSection(s)}
-            className={`px-3 py-1.5 text-xs font-mono uppercase tracking-[0.18em] border-b-2 -mb-px ${
-              section === s
-                ? "border-primary text-foreground"
-                : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
-          >
-            {s}
-          </button>
-        ))}
+        {(["coverage", "tests", "heatmap", "pairings", "songs", "pool"] as OntologySection[]).map(
+          (s) => (
+            <button
+              key={s}
+              onClick={() => setSection(s)}
+              className={`px-3 py-1.5 text-xs font-mono uppercase tracking-[0.18em] border-b-2 -mb-px ${
+                section === s
+                  ? "border-primary text-foreground"
+                  : "border-transparent text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {s}
+            </button>
+          ),
+        )}
         <div className="ml-auto">
           <select
             value={laneFilter}
@@ -1239,7 +1241,11 @@ type OntologyData = Awaited<ReturnType<typeof adminOntology>>;
 // Stored, reviewer-approved Critic reactions. Inventory only: not served to listeners yet.
 function ReactionPoolView({ laneFilter }: { laneFilter: string }) {
   const load = useServerFn(adminReactionPool);
-  const q = useQuery({ queryKey: ["admin", "reaction-pool"], queryFn: () => load(), staleTime: 60_000 });
+  const q = useQuery({
+    queryKey: ["admin", "reaction-pool"],
+    queryFn: () => load(),
+    staleTime: 60_000,
+  });
   if (q.isLoading) return <p className="text-sm text-muted-foreground">Loading reaction pool…</p>;
   if (q.isError || !q.data)
     return (
@@ -1259,7 +1265,11 @@ function ReactionPoolView({ laneFilter }: { laneFilter: string }) {
       <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
         <Stat label="Approved" value={d.totals.approved.toLocaleString()} />
         <Stat label="Picks covered" value={`${d.totals.covered_picks}/${d.totals.song_picks}`} />
-        <Stat label="Stale" value={d.totals.stale.toLocaleString()} tone={d.totals.stale ? "warn" : undefined} />
+        <Stat
+          label="Stale"
+          value={d.totals.stale.toLocaleString()}
+          tone={d.totals.stale ? "warn" : undefined}
+        />
         <Stat label="Retired" value={d.totals.retired.toLocaleString()} />
         <Stat label="Writer" value={d.versions.writer.replace("critic-expression-", "")} />
       </div>

@@ -3,7 +3,7 @@ import type { SupabaseClient } from "@supabase/supabase-js";
 import type { DeletionTask, DeletionTransport, WithdrawalRepository } from "../learning/withdrawal";
 
 /** Caller injects a trusted server client. This adapter never creates a client or loads secrets. */
-export function learningWithdrawalRepository(client: SupabaseClient): WithdrawalRepository {
+function learningWithdrawalRepository(client: SupabaseClient): WithdrawalRepository {
   return {
     async pending(source, environment, id) {
       const { data, error } = await client

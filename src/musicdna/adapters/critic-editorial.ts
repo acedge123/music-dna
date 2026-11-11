@@ -45,7 +45,7 @@ const Review = z
   })
   .strict();
 
-export const REVIEW_CHECKS = [
+const REVIEW_CHECKS = [
   "grounded",
   "ceiling_preserved",
   "exceptions_preserved",
@@ -55,7 +55,7 @@ export const REVIEW_CHECKS = [
   "responsive",
 ] as const;
 // Named failure checks the reviewer must cite, so rejections are diagnosable.
-export const REVIEW_FAILURE_CODES = [
+const REVIEW_FAILURE_CODES = [
   "unsupported_motive",
   "lifestyle_inference",
   "overclaims_count",
@@ -108,7 +108,7 @@ export function criticBeatSchema(ledger: Ledger) {
   };
 }
 
-export const REVIEW_SCHEMA = {
+const REVIEW_SCHEMA = {
   type: "object",
   additionalProperties: false,
   required: [...REVIEW_CHECKS, "failed"],
@@ -261,7 +261,7 @@ export type CriticExperiment = {
   songFacts?: Record<string, { chosen: string[]; rejected: string[] }>;
 };
 
-export const SONG_FACT_REVIEW_RULE = `SONG FACT CARDS: chosen_song_facts/rejected_song_facts are approved, source-checked catalog facts.
+const SONG_FACT_REVIEW_RULE = `SONG FACT CARDS: chosen_song_facts/rejected_song_facts are approved, source-checked catalog facts.
 Music facts that match a card ARE supplied facts: do not fail no_invented_facts for them. Any music fact NOT on a card still fails.
 Card facts describe songs, never the listener: "the fretless bass" is fine; "you love fretless bass" or using a card fact as proof of a tendency fails ceiling_preserved (code unsupported_motive).`;
 

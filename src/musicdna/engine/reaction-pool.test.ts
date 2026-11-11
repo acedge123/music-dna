@@ -4,9 +4,31 @@ import { hypotheticalChoice } from "./prepared-read";
 import { poolEligible, poolEntryStale, poolFingerprint } from "./reaction-pool";
 
 const vals = (n: number) => Object.fromEntries(DIMS.map((d) => [d, n]));
-const a = { id: "a", title: "A", artist: "X", year: 2010, lane: "pop", primary_lane: "pop", ...vals(80) };
-const b = { id: "b", title: "B", artist: "Y", year: 2011, lane: "pop", primary_lane: "pop", ...vals(20) };
-const pairing = { id: "p", updated_at: "r1", tests: ["movement"], diagnostic_weight: 60, user_facing_tradeoff: "Line." };
+const a = {
+  id: "a",
+  title: "A",
+  artist: "X",
+  year: 2010,
+  lane: "pop",
+  primary_lane: "pop",
+  ...vals(80),
+};
+const b = {
+  id: "b",
+  title: "B",
+  artist: "Y",
+  year: 2011,
+  lane: "pop",
+  primary_lane: "pop",
+  ...vals(20),
+};
+const pairing = {
+  id: "p",
+  updated_at: "r1",
+  tests: ["movement"],
+  diagnostic_weight: 60,
+  user_facing_tradeoff: "Line.",
+};
 const ok = { priorChoices: 0, hadPriorRead: false, validation_reason: "accepted", text: "Sharp." };
 
 describe("reaction pool", () => {

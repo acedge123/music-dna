@@ -27,13 +27,13 @@ export type TerrainInputs = {
   skipped_rounds_last3: number;
 };
 
-export const DEFAULT_AXIS_CONFIDENCE_THRESHOLD = 30;
-export const DEFAULT_ARTIST_BIAS_THRESHOLD = 3;
-export const DEFAULT_SNAP_THRESHOLD_MS = 2000;
-export const DEFAULT_SNAP_RATE_THRESHOLD = 0.6;
-export const DEFAULT_VOLATILITY_THRESHOLD = 15;
+const DEFAULT_AXIS_CONFIDENCE_THRESHOLD = 30;
+const DEFAULT_ARTIST_BIAS_THRESHOLD = 3;
+const DEFAULT_SNAP_THRESHOLD_MS = 2000;
+const DEFAULT_SNAP_RATE_THRESHOLD = 0.6;
+const DEFAULT_VOLATILITY_THRESHOLD = 15;
 
-export const DEFAULT_MAPPER_CONFIG = {
+const DEFAULT_MAPPER_CONFIG = {
   round_budget: 6,
   confidence_thresholds: { low: 0.3, high: 0.7 },
   artist_bias_threshold: DEFAULT_ARTIST_BIAS_THRESHOLD,
@@ -75,7 +75,7 @@ export function sessionConfidence(
   };
 }
 
-export function detectArtistBias(
+function detectArtistBias(
   freq: Record<string, number>,
   threshold = DEFAULT_ARTIST_BIAS_THRESHOLD,
 ): ArtistBias {
@@ -104,7 +104,7 @@ export function detectVectorVolatility(
   };
 }
 
-export function detectSnapPicks(
+function detectSnapPicks(
   choices: Array<{ ms_to_decide: number | null }> | undefined | null,
   slowThresholdMs = DEFAULT_SNAP_THRESHOLD_MS,
   rateThreshold = DEFAULT_SNAP_RATE_THRESHOLD,
@@ -132,7 +132,7 @@ export function detectSkipPressure(skipped: string[], roundsShown: number): Skip
   };
 }
 
-export function inferModePressure(input: MusicDNATerrainInput): TerrainFeatures["mode_pressure"] {
+function inferModePressure(input: MusicDNATerrainInput): TerrainFeatures["mode_pressure"] {
   const cfg = resolveConfig(input.config);
   const { session, recentDeltas, recentChoices } = input;
   const { confidence } = sessionConfidence(session.vector, cfg.axis_confidence_threshold);

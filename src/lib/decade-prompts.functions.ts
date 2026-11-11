@@ -16,7 +16,7 @@ export type DecadePrompt = {
 
 // Public-readable: anyone (signed in or out) can fetch the active prompt for a
 // decade. Backed by the "Anyone can read decade prompts" RLS policy + anon GRANT.
-export const getActiveDecadePrompt = createServerFn({ method: "GET" })
+const getActiveDecadePrompt = createServerFn({ method: "GET" })
   .inputValidator((d: unknown) => z.object({ decade: z.enum(DECADES) }).parse(d))
   .handler(async ({ data }): Promise<{ text: string | null }> => {
     const { data: row, error } = await publicSupabase

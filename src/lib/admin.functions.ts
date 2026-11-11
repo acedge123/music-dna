@@ -843,9 +843,8 @@ export const adminReactionPool = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
     const admin = await assertAdminAndGetClient(context.userId);
-    const { CRITIC_EXPRESSION_VERSION, CRITIC_REVIEW_VERSION } = await import(
-      "@/musicdna/adapters/critic-editorial"
-    );
+    const { CRITIC_EXPRESSION_VERSION, CRITIC_REVIEW_VERSION } =
+      await import("@/musicdna/adapters/critic-editorial");
     const { hypotheticalChoice } = await import("@/musicdna/engine/prepared-read");
     const { poolEntryStale } = await import("@/musicdna/engine/reaction-pool");
     const songCols =
@@ -915,7 +914,9 @@ export const adminReactionPool = createServerFn({ method: "GET" })
     });
     const servable = entries.filter((e) => e.status === "approved");
     const covered = new Set(
-      rows.filter((_, i) => entries[i].status === "approved").map((r) => r.pairing_id + r.chosen_song_id),
+      rows
+        .filter((_, i) => entries[i].status === "approved")
+        .map((r) => r.pairing_id + r.chosen_song_id),
     );
     const picks = pairings.flatMap((p) => [
       { lane: p.lane, key: p.id + p.song_a.id },

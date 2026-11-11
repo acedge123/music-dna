@@ -14,7 +14,7 @@ export type PublishedRead = {
   content: Json;
   evidence: Ledger;
 };
-export function publishedChoices(evidence: Ledger) {
+function publishedChoices(evidence: Ledger) {
   const seen = new Set<string>();
   return (evidence.axes ?? [])
     .filter((a) => a.eligible)

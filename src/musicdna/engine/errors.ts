@@ -25,10 +25,10 @@ const CODE_TO_STATUS: Record<EngineError["code"], number> = {
   INTERNAL: 500,
 };
 
-export function engineErrorStatus(code: EngineError["code"]): number {
+function engineErrorStatus(code: EngineError["code"]): number {
   return CODE_TO_STATUS[code] ?? 500;
 }
 
-export function isEngineError(e: unknown): e is EngineErrorException {
+function isEngineError(e: unknown): e is EngineErrorException {
   return e instanceof EngineErrorException;
 }

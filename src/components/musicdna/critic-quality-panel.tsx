@@ -9,7 +9,12 @@ import {
   saveCriticSessionVerdict,
   criticKeptTalking,
 } from "@/lib/critic-quality.functions";
-import { QUALITY_AXES, QUALITY_ANCHORS, QUALITY_LABELS, KEEP_TALKING } from "@/musicdna/engine/critic-quality";
+import {
+  QUALITY_AXES,
+  QUALITY_ANCHORS,
+  QUALITY_LABELS,
+  KEEP_TALKING,
+} from "@/musicdna/engine/critic-quality";
 import { toast } from "sonner";
 import { DraftTimelinePanel } from "./draft-timeline-panel";
 

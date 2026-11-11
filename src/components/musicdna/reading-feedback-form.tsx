@@ -1,7 +1,7 @@
 import { useId } from "react";
 import { Button } from "@/components/ui/button";
 import type { Accuracy } from "@/lib/reading-feedback";
-export const ACCURACY_LABELS = {
+const ACCURACY_LABELS = {
   accurate: "Accurate",
   mixed: "Mixed",
   not_accurate: "Not accurate",
