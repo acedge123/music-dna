@@ -197,6 +197,6 @@
 
 - [x] Decade gap songs: Country, Metal, Pop, recent Alternative (81 songs, 105 matchups live)
 - [x] Explore your DNA: decade runs after a reading, admin decade × trait coverage
-- [ ] Explore: Critic-written decade read, Flutter endpoint, guest-to-account carryover
+- [ ] Explore: Critic-written decade read, guest-to-account carryover (Flutter endpoints done)
 - [x] Evaluate CGPT decade pack — report done
 - [ ] Decade pack: score 84 new songs + stage pairings (awaiting Alan go-ahead)
