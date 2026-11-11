@@ -1,5 +1,5 @@
 // Presentation only: never creates claims or mutates the saved reading.
-export function reactionDisplayMessage(effect: string): string {
+function reactionDisplayMessage(effect: string): string {
   switch (effect) {
     case "harder_pairing":
       return "Fine. Try these.";

@@ -4,7 +4,7 @@
  * This version permits explicitly consented real QA metadata only; it enables no exporter.
  */
 export const LEARNING_OBSERVATION_VERSION = "learning-observation.v2" as const;
-export const LEARNING_OBSERVATION_MAX_BYTES = 8192;
+const LEARNING_OBSERVATION_MAX_BYTES = 8192;
 export const LEARNING_OBSERVATION_SUMMARY = "Music DNA learning observation" as const;
 
 export type MusicDnaLearningObservationV2 = {
@@ -254,7 +254,7 @@ export function validateMusicDnaLearningEnvelopeV2(
 }
 
 /** A dispatcher may acknowledge only the durable receipt for its own observation. */
-export function validateMusicDnaLearningReceiptV2(
+function validateMusicDnaLearningReceiptV2(
   value: unknown,
   expectedObservationId: string,
 ): { ok: true; value: MusicDnaLearningReceiptV2 } | { ok: false; errors: string[] } {

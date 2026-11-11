@@ -121,7 +121,7 @@ export const HESITATION_BUCKETS: ReadonlyArray<{ max: number; lines: readonly st
 
 // Words that leak internal vocabulary into user copy. Dev-only guard —
 // callers can scan reveal strings for any of these tokens.
-export const FORBIDDEN_TOKENS = ["becoming", "witness", "posture", "axis", "dimension"] as const;
+const FORBIDDEN_TOKENS = ["becoming", "witness", "posture", "axis", "dimension"] as const;
 
 export function pickByHash<T>(arr: readonly T[] | undefined, seed: number): T | undefined {
   if (!arr || arr.length === 0) return undefined;

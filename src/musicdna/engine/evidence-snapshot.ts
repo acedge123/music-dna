@@ -2,7 +2,7 @@ import { z } from "zod";
 import type { LedgerChoice } from "./evidence";
 import { DIMS } from "./axes";
 
-export const EVIDENCE_SNAPSHOT_VERSION = "choice-evidence-v1";
+const EVIDENCE_SNAPSHOT_VERSION = "choice-evidence-v1";
 const Song = z.object({
   id: z.string(),
   title: z.string(),

@@ -6,7 +6,7 @@ import { learningDispatchRepository } from "../adapters/learning-dispatch-reposi
 import { learningDispatchTransport } from "../adapters/learning-dispatch-transport";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
-export async function executeHostedDispatch(
+async function executeHostedDispatch(
   client: SupabaseClient,
   referenceSecret: string,
   ingestKey: string,

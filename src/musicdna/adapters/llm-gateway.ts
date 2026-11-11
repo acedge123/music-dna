@@ -24,9 +24,9 @@ export const DEFAULT_MODEL = "google/gemini-3-flash-preview";
 
 // Critic on OpenAI direct (Vercel): shared by read, reveal and chat.
 // Env overrides allow changes in Vercel without a deploy.
-export const CRITIC_WRITER_OPENAI_DEFAULT = "gpt-6.1-sol";
-export const CRITIC_REVIEWER_OPENAI_DEFAULT = "gpt-6.1-terra";
-export function criticOpenAiModel(role: "writer" | "reviewer") {
+const CRITIC_WRITER_OPENAI_DEFAULT = "gpt-6.1-sol";
+const CRITIC_REVIEWER_OPENAI_DEFAULT = "gpt-6.1-terra";
+function criticOpenAiModel(role: "writer" | "reviewer") {
   return role === "writer"
     ? process.env.OPENAI_CRITIC_WRITER_MODEL || CRITIC_WRITER_OPENAI_DEFAULT
     : process.env.OPENAI_CRITIC_REVIEWER_MODEL || CRITIC_REVIEWER_OPENAI_DEFAULT;

@@ -175,7 +175,7 @@ export function validatedChat(
   return [acknowledgement, freshClaim, QUESTIONS[r.question_id]].filter(Boolean).join(" ");
 }
 
-export function fallbackChat(ledger: Ledger): string {
+function fallbackChat(ledger: Ledger): string {
   return ledger.answered
     ? "I couldn't ground that reply in your choices. Which part of the music mattered most to you?"
     : "We don't have pairing evidence yet. Which part of the music matters most to you?";

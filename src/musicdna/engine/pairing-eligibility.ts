@@ -1,7 +1,7 @@
 import { DIMS } from "./axes";
 
 /** Minimum song-to-song score gap for a declared test to count (matches catalog validator + DB activation check). */
-export const MIN_TEST_CONTRAST = 20;
+const MIN_TEST_CONTRAST = 20;
 
 const GENERIC_SAYINGS = new Set([
   "which one stays with you?",

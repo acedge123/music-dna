@@ -1,6 +1,6 @@
 import { DispatchError, type DispatchTransport } from "../learning/dispatcher";
 
-export const ECHELON_LEARNING_INGRESS =
+const ECHELON_LEARNING_INGRESS =
   "https://yczomejrvihbmydyraqg.supabase.co/functions/v1/app-signal-inbound/learning";
 /** Endpoint is operator configuration, never a URL supplied by a listener/job. */
 export function learningDispatchTransport(options: {
