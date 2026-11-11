@@ -10,6 +10,7 @@ import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import { HttpError, verifyBearer } from "./_auth";
 import { experienceVersion } from "./-experience";
 import { loadSessionHistory } from "@/musicdna/adapters/session-history";
+import { interviewMilestone } from "@/musicdna/adapters/interview-milestone";
 
 const UUID = z.string().uuid();
 
@@ -77,6 +78,7 @@ export const Route = createFileRoute("/api/v1/session/$id")({
                 }
               : null,
             exchanges,
+            milestone: interviewMilestone(exchanges, !!session.completed_at),
             result_versions: resultRes.data ?? [],
           });
         } catch (e) {

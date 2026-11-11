@@ -1,6 +1,6 @@
 {
   "policy_id": "musicdna-selector",
-  "version": "sha256:0de4f8615e0f6f18454be9b443219e19564a73088dee27c34759152bb6b2eee3",
+  "version": "sha256:9ad6795a3c9b566f3adcd4256e813f86b5e315f6656d3bdfc84af06166e96365",
   "files": [
     "src/lib/musicdna.functions.ts",
     "src/musicdna/engine/archetypes.ts",
@@ -16,12 +16,15 @@
     "src/musicdna/engine/evidence-snapshot.ts",
     "src/musicdna/engine/evidence.ts",
     "src/musicdna/engine/experiments/cross-lane-probes.ts",
+    "src/musicdna/engine/halftime.ts",
     "src/musicdna/engine/index.ts",
     "src/musicdna/engine/pairing-eligibility.ts",
     "src/musicdna/engine/pairing.ts",
     "src/musicdna/engine/ports.ts",
+    "src/musicdna/engine/prepared-read.ts",
     "src/musicdna/engine/priors.ts",
     "src/musicdna/engine/prompts.ts",
+    "src/musicdna/engine/reaction-pool.ts",
     "src/musicdna/engine/read.ts",
     "src/musicdna/engine/reading-support.ts",
     "src/musicdna/engine/reveal-beats.ts",

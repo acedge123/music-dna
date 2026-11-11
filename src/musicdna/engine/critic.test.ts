@@ -14,8 +14,13 @@ describe("critic voice constants", () => {
     }
   });
 
-  it("editorial voice extends the persona", () => {
-    expect(CRITIC_VOICE_EDITORIAL.startsWith(CRITIC_PERSONA)).toBe(true);
+  it("editorial voice keeps the persona rules while making questions optional", () => {
+    expect(CRITIC_VOICE_EDITORIAL).toContain(CRITIC_PERSONA.split("\n\nTHE JOB:")[0]);
+    expect(CRITIC_VOICE_EDITORIAL).toContain(CRITIC_PERSONA.split("HARD RULES:")[1]);
+    expect(CRITIC_VOICE_EDITORIAL).toContain(
+      "a question is optional, never a promised future test",
+    );
+    expect(CRITIC_VOICE_EDITORIAL).not.toContain("Land on a question or a half-promise");
     expect(CRITIC_VOICE_EDITORIAL).toContain("One observation per sentence");
   });
 });

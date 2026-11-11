@@ -48,6 +48,7 @@ export type Exchange =
       audit_text?: string | null;
       narration_status?: string | null;
       direction: string | null;
+      top_dim?: string | null;
       revised: boolean;
       revision: Record<string, string | number | boolean | null | Record<string, string>> | null;
     }
@@ -136,6 +137,7 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
     if (e.event_type === "read_shown") {
       const savedRead = p.result as {
         direction?: string;
+        topDim?: string | null;
         question?: string;
         voice_version?: string;
         audit_text?: string;
@@ -151,6 +153,7 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
         audit_text: savedRead?.audit_text ?? null,
         narration_status: savedRead?.narration_status ?? null,
         direction: savedRead?.direction ?? (p.revised ? "revising" : null),
+        top_dim: savedRead?.topDim ?? null,
         revised: !!p.revised,
         revision: (p.revision ?? null) as never,
       });

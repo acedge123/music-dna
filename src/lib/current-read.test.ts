@@ -13,6 +13,7 @@ vi.mock("@/musicdna/adapters/llm-gateway", () => ({
 vi.mock("@/integrations/supabase/client.server", () => ({
   supabaseAdmin: {
     from: (table: string) => ({
+      select: () => ({ match: () => ({ maybeSingle: async () => ({ data: null, error: null }) }) }),
       insert: async (row: { props: Record<string, unknown> }) => {
         if (table !== "event_log") return { error: null };
         if (state.failWrite) return { error: { message: "write failed" } };
@@ -87,7 +88,7 @@ describe("current read service boundary", () => {
     state.failWrite = false;
     generate.mockReset().mockRejectedValue(new Error("test generation unavailable"));
   });
-  it("routes interim observations through the v2.3 writer and reviewer with zero eligible claims", async () => {
+  it("routes interim observations through the current writer and reviewer with zero eligible claims", async () => {
     generate
       .mockResolvedValueOnce(
         JSON.stringify({
@@ -110,7 +111,7 @@ describe("current read service boundary", () => {
         }),
       );
     const result = await currentReadImpl(client([40]) as never, "user", { sessionId: "s" });
-    expect(result.voice_version).toBe("critic-expression-v2.3");
+    expect(result.voice_version).toBe("critic-expression-v2.4-moves2");
     expect(result.narration_status).toBe("ok");
     expect(generate).toHaveBeenCalledTimes(2);
     const writer = generate.mock.calls[0][1];
