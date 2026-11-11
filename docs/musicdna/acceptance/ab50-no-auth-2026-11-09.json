@@ -1,0 +1,54 @@
+{
+  "kind": "no_auth_http_only_not_member_authorization_or_deployment_proof",
+  "results": [
+    {
+      "endpoint": "app-signal-inbound",
+      "authentication": "none",
+      "checked_at": "2026-11-09T17:05:46.159Z",
+      "http_status": 401,
+      "state": "passed_no_auth_denial"
+    },
+    {
+      "endpoint": "app-signal-inbound/learning",
+      "authentication": "none",
+      "checked_at": "2026-11-09T17:05:46.498Z",
+      "http_status": 401,
+      "state": "passed_no_auth_denial"
+    },
+    {
+      "endpoint": "app-signal-inbound/learning/delete",
+      "authentication": "none",
+      "checked_at": "2026-11-09T17:05:46.606Z",
+      "http_status": 401,
+      "state": "passed_no_auth_denial"
+    },
+    {
+      "endpoint": "musicdna-learning-read",
+      "authentication": "none",
+      "checked_at": "2026-11-09T17:05:46.669Z",
+      "http_status": 401,
+      "state": "passed_no_auth_denial"
+    },
+    {
+      "endpoint": "signal-source-request",
+      "authentication": "none",
+      "checked_at": "2026-11-09T17:05:47.207Z",
+      "http_status": 401,
+      "state": "passed_no_auth_denial"
+    },
+    {
+      "endpoint": "signal-source-decide",
+      "authentication": "none",
+      "checked_at": "2026-11-09T17:05:47.776Z",
+      "http_status": 401,
+      "state": "passed_no_auth_denial"
+    },
+    {
+      "endpoint": "signal-source-rotate-key",
+      "authentication": "none",
+      "checked_at": "2026-11-09T17:05:48.276Z",
+      "http_status": 401,
+      "state": "passed_no_auth_denial"
+    }
+  ]
+}

@@ -1,0 +1,72 @@
+{
+  "schema": "musicdna-ab50-operator-handoff.v1",
+  "ticket": "AB-50",
+  "phase": "approved_echelon_closeout",
+  "owner_approval": "Explicit approval to send scoped request and create/clean exactly two disposable non-admin QA identities; no deployment, activation or existing-account changes.",
+  "project_id": "f3e34537-501f-410b-a5e9-436b98c17e44",
+  "message_id": "umsg_01m70rk91gf5n9wjw6kt4b8yh3",
+  "thread_id": "main",
+  "status": "completed_with_access_limitations",
+  "reported_at_utc": "2026-11-09T18:20:00Z",
+  "independent_post_check": {
+    "acceptance_enabled": 0,
+    "active_read_grants": 0,
+    "active_review_scopes": 0,
+    "auth_users_created_since_dispatch": 0,
+    "captured_at_utc": "2026-11-09T18:23:22.766262+00:00",
+    "in_progress_reviews": 0,
+    "learning_enabled": 0,
+    "qa_test_tenant_memberships": 0
+  },
+  "verified_repository_head": "a4fb202f9944583eb2096233bba6e09a1cae0186",
+  "unexpected_repository_change": {
+    "author": "Lovable agent/platform",
+    "commit": "a4fb202f9944583eb2096233bba6e09a1cae0186",
+    "files": ["package.json", "bun.lock"],
+    "package": "@lovable.dev/vite-plugin-hmr-gate",
+    "manifest_range_from": "^1.7.0",
+    "manifest_range_to": "^1.8.0",
+    "resolved_lock_version_from": "1.7.0",
+    "resolved_lock_version_to": "1.8.2",
+    "git_diff_verified": true,
+    "backend_function_or_schema_files_changed": false,
+    "acceptance": "Unrequested development dependency change; separate from AB-50, not accepted as a required fix or proof of unchanged build behavior. No revert or further Echelon code change made by Codex."
+  },
+  "results": {
+    "learning_gates": "off",
+    "read_grants": "revoked_or_expired",
+    "model_reviews_in_progress": 0,
+    "qa_identities_created": 0,
+    "qa_sessions_created": 0,
+    "qa_memberships_created": 0,
+    "qa_test_tenants_created": 0,
+    "qa_cleanup_obligations": "none_created_by_this_handoff",
+    "deployed_functions": {
+      "state": "unavailable",
+      "missing_capability": "Provider deployment list/metadata and deployed bundles for the five requested functions; request logs returned no rows."
+    },
+    "backup_retention": {
+      "state": "unverified",
+      "documented_claim_only": "Daily backups, approximately14days, noPITR reported by Lovable; actual settings/list not exposed. This is not a verified matching limit or restore guarantee."
+    },
+    "log_retention_and_external_drains": {
+      "state": "unavailable"
+    },
+    "source_scoped_provider_model_and_slack_counters": {
+      "state": "unavailable",
+      "empty_logs_not_zero": true
+    },
+    "authenticated_member_and_other_tenant_http": {
+      "state": "not_exercised",
+      "missing_capability": "Supported Auth admin createUser flow unavailable to Lovable agent; normal signup could send email. Existing admin-users endpoint supports membership/admin management but no account creation; create-admin would elevate privileges and is excluded."
+    },
+    "operator_browser": {
+      "state": "sign_in_required",
+      "echelon_cloud_url": "https://lovable.dev/projects/f3e34537-501f-410b-a5e9-436b98c17e44",
+      "observed_ui": "Private project; log in or switch account",
+      "next_step": "Owner sign-in requested to inspect Users/Functions/Backups console controls; no credential requested in chat."
+    }
+  },
+  "decision": "AB-50 remains In Progress; export disabled, no negative-check pass inferred from unavailable tools.",
+  "sanitized_agent_receipt": "**AB-50 closeout receipt (2026-11-09, 18:20 UTC).** Nothing changed: no deploys, migrations, writes, flag changes, model calls or messages. No QA accounts were created.\n\n**Passed (checked live, read-only SQL)**\n- Learning-enabled sources: 0.\n- Music DNA Acceptance source (`197da0c2…`): `enabled = false`.\n- Active reviewer grants: 0.\n- Enabled, unexpired review scopes: 0.\n- Reviews in progress (queued, preparing or calling the model): 0.\n- Leftover AB-50 test-tenant memberships: 0.\n\n**Unavailable**\n1. **Deployed versions.** I couldn't get the version ID, deployment time, `verify_jwt` setting or bundle hash for any of the five functions. My tools have no access to the deployment list or to the deployed bundles. Function request logs could have shown version IDs, but the logs returned no rows. This doesn't show the functions are healthy or unhealthy. I did not redeploy to produce a receipt.\n2. **Backups and log retention.**\n   - **Database backups:** documented as daily, kept about 14 days, with no point-in-time recovery. No tool here reads the actual backup list, so the settings themselves are unverified. Read the newest UTC timestamp under More → Database → Manage → Backups.\n   - **Log retention and external log copies:** unavailable. The debug30d and operational90d targets are documentation targets, not verified settings.\n   - Deleting data does not remove it from backups made earlier.\n   - **Restore rule:** after any restore, reapply the terminal scope and withdrawal state before any read or export.\n3. **Nov 8 call counters.** Function call, model and Slack counts for the source are unavailable, because the request logs returned no rows. Missing counts are not zero. The AB-54 synthetic tests (one failed job and job `c9bedfea…`) and the two owner DMs can't be separated from routine traffic without these logs.\n\n**Not exercised**\n- **Disposable QA denial checks (all of them).** None of my tools can create Auth users through the admin workflow without the service-role key, and that key isn't available here. Normal signup would send a confirmation email, which the request prohibits. Writing auth rows directly or forging tokens is also prohibited. So I created no identities, sessions, memberships or test tenant. Nothing needs cleaning up.\n  - The read, rotate-key and private-table denial checks did not run.\n  - To run them, an operator with Auth admin access needs to create two confirmed users without sending email, then hand over their temporary passwords privately.\n- **`signal-source-request`/`decide` and learning ingest/delete:** not exercised, as instructed.\n\n\n\n\n\n\n\nI committed the two unsaved files as `a4fb202`. The only change was a version bump for a Lovable preview tool (`vite-plugin-hmr-gate` 1.7.0 → 1.8.0) in `package.json` and `bun.lock`. The platform made it automatically, not me, and it doesn't affect how the app behaves.\n\nNone of the AB-50 work changed any files, and the receipt above still stands."
+}

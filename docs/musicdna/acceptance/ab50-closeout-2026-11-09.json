@@ -1,0 +1,207 @@
+{
+  "schema": "musicdna-first-hop-closeout.v1",
+  "ticket": "AB-50",
+  "operator_work_date": "2026-11-09",
+  "operator_timezone": "America/Los_Angeles",
+  "state": "in_progress_acceptance_gaps",
+  "decision": "hold_export_disabled",
+  "baseline_report": "ab50-2026-11-07.json",
+  "targets": {
+    "musicdna_backend": "udycgnhvaanemhrchbuj",
+    "echelon_backend": "yczomejrvihbmydyraqg",
+    "musicdna_serving_sha": "04b9ebac265e7d8b0b5b55ee0c553cd131b4c1c7",
+    "musicdna_persistence_v2": true,
+    "musicdna_serving_evidence": "Public /api/public/version viewed in browser on 2026-11-09; point-in-time observation.",
+    "echelon_repository_sha": "54f94519603004151379613957cdb569e6e166ad",
+    "echelon_deployed_function_inventory": "unavailable_operator_access",
+    "source": "music-dna-staging",
+    "tenant_id": "musicdna-acceptance",
+    "environment": "staging"
+  },
+  "evidence": {
+    "source_read_only_database": {
+      "read_only": "on",
+      "outbox_rows": 10,
+      "scope_count": 1,
+      "jobs_by_state": {
+        "cancelled": 1,
+        "delivered": 11
+      },
+      "capture_enabled": 0,
+      "captured_at_utc": "2026-11-09T17:03:30.747662+00:00",
+      "outbox_payloads": 0,
+      "rls_table_count": 5,
+      "dispatch_enabled": 0,
+      "completed_markers": 2,
+      "pending_deletions": 0,
+      "acceptance_scope_count": 1,
+      "cron_extension_present": false,
+      "original_window_matches": true,
+      "browser_table_privileges": 0,
+      "marker_forgetting_due_at": "2026-11-16T01:10:06.666+00:00",
+      "expired_acceptance_scopes": 1,
+      "markers_due_for_forgetting": 0,
+      "expired_scope_allows_export": false,
+      "completed_markers_with_subject_ref": 0
+    },
+    "receiver_read_only_database": {
+      "acceptance_enabled": 0,
+      "acceptance_receipts": 0,
+      "acceptance_source_count": 1,
+      "active_read_grants": 0,
+      "browser_table_privileges": 0,
+      "captured_at_utc": "2026-11-09T17:03:36.940107+00:00",
+      "cron_extension_present": false,
+      "enabled_review_scopes": 0,
+      "expired_acceptance_scopes": 1,
+      "learning_enabled": 0,
+      "original_window_matches": true,
+      "queued_or_running_acceptance_jobs": 0,
+      "read_only": "on",
+      "receipt_count": 0,
+      "rls_table_count": 4,
+      "source_count": 5,
+      "suppression_count": 4,
+      "suppression_forget_after": "2026-11-16T01:10:06.666+00:00",
+      "suppressions_due_for_forgetting": 0
+    },
+    "musicdna_migration_history": [
+      {
+        "version": "20261107204508",
+        "sql_sha256": "de1c894a83fd1f7c7fe82fd7ccf34e4850bee5ed227553d12c8fbd120fcc3236"
+      },
+      {
+        "version": "20261107205842",
+        "sql_sha256": "96987806da549c8d4fb90ff8d79359372d156b6252dd91f50e5390e27440f0e1"
+      },
+      {
+        "version": "20261107214337",
+        "sql_sha256": "d739082d087a2ad1f5e0d932f525992d4da00e6440a55878a7cff10ea0f17645"
+      },
+      {
+        "version": "20261108175602",
+        "sql_sha256": "df939895cc3d2ee39131870c6cc0c0ab4eb5ceecf5aef3e1dbd7ff2feb17bde9"
+      },
+      {
+        "version": "20261108194533",
+        "sql_sha256": "a111d24d2d86d47412c6cdf719c897887fbae5e9b625e7f010a39d390af67e8c"
+      },
+      {
+        "version": "20261108232241",
+        "sql_sha256": "c56241574bd38331f8aaa45004bdb424a0360c6bfc8de7e8ec509a5850dfe89d"
+      },
+      {
+        "version": "20261109161511",
+        "sql_sha256": "4b12ca892170a7b0ecdb378a689d9c1b3f06cffd585474a6628180667657b146"
+      },
+      {
+        "version": "20261109170039",
+        "sql_sha256": "b7b427685133c54441204fb4f0da4d67f081428a985f7387adbed4122947d42c"
+      }
+    ],
+    "musicdna_ab45_ab47_ab49_history_matches_repository": true,
+    "echelon_drizzle_migration_receipts": [
+      {
+        "applied_at": "2026-11-07 19:34:41.295+00",
+        "hash": "a6638ca7607db10e6e338f21488b2eedaffc08edc3b85fb759e49dca6dca5dcb",
+        "id": 3
+      },
+      {
+        "applied_at": "2026-11-07 20:14:34.976+00",
+        "hash": "84d4a737146ba07b5293d925f91339e8555a11118de5d7e889b3e5b82bccae12",
+        "id": 4
+      },
+      {
+        "applied_at": "2026-11-07 20:43:07.398+00",
+        "hash": "d69c57f00f7bee3e31138eef233f1c211d15aa28247a4cf1639bc516e7628d5b",
+        "id": 5
+      },
+      {
+        "applied_at": "2026-11-08 16:37:24.248+00",
+        "hash": "b505b081514da26794e45e14c60da291c514e1dc49db2589c342a4b033d4a480",
+        "id": 8
+      }
+    ],
+    "echelon_ab46_ab48_ab49_receipt_hashes_match_repository": true,
+    "no_auth_http": {
+      "artifact": "ab50-no-auth-2026-11-09.json",
+      "requests": 7,
+      "unauthorized_401": 7,
+      "not_proof_of": "ordinary-member/other-tenant authorization or actual deployed revision"
+    },
+    "expiry": {
+      "deadline_utc": "2026-11-09T01:10:06.666Z",
+      "window_unchanged_both_sides": true,
+      "deadline_elapsed": true,
+      "source_export_precondition": false,
+      "limitation": "Capture is also off. Combined closed-state check, not an isolated HTTP expiry denial test with otherwise active gates.",
+      "receiver_receipts": 0,
+      "reviewer_grants_active": 0,
+      "independent_receiver_expiry_http": "not_exercised_with_authorized_reviewer",
+      "metadata_forgetting_due_at_utc": "2026-11-16T01:10:06.666Z",
+      "metadata_forgetting_due_at_pacific": "2026-11-15 17:10:06.666 PST",
+      "due_forgetting_markers": 0,
+      "future_purge": "Not yet due; no clock rewrite, scope extension or purge performed."
+    },
+    "private_operator_inventory": {
+      "areas": 4,
+      "json_files": 35,
+      "session_files_present": 0,
+      "classification": "Private configs/checkpoints/artifacts exist; counts are not evidence-only counts. No content inspected or files erased during this inventory. External copies are not claimed removed."
+    },
+    "ab54": "Done; prior saved one-call synthetic draft evidence is independent of routine-ingestion/no-side-effects proof."
+  },
+  "remaining": [
+    {
+      "check": "deployed_echelon_function_versions",
+      "state": "unavailable",
+      "next_step": "Provider deployment inventory/bundles for five named functions. Repository and migration hashes do not substitute."
+    },
+    {
+      "check": "ordinary_member_and_other_tenant_http_denial",
+      "state": "pending_approved_disposable_test_identities",
+      "next_step": "Actual normal user sessions; sanitized HTTP and private table denial, then revoke sessions and clean up QA identities."
+    },
+    {
+      "check": "terminal_receiver_expiry_and_due_retention_purge",
+      "state": "partial_not_due",
+      "next_step": "Closed-state aggregates passed; HTTP limitation retained. Markers are due November16 01:10:06.666UTC; no cleanup is scheduled or authorized by this report."
+    },
+    {
+      "check": "backup_log_and_external_copy_retention",
+      "state": "unavailable_provider_configuration",
+      "next_step": "Inventory configured settings, drains and external copies. Active deletion is not backup erasure; reapply closed scopes/withdrawals before restoring reads/export."
+    },
+    {
+      "check": "routine_model_slack_and_operational_route_regression",
+      "state": "not_fully_exercised",
+      "next_step": "Source-scoped provider counters if available; absent metrics are not zero. Separate AB54 manual model test and authorized monitoring DMs."
+    },
+    {
+      "check": "hosted_max_attempt_and_age_boundaries",
+      "state": "native_proof_only",
+      "next_step": "Keep prior native coverage separate; no production clocks or jobs changed to force a boundary."
+    },
+    {
+      "check": "unattended_cleanup_delivery_and_backlog_coverage",
+      "state": "not_enabled_not_accepted",
+      "next_step": "No pg_cron on either database. Infrastructure monitor does not prove learning-delivery coverage; reviewed hosted activation requires explicit approval."
+    },
+    {
+      "check": "owner_acceptance",
+      "state": "pending_complete_report"
+    }
+  ],
+  "changes_this_run": {
+    "database_writes": 0,
+    "new_identities": 0,
+    "migrations": 0,
+    "keys_changed": 0,
+    "gates_enabled": 0,
+    "model_calls": 0,
+    "slack_messages": 0,
+    "new_evidence_deliveries": 0,
+    "schedules": 0,
+    "production_deployments": 0
+  }
+}
