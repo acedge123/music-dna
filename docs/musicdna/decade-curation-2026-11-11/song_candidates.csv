@@ -1,0 +1,201 @@
+song_id,title,artist,release_year,decade,primary_lane,sub_lane,review_status,dimension_scores_status,catalog_match_status,source_pair_id,in_historical_pairing_seed
+loretta_lynn__coal_miner_s_daughter,Coal Miner's Daughter,Loretta Lynn,1970,1970,country,outlaw_storytelling,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-001,no
+kenny_rogers__the_gambler,The Gambler,Kenny Rogers,1978,1970,country,outlaw_storytelling,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-001,no
+dolly_parton__jolene,Jolene,Dolly Parton,1973,1970,country,country_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-002,no
+willie_nelson__blue_eyes_crying_in_the_rain,Blue Eyes Crying in the Rain,Willie Nelson,1975,1970,country,country_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-002,no
+merle_haggard__if_we_make_it_through_december,If We Make It Through December,Merle Haggard,1973,1970,country,country_folk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-003,no
+john_denver__take_me_home_country_roads,"Take Me Home, Country Roads",John Denver,1971,1970,country,country_folk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-003,no
+freddy_fender__before_the_next_teardrop_falls,Before the Next Teardrop Falls,Freddy Fender,1974,1970,country,country_crossover,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-004,no
+the_charlie_daniels_band__the_devil_went_down_to_georgia,The Devil Went Down to Georgia,The Charlie Daniels Band,1979,1970,country,country_crossover,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-004,no
+donna_summer__i_feel_love,I Feel Love,Donna Summer,1977,1970,disco,electronic_disco,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-005,no
+chic__le_freak,Le Freak,Chic,1978,1970,disco,electronic_disco,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-005,no
+bee_gees__stayin_alive,Stayin' Alive,Bee Gees,1977,1970,disco,disco_anthem,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-006,no
+sister_sledge__we_are_family,We Are Family,Sister Sledge,1979,1970,disco,disco_anthem,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-006,no
+abba__dancing_queen,Dancing Queen,ABBA,1976,1970,disco,disco_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-007,no
+thelma_houston__don_t_leave_me_this_way,Don't Leave Me This Way,Thelma Houston,1976,1970,disco,disco_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-007,no
+the_trammps__disco_inferno,Disco Inferno,The Trammps,1976,1970,disco,disco_extended,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-008,no
+diana_ross__love_hangover,Love Hangover,Diana Ross,1976,1970,disco,disco_extended,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-008,no
+al_green__let_s_stay_together,Let's Stay Together,Al Green,1971,1970,r_and_b,soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-009,no
+stevie_wonder__superstition,Superstition,Stevie Wonder,1972,1970,r_and_b,soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-009,no
+marvin_gaye__what_s_going_on,What's Going On,Marvin Gaye,1971,1970,r_and_b,social_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-010,no
+the_staple_singers__respect_yourself,Respect Yourself,The Staple Singers,1971,1970,r_and_b,social_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-010,no
+marvin_gaye__let_s_get_it_on,Let's Get It On,Marvin Gaye,1973,1970,r_and_b,funk_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-011,no
+labelle__lady_marmalade,Lady Marmalade,Labelle,1974,1970,r_and_b,funk_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-011,no
+aerosmith__dream_on,Dream On,Aerosmith,1973,1970,classic_rock,arena_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-012,no
+thin_lizzy__the_boys_are_back_in_town,The Boys Are Back in Town,Thin Lizzy,1976,1970,classic_rock,arena_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-012,no
+pink_floyd__the_great_gig_in_the_sky,The Great Gig in the Sky,Pink Floyd,1973,1970,classic_rock,art_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-013,no
+dire_straits__sultans_of_swing,Sultans of Swing,Dire Straits,1978,1970,classic_rock,art_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-013,no
+lynyrd_skynyrd__sweet_home_alabama,Sweet Home Alabama,Lynyrd Skynyrd,1974,1970,classic_rock,southern_soft_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-014,yes
+fleetwood_mac__rhiannon,Rhiannon,Fleetwood Mac,1975,1970,classic_rock,southern_soft_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-014,no
+james_brown__get_up_i_feel_like_being_a_sex_machine,Get Up (I Feel Like Being a) Sex Machine,James Brown,1970,1970,r_and_b,funk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-015,no
+parliament__flash_light,Flash Light,Parliament,1977,1970,r_and_b,funk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-015,no
+the_clash__london_calling,London Calling,The Clash,1979,1970,alternative,punk_post_punk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-016,no
+talking_heads__psycho_killer,Psycho Killer,Talking Heads,1977,1970,alternative,punk_post_punk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1970-016,no
+george_strait__amarillo_by_morning,Amarillo by Morning,George Strait,1982,1980,country,new_traditional,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-017,no
+dolly_parton__9_to_5,9 to 5,Dolly Parton,1980,1980,country,new_traditional,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-017,no
+george_jones__he_stopped_loving_her_today,He Stopped Loving Her Today,George Jones,1980,1980,country,country_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-018,no
+george_strait__all_my_ex_s_live_in_texas,All My Ex's Live in Texas,George Strait,1987,1980,country,country_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-018,no
+randy_travis__forever_and_ever_amen,"Forever and Ever, Amen",Randy Travis,1987,1980,country,neotraditional_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-019,no
+garth_brooks__the_dance,The Dance,Garth Brooks,1989,1980,country,neotraditional_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-019,no
+the_oak_ridge_boys__elvira,Elvira,The Oak Ridge Boys,1981,1980,country,country_crossover,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-020,no
+keith_whitley__when_you_say_nothing_at_all,When You Say Nothing at All,Keith Whitley,1988,1980,country,country_crossover,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-020,no
+a_ha__take_on_me,Take On Me,a-ha,1985,1980,pop,synth_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-021,no
+spandau_ballet__true,True,Spandau Ballet,1983,1980,pop,synth_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-021,no
+tears_for_fears__everybody_wants_to_rule_the_world,Everybody Wants to Rule the World,Tears for Fears,1985,1980,pop,adult_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-022,no
+cyndi_lauper__time_after_time,Time After Time,Cyndi Lauper,1983,1980,pop,adult_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-022,no
+cyndi_lauper__girls_just_want_to_have_fun,Girls Just Want to Have Fun,Cyndi Lauper,1983,1980,pop,dance_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-023,no
+eurythmics__sweet_dreams_are_made_of_this,Sweet Dreams (Are Made of This),Eurythmics,1983,1980,pop,dance_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-023,no
+the_smiths__how_soon_is_now,How Soon Is Now?,The Smiths,1984,1980,alternative,post_punk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-024,no
+the_cure__just_like_heaven,Just Like Heaven,The Cure,1987,1980,alternative,post_punk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-024,no
+sonic_youth__teen_age_riot,Teen Age Riot,Sonic Youth,1988,1980,alternative,noise_indie,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-025,no
+the_smiths__there_is_a_light_that_never_goes_out,There Is a Light That Never Goes Out,The Smiths,1986,1980,alternative,noise_indie,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-025,no
+joy_division__love_will_tear_us_apart,Love Will Tear Us Apart,Joy Division,1980,1980,alternative,post_punk_synth,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-026,no
+new_order__blue_monday,Blue Monday,New Order,1983,1980,alternative,post_punk_synth,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-026,yes
+marvin_gaye__sexual_healing,Sexual Healing,Marvin Gaye,1982,1980,r_and_b,quiet_storm,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-027,no
+luther_vandross__never_too_much,Never Too Much,Luther Vandross,1981,1980,r_and_b,quiet_storm,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-027,no
+anita_baker__sweet_love,Sweet Love,Anita Baker,1986,1980,r_and_b,contemporary_r_and_b,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-028,no
+janet_jackson__control,Control,Janet Jackson,1986,1980,r_and_b,contemporary_r_and_b,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-028,no
+grandmaster_flash_and_the_furious_five__the_message,The Message,Grandmaster Flash & The Furious Five,1982,1980,hip_hop,old_school,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-029,yes
+rob_base_and_dj_e_z_rock__it_takes_two,It Takes Two,Rob Base & DJ E-Z Rock,1988,1980,hip_hop,old_school,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-029,no
+metallica__master_of_puppets,Master of Puppets,Metallica,1986,1980,metal,thrash_traditional,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-030,no
+dio__holy_diver,Holy Diver,Dio,1983,1980,metal,thrash_traditional,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-030,no
+bronski_beat__smalltown_boy,Smalltown Boy,Bronski Beat,1984,1980,electronic,synth_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-031,no
+pet_shop_boys__west_end_girls,West End Girls,Pet Shop Boys,1984,1980,electronic,synth_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-031,no
+kraftwerk__tour_de_france,Tour de France,Kraftwerk,1983,1980,electronic,electro_house,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-032,no
+a_guy_called_gerald__voodoo_ray,Voodoo Ray,A Guy Called Gerald,1988,1980,electronic,electro_house,proposed,pending_editorial_scoring,not_checked_against_live_db,D1980-032,no
+garth_brooks__friends_in_low_places,Friends in Low Places,Garth Brooks,1990,1990,country,country_anthem,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-033,no
+deana_carter__strawberry_wine,Strawberry Wine,Deana Carter,1996,1990,country,country_anthem,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-033,no
+alan_jackson__chattahoochee,Chattahoochee,Alan Jackson,1992,1990,country,new_traditional,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-034,no
+george_strait__i_can_still_make_cheyenne,I Can Still Make Cheyenne,George Strait,1996,1990,country,new_traditional,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-034,no
+shania_twain__man_i_feel_like_a_woman,Man! I Feel Like a Woman!,Shania Twain,1997,1990,country,country_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-035,no
+leann_rimes__how_do_i_live,How Do I Live,LeAnn Rimes,1997,1990,country,country_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-035,no
+vince_gill__go_rest_high_on_that_mountain,Go Rest High on That Mountain,Vince Gill,1994,1990,country,country_story,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-036,no
+reba_mcentire__fancy,Fancy,Reba McEntire,1990,1990,country,country_story,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-036,no
+christina_aguilera__genie_in_a_bottle,Genie in a Bottle,Christina Aguilera,1999,1990,pop,dance_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-037,no
+cher__believe,Believe,Cher,1998,1990,pop,dance_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-037,no
+natalie_imbruglia__torn,Torn,Natalie Imbruglia,1997,1990,pop,radio_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-038,no
+spice_girls__wannabe,Wannabe,Spice Girls,1996,1990,pop,radio_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-038,no
+radiohead__creep,Creep,Radiohead,1992,1990,alternative,art_rock_britpop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-039,no
+the_verve__bitter_sweet_symphony,Bitter Sweet Symphony,The Verve,1997,1990,alternative,art_rock_britpop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-039,no
+r_e_m__losing_my_religion,Losing My Religion,R.E.M.,1991,1990,alternative,indie_britpop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-040,no
+blur__song_2,Song 2,Blur,1997,1990,alternative,indie_britpop,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-040,no
+radiohead__fake_plastic_trees,Fake Plastic Trees,Radiohead,1995,1990,alternative,indie_dream,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-041,no
+the_smashing_pumpkins__1979,1979,The Smashing Pumpkins,1995,1990,alternative,indie_dream,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-041,no
+boyz_ii_men__end_of_the_road,End of the Road,Boyz II Men,1992,1990,r_and_b,vocal_group_new_jack,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-042,no
+blackstreet__no_diggity,No Diggity,Blackstreet,1996,1990,r_and_b,vocal_group_new_jack,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-042,no
+lauryn_hill__ex_factor,Ex-Factor,Lauryn Hill,1998,1990,r_and_b,neo_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-043,no
+mark_morrison__return_of_the_mack,Return of the Mack,Mark Morrison,1996,1990,r_and_b,neo_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-043,no
+nas__n_y_state_of_mind,N.Y. State of Mind,Nas,1994,1990,hip_hop,east_west,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-044,yes
+2pac_feat_dr_dre__california_love,California Love,2Pac feat. Dr. Dre,1995,1990,hip_hop,east_west,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-044,yes
+the_notorious_b_i_g__juicy,Juicy,The Notorious B.I.G.,1994,1990,hip_hop,story_g_funk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-045,yes
+warren_g_feat_nate_dogg__regulate,Regulate,Warren G feat. Nate Dogg,1994,1990,hip_hop,story_g_funk,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-045,no
+underworld__born_slippy_nuxx,Born Slippy (Nuxx),Underworld,1995,1990,electronic,rave_downtempo,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-046,yes
+moby__porcelain,Porcelain,Moby,1999,1990,electronic,rave_downtempo,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-046,yes
+massive_attack__teardrop,Teardrop,Massive Attack,1998,1990,electronic,trip_hop_big_beat,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-047,yes
+fatboy_slim__praise_you,Praise You,Fatboy Slim,1998,1990,electronic,trip_hop_big_beat,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-047,no
+metallica__enter_sandman,Enter Sandman,Metallica,1991,1990,metal,groove_rap_metal,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-048,no
+rage_against_the_machine__killing_in_the_name,Killing in the Name,Rage Against the Machine,1992,1990,metal,groove_rap_metal,proposed,pending_editorial_scoring,not_checked_against_live_db,D1990-048,no
+carrie_underwood__before_he_cheats,Before He Cheats,Carrie Underwood,2005,2000,country,contemporary_country,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-049,no
+rascal_flatts__bless_the_broken_road,Bless the Broken Road,Rascal Flatts,2004,2000,country,contemporary_country,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-049,no
+alan_jackson__where_were_you_when_the_world_stopped_turning,Where Were You (When the World Stopped Turning),Alan Jackson,2001,2000,country,topical_country,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-050,no
+toby_keith__courtesy_of_the_red_white_and_blue_the_angry_american,"Courtesy of the Red, White and Blue (The Angry American)",Toby Keith,2002,2000,country,topical_country,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-050,no
+tim_mcgraw__live_like_you_were_dying,Live Like You Were Dying,Tim McGraw,2004,2000,country,country_story,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-051,no
+brooks_and_dunn__red_dirt_road,Red Dirt Road,Brooks & Dunn,2003,2000,country,country_story,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-051,no
+zac_brown_band__chicken_fried,Chicken Fried,Zac Brown Band,2008,2000,country,country_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-052,no
+lady_a__need_you_now,Need You Now,Lady A,2009,2000,country,country_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-052,no
+kelly_clarkson__since_u_been_gone,Since U Been Gone,Kelly Clarkson,2004,2000,pop,power_pop_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-053,yes
+christina_aguilera__beautiful,Beautiful,Christina Aguilera,2002,2000,pop,power_pop_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-053,no
+rihanna_feat_jay_z__umbrella,Umbrella,Rihanna feat. Jay-Z,2007,2000,pop,radio_r_and_b_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-054,no
+leona_lewis__bleeding_love,Bleeding Love,Leona Lewis,2007,2000,pop,radio_r_and_b_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-054,no
+modest_mouse__float_on,Float On,Modest Mouse,2004,2000,alternative,indie_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-055,no
+band_of_horses__the_funeral,The Funeral,Band of Horses,2006,2000,alternative,indie_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-055,no
+the_killers__mr_brightside,Mr. Brightside,The Killers,2003,2000,alternative,post_punk_art_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-056,no
+radiohead__reckoner,Reckoner,Radiohead,2007,2000,alternative,post_punk_art_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-056,no
+the_white_stripes__seven_nation_army,Seven Nation Army,The White Stripes,2003,2000,alternative,garage_electro_indie,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-057,no
+the_postal_service__such_great_heights,Such Great Heights,The Postal Service,2003,2000,alternative,garage_electro_indie,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-057,no
+alicia_keys__fallin,Fallin',Alicia Keys,2001,2000,r_and_b,piano_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-058,no
+beyonce_feat_jay_z__crazy_in_love,Crazy in Love,Beyoncé feat. Jay-Z,2003,2000,r_and_b,piano_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-058,no
+usher_feat_lil_jon_and_ludacris__yeah,Yeah!,Usher feat. Lil Jon & Ludacris,2004,2000,r_and_b,club_vs_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-059,no
+john_legend__ordinary_people,Ordinary People,John Legend,2004,2000,r_and_b,club_vs_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-059,no
+kanye_west_feat_jamie_foxx__gold_digger,Gold Digger,Kanye West feat. Jamie Foxx,2005,2000,hip_hop,pop_rap_southern,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-060,no
+outkast__ms_jackson,Ms. Jackson,Outkast,2000,2000,hip_hop,pop_rap_southern,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-060,yes
+50_cent__in_da_club,In da Club,50 Cent,2003,2000,hip_hop,radio_vs_street,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-061,yes
+jay_z__99_problems,99 Problems,Jay-Z,2003,2000,hip_hop,radio_vs_street,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-061,no
+daft_punk__one_more_time,One More Time,Daft Punk,2000,2000,electronic,house_uk_garage,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-062,yes
+burial__archangel,Archangel,Burial,2007,2000,electronic,house_uk_garage,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-062,yes
+daft_punk__harder_better_faster_stronger,"Harder, Better, Faster, Stronger",Daft Punk,2001,2000,electronic,french_house_art_electronic,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-063,no
+imogen_heap__hide_and_seek,Hide and Seek,Imogen Heap,2005,2000,electronic,french_house_art_electronic,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-063,no
+slipknot__psychosocial,Psychosocial,Slipknot,2008,2000,metal,alt_metal_melodic,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-064,no
+metallica__the_unforgiven_iii,The Unforgiven III,Metallica,2008,2000,metal,alt_metal_melodic,proposed,pending_editorial_scoring,not_checked_against_live_db,D2000-064,no
+chris_stapleton__tennessee_whiskey,Tennessee Whiskey,Chris Stapleton,2015,2010,country,soul_country,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-065,no
+sam_hunt__body_like_a_back_road,Body Like a Back Road,Sam Hunt,2017,2010,country,soul_country,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-065,no
+little_big_town__girl_crush,Girl Crush,Little Big Town,2014,2010,country,country_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-066,no
+thomas_rhett__die_a_happy_man,Die a Happy Man,Thomas Rhett,2015,2010,country,country_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-066,no
+kacey_musgraves__follow_your_arrow,Follow Your Arrow,Kacey Musgraves,2013,2010,country,outlaw_vs_mainstream,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-067,no
+tim_mcgraw__humble_and_kind,Humble and Kind,Tim McGraw,2016,2010,country,outlaw_vs_mainstream,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-067,no
+eric_church__drink_in_my_hand,Drink in My Hand,Eric Church,2011,2010,country,arena_vs_intimate,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-068,no
+cam__burning_house,Burning House,Cam,2015,2010,country,arena_vs_intimate,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-068,no
+sia__chandelier,Chandelier,Sia,2014,2010,pop,art_pop_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-069,yes
+adele__when_we_were_young,When We Were Young,Adele,2015,2010,pop,art_pop_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-069,no
+taylor_swift__shake_it_off,Shake It Off,Taylor Swift,2014,2010,pop,mainstream_art_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-070,yes
+lorde__liability,Liability,Lorde,2017,2010,pop,mainstream_art_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-070,no
+arctic_monkeys__do_i_wanna_know,Do I Wanna Know?,Arctic Monkeys,2013,2010,alternative,indie_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-071,no
+grouplove__tongue_tied,Tongue Tied,Grouplove,2011,2010,alternative,indie_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-071,no
+tame_impala__the_less_i_know_the_better,The Less I Know the Better,Tame Impala,2015,2010,alternative,psych_synth_indie,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-072,no
+chvrches__the_mother_we_share,The Mother We Share,CHVRCHES,2013,2010,alternative,psych_synth_indie,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-072,no
+bon_iver__holocene,Holocene,Bon Iver,2011,2010,alternative,indie_folk,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-073,no
+of_monsters_and_men__mountain_sound,Mountain Sound,Of Monsters and Men,2011,2010,alternative,indie_folk,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-073,no
+miguel__adorn,Adorn,Miguel,2012,2010,r_and_b,alternative_r_and_b,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-074,no
+solange__cranes_in_the_sky,Cranes in the Sky,Solange,2016,2010,r_and_b,alternative_r_and_b,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-074,no
+frank_ocean__thinkin_bout_you,Thinkin Bout You,Frank Ocean,2012,2010,r_and_b,alt_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-075,no
+childish_gambino__redbone,Redbone,Childish Gambino,2016,2010,r_and_b,alt_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-075,no
+kendrick_lamar__alright,Alright,Kendrick Lamar,2015,2010,hip_hop,conscious_pop_crossover,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-076,yes
+eminem_feat_rihanna__love_the_way_you_lie,Love the Way You Lie,Eminem feat. Rihanna,2010,2010,hip_hop,conscious_pop_crossover,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-076,no
+drake__god_s_plan,God's Plan,Drake,2018,2010,hip_hop,mainstream_social_critique,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-077,no
+childish_gambino__this_is_america,This Is America,Childish Gambino,2018,2010,hip_hop,mainstream_social_critique,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-077,no
+eric_prydz__opus,Opus,Eric Prydz,2015,2010,electronic,progressive_edm,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-078,no
+martin_garrix__animals,Animals,Martin Garrix,2013,2010,electronic,progressive_edm,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-078,no
+disclosure_feat_sam_smith__latch,Latch,Disclosure feat. Sam Smith,2012,2010,electronic,uk_house_melodic,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-079,no
+rufus_du_sol__innerbloom,Innerbloom,RÜFÜS DU SOL,2015,2010,electronic,uk_house_melodic,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-079,no
+ghost__cirice,Cirice,Ghost,2015,2010,metal,theatrical_metal_metalcore,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-080,no
+architects__doomsday,Doomsday,Architects,2017,2010,metal,theatrical_metal_metalcore,proposed,pending_editorial_scoring,not_checked_against_live_db,D2010-080,no
+zach_bryan__something_in_the_orange,Something in the Orange,Zach Bryan,2022,2020,country,roots_vs_mainstream,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-081,no
+morgan_wallen__last_night,Last Night,Morgan Wallen,2023,2020,country,roots_vs_mainstream,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-081,no
+chris_stapleton__white_horse,White Horse,Chris Stapleton,2023,2020,country,southern_rock_reflective,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-082,no
+kacey_musgraves__the_architect,The Architect,Kacey Musgraves,2024,2020,country,southern_rock_reflective,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-082,no
+shaboozey__a_bar_song_tipsy,A Bar Song (Tipsy),Shaboozey,2024,2020,country,country_crossover,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-083,no
+zach_bryan__pink_skies,Pink Skies,Zach Bryan,2024,2020,country,country_crossover,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-083,no
+dasha__austin_boots_stop_workin,Austin (Boots Stop Workin'),Dasha,2023,2020,country,country_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-084,no
+lainey_wilson__heart_like_a_truck,Heart Like a Truck,Lainey Wilson,2022,2020,country,country_pop,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-084,no
+miley_cyrus__flowers,Flowers,Miley Cyrus,2023,2020,pop,empowerment_confessional,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-085,no
+olivia_rodrigo__vampire,vampire,Olivia Rodrigo,2023,2020,pop,empowerment_confessional,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-085,yes
+sabrina_carpenter__espresso,Espresso,Sabrina Carpenter,2024,2020,pop,dance_bedroom_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-086,yes
+billie_eilish__what_was_i_made_for,What Was I Made For?,Billie Eilish,2023,2020,pop,dance_bedroom_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-086,no
+chappell_roan__good_luck_babe,"Good Luck, Babe!",Chappell Roan,2024,2020,pop,theatrical_introspective,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-087,no
+taylor_swift__anti_hero,Anti-Hero,Taylor Swift,2022,2020,pop,theatrical_introspective,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-087,no
+sam_fender__seventeen_going_under,Seventeen Going Under,Sam Fender,2021,2020,alternative,british_indie_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-088,no
+wolf_alice__the_beach,The Beach,Wolf Alice,2021,2020,alternative,british_indie_rock,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-088,no
+wet_leg__chaise_longue,Chaise Longue,Wet Leg,2021,2020,alternative,post_punk_indie,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-089,no
+the_strokes__the_adults_are_talking,The Adults Are Talking,The Strokes,2020,2020,alternative,post_punk_indie,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-089,no
+boygenius__not_strong_enough,Not Strong Enough,boygenius,2023,2020,alternative,indie_rock_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-090,no
+mitski__my_love_mine_all_mine,My Love Mine All Mine,Mitski,2023,2020,alternative,indie_rock_ballad,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-090,no
+sza__snooze,Snooze,SZA,2022,2020,r_and_b,neo_soul_contemporary,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-091,no
+victoria_monet__on_my_mama,On My Mama,Victoria Monét,2023,2020,r_and_b,neo_soul_contemporary,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-091,no
+silk_sonic__leave_the_door_open,Leave the Door Open,Silk Sonic,2021,2020,r_and_b,retro_soul_alt,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-092,no
+sza__good_days,Good Days,SZA,2020,2020,r_and_b,retro_soul_alt,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-092,no
+muni_long__made_for_me,Made for Me,Muni Long,2023,2020,r_and_b,contemporary_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-093,no
+ari_lennox__pressure,Pressure,Ari Lennox,2021,2020,r_and_b,contemporary_soul,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-093,no
+kendrick_lamar__not_like_us,Not Like Us,Kendrick Lamar,2024,2020,hip_hop,west_coast_vs_trap,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-094,no
+kodak_black__super_gremlin,Super Gremlin,Kodak Black,2021,2020,hip_hop,west_coast_vs_trap,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-094,no
+drake_and_21_savage__rich_flex,Rich Flex,Drake & 21 Savage,2022,2020,hip_hop,trap_rap_jersey_club,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-095,no
+lil_uzi_vert__just_wanna_rock,Just Wanna Rock,Lil Uzi Vert,2022,2020,hip_hop,trap_rap_jersey_club,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-095,no
+megan_thee_stallion__hiss,HISS,Megan Thee Stallion,2024,2020,hip_hop,female_rap,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-096,no
+doja_cat__paint_the_town_red,Paint the Town Red,Doja Cat,2023,2020,hip_hop,female_rap,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-096,no
+fred_again__marea_we_ve_lost_dancing,Marea (We've Lost Dancing),Fred again..,2021,2020,electronic,uk_dance_drum_and_bass,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-097,no
+chase_and_status_feat_bou_flowdan_trigga_and_takura__baddadan,Baddadan,"Chase & Status feat. Bou, Flowdan, Trigga & Takura",2023,2020,electronic,uk_dance_drum_and_bass,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-097,no
+skrillex_fred_again_and_flowdan__rumble,Rumble,"Skrillex, Fred again.. & Flowdan",2023,2020,electronic,bass_vs_french_electronic,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-098,no
+justice_and_tame_impala__neverender,Neverender,Justice & Tame Impala,2024,2020,electronic,bass_vs_french_electronic,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-098,no
+john_summit_and_hayla__where_you_are,Where You Are,John Summit & Hayla,2023,2020,electronic,house_vocal,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-099,no
+fred_again__delilah_pull_me_out_of_this,Delilah (pull me out of this),Fred again..,2022,2020,electronic,house_vocal,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-099,no
+sleep_token__the_summoning,The Summoning,Sleep Token,2023,2020,metal,progressive_deathcore,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-100,no
+lorna_shore__to_the_hellfire,To the Hellfire,Lorna Shore,2021,2020,metal,progressive_deathcore,proposed,pending_editorial_scoring,not_checked_against_live_db,D2020-100,no
