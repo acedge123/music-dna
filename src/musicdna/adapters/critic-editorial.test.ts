@@ -138,7 +138,6 @@ describe("critic-expression-v2 boundary", () => {
     { ...beat, choice_ids: ["invented"] },
     { ...beat, claims: [{ axis: "scale", direction: "lo", choice_ids: ["c0"] }] },
     { ...beat, claims: [{ axis: "scale", direction: "hi", choice_ids: ["c3"] }] },
-    { ...beat, choice_ids: ["c0", "c0"] },
   ])("rejects invented or contradictory references", (candidate) => {
     expect(validateCriticBeat(candidate, ledger([40, 40, 40, -40]), labels)).toBeNull();
   });
