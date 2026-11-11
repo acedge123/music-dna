@@ -84,14 +84,18 @@ export function topTraits(v: Record<string, number>, dims: readonly string[], k 
 }
 
 /** Exploration slot pool: matchups that test none of the known traits (fallback: full pool). */
-export function explorationPool<P extends { tests?: string[] | null }>(pool: P[], known: string[]): P[] {
+export function explorationPool<P extends { tests?: string[] | null }>(
+  pool: P[],
+  known: string[],
+): P[] {
   const set = new Set(known);
   const away = pool.filter((p) => !(p.tests ?? []).some((t) => set.has(t)));
   return away.length > 0 ? away : pool;
 }
 
 // ---------------- Playable pool (shared by coverage and selector) ----------------
-const SONG_COLS = "id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+const SONG_COLS =
+  "id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
 /** One select + one row cap for every reader, so "ready" means the selector can serve it. */
 export const PLAYABLE_PAIRING_SELECT = `id, tests, diagnostic_weight, lane, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${SONG_COLS}), song_b:songs!pairings_song_b_id_fkey(${SONG_COLS})`;
 export const PLAYABLE_PAIRING_LIMIT = 5000;
@@ -143,7 +147,12 @@ export function cellStatus(count: number): "ready" | "thin" | "empty" {
 }
 
 // ---------------- Comparison with the original reading ----------------
-export type AxisLean = { axis: string; direction: "hi" | "lo"; eligible: boolean; magnitude: number };
+export type AxisLean = {
+  axis: string;
+  direction: "hi" | "lo";
+  eligible: boolean;
+  magnitude: number;
+};
 export type DecadeShift = {
   axis: string;
   kind: "held" | "flipped" | "new" | "quiet";
@@ -165,7 +174,8 @@ export function compareToOriginal(original: AxisLean[], decade: AxisLean[], k = 
       kind: !b ? "quiet" : b.direction === a.direction ? "held" : "flipped",
     });
   }
-  for (const [axis, b] of d) if (!o.has(axis)) out.push({ axis, original: null, decade: b.direction, kind: "new" });
+  for (const [axis, b] of d)
+    if (!o.has(axis)) out.push({ axis, original: null, decade: b.direction, kind: "new" });
   const rank = { flipped: 0, new: 1, held: 2, quiet: 3 } as const;
   return out.sort((x, y) => rank[x.kind] - rank[y.kind]).slice(0, k);
 }

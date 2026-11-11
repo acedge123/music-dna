@@ -1,8 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { halftimeSummary } from "./halftime";
 
-const e = (t: string, d: string | null, r = false, direction?: "forming" | "holding" | "contested" | "revising") =>
-  ({ chosenTitle: t, topDim: d, revised: r, direction });
+const e = (
+  t: string,
+  d: string | null,
+  r = false,
+  direction?: "forming" | "holding" | "contested" | "revising",
+) => ({ chosenTitle: t, topDim: d, revised: r, direction });
 
 describe("halftimeSummary", () => {
   it("names the three picks", () => {
@@ -14,10 +18,14 @@ describe("halftimeSummary", () => {
     expect(s).not.toContain("No single thread");
   });
   it("flags a revision as tension", () => {
-    expect(halftimeSummary([e("A", "x"), e("B", "y", true), e("C", "y")])).toContain("change my mind");
+    expect(halftimeSummary([e("A", "x"), e("B", "y", true), e("C", "y")])).toContain(
+      "change my mind",
+    );
   });
   it("contested evidence is a split, not a pattern", () => {
-    expect(halftimeSummary([e("A", "x"), e("B", "y"), e("C", "z", false, "contested")])).toContain("two directions");
+    expect(halftimeSummary([e("A", "x"), e("B", "y"), e("C", "z", false, "contested")])).toContain(
+      "two directions",
+    );
   });
   it("no ledger lead means no pattern claim", () => {
     expect(halftimeSummary([e("A", "x"), e("B", "y"), e("C", null)])).toContain("No single thread");

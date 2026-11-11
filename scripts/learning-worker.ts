@@ -38,10 +38,12 @@ async function main() {
       throw new DispatchError("configuration");
     values[args[i]] = args[++i];
   }
-  if (!(
-    (values["--source"] === "music-dna-staging" && values["--environment"] === "staging") ||
-    (values["--source"] === "music-dna" && values["--environment"] === "production")
-  ))
+  if (
+    !(
+      (values["--source"] === "music-dna-staging" && values["--environment"] === "staging") ||
+      (values["--source"] === "music-dna" && values["--environment"] === "production")
+    )
+  )
     throw new DispatchError("configuration");
   if (maintenance && !execute) throw new DispatchError("configuration");
   const batch = Number(values["--batch"] ?? 5);

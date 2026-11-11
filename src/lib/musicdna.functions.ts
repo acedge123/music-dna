@@ -648,7 +648,13 @@ import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
 import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
-import { preparedOutcome, hypotheticalChoice, readFingerprint, revealFingerprint, synthDraftKey } from "@/musicdna/engine/prepared-read";
+import {
+  preparedOutcome,
+  hypotheticalChoice,
+  readFingerprint,
+  revealFingerprint,
+  synthDraftKey,
+} from "@/musicdna/engine/prepared-read";
 import { POOL_STAGE, poolEligible, poolFingerprint } from "@/musicdna/engine/reaction-pool";
 import {
   authorCritic,
@@ -880,7 +886,11 @@ export async function nextPairingImpl(
 
   // Explore-your-DNA: decade runs use their own pool and never touch the
   // discover-mode router, probes or bootstrap.
-  const exploreSession = session as unknown as { mode?: string; decade?: number | null; parent_session_id?: string | null };
+  const exploreSession = session as unknown as {
+    mode?: string;
+    decade?: number | null;
+    parent_session_id?: string | null;
+  };
   if (exploreSession.mode === "explore") {
     return exploreNextPairing(supabase, {
       sessionId: data.sessionId,
@@ -3433,7 +3443,10 @@ export async function finalSynthesisImpl(
   if (!fresh.synthesis) return fresh;
   // Only an approved Critic reading becomes the frozen v1. Safety text is shown
   // unsaved so a retry can still produce the real reading.
-  if (fresh.narration_status === "invalid_generation" || fresh.narration_status === "narrator_failure")
+  if (
+    fresh.narration_status === "invalid_generation" ||
+    fresh.narration_status === "narrator_failure"
+  )
     return { ...fresh, result_version: null };
   const { error } = await supabase.from("session_results").insert({
     session_id: data.sessionId,
@@ -3468,8 +3481,16 @@ async function adoptSynthesisAsInterpretation(
   synthesis: string,
 ) {
   await Promise.all([
-    supabase.from("sessions").update({ interpretation: synthesis }).eq("id", sessionId).is("interpretation", null),
-    supabase.from("session_reasoning").update({ narrative: synthesis }).eq("session_id", sessionId).is("narrative", null),
+    supabase
+      .from("sessions")
+      .update({ interpretation: synthesis })
+      .eq("id", sessionId)
+      .is("interpretation", null),
+    supabase
+      .from("session_reasoning")
+      .update({ narrative: synthesis })
+      .eq("session_id", sessionId)
+      .is("narrative", null),
   ]);
 }
 
@@ -4422,7 +4443,6 @@ export const listChat = createServerFn({ method: "GET" })
 // ============================================================
 export type { CurrentReadResult } from "@/musicdna/engine/read";
 
-
 type PriorRead = { axis: string; direction: "hi" | "lo"; tier: string; thesis?: string } | null;
 type ComposedRead = {
   result: CurrentReadResult;
@@ -4455,7 +4475,10 @@ async function composeRead(
   if (result.revision) result.revision.new_interpretation = authored.text;
   return {
     result,
-    authored: { voice_version: authored.voice_version, validation_reason: authored.validation_reason },
+    authored: {
+      voice_version: authored.voice_version,
+      validation_reason: authored.validation_reason,
+    },
   };
 }
 
@@ -4522,7 +4545,12 @@ async function awaitPreparedRead(
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const requestedAt = new Date();
   const deadline = Date.now() + waitMs;
-  const match = { session_id: sessionId, answered, pairing_id: choice.pairing_id, chosen_song_id: choice.chosen_song_id };
+  const match = {
+    session_id: sessionId,
+    answered,
+    pairing_id: choice.pairing_id,
+    chosen_song_id: choice.chosen_song_id,
+  };
   for (;;) {
     const { data } = await supabaseAdmin
       .from("prepared_reads" as never)
@@ -4537,7 +4565,8 @@ async function awaitPreparedRead(
     } | null;
     // A draft past its own deadline is abandoned; write the reaction live instead.
     const timedOut =
-      Date.now() > deadline || (!!row && Date.now() - Date.parse(row.started_at) > draftDeadlineMs + 2_000);
+      Date.now() > deadline ||
+      (!!row && Date.now() - Date.parse(row.started_at) > draftDeadlineMs + 2_000);
     const outcome = preparedOutcome(row, fingerprint, timedOut);
     if (outcome) {
       // Admin-only timing trace; never blocks or changes what the listener sees.
@@ -4551,7 +4580,10 @@ async function awaitPreparedRead(
             wait_ms: Date.now() - requestedAt.getTime(),
           } as never)
           .match(match)
-          .then(() => undefined, () => undefined);
+          .then(
+            () => undefined,
+            () => undefined,
+          );
       return outcome === "used" ? row!.payload : null;
     }
     await new Promise((r) => setTimeout(r, 400));
@@ -4575,7 +4607,8 @@ export async function prepareReadsImpl(
     .maybeSingle();
   if (!session || session.user_id !== userId || session.completed_at) return { prepared: 0 };
   // Explore (decade) runs never pre-draft reads or touch the reaction pool; clients may call this harmlessly.
-  if ((session as { mode?: string }).mode === "explore") return { prepared: 0, skipped: "explore_mode" as const };
+  if ((session as { mode?: string }).mode === "explore")
+    return { prepared: 0, skipped: "explore_mode" as const };
   const songCols =
     "id,title,artist,year,lane,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
   const [{ data: pairingRow }, { choices }, { data: shown }] = await Promise.all([
@@ -4637,36 +4670,67 @@ export async function prepareReadsImpl(
   const revealDrafts = finalPick
     ? branches.flatMap(([chosen, rejected]) =>
         ([[synthDraftKey, SYNTH_VOICE]] as const).map(async ([slot, voice]) => {
-        const ledger = buildLedger([...choices, hypotheticalChoice(pairing, chosen, rejected)], DIMS);
-        const key = {
-          session_id: data.sessionId,
-          user_id: userId,
-          answered: slot(ledger.answered),
-          pairing_id: pairing.id,
-          chosen_song_id: chosen.id,
-        };
-        const claim = await supabaseAdmin.from("prepared_reads" as never).insert({ ...key, status: "pending" } as never);
-        if (claim.error) return 0;
-        const match = { session_id: key.session_id, answered: key.answered, pairing_id: key.pairing_id, chosen_song_id: key.chosen_song_id };
-        try {
-          const narrated = await Promise.race([
-            observedCritic(supabase, userId, data.sessionId, ledger, DIM_LABEL, [{ role: "system", content: voice }], { stage: "reveal" }),
-            new Promise<never>((_, reject) => setTimeout(() => reject(new Error("prepare_deadline")), REVEAL_DEADLINE_MS)),
-          ]);
-          // A safety-backup draft is never reused as if it were approved writing.
-          if ((narrated as { status?: string }).status !== "ok") throw new Error("prepared_fallback");
-          await supabaseAdmin
+          const ledger = buildLedger(
+            [...choices, hypotheticalChoice(pairing, chosen, rejected)],
+            DIMS,
+          );
+          const key = {
+            session_id: data.sessionId,
+            user_id: userId,
+            answered: slot(ledger.answered),
+            pairing_id: pairing.id,
+            chosen_song_id: chosen.id,
+          };
+          const claim = await supabaseAdmin
             .from("prepared_reads" as never)
-            .update({ status: "ready", fingerprint: revealFingerprint(ledger), payload: narrated, finished_at: new Date().toISOString() } as never)
-            .match(match);
-          return 0;
-        } catch {
-          await supabaseAdmin.from("prepared_reads" as never).update({ status: "failed", finished_at: new Date().toISOString() } as never).match(match);
-          return 0;
-        }
-      }))
+            .insert({ ...key, status: "pending" } as never);
+          if (claim.error) return 0;
+          const match = {
+            session_id: key.session_id,
+            answered: key.answered,
+            pairing_id: key.pairing_id,
+            chosen_song_id: key.chosen_song_id,
+          };
+          try {
+            const narrated = await Promise.race([
+              observedCritic(
+                supabase,
+                userId,
+                data.sessionId,
+                ledger,
+                DIM_LABEL,
+                [{ role: "system", content: voice }],
+                { stage: "reveal" },
+              ),
+              new Promise<never>((_, reject) =>
+                setTimeout(() => reject(new Error("prepare_deadline")), REVEAL_DEADLINE_MS),
+              ),
+            ]);
+            // A safety-backup draft is never reused as if it were approved writing.
+            if ((narrated as { status?: string }).status !== "ok")
+              throw new Error("prepared_fallback");
+            await supabaseAdmin
+              .from("prepared_reads" as never)
+              .update({
+                status: "ready",
+                fingerprint: revealFingerprint(ledger),
+                payload: narrated,
+                finished_at: new Date().toISOString(),
+              } as never)
+              .match(match);
+            return 0;
+          } catch {
+            await supabaseAdmin
+              .from("prepared_reads" as never)
+              .update({ status: "failed", finished_at: new Date().toISOString() } as never)
+              .match(match);
+            return 0;
+          }
+        }),
+      )
     : [];
-  const done = await Promise.all([...revealDrafts,
+  const done = await Promise.all([
+    ...revealDrafts,
     ...branches.map(async ([chosen, rejected]) => {
       const ledger = buildLedger([...choices, hypotheticalChoice(pairing, chosen, rejected)], DIMS);
       const key = {
@@ -4714,13 +4778,23 @@ export async function prepareReadsImpl(
             },
             finished_at: new Date().toISOString(),
           } as never)
-          .match({ session_id: key.session_id, answered: key.answered, pairing_id: key.pairing_id, chosen_song_id: key.chosen_song_id });
+          .match({
+            session_id: key.session_id,
+            answered: key.answered,
+            pairing_id: key.pairing_id,
+            chosen_song_id: key.chosen_song_id,
+          });
         return 1;
       } catch {
         await supabaseAdmin
           .from("prepared_reads" as never)
           .update({ status: "failed", finished_at: new Date().toISOString() } as never)
-          .match({ session_id: key.session_id, answered: key.answered, pairing_id: key.pairing_id, chosen_song_id: key.chosen_song_id });
+          .match({
+            session_id: key.session_id,
+            answered: key.answered,
+            pairing_id: key.pairing_id,
+            chosen_song_id: key.chosen_song_id,
+          });
         return 0;
       }
     }),
@@ -4964,7 +5038,10 @@ async function exploreNextPairing(
   const parentRes = ctx.parentSessionId
     ? await supabase.from("sessions").select("vector").eq("id", ctx.parentSessionId).maybeSingle()
     : { data: null };
-  const parentVector = ((parentRes.data as { vector?: unknown } | null)?.vector ?? {}) as Record<string, number>;
+  const parentVector = ((parentRes.data as { vector?: unknown } | null)?.vector ?? {}) as Record<
+    string,
+    number
+  >;
   const res = await supabase
     .from("pairings")
     .select(PLAYABLE_PAIRING_SELECT)
@@ -4991,7 +5068,9 @@ async function exploreNextPairing(
       knobs: { fork_filter: "soft" } as never,
     });
   // Surprise slot narrows first, but if its subset is spent (used/skipped/same-artist), fall back to the full playable pool.
-  let picked = exploring ? pick(explorationPool(pool as never, topTraits(parentVector, dims)) as never) : pick(pool);
+  let picked = exploring
+    ? pick(explorationPool(pool as never, topTraits(parentVector, dims)) as never)
+    : pick(pool);
   if (picked.kind === "empty" && exploring) picked = pick(pool);
   if (picked.kind === "empty") return done("catalog_exhausted");
   const chosen = picked.pairing as PairingCandidate & { id: string; tests?: string[] | null };
@@ -5014,6 +5093,9 @@ async function exploreNextPairing(
     stop_reason: null,
     confidence: ctx.stop.confidence,
     done: false as const,
-    selection_reason: { ...(picked.selection_reason as object), explore: { decade, exploring } } as never,
+    selection_reason: {
+      ...(picked.selection_reason as object),
+      explore: { decade, exploring },
+    } as never,
   };
 }

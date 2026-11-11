@@ -8,19 +8,27 @@ const STATUSES = ["draft", "needs_human", "approved", "rejected"] as const;
 export const listSongFacts = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ status: z.enum(STATUSES).or(z.literal("all")), page: z.number().int().min(0) }).parse(d),
+    z
+      .object({ status: z.enum(STATUSES).or(z.literal("all")), page: z.number().int().min(0) })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     let q = context.supabase
       .from("song_facts")
-      .select("id,song_id,kind,text,source_url,source_title,confidence,status,check_note,reviewed_at,songs(title,artist)", { count: "exact" })
+      .select(
+        "id,song_id,kind,text,source_url,source_title,confidence,status,check_note,reviewed_at,songs(title,artist)",
+        { count: "exact" },
+      )
       .order("song_id")
       .order("kind")
       .range(data.page * 100, data.page * 100 + 99);
     if (data.status !== "all") q = q.eq("status", data.status);
     const { data: rows, error, count } = await q;
     if (error) throw new Error(error.message);
-    const { data: all } = await context.supabase.from("song_facts").select("status,song_id").limit(20000);
+    const { data: all } = await context.supabase
+      .from("song_facts")
+      .select("status,song_id")
+      .limit(20000);
     const totals: Record<string, number> = {};
     for (const r of all ?? []) totals[r.status] = (totals[r.status] ?? 0) + 1;
     return {

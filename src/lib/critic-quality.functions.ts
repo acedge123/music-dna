@@ -236,20 +236,32 @@ export const draftTimeline = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
   .handler(async ({ data, context }) => {
-    const role = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+    const role = await context.supabase.rpc("has_role", {
+      _user_id: context.userId,
+      _role: "admin",
+    });
     if (role.error || !role.data) throw new Error("Forbidden");
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("prepared_reads" as never)
-      .select("answered,pairing_id,chosen_song_id,status,started_at,finished_at,requested_at,consumed_at,outcome,wait_ms")
+      .select(
+        "answered,pairing_id,chosen_song_id,status,started_at,finished_at,requested_at,consumed_at,outcome,wait_ms",
+      )
       .eq("session_id", data.sessionId)
       .order("started_at");
     if (error) throw new Error("Draft timeline unavailable");
     return {
       rows: (rows ?? []) as unknown as Array<{
-        answered: number; pairing_id: string; chosen_song_id: string; status: string;
-        started_at: string; finished_at: string | null; requested_at: string | null;
-        consumed_at: string | null; outcome: string | null; wait_ms: number | null;
+        answered: number;
+        pairing_id: string;
+        chosen_song_id: string;
+        status: string;
+        started_at: string;
+        finished_at: string | null;
+        requested_at: string | null;
+        consumed_at: string | null;
+        outcome: string | null;
+        wait_ms: number | null;
       }>,
     };
   });

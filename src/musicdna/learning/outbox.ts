@@ -21,7 +21,11 @@ export type MaterializationReceipt = {
   observation_id: string;
   state: CaptureRecord["state"];
   reason?:
-    "missing_provenance" | "invalid_provenance" | "empty_feedback" | "scope_closed" | "withdrawn";
+    | "missing_provenance"
+    | "invalid_provenance"
+    | "empty_feedback"
+    | "scope_closed"
+    | "withdrawn";
   duplicate?: boolean;
 };
 export interface LearningOutboxRepository {

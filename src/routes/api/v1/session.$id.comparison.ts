@@ -19,7 +19,11 @@ export const Route = createFileRoute("/api/v1/session/$id/comparison")({
           const { supabase, userId } = await verifyBearer(request);
           const c = await exploreComparisonImpl(supabase, userId, { sessionId: sid.data });
           if (!c) return errorResponse("NOT_FOUND", "Not a decade run", 404);
-          return jsonResponse({ decade: c.decade, root_session_id: c.rootSessionId, shifts: c.shifts });
+          return jsonResponse({
+            decade: c.decade,
+            root_session_id: c.rootSessionId,
+            shifts: c.shifts,
+          });
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);

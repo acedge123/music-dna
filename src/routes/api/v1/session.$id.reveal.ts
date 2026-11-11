@@ -37,7 +37,10 @@ export const Route = createFileRoute("/api/v1/session/$id/reveal")({
           // One authoritative reading: v0 clients receive the saved synthesis as interpretation.
           const synth = await finalSynthesisImpl(supabase, userId, { sessionId: sid.data });
           if (experienceVersion(request) !== 1)
-            return jsonResponse({ ...result, interpretation: synth.synthesis || result.interpretation });
+            return jsonResponse({
+              ...result,
+              interpretation: synth.synthesis || result.interpretation,
+            });
           const allowed = (result as { allowed_claims?: unknown[] }).allowed_claims ?? [];
           return jsonResponse({
             contract: 1,
