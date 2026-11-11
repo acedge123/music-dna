@@ -2,6 +2,31 @@
 
 Shared by web and Flutter. The server decides everything a screen shows; clients render it natively.
 
+## November 10 mobile parity additions (AB-56)
+
+- `GET /api/v1/session/:id` adds optional `milestone`: null, or
+  `{answered, title, summary, continue_label, can_finish}`. Only three/four saved
+  answers qualify; skips/reactions do not count. Completed sessions return null.
+  Summary uses the existing web halftime formatter and frozen history, including
+  the saved `top_dim`; unavailable historical titles produce a neutral message.
+  This is presentation guidance, not permission to bypass server finalization.
+- `POST /api/v1/session/:id/reveal` already accepts `{finish_early:true}` after
+  four answered choices. A retry must preserve that intent and replay the saved
+  result. Its optional `reveal` object contains `answered`, `twist`, `challenge`.
+- `POST /api/v1/session/:id/prepare` takes exactly
+  `{pairing_id, exposure_id}`. Normal bearer auth, session ownership and a matching
+  server-offered exposure are required before calling the same `prepareReadsImpl`
+  used by web. It acknowledges that the pairing was rendered and returns only
+  `{contract:1, prepared:<count>}`. Existing unique draft claims prevent duplicate
+  generation; failures are optional speed failures, never a failed song choice.
+  Call once after display, not while a milestone hides the pairing. Old servers
+  may return 404; the ordinary on-choice writing path remains available.
+
+No new schema, provider key, model override, learning gate or pilot enrollment is
+needed. Existing saved prose stays immutable. The generated routing source stamp
+was refreshed to reflect already-merged engine/function changes; original AB-52
+invitation/source pins remain untouched and must not be rebucketed.
+
 ## Opting in
 
 Send `X-MusicDNA-Experience: 1` on every `/api/v1/*` request. Without the header, each route returns its original v0 shape, so the shipped Flutter build keeps working. All v1 bodies carry `"contract": 1`.
