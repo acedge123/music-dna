@@ -190,6 +190,8 @@ describe("requirement and gap traceability", () => {
       requirements: z.array(
         z.object({
           id: z.string(),
+          priority: z.string(),
+          criteria: z.string(),
           tickets: z.array(z.string()).nonempty(),
           fixtures: z.array(z.string()),
           acceptance: z.object({ status: z.literal("pending"), procedure: z.string() }),
@@ -211,7 +213,12 @@ describe("requirement and gap traceability", () => {
     const ids = [...prd.matchAll(/\*\*([A-Z]+\d{2}) P\d /g)].map((m) => m[1]);
     expect(trace.requirements.map((r) => r.id).sort()).toEqual(ids.sort());
     expect(new Set(ids).size).toBe(ids.length);
+    const entries = new Map(
+      [...prd.matchAll(/\*\*([A-Z]+\d{2}) (P\d) [^*]+\*\* ([^\n]+)/g)]
+        .map((m) => [m[1], { priority: m[2], criteria: m[3] }]),
+    );
     for (const r of trace.requirements) {
+      expect(entries.get(r.id), r.id).toEqual({ priority: r.priority, criteria: r.criteria });
       expect(r.acceptance.procedure).toContain(r.id);
       expect(r.fixtures.every((id) => suite.cases.some((c) => c.id === id))).toBe(true);
     }
