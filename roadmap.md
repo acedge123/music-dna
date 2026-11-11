@@ -199,4 +199,4 @@
 - [x] Explore your DNA: decade runs after a reading, admin decade × trait coverage
 - [ ] Explore: Critic-written decade read, guest-to-account carryover (Flutter endpoints done)
 - [x] Evaluate CGPT decade pack — report done
-- [ ] Decade pack: score 84 new songs + stage pairings (awaiting Alan go-ahead)
+- [x] Decade pack loaded: 84 songs scored, 76 live, 75 matchups live
