@@ -42,8 +42,8 @@ function PrivacyPage() {
         <p className="eyebrow mb-4">App-maintained policy</p>
         <h1 className="display text-4xl md:text-5xl mb-8">Privacy Policy</h1>
         <p className="text-sm text-muted-foreground mb-12">
-          Last updated: July 1, 2026. This page is maintained by MusicDNA to answer common questions
-          about what data we collect and how we handle it.
+          Last updated: November 11, 2026. This page is maintained by MusicDNA to answer common
+          questions about what data we collect and how we handle it.
         </p>
 
         <div className="space-y-12">
@@ -64,14 +64,34 @@ function PrivacyPage() {
               sell your data. We do not use it to target ads. We may use aggregated, anonymized
               patterns to improve the quality of pairings and interpretations.
             </p>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              If you separately authorize a testing or learning program, limited feedback and choice
+              evidence can also be processed by our quality-review tools and AI providers to
+              evaluate the service. Creating an account or publishing a share link does not by
+              itself enroll you in that program.
+            </p>
           </section>
 
           <section>
             <h2 className="display text-2xl mb-3">What we share</h2>
             <p className="text-sm leading-relaxed text-muted-foreground">
-              When you generate a share link, we create a public, anonymized snapshot of your
-              session that anyone with the link can view. You control when that link is created and
-              who sees it. We do not otherwise share your individual data with third parties.
+              We use service providers to operate MusicDNA, including Supabase for authentication
+              and data storage, Vercel for production hosting, and OpenAI for AI-generated Critic
+              responses. Preview environments may instead use Lovable&apos;s AI gateway and its
+              configured model providers.
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              To generate and check a response, our AI providers can receive the relevant song
+              names, choice evidence, reactions, reading context, and chat messages. This processing
+              is part of providing the Critic, even when you have not published a share link. Your
+              messages and the context sent for a response may contain personal information.
+            </p>
+            <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
+              When you choose to publish a share link, we create a public snapshot of the selected
+              reading that anyone with the link can view. Your account email is not displayed on
+              that page, but the reading&apos;s text may contain details you chose to discuss. You
+              control publication and can revoke the link. Publishing a reading and service-provider
+              processing are separate actions.
             </p>
           </section>
 
