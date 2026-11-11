@@ -4570,10 +4570,12 @@ export async function prepareReadsImpl(
 ) {
   const { data: session } = await supabase
     .from("sessions")
-    .select("user_id,completed_at")
+    .select("user_id,completed_at,mode")
     .eq("id", data.sessionId)
     .maybeSingle();
   if (!session || session.user_id !== userId || session.completed_at) return { prepared: 0 };
+  // Explore (decade) runs never pre-draft reads or touch the reaction pool; clients may call this harmlessly.
+  if ((session as { mode?: string }).mode === "explore") return { prepared: 0, skipped: "explore_mode" as const };
   const songCols =
     "id,title,artist,year,lane,primary_lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
   const [{ data: pairingRow }, { choices }, { data: shown }] = await Promise.all([
@@ -4926,8 +4928,11 @@ import {
   explorationPool,
   isDecade,
   isExplorationSlot,
-  pairingInDecade,
+  PLAYABLE_PAIRING_LIMIT,
+  PLAYABLE_PAIRING_SELECT,
+  playableDecadePool,
   topTraits,
+  type DecadePairing,
 } from "@/musicdna/engine/decades";
 
 async function exploreNextPairing(
@@ -4960,30 +4965,34 @@ async function exploreNextPairing(
     ? await supabase.from("sessions").select("vector").eq("id", ctx.parentSessionId).maybeSingle()
     : { data: null };
   const parentVector = ((parentRes.data as { vector?: unknown } | null)?.vector ?? {}) as Record<string, number>;
-  const select = `
-      id, tests, diagnostic_weight, lane, is_bootstrap,
-      song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation),
-      song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation)
-    `;
-  const res = await supabase.from("pairings").select(select).eq("active", true).eq("is_bootstrap", false);
+  const res = await supabase
+    .from("pairings")
+    .select(PLAYABLE_PAIRING_SELECT)
+    .eq("active", true)
+    .eq("is_bootstrap", false)
+    .range(0, PLAYABLE_PAIRING_LIMIT - 1);
   if (res.error) throw new Error(res.error.message);
-  let pool = ((res.data ?? []) as unknown as Array<PairingCandidate & { lane?: string | null }>).filter(
-    (p) => pairingInDecade(p as never, decade) && hasDiagnosticIntegrity(p as never),
-  );
+  const pool = playableDecadePool(
+    (res.data ?? []) as unknown as Array<PairingCandidate & DecadePairing>,
+    decade,
+  ) as unknown as PairingCandidate[];
   const prior = blendPrior(parentVector, ctx.vector, dims);
   const exploring = isExplorationSlot(ctx.answered);
-  if (exploring) pool = explorationPool(pool, topTraits(parentVector, dims));
   const rng = mulberry32(seedFrom(ctx.sessionId, ctx.round));
-  const picked = selectPairing({
-    pool,
-    vector: prior,
-    used_ids: ctx.usedIds,
-    session_lane: "general",
-    dims,
-    rng,
-    mode: "recognition_boost",
-    knobs: { fork_filter: "soft" } as never,
-  });
+  const pick = (candidates: PairingCandidate[]) =>
+    selectPairing({
+      pool: candidates,
+      vector: prior,
+      used_ids: ctx.usedIds,
+      session_lane: "general",
+      dims,
+      rng,
+      mode: "recognition_boost",
+      knobs: { fork_filter: "soft" } as never,
+    });
+  // Surprise slot narrows first, but if its subset is spent (used/skipped/same-artist), fall back to the full playable pool.
+  let picked = exploring ? pick(explorationPool(pool as never, topTraits(parentVector, dims)) as never) : pick(pool);
+  if (picked.kind === "empty" && exploring) picked = pick(pool);
   if (picked.kind === "empty") return done("catalog_exhausted");
   const chosen = picked.pairing as PairingCandidate & { id: string; tests?: string[] | null };
   const exposureId = await recordServedOffer(

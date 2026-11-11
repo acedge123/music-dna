@@ -8,7 +8,7 @@ import { HttpError, verifyBearer } from "./_auth";
 import { ExploreError, exploreOptionsImpl, startExploreImpl } from "@/lib/explore.functions";
 
 const UUID = z.string().uuid();
-const Body = z.object({ decade: z.number().int() });
+const Body = z.object({ decade: z.number().int(), operation_id: z.string().min(8).max(80).nullable().optional() });
 
 export const Route = createFileRoute("/api/v1/session/$id/explore")({
   server: {
@@ -46,8 +46,8 @@ export const Route = createFileRoute("/api/v1/session/$id/explore")({
           const body = Body.safeParse(raw);
           if (!body.success) return errorResponse("INVALID_INPUT", body.error.message, 400);
           const { supabase, userId } = await verifyBearer(request);
-          const r = await startExploreImpl(supabase, userId, { sessionId: sid.data, decade: body.data.decade });
-          return jsonResponse({ session_id: r.sessionId, mode: "explore", decade: body.data.decade });
+          const r = await startExploreImpl(supabase, userId, { sessionId: sid.data, decade: body.data.decade, startKey: body.data.operation_id ?? null });
+          return jsonResponse({ session_id: r.sessionId, mode: "explore", decade: body.data.decade, replayed: r.replayed });
         } catch (e) {
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);

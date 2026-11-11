@@ -1,3 +1,4 @@
+import { hasDiagnosticIntegrity } from "./pairing-eligibility";
 // Explore-your-DNA decade rules. Pure, shared by server and tests.
 // The decade is the setting; the dimensions are the experiment.
 
@@ -89,6 +90,18 @@ export function explorationPool<P extends { tests?: string[] | null }>(pool: P[]
   return away.length > 0 ? away : pool;
 }
 
+// ---------------- Playable pool (shared by coverage and selector) ----------------
+const SONG_COLS = "id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation";
+/** One select + one row cap for every reader, so "ready" means the selector can serve it. */
+export const PLAYABLE_PAIRING_SELECT = `id, tests, diagnostic_weight, lane, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(${SONG_COLS}), song_b:songs!pairings_song_b_id_fkey(${SONG_COLS})`;
+export const PLAYABLE_PAIRING_LIMIT = 5000;
+/** Active-row filtering happens in the query; this applies every remaining selector eligibility rule. */
+export function playableDecadePool<P extends DecadePairing>(rows: P[], decade: Decade): P[] {
+  return rows.filter(
+    (p) => !p.is_bootstrap && pairingInDecade(p, decade) && hasDiagnosticIntegrity(p as never),
+  );
+}
+
 // ---------------- Coverage (decade × dimension) ----------------
 export const READY_MIN_PAIRINGS = 10;
 export const READY_MIN_TRAITS = 6;
@@ -110,7 +123,7 @@ export function decadeCoverage(
   const minP = opts.minPairings ?? READY_MIN_PAIRINGS;
   const minT = opts.minTraits ?? READY_MIN_TRAITS;
   return DECADES.map((decade) => {
-    const inDec = pool.filter((p) => !p.is_bootstrap && pairingInDecade(p, decade));
+    const inDec = playableDecadePool(pool, decade);
     const by_trait: Record<string, number> = {};
     for (const d of dims) by_trait[d] = 0;
     for (const p of inDec) for (const t of p.tests ?? []) if (t in by_trait) by_trait[t] += 1;
@@ -139,7 +152,7 @@ export type DecadeShift = {
 };
 
 /** Deterministic comparison: only eligible (ledger-supported) leans count as claims. */
-export function compareToOriginal(original: AxisLean[], decade: AxisLean[], k = 3): DecadeShift[] {
+export function compareToOriginal(original: AxisLean[], decade: AxisLean[], k = 4): DecadeShift[] {
   const o = new Map(original.filter((a) => a.eligible).map((a) => [a.axis, a]));
   const d = new Map(decade.filter((a) => a.eligible).map((a) => [a.axis, a]));
   const out: DecadeShift[] = [];
@@ -154,5 +167,5 @@ export function compareToOriginal(original: AxisLean[], decade: AxisLean[], k = 
   }
   for (const [axis, b] of d) if (!o.has(axis)) out.push({ axis, original: null, decade: b.direction, kind: "new" });
   const rank = { flipped: 0, new: 1, held: 2, quiet: 3 } as const;
-  return out.sort((x, y) => rank[x.kind] - rank[y.kind]).slice(0, Math.max(k, out.length));
+  return out.sort((x, y) => rank[x.kind] - rank[y.kind]).slice(0, k);
 }
