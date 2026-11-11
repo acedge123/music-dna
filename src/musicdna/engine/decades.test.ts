@@ -98,6 +98,6 @@ describe("decade review fixes", () => {
     const good = { id: "g", lane: "pop", tests: ["texture"], is_bootstrap: false, song_a: song(1985, 10), song_b: song(1986, 90) };
     const flat = { ...good, id: "f", song_b: song(1986, 15) };
     const boot = { ...good, id: "b", is_bootstrap: true };
-    expect(playableDecadePool([good, flat, boot] as never, 1980).map((p: { id: string }) => p.id)).toEqual(["g"]);
+    expect((playableDecadePool([good, flat, boot] as never, 1980) as unknown as { id: string }[]).map((p) => p.id)).toEqual(["g"]);
   });
 });
