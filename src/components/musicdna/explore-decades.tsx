@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { useNavigate } from "@tanstack/react-router";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { getExploreComparison, getExploreOptions, startExplore } from "@/lib/explore.functions";
 import { DECADE_LABEL, type Decade } from "@/musicdna/engine/decades";
 import { AXES_LABEL } from "@/musicdna/engine/decade-labels";
@@ -16,15 +16,31 @@ export function ExploreDecades({ sessionId }: { sessionId: string }) {
     queryKey: ["explore-options", sessionId],
     queryFn: () => optionsFn({ data: { sessionId } }),
   });
-  if (!q.data) return null;
+  // One key per deliberate tap; reused if the same tap is retried after an error.
+  const pendingKey = useRef<{ decade: number; key: string } | null>(null);
+  if (q.isPending) {
+    return <p className="border-t hairline pt-8 text-sm text-muted-foreground">Loading decade runs…</p>;
+  }
+  if (q.isError || !q.data) {
+    return (
+      <section className="space-y-2 border-t hairline pt-8">
+        <p role="alert" className="text-sm text-destructive">Couldn't load your decade runs.</p>
+        <button type="button" onClick={() => void q.refetch()} className="min-h-11 text-sm underline underline-offset-4">
+          Try again
+        </button>
+      </section>
+    );
+  }
   const ready = q.data.decades.filter((d) => d.ready);
-  if (ready.length === 0) return null;
   const runs = q.data.runs;
+  if (ready.length === 0 && runs.length === 0) return null;
   const go = async (decade: number) => {
     setBusy(decade);
     setError(null);
+    if (pendingKey.current?.decade !== decade) pendingKey.current = { decade, key: crypto.randomUUID() };
     try {
-      const r = await startFn({ data: { sessionId, decade } });
+      const r = await startFn({ data: { sessionId, decade, startKey: pendingKey.current.key } });
+      pendingKey.current = null;
       void navigate({ to: "/onboarding", search: { session: r.sessionId } });
     } catch (e) {
       setError(e instanceof Error ? e.message : "Couldn't open that decade.");
@@ -41,6 +57,9 @@ export function ExploreDecades({ sessionId }: { sessionId: string }) {
         Pick an era. Six new matchups from that decade, and the critic shows what your taste looks like there. Your
         original reading doesn't change.
       </p>
+      {ready.length === 0 && (
+        <p className="text-sm text-muted-foreground">No decade has enough matchups right now. Your saved runs are below.</p>
+      )}
       <div className="flex flex-wrap gap-2">
         {ready.map((d) => (
           <button
@@ -80,7 +99,7 @@ export function ExploreDecades({ sessionId }: { sessionId: string }) {
 
 const KIND_LINE = {
   held: (a: string, era: string) => `${a} held up in the ${era}.`,
-  flipped: (a: string, era: string) => `In the ${era}, your ${a} lean flipped.`,
+  flipped: (a: string, era: string, from?: string) => `Flipped in the ${era}: ${from} → ${a}.`,
   new: (a: string, era: string) => `The ${era} surfaced a new lean: ${a}.`,
   quiet: (a: string, era: string) => `${a} went quiet in the ${era} — not enough evidence either way.`,
 } as const;
@@ -88,7 +107,8 @@ const KIND_LINE = {
 export function DecadeComparison({ sessionId }: { sessionId: string }) {
   const fn = useServerFn(getExploreComparison);
   const q = useQuery({ queryKey: ["explore-compare", sessionId], queryFn: () => fn({ data: { sessionId } }) });
-  if (!q.data) return null;
+  if (q.isPending) return <p className="text-sm text-muted-foreground">Comparing with your original reading…</p>;
+  if (q.isError || !q.data) return <p role="alert" className="text-sm text-destructive">Couldn't load the comparison.</p>;
   const era = DECADE_LABEL[q.data.decade as Decade];
   return (
     <section className="space-y-3 border-t hairline pt-6" aria-label="Compared with your original reading">
@@ -102,7 +122,8 @@ export function DecadeComparison({ sessionId }: { sessionId: string }) {
           {q.data.shifts.map((s) => {
             const dir = s.decade ?? s.original;
             const label = AXES_LABEL(s.axis, dir);
-            return <li key={s.axis}>{KIND_LINE[s.kind](label, era)}</li>;
+            const from = s.original ? AXES_LABEL(s.axis, s.original) : undefined;
+            return <li key={s.axis}>{KIND_LINE[s.kind](label, era, from)}</li>;
           })}
         </ul>
       )}

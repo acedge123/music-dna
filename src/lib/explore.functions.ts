@@ -7,6 +7,8 @@ import {
   compareToOriginal,
   decadeCoverage,
   isDecade,
+  PLAYABLE_PAIRING_LIMIT,
+  PLAYABLE_PAIRING_SELECT,
   type DecadeCoverage,
   type DecadeShift,
 } from "@/musicdna/engine/decades";
@@ -17,9 +19,10 @@ type Authed = Parameters<typeof loadChoiceEvidence>[0];
 async function loadCoverage(client: Authed): Promise<DecadeCoverage[]> {
   const { data, error } = await client
     .from("pairings")
-    .select("id, lane, tests, is_bootstrap, song_a:songs!pairings_song_a_id_fkey(year), song_b:songs!pairings_song_b_id_fkey(year)")
+    .select(PLAYABLE_PAIRING_SELECT)
     .eq("active", true)
-    .range(0, 4999);
+    .eq("is_bootstrap", false)
+    .range(0, PLAYABLE_PAIRING_LIMIT - 1);
   if (error) throw new Error(error.message);
   return decadeCoverage((data ?? []) as never, DIMS);
 }
@@ -69,12 +72,12 @@ export class ExploreError extends Error {}
 export const startExplore = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ sessionId: z.string().uuid(), decade: z.number().int() }).parse(d),
+    z.object({ sessionId: z.string().uuid(), decade: z.number().int(), startKey: z.string().min(8).max(80).nullable().optional() }).parse(d),
   )
   .handler(async ({ data, context }) => startExploreImpl(context.supabase, context.userId, data));
 
 /** Shared by web and REST (`POST /api/v1/session/:id/explore`). */
-export async function startExploreImpl(client: Authed, userId: string, data: { sessionId: string; decade: number }) {
+export async function startExploreImpl(client: Authed, userId: string, data: { sessionId: string; decade: number; startKey?: string | null }) {
     const context = { supabase: client, userId };
     if (!isDecade(data.decade)) throw new ExploreError("Unknown decade");
     const rootId = await rootReading(context.supabase, context.userId, data.sessionId);
@@ -84,6 +87,20 @@ export async function startExploreImpl(client: Authed, userId: string, data: { s
       .eq("id", rootId)
       .maybeSingle();
     if (!parent?.completed_at) throw new ExploreError("Finish your reading before exploring decades");
+    // Retry-safe: same listener + start key returns the run it already created.
+    const key = data.startKey ? `${rootId}:${data.decade}:${data.startKey}` : null;
+    const existing = async () => {
+      if (!key) return null;
+      const { data: hit } = await context.supabase
+        .from("sessions")
+        .select("id")
+        .eq("user_id", context.userId)
+        .eq("explore_start_key" as never, key)
+        .maybeSingle();
+      return hit ? { sessionId: (hit as { id: string }).id, replayed: true } : null;
+    };
+    const prior = await existing();
+    if (prior) return prior;
     const cov = (await loadCoverage(context.supabase)).find((c) => c.decade === data.decade);
     if (!cov?.ready) throw new ExploreError("That decade isn't ready yet");
     const lane = parent.lane && parent.lane !== "general" ? parent.lane : "pop";
@@ -99,11 +116,19 @@ export async function startExploreImpl(client: Authed, userId: string, data: { s
         mode: "explore",
         decade: data.decade,
         parent_session_id: rootId,
+        explore_start_key: key,
       } as never)
       .select("id")
       .single();
-    if (error) throw new Error(error.message);
-    return { sessionId: (row as { id: string }).id };
+    if (error) {
+      // Concurrent double tap: the unique key lost the race — return the winner.
+      if ((error as { code?: string }).code === "23505") {
+        const winner = await existing();
+        if (winner) return winner;
+      }
+      throw new Error(error.message);
+    }
+    return { sessionId: (row as { id: string }).id, replayed: false };
 }
 
 export type ExploreComparison = {

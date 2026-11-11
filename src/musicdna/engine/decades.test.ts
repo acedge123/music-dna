@@ -57,7 +57,7 @@ describe("prior blending never mutates the original reading", () => {
 
 describe("coverage", () => {
   it("counts playable matchups by decade × trait and gates readiness", () => {
-    const p = (y: number, t: string) => ({ lane: "pop", tests: [t], song_a: { year: y }, song_b: { year: y } });
+    const p = (y: number, t: string) => ({ lane: "pop", tests: [t], song_a: { year: y, [t]: 10 }, song_b: { year: y, [t]: 90 } });
     const pool = Array.from({ length: 10 }, (_, i) => p(1985, DIMS[i % 6]));
     const c = decadeCoverage(pool, DIMS).find((x) => x.decade === 1980)!;
     expect(c.pairings).toBe(10);
@@ -82,5 +82,22 @@ describe("comparison", () => {
     ];
     const kinds = Object.fromEntries(compareToOriginal(o, d).map((s) => [s.axis, s.kind]));
     expect(kinds).toEqual({ texture: "held", tension: "flipped", scale: "quiet", movement: "new" });
+  });
+});
+
+describe("decade review fixes", () => {
+  it("caps the comparison at k", () => {
+    const axes = ["texture", "tension", "scale", "movement", "community", "immersion"];
+    const o = axes.map((axis) => ({ axis, direction: "hi" as const, eligible: true, magnitude: 1 }));
+    expect(compareToOriginal(o, o, 3)).toHaveLength(3);
+    expect(compareToOriginal(o, o)).toHaveLength(4);
+  });
+  it("coverage counts only matchups the selector can serve", async () => {
+    const { playableDecadePool } = await import("./decades");
+    const song = (year: number, v: number) => ({ id: String(year + v), year, texture: v, tension: 50 });
+    const good = { id: "g", lane: "pop", tests: ["texture"], is_bootstrap: false, song_a: song(1985, 10), song_b: song(1986, 90) };
+    const flat = { ...good, id: "f", song_b: song(1986, 15) };
+    const boot = { ...good, id: "b", is_bootstrap: true };
+    expect((playableDecadePool([good, flat, boot] as never, 1980) as unknown as { id: string }[]).map((p) => p.id)).toEqual(["g"]);
   });
 });
