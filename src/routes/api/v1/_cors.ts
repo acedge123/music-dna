@@ -4,7 +4,7 @@
 // hit these routes. Every response (including errors) must carry CORS headers
 // or preflight will fail. Include an OPTIONS handler per route.
 
-const V1_CORS_HEADERS = {
+export const V1_CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers":
