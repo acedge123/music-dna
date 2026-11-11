@@ -194,3 +194,6 @@
 - [x] Critic v2.3: strict JSON schema, axis/ID allowlist, named reviewer checks, one guided retry, song-aware chat fallback, stronger OpenAI writer model
 - [ ] Rotate deterministic read templates so fallback reads don't repeat across stages
 - [ ] Retest 5 owner-QA runs on production; target >=90% accepted
+
+- [x] Decade gap songs: Country, Metal, Pop, recent Alternative (81 songs, 105 matchups live)
+- [ ] Build decade readings feature (post-reading decade links, saved per account)
