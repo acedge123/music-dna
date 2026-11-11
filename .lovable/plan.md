@@ -19,8 +19,8 @@ After a listener finishes their main reading, offer links like "Take it to the '
 8. **Account page.** A simple list of your readings: the original plus each decade.
 
 ## Open questions
-- Decade by song release year only (a 1979 song counts as the '70s)?
-- If your lane is thin in a decade, should we use a neighboring lane, or simply not offer that decade? Not offering it fits the within-lane rule.
+- Decided: decades are flexible at the edges. A song released a year or so before or after can count, so 1979 punk fits the '80s.
+- Decided: if a genre is thin in a decade, matchups can borrow from a neighboring genre, such as Punk with Alternative or Classic Rock with Metal. Each matchup still pairs two songs from the same genre.
 - Should the original reading change when decade readings exist? Recommendation: no. Saved readings stay frozen, and the comparison is a separate piece.
 
 ## Technical notes
