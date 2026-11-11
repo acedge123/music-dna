@@ -25,7 +25,7 @@ export type CatalogPair = {
   user_facing_tradeoff: string;
   expected_split: string;
 };
-export const DPS_COMPONENTS = {
+const DPS_COMPONENTS = {
   polarization: 25,
   tradeoff_richness: 20,
   pairing_density: 15,

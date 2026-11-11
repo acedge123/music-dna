@@ -123,7 +123,7 @@ export type SelectionReason = {
 };
 
 // Default recognition floors per mode. Tunable in one place.
-export const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
+const RECOGNITION_FLOORS: Record<SelectionMode, number> = {
   diagnostic_first: 0,
   recognition_boost: 45,
   recognition_first: 55,

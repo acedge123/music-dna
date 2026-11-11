@@ -15,7 +15,7 @@ export const DECADE_LABEL: Record<Decade, string> = {
 };
 
 /** One year of leeway on the early edge: 1979 punk counts as '80s. */
-export const DECADE_LEEWAY = 1;
+const DECADE_LEEWAY = 1;
 
 export function isDecade(v: unknown): v is Decade {
   return typeof v === "number" && (DECADES as readonly number[]).includes(v);
@@ -109,7 +109,7 @@ export function playableDecadePool<P extends DecadePairing>(rows: P[], decade: D
 // ---------------- Coverage (decade × dimension) ----------------
 export const READY_MIN_PAIRINGS = 10;
 export const READY_MIN_TRAITS = 6;
-export const CELL_READY = 3;
+const CELL_READY = 3;
 
 export type DecadeCoverage = {
   decade: Decade;

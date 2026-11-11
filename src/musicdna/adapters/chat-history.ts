@@ -14,7 +14,7 @@ export function decodeChatCursor(value?: string | null) {
     throw new PersistenceError("INVALID_INPUT", 400, "Invalid history cursor.");
   }
 }
-export function encodeChatCursor(row: { created_at: string; id: string }) {
+function encodeChatCursor(row: { created_at: string; id: string }) {
   return encodeURIComponent(JSON.stringify(row));
 }
 export async function loadChatPage(

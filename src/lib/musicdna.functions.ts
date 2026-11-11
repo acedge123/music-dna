@@ -3359,7 +3359,7 @@ type InsightKind = (typeof INSIGHT_KINDS)[number];
 const INSIGHT_VOICE = `${PERSONA}
 Mode: a fresh, bounded editorial beat between matchups. Follow the author/review contract. Timing and opener priors are not evidence. Keep upcoming tests mysterious.`;
 
-export const roundInsight = createServerFn({ method: "POST" })
+const roundInsight = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z.object({ sessionId: z.string().uuid(), round: z.number().int().min(1).max(50) }).parse(d),
@@ -3495,7 +3495,7 @@ async function adoptSynthesisAsInterpretation(
 }
 
 /** Latest saved version for a session (any source), for refinements. */
-export async function latestResultVersion(supabase: AuthedSupabase, sessionId: string) {
+async function latestResultVersion(supabase: AuthedSupabase, sessionId: string) {
   const { data } = await supabase
     .from("session_results")
     .select("version, content, self_report, source")
