@@ -55,4 +55,4 @@
 
 - Decade runs: `mode=explore` children of a finished reading; discover routing untouched.
 
-- Final reading = one Sol/Terra pass (result v1); finishing is deterministic — one reading everywhere.
+- Final reading: one Sol/Terra pass (result v1); finish is deterministic.
