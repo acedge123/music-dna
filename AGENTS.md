@@ -53,4 +53,4 @@
 - Completed-reading accuracy controls use the existing authenticated feedback write plus owner/version-scoped readback; show Saved only after matching the durable operation. Keep ratings optional, below the completed read, absent during song choices and on public shares, and reuse the per-reading/version operation key across retries/reloads.
 - Post-pick reads are pre-drafted server-side and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
-- Explore-your-DNA decade runs are `sessions.mode=explore` children of a completed discover reading (DB trigger-enforced); `nextPairingImpl` branches to `exploreNextPairing` (decade pool, parent vector as selection-only prior, every third pick exploratory) so discover routing stays untouched; comparisons use only both sessions' frozen choice ledgers.
+- Decade runs are `sessions.mode=explore` children of a completed reading; `exploreNextPairing` keeps discover routing untouched and comparisons use only frozen ledgers.
