@@ -22,7 +22,7 @@ const Beat = z
           .object({
             axis: z.string(),
             direction: z.enum(["hi", "lo"]),
-            choice_ids: z.array(z.string()).min(1).max(3),
+            choice_ids: z.array(z.string()).min(1).max(6),
           })
           .strict(),
       )
@@ -88,7 +88,7 @@ export function criticBeatSchema(ledger: Ledger) {
     properties: {
       headline: { type: "string" },
       body: { type: "string" },
-      choice_ids: { type: "array", items: idSchema },
+      choice_ids: { type: "array", maxItems: 6, items: idSchema },
       claims: axes.length
         ? {
             type: "array",
@@ -99,7 +99,7 @@ export function criticBeatSchema(ledger: Ledger) {
               properties: {
                 axis: { type: "string", enum: axes },
                 direction: { type: "string", enum: ["hi", "lo"] },
-                choice_ids: { type: "array", items: idSchema },
+                choice_ids: { type: "array", minItems: 1, maxItems: 6, items: idSchema },
               },
             },
           }
@@ -265,8 +265,26 @@ export const SONG_FACT_REVIEW_RULE = `SONG FACT CARDS: chosen_song_facts/rejecte
 Music facts that match a card ARE supplied facts: do not fail no_invented_facts for them. Any music fact NOT on a card still fails.
 Card facts describe songs, never the listener: "the fretless bass" is fine; "you love fretless bass" or using a card fact as proof of a tendency fails ceiling_preserved (code unsupported_motive).`;
 
+/** Mechanical repair only: drops duplicate citations; never changes prose or adds IDs. */
+export function normalizeCriticBeat(raw: unknown): unknown {
+  if (!raw || typeof raw !== "object") return raw;
+  const r = raw as Record<string, unknown>;
+  const dedupe = (v: unknown) => (Array.isArray(v) ? [...new Set(v)] : v);
+  return {
+    ...r,
+    choice_ids: dedupe(r.choice_ids),
+    claims: Array.isArray(r.claims)
+      ? r.claims.map((c) =>
+          c && typeof c === "object"
+            ? { ...(c as object), choice_ids: dedupe((c as Record<string, unknown>).choice_ids) }
+            : c,
+        )
+      : r.claims,
+  };
+}
+
 export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLabels) {
-  const parsed = Beat.safeParse(raw);
+  const parsed = Beat.safeParse(normalizeCriticBeat(raw));
   if (!parsed.success) return null;
   const beat = parsed.data;
   if (
