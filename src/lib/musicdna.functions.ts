@@ -3433,7 +3433,8 @@ export async function finalSynthesisImpl(
   if (!fresh.synthesis) return fresh;
   // Only an approved Critic reading becomes the frozen v1. Safety text is shown
   // unsaved so a retry can still produce the real reading.
-  if (fresh.narration_status !== "ok") return { ...fresh, result_version: null };
+  if (fresh.narration_status === "invalid_generation" || fresh.narration_status === "narrator_failure")
+    return { ...fresh, result_version: null };
   const { error } = await supabase.from("session_results").insert({
     session_id: data.sessionId,
     user_id: userId,
