@@ -3431,6 +3431,9 @@ export async function finalSynthesisImpl(
   const { ledger: savedLedger } = await loadChoiceEvidence(supabase, data.sessionId);
   const fresh = await computeFinalSynthesis(supabase, userId, data, savedLedger);
   if (!fresh.synthesis) return fresh;
+  // Only an approved Critic reading becomes the frozen v1. Safety text is shown
+  // unsaved so a retry can still produce the real reading.
+  if (fresh.narration_status !== "ok") return { ...fresh, result_version: null };
   const { error } = await supabase.from("session_results").insert({
     session_id: data.sessionId,
     user_id: userId,
@@ -3562,7 +3565,7 @@ async function computeFinalSynthesis(
     .eq("session_id", data.sessionId)
     .maybeSingle();
   if (qa.error) throw new Error("Could not verify interview purpose.");
-  if (!qa.data)
+  if (!qa.data && narrated.status === "ok")
     await supabase.from("profiles").update({ opening_hypothesis: synthesis }).eq("user_id", userId);
 
   return {
