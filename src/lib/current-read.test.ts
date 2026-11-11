@@ -83,6 +83,13 @@ describe("current read service boundary", () => {
     ).rejects.toThrow("four answered choices");
     expect(generate).not.toHaveBeenCalled();
   });
+  it("finishes six answered choices without any Critic call (the synthesis is the one reading)", async () => {
+    generate.mockReset();
+    await finalizeSessionImpl(client([40, 40, 40, 40, 40, 40]) as never, "user", {
+      sessionId: "s",
+    }).catch(() => undefined);
+    expect(generate).not.toHaveBeenCalled();
+  });
   beforeEach(() => {
     state.events = [];
     state.failWrite = false;

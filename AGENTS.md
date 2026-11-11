@@ -53,4 +53,6 @@
 - Reading accuracy controls reuse the authenticated feedback write with owner/version readback; show Saved only after a durable match. Ratings are optional, below the completed read, never during picks or on shares, and reuse one operation key per reading/version.
 - Post-pick reads are pre-drafted and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
-- Decade runs are `sessions.mode=explore` children of a finished reading; `exploreNextPairing` leaves discover routing untouched; comparisons use frozen ledgers.
+- Decade runs: `mode=explore` children of a finished reading; discover routing untouched.
+
+- Final reading: one Sol/Terra pass (result v1); finish is deterministic.

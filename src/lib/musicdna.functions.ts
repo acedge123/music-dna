@@ -648,7 +648,7 @@ import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
 import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
-import { preparedOutcome, hypotheticalChoice, readFingerprint, revealDraftKey, revealFingerprint, synthDraftKey } from "@/musicdna/engine/prepared-read";
+import { preparedOutcome, hypotheticalChoice, readFingerprint, revealFingerprint, synthDraftKey } from "@/musicdna/engine/prepared-read";
 import { POOL_STAGE, poolEligible, poolFingerprint } from "@/musicdna/engine/reaction-pool";
 import {
   authorCritic,
@@ -2182,64 +2182,10 @@ export async function finalizeSessionImpl(
   const bestScore = assignment?.score ?? 0;
   const tier = String(fitTier(bestScore));
 
-  const criticStart = Date.now();
-  // A reveal drafted while the listener made the final pick is reused only
-  // when the frozen ledger is identical to the hypothetical one it was written for.
-  const lastPick = ledger.answered > 0 ? await latestChoice(supabase, data.sessionId) : null;
-  const preparedReveal = lastPick
-    ? ((await awaitPreparedRead(
-        data.sessionId,
-        revealDraftKey(ledger.answered),
-        lastPick,
-        revealFingerprint(ledger),
-        REVEAL_WAIT_MS,
-        REVEAL_DEADLINE_MS,
-      )) as unknown as Awaited<ReturnType<typeof observedCritic>> | null)
-    : null;
-  const narrated =
-    preparedReveal ??
-    (await observedCritic(
-      supabase,
-      userId,
-      data.sessionId,
-      ledger,
-      DIM_LABEL,
-      [{ role: "system", content: CRITIC_VOICE }],
-      { stage: "reveal" },
-    ));
-  const narrative = narrated.text;
-  const criticStatus =
-    narrated.status === "invalid_generation" || narrated.status === "narrator_failure"
-      ? "error"
-      : "ok";
-  const criticError = criticStatus === "error" ? narrated.status : null;
-  const criticLatency = Date.now() - criticStart;
-
-  await supabase.from("llm_calls").insert({
-    user_id: userId,
-    session_id: data.sessionId,
-    role: "critic",
-    model: MODEL,
-    prompt_version: CRITIC_EXPRESSION_VERSION,
-    status: criticStatus,
-    latency_ms: criticLatency,
-    error_message: criticError,
-    input_summary: {
-      allowed_claims: allowed_claims.length,
-      counterarguments: counterarguments.length,
-      archetype: best.name,
-      fit_tier: tier,
-      cosine_score: Math.round(bestScore * 1000) / 1000,
-    },
-    output: {
-      length: narrative.length,
-      narration_status: narrated.status,
-      voice_version: narrated.voice_version,
-      validation_reason: narrated.validation_reason,
-      prepared_before_pick: !!preparedReveal,
-    } as never,
-    narrative: narrative || null,
-  });
+  // One final Critic reading: the synthesis (finalSynthesisImpl) is the only
+  // writer/reviewer cycle. Finishing stays deterministic; the saved synthesis
+  // later fills these legacy fields so every surface shows identical prose.
+  const narrative: string | null = null;
 
   // -------- Persist --------
   const reasoningRow = {
@@ -2278,7 +2224,7 @@ export async function finalizeSessionImpl(
   return {
     archetypeId: supported ? best.id : null,
     archetypeName: supported ? best.name : "",
-    interpretation: narrative,
+    interpretation: "",
     vector,
     allowed_claims,
     counterarguments,
@@ -3506,7 +3452,21 @@ export async function finalSynthesisImpl(
       .maybeSingle();
     if (winner?.content) return { ...(winner.content as SynthPayload), result_version: 1 };
   }
+  if (!error) await adoptSynthesisAsInterpretation(supabase, data.sessionId, fresh.synthesis);
   return { ...fresh, result_version: error ? null : 1 };
+}
+
+/** The saved version-1 synthesis is the one authoritative reading; legacy fields
+ *  receive the same text only when still empty, so older readings never change. */
+async function adoptSynthesisAsInterpretation(
+  supabase: AuthedSupabase,
+  sessionId: string,
+  synthesis: string,
+) {
+  await Promise.all([
+    supabase.from("sessions").update({ interpretation: synthesis }).eq("id", sessionId).is("interpretation", null),
+    supabase.from("session_reasoning").update({ narrative: synthesis }).eq("session_id", sessionId).is("narrative", null),
+  ]);
 }
 
 /** Latest saved version for a session (any source), for refinements. */
@@ -4670,7 +4630,7 @@ export async function prepareReadsImpl(
   }).done;
   const revealDrafts = finalPick
     ? branches.flatMap(([chosen, rejected]) =>
-        ([[revealDraftKey, CRITIC_VOICE], [synthDraftKey, SYNTH_VOICE]] as const).map(async ([slot, voice]) => {
+        ([[synthDraftKey, SYNTH_VOICE]] as const).map(async ([slot, voice]) => {
         const ledger = buildLedger([...choices, hypotheticalChoice(pairing, chosen, rejected)], DIMS);
         const key = {
           session_id: data.sessionId,
