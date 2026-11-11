@@ -6,6 +6,7 @@ import { ReadingFeedback } from "@/components/musicdna/reading-feedback";
 import { ReadingResult } from "@/components/musicdna/reading-result";
 import { readingLead } from "@/lib/critic-display";
 import { Button } from "@/components/ui/button";
+import { ExploreDecades } from "@/components/musicdna/explore-decades";
 
 const Search = z.object({
   session: z.string().uuid().optional(),
@@ -82,6 +83,7 @@ function Me() {
               />
             </div>
           </details>
+          <ExploreDecades sessionId={reading.sessionId} />
           <ReadingConversation
             messages={conversation.messages}
             draft={conversation.draft}

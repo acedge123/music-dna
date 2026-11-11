@@ -196,4 +196,5 @@
 - [ ] Retest 5 owner-QA runs on production; target >=90% accepted
 
 - [x] Decade gap songs: Country, Metal, Pop, recent Alternative (81 songs, 105 matchups live)
-- [ ] Build decade readings feature (post-reading decade links, saved per account)
+- [x] Explore your DNA: decade runs after a reading, admin decade × trait coverage
+- [ ] Explore: Critic-written decade read, Flutter endpoint, guest-to-account carryover

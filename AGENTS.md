@@ -46,9 +46,11 @@
 
 - Fresh interview URLs bypass implicit resume; active IDs are pinned for reload/Back. Operator QA sessions are atomically tagged, excluded from listener diagnostics, and never imply synthetic export eligibility or pilot consent.
 - Archetype assignment and profile presentation require frozen-ledger support; historical saved content stays immutable, and rejected chat generations must not echo the user's question.
-- Interview URL pinning waits for restore completion and never carries an old session into fresh Start; bounded conversation waits preserve pending mutation IDs because a timeout does not prove a failed write.
+- Interview URL pinning waits for restore and never carries an old session into fresh Start; timeouts keep pending mutation IDs.
 
 - AB-57 hourly learning runs in a separate Railway operator service, with a source-bound automated queue endpoint and durable metadata receipts. Railway holds only narrow caller keys; backend/ingest credentials stay inside Supabase Edge Functions and outside EdgeBot/model context; preserve source/reviewer/consent gates, global $5/day reservations, no ambiguous inference retries and draft-only output. Queue/dispatch success is never completed model work. See docs/musicdna/ab57-automation.md.
 
-- Completed-reading accuracy controls use the existing authenticated feedback write plus owner/version-scoped readback; show Saved only after matching the durable operation. Keep ratings optional, below the completed read, absent during song choices and on public shares, and reuse the per-reading/version operation key across retries/reloads.
-- Post-pick reads are pre-drafted server-side and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
+- Reading accuracy controls reuse the authenticated feedback write with owner/version readback; show Saved only after a durable match. Ratings are optional, below the completed read, never during picks or on shares, and reuse one operation key per reading/version.
+- Post-pick reads are pre-drafted and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
+
+- Decade runs are `sessions.mode=explore` children of a finished reading; `exploreNextPairing` leaves discover routing untouched; comparisons use frozen ledgers.

@@ -775,7 +775,7 @@ export async function nextPairingImpl(
     supabase
       .from("sessions")
       .select(
-        "vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json, user_id, completed_at",
+        "vector, lane, lane_confidence, probe_candidate_lanes, probe_state, bootstrap_choices_json, user_id, completed_at, mode, decade, parent_session_id",
       )
       .eq("id", data.sessionId)
       .single(),
@@ -876,6 +876,23 @@ export async function nextPairingImpl(
       confidence: stop.confidence,
       done: true as const,
     };
+  }
+
+  // Explore-your-DNA: decade runs use their own pool and never touch the
+  // discover-mode router, probes or bootstrap.
+  const exploreSession = session as unknown as { mode?: string; decade?: number | null; parent_session_id?: string | null };
+  if (exploreSession.mode === "explore") {
+    return exploreNextPairing(supabase, {
+      sessionId: data.sessionId,
+      userId: session.user_id,
+      decade: Number(exploreSession.decade),
+      parentSessionId: exploreSession.parent_session_id ?? null,
+      vector,
+      usedIds,
+      answered,
+      round,
+      stop,
+    });
   }
 
   // ---- Shadow router (Step 0 of Agent Brain integration) -----------------
@@ -4938,3 +4955,92 @@ export const reactToRead = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) =>
     recordReactionImpl(context.supabase, context.userId, { ...data, client: "web" }),
   );
+
+// ============ Explore your DNA (decade runs) ============
+import {
+  blendPrior,
+  explorationPool,
+  isDecade,
+  isExplorationSlot,
+  pairingInDecade,
+  topTraits,
+} from "@/musicdna/engine/decades";
+
+async function exploreNextPairing(
+  supabase: AuthedSupabase,
+  ctx: {
+    sessionId: string;
+    userId: string;
+    decade: number;
+    parentSessionId: string | null;
+    vector: Record<string, number>;
+    usedIds: Set<string>;
+    answered: number;
+    round: number;
+    stop: { max_answered: number; confidence: number };
+  },
+) {
+  const done = (reason: "catalog_exhausted") => ({
+    pairing: null,
+    round: ctx.round,
+    answered: ctx.answered,
+    max_rounds: ctx.stop.max_answered,
+    stop_reason: reason,
+    confidence: ctx.stop.confidence,
+    done: true as const,
+  });
+  if (!isDecade(ctx.decade)) return done("catalog_exhausted");
+  const decade = ctx.decade;
+  const dims = DIMS as readonly string[];
+  const parentRes = ctx.parentSessionId
+    ? await supabase.from("sessions").select("vector").eq("id", ctx.parentSessionId).maybeSingle()
+    : { data: null };
+  const parentVector = ((parentRes.data as { vector?: unknown } | null)?.vector ?? {}) as Record<string, number>;
+  const select = `
+      id, tests, diagnostic_weight, lane, is_bootstrap,
+      song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation),
+      song_b:songs!pairings_song_b_id_fkey(id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation)
+    `;
+  const res = await supabase.from("pairings").select(select).eq("active", true).eq("is_bootstrap", false);
+  if (res.error) throw new Error(res.error.message);
+  let pool = ((res.data ?? []) as unknown as Array<PairingCandidate & { lane?: string | null }>).filter(
+    (p) => pairingInDecade(p as never, decade) && hasDiagnosticIntegrity(p as never),
+  );
+  const prior = blendPrior(parentVector, ctx.vector, dims);
+  const exploring = isExplorationSlot(ctx.answered);
+  if (exploring) pool = explorationPool(pool, topTraits(parentVector, dims));
+  const rng = mulberry32(seedFrom(ctx.sessionId, ctx.round));
+  const picked = selectPairing({
+    pool,
+    vector: prior,
+    used_ids: ctx.usedIds,
+    session_lane: "general",
+    dims,
+    rng,
+    mode: "recognition_boost",
+    knobs: { fork_filter: "soft" } as never,
+  });
+  if (picked.kind === "empty") return done("catalog_exhausted");
+  const chosen = picked.pairing as PairingCandidate & { id: string; tests?: string[] | null };
+  const exposureId = await recordServedOffer(
+    supabase,
+    ctx.userId,
+    ctx.sessionId,
+    chosen.id,
+    `${ctx.round}:${ctx.usedIds.size}`,
+  );
+  return {
+    pairing: {
+      ...(await withPairingArtwork(supabase, stripPrivatePairingFields(chosen))),
+      exposure_id: exposureId,
+    },
+    prompt: nextPromptFor((chosen.tests ?? []) as string[], topLeadAxis(ctx.vector)),
+    round: ctx.round + 1,
+    answered: ctx.answered,
+    max_rounds: ctx.stop.max_answered,
+    stop_reason: null,
+    confidence: ctx.stop.confidence,
+    done: false as const,
+    selection_reason: { ...(picked.selection_reason as object), explore: { decade, exploring } } as never,
+  };
+}

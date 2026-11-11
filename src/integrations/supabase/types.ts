@@ -1904,11 +1904,14 @@ export type Database = {
           bootstrap_choices_json: Json
           completed_at: string | null
           created_at: string
+          decade: number | null
           id: string
           interpretation: string | null
           is_public: boolean
           lane: string
           lane_confidence: number
+          mode: string
+          parent_session_id: string | null
           probe_candidate_lanes: string[]
           probe_state: Json
           published_read: Json | null
@@ -1929,11 +1932,14 @@ export type Database = {
           bootstrap_choices_json?: Json
           completed_at?: string | null
           created_at?: string
+          decade?: number | null
           id?: string
           interpretation?: string | null
           is_public?: boolean
           lane?: string
           lane_confidence?: number
+          mode?: string
+          parent_session_id?: string | null
           probe_candidate_lanes?: string[]
           probe_state?: Json
           published_read?: Json | null
@@ -1954,11 +1960,14 @@ export type Database = {
           bootstrap_choices_json?: Json
           completed_at?: string | null
           created_at?: string
+          decade?: number | null
           id?: string
           interpretation?: string | null
           is_public?: boolean
           lane?: string
           lane_confidence?: number
+          mode?: string
+          parent_session_id?: string | null
           probe_candidate_lanes?: string[]
           probe_state?: Json
           published_read?: Json | null
@@ -1975,6 +1984,13 @@ export type Database = {
             columns: ["archetype_id"]
             isOneToOne: false
             referencedRelation: "archetypes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_parent_session_id_fkey"
+            columns: ["parent_session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
         ]
