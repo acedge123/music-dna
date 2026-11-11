@@ -4670,6 +4670,8 @@ export async function prepareReadsImpl(
             observedCritic(supabase, userId, data.sessionId, ledger, DIM_LABEL, [{ role: "system", content: voice }], { stage: "reveal" }),
             new Promise<never>((_, reject) => setTimeout(() => reject(new Error("prepare_deadline")), REVEAL_DEADLINE_MS)),
           ]);
+          // A safety-backup draft is never reused as if it were approved writing.
+          if ((narrated as { status?: string }).status !== "ok") throw new Error("prepared_fallback");
           await supabaseAdmin
             .from("prepared_reads" as never)
             .update({ status: "ready", fingerprint: revealFingerprint(ledger), payload: narrated, finished_at: new Date().toISOString() } as never)
