@@ -54,7 +54,8 @@ export type MusicDnaLearningEnvelopeV2 = {
 };
 
 export type LearningObservationValidationV2 =
-  { ok: true; value: MusicDnaLearningEnvelopeV2 } | { ok: false; errors: string[] };
+  | { ok: true; value: MusicDnaLearningEnvelopeV2 }
+  | { ok: false; errors: string[] };
 
 export type MusicDnaLearningReceiptV2 = {
   ok: true;

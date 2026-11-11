@@ -45,9 +45,9 @@ export function SongFactsPanel() {
   return (
     <div className="space-y-4">
       <p className="text-sm text-muted-foreground">
-        Checked facts the critic may use about each song. Every fact comes from the cited source and was
-        cross-checked against it. Only approved facts can ever reach the critic. Songs with approved facts:{" "}
-        {q.data?.songs ?? 0}.
+        Checked facts the critic may use about each song. Every fact comes from the cited source and
+        was cross-checked against it. Only approved facts can ever reach the critic. Songs with
+        approved facts: {q.data?.songs ?? 0}.
       </p>
       <div className="flex gap-2 flex-wrap">
         {FILTERS.map((f) => (
@@ -115,7 +115,11 @@ export function SongFactsPanel() {
                         Approve
                       </Button>
                     )}
-                    <Button size="sm" variant="outline" onClick={() => setEditing({ id: r.id, text: r.text })}>
+                    <Button
+                      size="sm"
+                      variant="outline"
+                      onClick={() => setEditing({ id: r.id, text: r.text })}
+                    >
                       Edit
                     </Button>
                     {r.status !== "rejected" && (
@@ -128,7 +132,9 @@ export function SongFactsPanel() {
               </div>
             </div>
           ))}
-          {!q.data?.rows.length && <p className="p-3 text-sm text-muted-foreground">Nothing here.</p>}
+          {!q.data?.rows.length && (
+            <p className="p-3 text-sm text-muted-foreground">Nothing here.</p>
+          )}
         </div>
       )}
       <div className="flex gap-2 items-center text-sm">

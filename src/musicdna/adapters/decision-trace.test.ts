@@ -4,7 +4,10 @@ import { classifyTrace } from "./critic-quality";
 describe("decision trace cause", () => {
   it("labels an AI call failure", () => {
     expect(
-      classifyTrace({ status: "narrator_failure", rejection_reason: "generation_or_review_failed" }),
+      classifyTrace({
+        status: "narrator_failure",
+        rejection_reason: "generation_or_review_failed",
+      }),
     ).toBe("ai_call_failed");
   });
   it("labels a reviewer rejection", () => {

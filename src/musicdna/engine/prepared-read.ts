@@ -6,7 +6,11 @@ import { expectedCatalog } from "./evidence-snapshot";
 const VOLATILE = new Set(["choice_id", "created_at", "catalog_revision"]);
 
 /** Exact identity of everything the critic sees for a post-pick read. */
-export function readFingerprint(ledger: Ledger, priorThesis: string | null | undefined, priorAnswered: number | null | undefined) {
+export function readFingerprint(
+  ledger: Ledger,
+  priorThesis: string | null | undefined,
+  priorAnswered: number | null | undefined,
+) {
   return JSON.stringify(
     { ledger, prior: priorThesis ?? null, priorAnswered: priorAnswered ?? null },
     (k, v) => (VOLATILE.has(k) ? undefined : v),

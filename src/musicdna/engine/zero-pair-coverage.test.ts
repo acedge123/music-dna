@@ -40,8 +40,14 @@ describe("Zero-pairing coverage first", () => {
   it("selects all eight new matchups without replaying a used pair", () => {
     const used = new Set<string>();
     for (let i = 0; i < 8; i++) {
-      const selected = selectPairing({ pool, used_ids: used, vector: {}, dims: DIMS,
-        session_lane: "pop", rng: { next: () => 0.37 } });
+      const selected = selectPairing({
+        pool,
+        used_ids: used,
+        vector: {},
+        dims: DIMS,
+        session_lane: "pop",
+        rng: { next: () => 0.37 },
+      });
       expect(selected.kind).toBe("picked");
       if (selected.kind !== "picked") throw new Error("Unselectable matchup");
       expect(used.has(selected.pairing.id)).toBe(false);

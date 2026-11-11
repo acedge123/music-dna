@@ -16,14 +16,16 @@ describe("Hip-hop expansion review batch", () => {
   });
   it("keeps every pairing within Hip-hop with at least 25-point declared contrasts", () => {
     for (const p of batch.pairings) {
-      const a = songs.get(p.song_a_id), b = songs.get(p.song_b_id);
+      const a = songs.get(p.song_a_id),
+        b = songs.get(p.song_b_id);
       if (!a || !b) throw new Error("Missing paired song");
       expect(a.lane).toBe("hip_hop");
       expect(b.lane).toBe("hip_hop");
       expect(a.artist).not.toBe(b.artist);
       expect(validTests(p.tests, a, b)).toEqual(p.tests);
       for (const t of p.tests) {
-        const x = a[t as keyof typeof a], y = b[t as keyof typeof b];
+        const x = a[t as keyof typeof a],
+          y = b[t as keyof typeof b];
         if (typeof x !== "number" || typeof y !== "number") throw new Error("Invalid trait");
         expect(Math.abs(x - y)).toBeGreaterThanOrEqual(25);
       }
@@ -36,7 +38,14 @@ describe("Hip-hop expansion review batch", () => {
   it("retains bounded diagnostic components and their actual sum", () => {
     for (const s of batch.songs) {
       expect(s.longevity).toBeLessThanOrEqual(10);
-      expect(s.diagnostic_power).toBe(s.polarization + s.tradeoff_richness + s.pairing_density + s.identity_signaling + s.longevity + s.cross_genre_mapping);
+      expect(s.diagnostic_power).toBe(
+        s.polarization +
+          s.tradeoff_richness +
+          s.pairing_density +
+          s.identity_signaling +
+          s.longevity +
+          s.cross_genre_mapping,
+      );
       expect(s.scoring_provenance.predictive_validation).toBe(false);
     }
   });
