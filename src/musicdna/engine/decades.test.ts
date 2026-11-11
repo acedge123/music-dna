@@ -57,7 +57,7 @@ describe("prior blending never mutates the original reading", () => {
 
 describe("coverage", () => {
   it("counts playable matchups by decade × trait and gates readiness", () => {
-    const p = (y: number, t: string) => ({ lane: "pop", tests: [t], song_a: { year: y }, song_b: { year: y } });
+    const p = (y: number, t: string) => ({ lane: "pop", tests: [t], song_a: { year: y, [t]: 10 }, song_b: { year: y, [t]: 90 } });
     const pool = Array.from({ length: 10 }, (_, i) => p(1985, DIMS[i % 6]));
     const c = decadeCoverage(pool, DIMS).find((x) => x.decade === 1980)!;
     expect(c.pairings).toBe(10);
