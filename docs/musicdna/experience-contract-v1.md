@@ -170,3 +170,15 @@ Both endpoints are owner-only (403 for another user's session, 404 when it doesn
 `GET /api/v1/session/:id/feedback` → `{ contract: 1, session_id, feedback: [ … ] }` returns the caller's feedback rows for the session, including `mutation_id`, `result_version`, and row `id`, for lost-response recovery.
 
 Both are owner-only and share the web implementation (`submitFeedbackImpl`).
+
+
+## Explore your DNA (decade runs)
+
+Available after a discover reading is completed. A decade run is an ordinary session (`mode: "explore"`); after it starts, use the usual `/next`, `/choice`, `/skip` and `/reveal` calls. Its matchups stay inside the decade.
+
+- `GET /api/v1/session/:id/explore` takes either a reading id or a decade-run id and returns `{ root_session_id, decades: [{ decade, ready, pairings }], runs: [{ session_id, decade, completed, started_at }] }`.
+- `POST /api/v1/session/:id/explore` with body `{ "decade": 1980 }` returns `{ session_id, mode: "explore", decade }`. It returns 400 when the decade is unknown or not ready, or when the reading isn't finished.
+- `GET /api/v1/session/:id/comparison` for a decade run returns `{ decade, root_session_id, shifts: [{ axis, kind: "held"|"flipped"|"new"|"quiet", original, decade }] }`. Both sides come from frozen ledgers. It returns 404 when the session is not a decade run.
+- `GET /api/v1/session/:id` now also returns `mode`, `decade` and `parent_session_id`.
+
+Decades: 1970, 1980, 1990, 2000, 2010, 2020. The run must be started by the same account that owns the reading.

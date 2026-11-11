@@ -40,7 +40,11 @@ async function rootReading(client: Authed, userId: string, sessionId: string) {
 export const getExploreOptions = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
-  .handler(async ({ data, context }) => {
+  .handler(async ({ data, context }) => exploreOptionsImpl(context.supabase, context.userId, data));
+
+/** Shared by web and REST (`GET /api/v1/session/:id/explore`). */
+export async function exploreOptionsImpl(client: Authed, userId: string, data: { sessionId: string }) {
+    const context = { supabase: client, userId };
     const rootId = await rootReading(context.supabase, context.userId, data.sessionId);
     const [coverage, runsRes] = await Promise.all([
       loadCoverage(context.supabase),
@@ -58,24 +62,30 @@ export const getExploreOptions = createServerFn({ method: "POST" })
         (r) => ({ id: r.id, decade: r.decade, completed: Boolean(r.completed_at), startedAt: r.started_at }),
       ),
     };
-  });
+}
+
+export class ExploreError extends Error {}
 
 export const startExplore = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
     z.object({ sessionId: z.string().uuid(), decade: z.number().int() }).parse(d),
   )
-  .handler(async ({ data, context }) => {
-    if (!isDecade(data.decade)) throw new Error("Unknown decade");
+  .handler(async ({ data, context }) => startExploreImpl(context.supabase, context.userId, data));
+
+/** Shared by web and REST (`POST /api/v1/session/:id/explore`). */
+export async function startExploreImpl(client: Authed, userId: string, data: { sessionId: string; decade: number }) {
+    const context = { supabase: client, userId };
+    if (!isDecade(data.decade)) throw new ExploreError("Unknown decade");
     const rootId = await rootReading(context.supabase, context.userId, data.sessionId);
     const { data: parent } = await context.supabase
       .from("sessions")
       .select("lane, completed_at")
       .eq("id", rootId)
       .maybeSingle();
-    if (!parent?.completed_at) throw new Error("Finish your reading before exploring decades");
+    if (!parent?.completed_at) throw new ExploreError("Finish your reading before exploring decades");
     const cov = (await loadCoverage(context.supabase)).find((c) => c.decade === data.decade);
-    if (!cov?.ready) throw new Error("That decade isn't ready yet");
+    if (!cov?.ready) throw new ExploreError("That decade isn't ready yet");
     const lane = parent.lane && parent.lane !== "general" ? parent.lane : "pop";
     const { data: row, error } = await context.supabase
       .from("sessions")
@@ -94,7 +104,7 @@ export const startExplore = createServerFn({ method: "POST" })
       .single();
     if (error) throw new Error(error.message);
     return { sessionId: (row as { id: string }).id };
-  });
+}
 
 export type ExploreComparison = {
   decade: number;
@@ -105,7 +115,15 @@ export type ExploreComparison = {
 export const getExploreComparison = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) => z.object({ sessionId: z.string().uuid() }).parse(d))
-  .handler(async ({ data, context }): Promise<ExploreComparison | null> => {
+  .handler(async ({ data, context }) => exploreComparisonImpl(context.supabase, context.userId, data));
+
+/** Shared by web and REST (`GET /api/v1/session/:id/comparison`). */
+export async function exploreComparisonImpl(
+  client: Authed,
+  userId: string,
+  data: { sessionId: string },
+): Promise<ExploreComparison | null> {
+    const context = { supabase: client, userId };
     const { data: s } = await context.supabase
       .from("sessions")
       .select("mode, decade, parent_session_id")
@@ -123,7 +141,7 @@ export const getExploreComparison = createServerFn({ method: "POST" })
       rootSessionId: row.parent_session_id,
       shifts: compareToOriginal(orig.ledger.axes, dec.ledger.axes),
     };
-  });
+}
 
 export const getDecadeCoverage = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])

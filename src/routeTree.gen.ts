@@ -32,6 +32,8 @@ import { Route as ApiV1SessionIdRouteImport } from './routes/api/v1/session.$id'
 import { Route as ApiV1ShareTokenRouteImport } from './routes/api/v1/share.$token'
 import { Route as ApiV1SessionIdChatRouteImport } from './routes/api/v1/session.$id.chat'
 import { Route as ApiV1SessionIdChoiceRouteImport } from './routes/api/v1/session.$id.choice'
+import { Route as ApiV1SessionIdComparisonRouteImport } from './routes/api/v1/session.$id.comparison'
+import { Route as ApiV1SessionIdExploreRouteImport } from './routes/api/v1/session.$id.explore'
 import { Route as ApiV1SessionIdExposureRouteImport } from './routes/api/v1/session.$id.exposure'
 import { Route as ApiV1SessionIdFeedbackRouteImport } from './routes/api/v1/session.$id.feedback'
 import { Route as ApiV1SessionIdNextRouteImport } from './routes/api/v1/session.$id.next'
@@ -155,6 +157,17 @@ const ApiV1SessionIdChoiceRoute = ApiV1SessionIdChoiceRouteImport.update({
   path: '/choice',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
+const ApiV1SessionIdComparisonRoute =
+  ApiV1SessionIdComparisonRouteImport.update({
+    id: '/comparison',
+    path: '/comparison',
+    getParentRoute: () => ApiV1SessionIdRoute,
+  } as any)
+const ApiV1SessionIdExploreRoute = ApiV1SessionIdExploreRouteImport.update({
+  id: '/explore',
+  path: '/explore',
+  getParentRoute: () => ApiV1SessionIdRoute,
+} as any)
 const ApiV1SessionIdExposureRoute = ApiV1SessionIdExposureRouteImport.update({
   id: '/exposure',
   path: '/exposure',
@@ -219,6 +232,8 @@ export interface FileRoutesByFullPath {
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
+  '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
+  '/api/v1/session/$id/explore': typeof ApiV1SessionIdExploreRoute
   '/api/v1/session/$id/exposure': typeof ApiV1SessionIdExposureRoute
   '/api/v1/session/$id/feedback': typeof ApiV1SessionIdFeedbackRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
@@ -251,6 +266,8 @@ export interface FileRoutesByTo {
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
+  '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
+  '/api/v1/session/$id/explore': typeof ApiV1SessionIdExploreRoute
   '/api/v1/session/$id/exposure': typeof ApiV1SessionIdExposureRoute
   '/api/v1/session/$id/feedback': typeof ApiV1SessionIdFeedbackRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
@@ -285,6 +302,8 @@ export interface FileRoutesById {
   '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
+  '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
+  '/api/v1/session/$id/explore': typeof ApiV1SessionIdExploreRoute
   '/api/v1/session/$id/exposure': typeof ApiV1SessionIdExposureRoute
   '/api/v1/session/$id/feedback': typeof ApiV1SessionIdFeedbackRoute
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
@@ -319,6 +338,8 @@ export interface FileRouteTypes {
     | '/api/v1/share/$token'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
+    | '/api/v1/session/$id/comparison'
+    | '/api/v1/session/$id/explore'
     | '/api/v1/session/$id/exposure'
     | '/api/v1/session/$id/feedback'
     | '/api/v1/session/$id/next'
@@ -351,6 +372,8 @@ export interface FileRouteTypes {
     | '/api/v1/share/$token'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
+    | '/api/v1/session/$id/comparison'
+    | '/api/v1/session/$id/explore'
     | '/api/v1/session/$id/exposure'
     | '/api/v1/session/$id/feedback'
     | '/api/v1/session/$id/next'
@@ -384,6 +407,8 @@ export interface FileRouteTypes {
     | '/api/v1/share/$token'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
+    | '/api/v1/session/$id/comparison'
+    | '/api/v1/session/$id/explore'
     | '/api/v1/session/$id/exposure'
     | '/api/v1/session/$id/feedback'
     | '/api/v1/session/$id/next'
@@ -577,6 +602,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionIdChoiceRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
+    '/api/v1/session/$id/comparison': {
+      id: '/api/v1/session/$id/comparison'
+      path: '/comparison'
+      fullPath: '/api/v1/session/$id/comparison'
+      preLoaderRoute: typeof ApiV1SessionIdComparisonRouteImport
+      parentRoute: typeof ApiV1SessionIdRoute
+    }
+    '/api/v1/session/$id/explore': {
+      id: '/api/v1/session/$id/explore'
+      path: '/explore'
+      fullPath: '/api/v1/session/$id/explore'
+      preLoaderRoute: typeof ApiV1SessionIdExploreRouteImport
+      parentRoute: typeof ApiV1SessionIdRoute
+    }
     '/api/v1/session/$id/exposure': {
       id: '/api/v1/session/$id/exposure'
       path: '/exposure'
@@ -654,6 +693,8 @@ const AuthenticatedRouteRouteWithChildren =
 interface ApiV1SessionIdRouteChildren {
   ApiV1SessionIdChatRoute: typeof ApiV1SessionIdChatRoute
   ApiV1SessionIdChoiceRoute: typeof ApiV1SessionIdChoiceRoute
+  ApiV1SessionIdComparisonRoute: typeof ApiV1SessionIdComparisonRoute
+  ApiV1SessionIdExploreRoute: typeof ApiV1SessionIdExploreRoute
   ApiV1SessionIdExposureRoute: typeof ApiV1SessionIdExposureRoute
   ApiV1SessionIdFeedbackRoute: typeof ApiV1SessionIdFeedbackRoute
   ApiV1SessionIdNextRoute: typeof ApiV1SessionIdNextRoute
@@ -667,6 +708,8 @@ interface ApiV1SessionIdRouteChildren {
 const ApiV1SessionIdRouteChildren: ApiV1SessionIdRouteChildren = {
   ApiV1SessionIdChatRoute: ApiV1SessionIdChatRoute,
   ApiV1SessionIdChoiceRoute: ApiV1SessionIdChoiceRoute,
+  ApiV1SessionIdComparisonRoute: ApiV1SessionIdComparisonRoute,
+  ApiV1SessionIdExploreRoute: ApiV1SessionIdExploreRoute,
   ApiV1SessionIdExposureRoute: ApiV1SessionIdExposureRoute,
   ApiV1SessionIdFeedbackRoute: ApiV1SessionIdFeedbackRoute,
   ApiV1SessionIdNextRoute: ApiV1SessionIdNextRoute,
