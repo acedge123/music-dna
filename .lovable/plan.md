@@ -14,8 +14,9 @@ After a listener finishes their main reading, offer links like "Take it to the '
 3. **Accounts.** Guests see the decade links with "Sign in to save and compare readings". Signing in keeps the original reading. (This depends on safe guest-to-account linking, which is still open future work.)
 4. **Decade run.** Same interview, Critic, review checks and frozen-evidence rules as now. Matchup selection is limited to that lane and decade. It is saved as its own reading, tagged with the decade and linked to the original reading.
 5. **Comparison payoff.** At the end, the Critic compares the two saved readings: which traits held, which flipped and which were not tested. Claims still need the usual evidence thresholds, and anything not tested gets no claim.
-6. **Fill the gaps.** Add songs and matchups lane by lane, starting with the decades and lanes listeners pick most, using the same scoring process as recent catalog batches.
-7. **Account page.** A simple list of your readings: the original plus each decade.
+6. **Genre eras.** Each genre only offers the decades it actually existed in. Electronic and Hip-hop: '80s on. Classic Rock: before 1990, with Metal taking over after. Disco: '70s. Punk: '70s to '90s. Missing combinations are by design, not gaps.
+7. **Fill the real gaps first:** Pop, General, Country and Metal across their eras, plus Alternative in the 2000s to 2020s. Use the same scoring and approval process as recent catalog batches.
+8. **Account page.** A simple list of your readings: the original plus each decade.
 
 ## Open questions
 - Decade by song release year only (a 1979 song counts as the '70s)?
