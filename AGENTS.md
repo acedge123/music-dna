@@ -50,7 +50,7 @@
 
 - AB-57 hourly learning runs in a separate Railway operator service, with a source-bound automated queue endpoint and durable metadata receipts. Railway holds only narrow caller keys; backend/ingest credentials stay inside Supabase Edge Functions and outside EdgeBot/model context; preserve source/reviewer/consent gates, global $5/day reservations, no ambiguous inference retries and draft-only output. Queue/dispatch success is never completed model work. See docs/musicdna/ab57-automation.md.
 
-- Completed-reading accuracy controls use the existing authenticated feedback write plus owner/version-scoped readback; show Saved only after matching the durable operation. Keep ratings optional, below the completed read, absent during song choices and on public shares, and reuse the per-reading/version operation key across retries/reloads.
+- Reading accuracy controls reuse the authenticated feedback write with owner/version readback; show Saved only after a durable match. Ratings are optional, below the completed read, never during picks or on shares, and reuse one operation key per reading/version.
 - Post-pick reads are pre-drafted server-side and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
 - Decade runs are `sessions.mode=explore` children of a completed reading; `exploreNextPairing` keeps discover routing untouched and comparisons use only frozen ledgers.
