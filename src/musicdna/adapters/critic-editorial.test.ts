@@ -257,3 +257,19 @@ describe("critic-expression-v2.3 output contract", () => {
     expect(text).toContain("intimacy over spectacle");
   });
 });
+
+import { signatureAllowed } from "./critic-editorial";
+describe("reveal signature", () => {
+  it("accepts a short figurative name", () => {
+    expect(signatureAllowed({ name: "Polish With Teeth", hook: "Craft first, until raw hits harder." })).toBe(true);
+  });
+  it("rejects numbers, archetype claims and long names", () => {
+    expect(signatureAllowed({ name: "3-for-4 Refiner", hook: "x x" })).toBe(false);
+    expect(signatureAllowed({ name: "The Archetype", hook: "Your archetype is set." })).toBe(false);
+    expect(signatureAllowed({ name: "one two three four five six", hook: "fine hook" })).toBe(false);
+  });
+  it("only the reveal schema asks for a signature", () => {
+    expect(criticBeatSchema(ledger([40]), "reveal").required).toContain("signature");
+    expect(criticBeatSchema(ledger([40]), "read").required).not.toContain("signature");
+  });
+});

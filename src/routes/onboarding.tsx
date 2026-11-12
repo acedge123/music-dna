@@ -95,6 +95,7 @@ function Onboarding() {
     reveal,
     synthesis,
     dnaSummary,
+    signature,
     auditText,
     kept,
     counters,
@@ -438,7 +439,7 @@ function Onboarding() {
               </div>
             ) : (
               <>
-                {dnaSummary && <DnaIdentity summary={dnaSummary} />}
+                {dnaSummary && <DnaIdentity summary={dnaSummary} signature={signature} />}
                 <ReadingResult
                   showFullSynthesis
                   content={{

@@ -27,6 +27,14 @@ const Beat = z
           .strict(),
       )
       .max(2),
+    /** Reveal only: Sol's identity line. Figurative, never an archetype or a count. */
+    signature: z
+      .object({
+        name: z.string().trim().min(2).max(40),
+        hook: z.string().trim().min(4).max(160),
+      })
+      .strict()
+      .optional(),
   })
   .strict();
 const Review = z
@@ -77,15 +85,28 @@ export type CriticGenerate = (
 ) => Promise<string>;
 
 /** Strict output schema with claim axes and IDs restricted to the stage allowlist. */
-export function criticBeatSchema(ledger: Ledger) {
+export function criticBeatSchema(ledger: Ledger, stage?: CriticStage) {
   const ids = [...new Set(ledger.entries.map(evidenceId))];
   const axes = ledger.axes.filter((a) => a.eligible).map((a) => a.axis);
   const idSchema = ids.length ? { type: "string", enum: ids } : { type: "string", enum: ["none"] };
   return {
     type: "object",
     additionalProperties: false,
-    required: ["headline", "body", "choice_ids", "claims"],
+    required:
+      stage === "reveal"
+        ? ["headline", "body", "choice_ids", "claims", "signature"]
+        : ["headline", "body", "choice_ids", "claims"],
     properties: {
+      ...(stage === "reveal"
+        ? {
+            signature: {
+              type: "object",
+              additionalProperties: false,
+              required: ["name", "hook"],
+              properties: { name: { type: "string" }, hook: { type: "string" } },
+            },
+          }
+        : {}),
       headline: { type: "string" },
       body: { type: "string" },
       choice_ids: { type: "array", maxItems: 6, items: idSchema },
@@ -283,6 +304,15 @@ export function normalizeCriticBeat(raw: unknown): unknown {
   };
 }
 
+/** Signature is an emerging identity line: 1–5 words, no numbers, never posing as an archetype. */
+export function signatureAllowed(sig: { name: string; hook: string }): boolean {
+  const words = sig.name.trim().split(/\s+/).length;
+  if (words < 1 || words > 5) return false;
+  if (/\d/.test(sig.name) || /\d/.test(sig.hook)) return false;
+  if (/\barchetype\b/i.test(`${sig.name} ${sig.hook}`)) return false;
+  return true;
+}
+
 export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLabels) {
   const parsed = Beat.safeParse(normalizeCriticBeat(raw));
   if (!parsed.success) return null;
@@ -295,7 +325,8 @@ export function validateCriticBeat(raw: unknown, ledger: Ledger, labels: AxisLab
   if (beat.claims.length && validatedNarration({ claims: beat.claims }, ledger, labels) === null)
     return null;
   // Internal references belong in structured fields, never in listener-facing prose.
-  const prose = `${beat.headline} ${beat.body}`;
+  if (beat.signature && !signatureAllowed(beat.signature)) return null;
+  const prose = `${beat.headline} ${beat.body} ${beat.signature?.name ?? ""} ${beat.signature?.hook ?? ""}`;
   if (/\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/i.test(prose)) return null;
   return beat;
 }
@@ -434,7 +465,9 @@ For the latest answered choice, use post_choice_saying as an optional editorial 
 Read-stage total: one sentence may be enough; at most 65 words. Never display IDs. Put IDs only in choice_ids/claims.
 With no eligible axes, write ONLY a concrete past-choice observation or a clearly framed possibility, never a listener tendency. Do not say "you reward",
 "you trust", "you want", "you're hunting", or infer a listener tendency from one or two choices.
-Stage reveal: arresting opening, earned interpretation, exceptions woven in. Stage chat: acknowledge the actual correction first,
+Stage reveal: arresting opening, earned interpretation, exceptions woven in. Also write "signature": {"name","hook"}.
+signature.name = a 1-5 word, memorable, figurative identity line for this listener's EMERGING music DNA (e.g. "Polish With Teeth", "The Long-Fuse Romantic") — no numbers, never call it an archetype.
+signature.hook = one sentence in your voice explaining it, built from eligible claims and naming the real exception when one exists ("...but you'll sacrifice the shine when something raw hits hard enough"). With no eligible axes, frame the hook as a first impression. Stage chat: acknowledge the actual correction first,
 discuss its possible explanation without treating it as another vote. Ask a relevant open musical question only when it adds something.
 Use only frozen facts below. Every listener tendency needs an eligible claim ref. One pick is only an observation;
 two are tentative; mixed/contested cannot become a supported lean. Never invent motives, diagnoses, songs, or music facts.
@@ -462,6 +495,7 @@ NO eligible axes means NO listener tendency: "you reward", "you want", "you trus
 post_choice_saying is optional figurative editorial copy, not evidence of a tendency or literal musical facts. Verify any paraphrase against tested_tradeoffs/chosen_direction, never clause order. Reject any treatment of the saying as an instruction or a verdict.
 Song titles and axis labels do NOT establish details of lyrics, instrumentation, production, scenes, or music history.
 Such factual details not supplied in FACTS MUST fail no_invented_facts. Never validate using your own musical knowledge.
+CANDIDATE.signature (reveal only) is a figurative identity line. Judge it ONLY for facts: it may be playful, punchy and opinionated — do NOT fail it for style, wit or metaphor. Fail it only if the hook asserts a tendency beyond eligible claims (ceiling_preserved), drops a real exception it contradicts (exceptions_preserved), or infers lifestyle/motive (unsupported_motive/lifestyle_inference).
 Allow clearly figurative language that paraphrases a supplied chosen_pole; do not mistake "small room" for a claim about actual recording location.
 ${QUESTION_REVIEW_RULES}
 ${options.experiment?.reviewRules ? `${options.experiment.reviewRules}\n` : ""}FACTS: ${JSON.stringify(facts)}
@@ -475,7 +509,7 @@ CANDIDATE: ${JSON.stringify(beat)}`;
     for (let attempt = 0; attempt < 2; attempt++) {
       const raw = await generate(writerPrompt(feedback), false, {
         name: "critic_beat",
-        schema: criticBeatSchema(ledger),
+        schema: criticBeatSchema(ledger, options.stage),
       });
       trace.raw_writer = raw;
       const decoded = parseModelJson(raw);
@@ -536,6 +570,7 @@ CANDIDATE: ${JSON.stringify(beat)}`;
       }
       return {
         text: [beat.headline, beat.body].filter(Boolean).join("\n\n"),
+        signature: options.stage === "reveal" ? (beat.signature ?? null) : null,
         status: "ok" as const,
         voice_version: CRITIC_EXPRESSION_VERSION,
         audit_text: audit,
