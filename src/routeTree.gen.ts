@@ -16,6 +16,7 @@ import { Route as MeRouteImport } from './routes/me'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReferenceRouteImport } from './routes/reference'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as Authenticated1980RouteImport } from './routes/_authenticated/1980'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -79,6 +80,11 @@ const PrivacyRoute = PrivacyRouteImport.update({
 const ReferenceRoute = ReferenceRouteImport.update({
   id: '/reference',
   path: '/reference',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/reference': typeof ReferenceRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/1980': typeof Authenticated1980Route
   '/admin': typeof AuthenticatedAdminRoute
@@ -278,6 +285,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/reference': typeof ReferenceRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/1980': typeof Authenticated1980Route
   '/admin': typeof AuthenticatedAdminRoute
@@ -318,6 +326,7 @@ export interface FileRoutesById {
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
   '/reference': typeof ReferenceRoute
+  '/reset-password': typeof ResetPasswordRoute
   '/terms': typeof TermsRoute
   '/_authenticated/1980': typeof Authenticated1980Route
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -358,6 +367,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/privacy'
     | '/reference'
+    | '/reset-password'
     | '/terms'
     | '/1980'
     | '/admin'
@@ -396,6 +406,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/privacy'
     | '/reference'
+    | '/reset-password'
     | '/terms'
     | '/1980'
     | '/admin'
@@ -435,6 +446,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/privacy'
     | '/reference'
+    | '/reset-password'
     | '/terms'
     | '/_authenticated/1980'
     | '/_authenticated/admin'
@@ -475,6 +487,7 @@ export interface RootRouteChildren {
   OnboardingRoute: typeof OnboardingRoute
   PrivacyRoute: typeof PrivacyRoute
   ReferenceRoute: typeof ReferenceRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
   TermsRoute: typeof TermsRoute
   SSessionIdRoute: typeof SSessionIdRoute
   ApiPublicVersionRoute: typeof ApiPublicVersionRoute
@@ -536,6 +549,13 @@ declare module '@tanstack/react-router' {
       path: '/reference'
       fullPath: '/reference'
       preLoaderRoute: typeof ReferenceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -828,6 +848,7 @@ const rootRouteChildren: RootRouteChildren = {
   OnboardingRoute: OnboardingRoute,
   PrivacyRoute: PrivacyRoute,
   ReferenceRoute: ReferenceRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
   TermsRoute: TermsRoute,
   SSessionIdRoute: SSessionIdRoute,
   ApiPublicVersionRoute: ApiPublicVersionRoute,

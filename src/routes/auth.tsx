@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
+import { friendlyAuthError } from "@/lib/auth-errors";
 
 export const Route = createFileRoute("/auth")({
   head: () => ({
@@ -28,7 +29,7 @@ function AuthPage() {
   const navigate = useNavigate();
   const { user, loading } = useAuth();
   const signedIn = !!user && !user.is_anonymous;
-  const [mode, setMode] = useState<"sign-in" | "sign-up">("sign-in");
+  const [mode, setMode] = useState<"sign-in" | "sign-up" | "forgot">("sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
@@ -41,6 +42,15 @@ function AuthPage() {
     e.preventDefault();
     setBusy(true);
     try {
+      if (mode === "forgot") {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/reset-password`,
+        });
+        if (error) throw error;
+        toast.success("If that email has an account, a reset link is on its way.");
+        setMode("sign-in");
+        return;
+      }
       if (mode === "sign-up") {
         const { error } = await supabase.auth.signUp({
           email,
@@ -54,7 +64,8 @@ function AuthPage() {
         if (error) throw error;
       }
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Auth failed");
+      toast.error(friendlyAuthError(err));
+      if ((err as { code?: string })?.code === "user_already_exists") setMode("sign-in");
     } finally {
       setBusy(false);
     }
@@ -76,10 +87,16 @@ function AuthPage() {
           ← Back
         </Link>
         <h1 className="display text-4xl mb-2">
-          {mode === "sign-in" ? "Continue your MusicDNA." : "Begin your MusicDNA."}
+          {mode === "sign-in"
+            ? "Continue your MusicDNA."
+            : mode === "forgot"
+              ? "Reset your password."
+              : "Begin your MusicDNA."}
         </h1>
         <p className="text-sm text-muted-foreground mb-8">
-          {mode === "sign-in"
+          {mode === "forgot"
+            ? "We'll email you a link to set a new one."
+            : mode === "sign-in"
             ? "Your readings persist across sessions."
             : "Email and a password. No social, no ceremony."}
         </p>
@@ -98,6 +115,7 @@ function AuthPage() {
               className="w-full bg-surface border hairline-strong rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
             />
           </div>
+          {mode !== "forgot" && (
           <div>
             <label htmlFor="auth-password" className="eyebrow block mb-2">
               Password
@@ -113,15 +131,32 @@ function AuthPage() {
               className="w-full bg-surface border hairline-strong rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
             />
           </div>
+          )}
           <button
             type="submit"
             disabled={busy}
             className="w-full bg-primary text-primary-foreground rounded-sm px-4 py-3 text-sm font-medium hover:opacity-90 disabled:opacity-50"
           >
-            {busy ? "…" : mode === "sign-in" ? "Sign in" : "Create account"}
+            {busy
+              ? "…"
+              : mode === "sign-in"
+                ? "Sign in"
+                : mode === "forgot"
+                  ? "Send reset link"
+                  : "Create account"}
           </button>
         </form>
+        {mode === "sign-in" && (
+          <button
+            type="button"
+            onClick={() => setMode("forgot")}
+            className="mt-6 mr-6 text-xs text-muted-foreground hover:text-foreground"
+          >
+            Forgot password?
+          </button>
+        )}
         <button
+          type="button"
           onClick={() => setMode(mode === "sign-in" ? "sign-up" : "sign-in")}
           className="mt-6 text-xs text-muted-foreground hover:text-foreground"
         >
@@ -131,3 +166,4 @@ function AuthPage() {
     </main>
   );
 }
+
