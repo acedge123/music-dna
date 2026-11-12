@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { poleScoreLabel } from "@/musicdna/engine/axes";
-import { draftSongWhys, listSongWhys, reviewSongWhy, songWhysOverview } from "@/lib/song-whys.functions";
+import { approveAllSongWhys, draftSongWhys, listSongWhys, reviewSongWhy, songWhysOverview } from "@/lib/song-whys.functions";
 
 const FILTERS = [
   ["pending_review", "Ready to review"],
@@ -102,6 +102,11 @@ export function SongWhysPanel() {
             <option key={l} value={l}>{l}</option>
           ))}
         </select>
+        {status === "pending_review" && (ov.data?.totals.pending_review ?? 0) > 0 && (
+          <Button size="sm" disabled={busy} onClick={() => void runApproveAll()}>
+            Approve all{lane === "all" ? "" : ` (${lane})`}
+          </Button>
+        )}
       </div>
 
       {q.isPending ? (
