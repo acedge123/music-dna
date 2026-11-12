@@ -16,7 +16,7 @@ import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/d
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
 import { useEffect, useState } from "react";
-import { fillerFor } from "@/musicdna/engine/critic-fillers";
+import { fillerLines, skipLine, type Hunch } from "@/musicdna/engine/critic-fillers";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -94,6 +94,8 @@ function Onboarding() {
     milestone,
     holdNext,
     releaseNext,
+    stageHunch,
+    skipNote,
     continueInterview,
     finishEarly,
     reveal,
@@ -392,6 +394,7 @@ function Onboarding() {
         {criticStage && (
           <CriticStage
             wait={entries.length + 1}
+            hunch={stageHunch}
             chosenTitle={stageTitle}
             entry={holdNext ? entries.at(-1) : undefined}
             halftime={holdNext && entries.length === 3 ? sessionId : null}
@@ -416,8 +419,8 @@ function Onboarding() {
               onChoose={(id) => void pick(id)}
             />
             {busy && (
-              <p role="status" className="text-sm text-muted-foreground">
-                Saving your choice…
+              <p role="status" className={skipNote ? "font-serif text-2xl italic" : "text-sm text-muted-foreground"}>
+                {skipNote ? skipLine(skipNote.index, skipNote.artist) : "Saving your choice…"}
               </p>
             )}
             {flowError && (
@@ -440,7 +443,13 @@ function Onboarding() {
         )}
 
         {busy && !pairing && phase === "playing" && (
-          <CriticStage wait={0} chosenTitle="" halftime={null} onNext={() => {}} />
+          <CriticStage
+            wait={0}
+            chosenTitle=""
+            halftime={null}
+            onNext={() => {}}
+            skip={skipNote ? skipLine(skipNote.index, skipNote.artist) : null}
+          />
         )}
 
         {/* Final report */}
@@ -554,18 +563,24 @@ type StageEntry = { reaction: string; thesis: string };
 /** Critic-only screen between a pick and the next matchup. */
 function CriticStage({
   wait,
+  hunch,
+  skip,
   chosenTitle,
   entry,
   halftime,
   onNext,
 }: {
   wait: number;
+  hunch?: Hunch | null;
+  skip?: string | null;
   chosenTitle: string;
   entry?: StageEntry;
   halftime: string | null;
   onNext: () => void;
 }) {
   const [tick, setTick] = useState(0);
+  const lines = skip ? [skip] : fillerLines(wait, hunch);
+  useEffect(() => setTick(0), [hunch, skip]);
   useEffect(() => {
     if (entry) return;
     const t = setInterval(() => setTick((n) => n + 1), 2500);
@@ -598,7 +613,7 @@ function CriticStage({
         </div>
       ) : (
         <p role="status" key={tick} className="font-serif text-3xl italic animate-in fade-in duration-500">
-          {fillerFor(wait, tick)}
+          {lines[Math.min(tick, lines.length - 1)]}
         </p>
       )}
     </section>

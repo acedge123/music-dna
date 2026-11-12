@@ -1,3 +1,4 @@
+import { pickHunch } from "@/musicdna/engine/critic-fillers";
 import { requireReadCursor, ReadSupersededError, type ReadCursor } from "@/musicdna/adapters/read-cursor";
 import {
   matchArchetypeV2,
@@ -1551,6 +1552,7 @@ export async function recordChoiceImpl(
   hesitation: string | null;
   dim: string;
   delta: number;
+  hunch?: "against" | "with" | "early";
   replayed?: true;
 }> {
   {
@@ -1723,7 +1725,8 @@ export async function recordChoiceImpl(
 
   // ARC03: vote + feedback + score update commit together in one
   // transaction, guarded by the vector we read (no lost updates).
-  const response = { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta };
+  const hunch = pickHunch(priorVec, topDim, topDelta, round);
+  const response = { vector: vec, verdict, why, hesitation, dim: topDim, delta: topDelta, hunch };
   const { error: rpcErr } = await supabase.rpc(
     "record_choice_atomic" as never,
     {

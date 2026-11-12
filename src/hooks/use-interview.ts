@@ -1,5 +1,6 @@
 import type { DnaSummary } from "@/musicdna/engine/dna-summary";
 import { useEffect, useRef, useState } from "react";
+import type { Hunch } from "@/musicdna/engine/critic-fillers";
 import { useServerFn } from "@tanstack/react-start";
 import { resumeLatestSession } from "@/lib/resume.functions";
 import {
@@ -104,6 +105,9 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   const [entries, setEntries] = useState<Entry[]>([]);
   // Next pairing stays hidden until the listener has seen the Critic's read.
   const [holdNext, setHoldNext] = useState(false);
+  const [stageHunch, setStageHunch] = useState<Hunch | null>(null);
+  const [skipNote, setSkipNote] = useState<{ artist: string; index: number } | null>(null);
+  const skipCount = useRef(0);
   const [dismissedMilestones, setDismissedMilestones] = useState<number[]>([]);
   const [reveal, setReveal] = useState<{
     answered: number;
@@ -441,14 +445,16 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     actionRef.current = true;
     setFlowError(null);
     setPendingSongId(songId);
+    setStageHunch(null);
     setBusy(true);
     const ms = Math.min(600000, Date.now() - startedAt.current);
     const currentPairing = pairing;
     const currentRound = round;
     try {
-      const { verdict, why, dim, delta } = await chooseFn({
+      const { verdict, why, dim, delta, hunch } = (await chooseFn({
         data: { sessionId, pairingId: currentPairing.id, chosenSongId: songId, msToDecide: ms },
-      });
+      })) as { verdict: string; why: string; dim: string; delta: number; hunch?: Hunch };
+      setStageHunch(hunch ?? "early");
       const rejectedSongId =
         songId === currentPairing.song_a.id ? currentPairing.song_b.id : currentPairing.song_a.id;
       track({
@@ -748,6 +754,10 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     const ms = Math.min(600000, Date.now() - startedAt.current);
     const currentPairing = pairing;
     try {
+      setSkipNote({
+        artist: (Math.random() < 0.5 ? currentPairing.song_a : currentPairing.song_b).artist,
+        index: skipCount.current++,
+      });
       await skipFn({ data: { sessionId, pairingId: currentPairing.id, msToDecide: ms } });
       track({
         event_type: "pairing_shown",
@@ -778,6 +788,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         return;
       }
       setPairing(nxt as unknown as Pairing);
+      setSkipNote(null);
       setPendingSkip(null);
       setRound(nr);
       startedAt.current = Date.now();
@@ -832,6 +843,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     milestone,
     holdNext,
     releaseNext,
+    stageHunch,
+    skipNote,
     continueInterview,
     finishEarly,
     reveal,
