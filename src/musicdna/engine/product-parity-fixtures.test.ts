@@ -155,7 +155,8 @@ describe("TGA-302 synthetic product parity fixtures", () => {
 
   it("F12 resets the late skip bound when a new answer interrupts the streak", () => {
     const s = suite.sessions.late_skips;
-    expect(sessionCompletion({ ...s, answered: 3, dims: suite.dims }).reason).toBe("skip_bound");
+    expect(sessionCompletion({ ...s, answered: 3, dims: suite.dims }).done).toBe(false);
+    expect(sessionCompletion({ ...s, answered: 3, skipped: 5, consecutive_skips: 5, dims: suite.dims }).reason).toBe("skip_bound");
     expect(
       sessionCompletion({ ...s, answered: 4, consecutive_skips: 1, dims: suite.dims }).done,
     ).toBe(false);

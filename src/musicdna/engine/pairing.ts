@@ -214,8 +214,8 @@ export function sessionCompletion(input: {
   if (input.answered >= maxAnswered) reason = "budget";
   else if (input.answered >= earlyMin && confidence >= confThresh) reason = "confident";
   else if (skipped >= skipBound && input.answered <= 2) reason = "skip_bound";
-  // D02: three consecutive skips end the session at any stage.
-  else if ((input.consecutive_skips ?? 0) >= skipBound) reason = "skip_bound";
+  // D02: five consecutive skips end the session; the early low-recognition bound stays separate.
+  else if ((input.consecutive_skips ?? 0) >= 5) reason = "skip_bound";
   else if (input.requested_finish && input.answered >= 4) reason = "listener_requested";
 
   return { done: reason !== null, reason, confidence, confident_axes, max_answered: maxAnswered };

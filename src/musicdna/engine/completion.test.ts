@@ -43,7 +43,7 @@ describe("sessionCompletion", () => {
     expect(
       sessionCompletion({
         answered: 4,
-        consecutive_skips: 3,
+        consecutive_skips: 5,
         requested_finish: true,
         vector: vec(0),
         dims: DIMS,
@@ -83,14 +83,17 @@ describe("sessionCompletion", () => {
 
 import { sessionCompletion as sc2 } from "./pairing";
 describe("D02 consecutive skips", () => {
-  it("ends after 3 consecutive skips even with progress", () => {
+  it.each([3, 4])("continues after %i consecutive skips with progress", (skips) => {
+    expect(sessionCompletion({ answered: 3, skipped: skips, consecutive_skips: skips, vector: {}, dims: DIMS }).done).toBe(false);
+  });
+  it("ends after 5 consecutive skips even with progress", () => {
     expect(
-      sc2({ answered: 4, skipped: 3, consecutive_skips: 3, vector: {}, dims: ["a"] }).reason,
+      sc2({ answered: 4, skipped: 5, consecutive_skips: 5, vector: {}, dims: ["a"] }).reason,
     ).toBe("skip_bound");
   });
   it("non-consecutive skips do not end", () => {
     expect(
-      sc2({ answered: 4, skipped: 3, consecutive_skips: 1, vector: {}, dims: ["a"] }).done,
+      sc2({ answered: 4, skipped: 5, consecutive_skips: 1, vector: {}, dims: ["a"] }).done,
     ).toBe(false);
   });
 });

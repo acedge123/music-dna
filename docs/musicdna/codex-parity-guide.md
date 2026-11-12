@@ -81,7 +81,7 @@ Most findings below originate in the September baseline. Rows updated for Lovabl
 | GAP11 | P0 | No Flutter living-read chat route | Native continuation over shared service |
 | GAP12 | P0 | Same-choice challenge is not implemented | Separate fixed-sequence recipient session |
 | GAP13 | P0 | Later October 10 running/final paths use buildLedger; absent tests still fall back to all dimensions | Validate declared axes, immutable evidence, and public-card integration |
-| GAP14 | P0 | October 10 D02 adds three consecutive skips at any answer count | Verify persisted-event integration; implement a real catalog-exhausted reason |
+| GAP14 | P0 | October 10 D02 adds five consecutive skips at any answer count | Verify persisted-event integration; implement a real catalog-exhausted reason |
 | GAP15 | P0 | Chat extracts deltas and updates session vector | Separate provenance and result versions |
 | GAP16 | P1 | Later October 10 source changes checkpoints to answered rounds 2/4/6 | Verify deployed views and six-answer event semantics |
 
@@ -359,7 +359,7 @@ Use explicit error codes for unauthorized, forbidden, invalid input, not found, 
 
 A reaction response records kind, applied, reason, previous_presentation_id, replacement_presentation_id, and updated experience. That's me preserves scores. Not quite prefers a diagnostically relevant retest and excludes the currently displayed presentation when replacing it. If none exists, return applied false with an honest prompt. Harder must affect the effective selector inputs; top-level mode currently overrides knob mode and must not neutralize the request.
 
-The engine owns all stop rules. Keep answered, presentation count, and skip count separate. Early completion must not use prior vector magnitude as a substitute for valid observed support. Accepted D02 stops a stalled session after three consecutive skips at any answer count; Lovable has added the rule, so verify its persisted-event integration and reset after an answer. The reason catalog_exhausted must be emitted by a real exhausted-catalog path and must not masquerade as a confident or budget-complete result.
+The engine owns all stop rules. Keep answered, presentation count, and skip count separate. Early completion must not use prior vector magnitude as a substitute for valid observed support. Accepted D02 stops a stalled session after five consecutive skips at any answer count; Lovable has added the rule, so verify its persisted-event integration and reset after an answer. The reason catalog_exhausted must be emitted by a real exhausted-catalog path and must not masquerade as a confident or budget-complete result.
 
 ## 7 Persistence and publication
 
@@ -423,7 +423,7 @@ Fixtures use frozen metadata and mocked/cached narrative strings for cross-clien
 | F09 Artist confound | Winning choices concentrate on one artist | Alternative explanation preserved |
 | F10 Harder | Low lane confidence and explicit steering | Effective selector mode reflects steering |
 | F11 No retest | Not quite with no eligible replacement | Honest no-change response; no score change |
-| F12 Late skips | Three answers then three consecutive skips; an answer between skips resets the sequence | Accepted D02 bound, durable event order, and correct reason |
+| F12 Late skips | Three answers then five consecutive skips; an answer between skips resets the sequence | Accepted D02 bound, durable event order, and correct reason |
 | F13 Empty catalog | No eligible pairings remain | catalog_exhausted and appropriate result |
 | F14 LLM failure | Valid evidence but generator unavailable | Same evidence with deterministic fallback |
 | F15 Invalid narrative | Invented song or disallowed claim | Reject generated output and fall back |

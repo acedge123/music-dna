@@ -129,7 +129,7 @@ Priority P0 means required before parity release. P1 means a supporting product 
 
 **DUE05 P0 Unknown-song skip.** Permit a skip when one or both songs are unfamiliar or the user cannot make a meaningful choice. Preserve an optional skip reason for product analysis. Skips never change preference vectors, support counts, or archetype fit.
 
-**DUE06 P0 Completion.** Retain the six-answer hard cap and minimum four answers for early completion while the evidence-aware early-stop refinement is decided. Retain the existing low-recognition rule of three skips when answers are two or fewer. Under accepted D02, three consecutive skips also end a session at any answer count. Lovable added that rule and tests; verify persisted event order and both-client behavior. Catalog exhaustion must be emitted as a distinct completion reason, not merely declared as a possible type.
+**DUE06 P0 Completion.** Retain the six-answer hard cap and minimum four answers for early completion while the evidence-aware early-stop refinement is decided. Retain the existing low-recognition rule of three skips when answers are two or fewer. Under accepted D02, five consecutive skips also end a session at any answer count. Lovable added that rule and tests; verify persisted event order and both-client behavior. Catalog exhaustion must be emitted as a distinct completion reason, not merely declared as a possible type.
 
 **DUE07 P0 Reliable replay.** A repeated request with the same mutation ID returns the already committed result. Double taps, timeouts, retries, and multi-device requests must not duplicate choices or lose a vector update.
 
@@ -448,7 +448,7 @@ Source checked: music-dna at b83f9a35233a71078204434eacdcffed29dcb50f. This is a
 | D01 final claim gate | Shared claims.ts helper uses 3 supports, 0.65 consistency, support greater than contradiction; 3–1 qualified, 2–2 ineligible | Apply through one ledger everywhere; enforce distinct valid pairing evidence and confound handling |
 | Supporting examples | Final synthesis filters examples to the claim's direction | Trace support and counterevidence to immutable choice IDs |
 | Thin evidence | No-pattern prompt and fallback no longer infer broad taste | Separate zero-answer, sparse, conflicting, missing-catalog, and generation-failed outcomes; review actual result copy |
-| D02 consecutive skips | Shared completion rule stops after 3 consecutive skips at any stage; caller supplies recent choice/skip events | Verify event persistence, resume, reason rendering, and a real catalog-exhausted path |
+| D02 consecutive skips | Shared completion rule stops after 5 consecutive skips at any stage; caller supplies recent choice/skip events | Verify event persistence, resume, reason rendering, and a real catalog-exhausted path |
 
 Lovable reports the new claim and completion tests and existing suite pass. Source review confirmed the new tests exist; this documentation update did not independently rerun that suite. Lovable has not yet played the updated session end to end. Keep that review open before ACE web acceptance.
 
@@ -477,7 +477,7 @@ Minimum acceptance includes stable, contradictory, sparse, zero-answer, artist-c
 | ID | Decision | Direction | Status and remaining work |
 | --- | --- | --- | --- |
 | D01 | Common claim policy | Supported tendency needs at least 3 distinct supporting pairings, consistency at least 0.65, and support exceeding contradiction; 2 supports stays provisional | Accepted; helper and running/final ledger integration implemented; public-card integration and complete acceptance pending |
-| D02 | Skip bound after meaningful progress | End after 3 consecutive skips regardless of answer count; retain existing early skip rule and distinct catalog exhaustion handling | Accepted; consecutive-skip rule implemented, end-to-end behavior and catalog-exhausted path pending |
+| D02 | Skip bound after meaningful progress | End after 5 consecutive skips regardless of answer count; retain existing early skip rule and distinct catalog exhaustion handling | Accepted; consecutive-skip rule implemented, end-to-end behavior and catalog-exhausted path pending |
 | D03 | Existing public links | Explicit publication and revocation for new shares; a token's existence does not make a reading public; inventory legacy links before migration | Accepted direction; implement lifecycle and document the inventory-based migration treatment |
 | D04 | Chat and diagnostic scores | Preserve original pairing ledger and result; store conversational evidence separately and version any subsequent read | Accepted; separate self-report and result versioning remain to implement |
 | D05 | Performance budgets and pilot thresholds | Use Section 12 budgets and collect baseline before setting business conversion targets | Validate on representative devices and hosting |
