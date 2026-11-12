@@ -57,6 +57,7 @@ export const Route = createFileRoute("/api/v1/session/$id/choice")({
               contract: 1,
               replayed: result.replayed === true,
               feedback: { verdict: result.verdict, why: result.why },
+              hunch: result.hunch ?? "early",
               read: null,
               read_pending: true,
             });
@@ -66,6 +67,7 @@ export const Route = createFileRoute("/api/v1/session/$id/choice")({
             contract: 1,
             replayed: result.replayed === true,
             feedback: { verdict: result.verdict, why: result.why },
+              hunch: result.hunch ?? "early",
             read: {
               tier: read.tier,
               direction: read.direction,
