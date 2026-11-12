@@ -1,3 +1,4 @@
+import type { DnaSummary } from "@/musicdna/engine/dna-summary";
 import { useEffect, useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { resumeLatestSession } from "@/lib/resume.functions";
@@ -108,6 +109,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     challenge: string;
   }>();
   const [synthesis, setSynthesis] = useState<string | null>(null);
+  const [dnaSummary, setDnaSummary] = useState<DnaSummary | null>(null);
   const [auditText, setAuditText] = useState<string | undefined>();
   const [kept, setKept] = useState<
     Array<{ tradeoff: string; examples: string[]; supporting: number; tested: number }>
@@ -138,6 +140,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     setEntries([]);
     setDismissedMilestones([]);
     setReveal(undefined);
+    setDnaSummary(null);
     setSongs([]);
     setReactions([]);
     setRefined(null);
@@ -582,6 +585,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         }>;
         counter_reads: Array<{ claim: string; notes: string }>;
         narration_status?: string;
+        dna_summary?: DnaSummary;
       };
       if (!r.synthesis) throw new Error("Reading not saved yet");
       if (generation !== bootGeneration.current) return;
@@ -598,6 +602,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       setResultVersion(r.result_version);
       setReveal(r.reveal);
       setSynthesis(r.synthesis);
+      setDnaSummary(r.dna_summary ?? null);
       setAuditText(r.audit_text);
       setKept(r.kept_choosing ?? []);
       setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
