@@ -217,5 +217,5 @@
 - [x] Archetype v2 on in preview; "Does this archetype fit you?" question
 - [x] Song Whys drafting (batches of 10, most-picked first) + admin review queue
 - [ ] Vercel: set `MUSICDNA_ARCHETYPE_V2=1` (owner)
-- [ ] Validation report for Architect/Storyteller/Seeker/Believer + thematic notes
+- [ ] (Future) Agent Brain validation loop, Seeker first: see docs/musicdna/archetype-validation-agent-brain.md
 - [ ] Freeze approved explanations into picks and feed the Critic/chat
