@@ -1,0 +1,120 @@
+{
+  "contract": 1,
+  "envelope_version": "report-envelope-v1",
+  "status": "ok",
+  "session": {
+    "session_id": "00000000-0000-4000-8000-000000000001",
+    "mode": "discover",
+    "decade": null,
+    "parent_session_id": null,
+    "completed_at": "2026-11-11T04:02:00Z"
+  },
+  "frozen": {
+    "result_version": 1,
+    "source": "pairings",
+    "saved_at": "2026-11-11T04:02:00Z",
+    "text": "Polish doesn't mean polite. ...",
+    "voice_version": "critic-v2.3",
+    "narration_status": "ok",
+    "signature": {
+      "name": "The Varnisher",
+      "hook": "You like the shine with a blade under it."
+    },
+    "signature_status": "present",
+    "reveal": {
+      "answered": 6,
+      "twist": "Get You over Other 3",
+      "challenge": "What pulled you toward Get You in that choice?"
+    },
+    "archetype": {
+      "saved_at_finalize": true,
+      "status": "leaning",
+      "name": "The Romantic",
+      "archetype_id": "romantic",
+      "version": 2
+    }
+  },
+  "annotations": {
+    "status": "ok",
+    "dna_summary_version": "dna-summary-v1",
+    "dna_summary": {
+      "version": "dna-summary-v1",
+      "answered": 6,
+      "dimensions": [
+        {
+          "axis": "texture",
+          "label": "refinement over rawness",
+          "preferred": "refinement",
+          "over": "rawness",
+          "supporting": 3,
+          "relevant": 4,
+          "confidence": "Leaning",
+          "status": "qualified"
+        }
+      ],
+      "undecided": [],
+      "receipts": [
+        {
+          "kind": "pattern",
+          "axis": "texture",
+          "chosen": "Bizarre Love Triangle",
+          "chosen_artist": "New Order",
+          "rejected": "Other 1",
+          "rejected_artist": "Artist 1",
+          "note": "A vote for refinement."
+        },
+        {
+          "kind": "pattern",
+          "axis": "texture",
+          "chosen": "Dreams",
+          "chosen_artist": "The Cranberries",
+          "rejected": "Other 0",
+          "rejected_artist": "Artist 0",
+          "note": "A vote for refinement."
+        },
+        {
+          "kind": "contradiction",
+          "axis": "texture",
+          "chosen": "Get You",
+          "chosen_artist": "Daniel Caesar",
+          "rejected": "Other 3",
+          "rejected_artist": "Artist 3",
+          "note": "The exception: rawness won this one."
+        }
+      ],
+      "matchups": [
+        {
+          "chosen": "Dreams",
+          "chosen_artist": "The Cranberries",
+          "rejected": "Other 0",
+          "rejected_artist": "Artist 0"
+        },
+        {
+          "chosen": "Bizarre Love Triangle",
+          "chosen_artist": "New Order",
+          "rejected": "Other 1",
+          "rejected_artist": "Artist 1"
+        },
+        {
+          "chosen": "With or Without You",
+          "chosen_artist": "U2",
+          "rejected": "Other 2",
+          "rejected_artist": "Artist 2"
+        },
+        {
+          "chosen": "Get You",
+          "chosen_artist": "Daniel Caesar",
+          "rejected": "Other 3",
+          "rejected_artist": "Artist 3"
+        }
+      ],
+      "archetype": {
+        "status": "leaning",
+        "name": "The Romantic"
+      },
+      "single_lane": "Alternative"
+    },
+    "challenge": "What pulled you toward Get You in that choice?",
+    "challenge_source": "frozen"
+  }
+}
