@@ -29,3 +29,14 @@ export function halftimeSummary(entries: HalftimeEntry[]): string {
   const hook = thread && !revisedAny ? "the pattern holds or cracks" : "which story wins";
   return `${list}. ${tension} Three more—let's see if ${hook}.`;
 }
+
+// Critic's answer to halftime pushback. Deterministic and instant: the
+// listener's words are self-report, never a vote, so the reply hands the
+// argument to the next picks instead of conceding or rewriting the read.
+export function halftimePushbackReply(text: string): string {
+  const t = text.trim().toLowerCase();
+  if (!t) return "Noted. Keep picking.";
+  if (/\b(yes|yep|exactly|spot on|nailed|right)\b/.test(t))
+    return "Glad we agree. Now I'll try to break it — three more.";
+  return "Fair. You've said your piece; let's see if the next three back you up or back me up.";
+}
