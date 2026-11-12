@@ -57,4 +57,4 @@
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
 
-- The final reading's Music DNA panel (identity status, dimensions, receipts, invitation) comes only from `buildDnaSummary` over frozen evidence and the finalize-stored archetype — so the payoff can never show counts or an archetype the evidence didn't earn.
+- Reading DNA panel comes only from `buildDnaSummary` (frozen evidence + stored archetype) — no unearned counts/archetypes.
