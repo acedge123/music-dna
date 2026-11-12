@@ -816,6 +816,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     finishEarly,
     reveal,
     synthesis,
+    dnaSummary,
     auditText,
     kept,
     counters,
