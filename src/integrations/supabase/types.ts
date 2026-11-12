@@ -2957,6 +2957,16 @@ export type Database = {
         }
         Returns: Json
       }
+      save_musicdna_deferred_read: {
+        Args: {
+          p_answered: number
+          p_owner_id: string
+          p_pairing_id: string
+          p_props: Json
+          p_session_id: string
+        }
+        Returns: Json
+      }
       save_result_feedback: {
         Args: { p_payload: Json; p_session_id: string }
         Returns: Json
