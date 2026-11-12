@@ -16,7 +16,7 @@ import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/d
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
 import { useEffect, useState } from "react";
-import { fillerAt } from "@/musicdna/engine/critic-fillers";
+import { fillerFor } from "@/musicdna/engine/critic-fillers";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -391,7 +391,7 @@ function Onboarding() {
 
         {criticStage && (
           <CriticStage
-            seed={`${sessionId}:${entries.length}`}
+            wait={entries.length + 1}
             chosenTitle={stageTitle}
             entry={holdNext ? entries.at(-1) : undefined}
             halftime={holdNext && entries.length === 3 ? sessionId : null}
@@ -440,7 +440,7 @@ function Onboarding() {
         )}
 
         {busy && !pairing && phase === "playing" && (
-          <CriticStage seed={`${sessionId}:open`} chosenTitle="" halftime={null} onNext={() => {}} />
+          <CriticStage wait={0} chosenTitle="" halftime={null} onNext={() => {}} />
         )}
 
         {/* Final report */}
@@ -553,13 +553,13 @@ type StageEntry = { reaction: string; thesis: string };
 
 /** Critic-only screen between a pick and the next matchup. */
 function CriticStage({
-  seed,
+  wait,
   chosenTitle,
   entry,
   halftime,
   onNext,
 }: {
-  seed: string;
+  wait: number;
   chosenTitle: string;
   entry?: StageEntry;
   halftime: string | null;
@@ -598,7 +598,7 @@ function CriticStage({
         </div>
       ) : (
         <p role="status" key={tick} className="font-serif text-3xl italic animate-in fade-in duration-500">
-          {fillerAt(seed, tick)}
+          {fillerFor(wait, tick)}
         </p>
       )}
     </section>
