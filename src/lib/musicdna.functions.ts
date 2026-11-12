@@ -3443,6 +3443,8 @@ type SynthPayload = {
   /** Saved result version this payload was rendered from (RES04). */
   result_version?: number | null;
   reveal?: ReturnType<typeof revealBeats>;
+  /** Sol's accepted identity line, saved with the reading (reveal only). */
+  signature?: { name: string; hook: string } | null;
   /** Deterministic payoff panel, recomputed from frozen evidence; never saved prose. */
   dna_summary?: DnaSummary;
 };
@@ -3649,6 +3651,10 @@ async function computeFinalSynthesis(
 
   return {
     synthesis,
+    signature:
+      narrated.status === "ok"
+        ? ((narrated as { signature?: { name: string; hook: string } | null }).signature ?? null)
+        : null,
     reveal: revealBeats(ledger),
     kept_choosing,
     counter_reads,
