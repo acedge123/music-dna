@@ -618,9 +618,17 @@ function CriticStage({
           </Button>
         </div>
       ) : (
-        <p role="status" key={lines[Math.min(tick, lines.length - 1)]} className="font-serif text-3xl italic animate-in fade-in duration-500">
-          {lines[Math.min(tick, lines.length - 1)]}
-        </p>
+        // Fixed-height slot anchored at the top: every line starts in the same spot,
+        // and the only motion is one planned short rise + fade per line.
+        <div className="min-h-[7.5rem]">
+          <p
+            role="status"
+            key={lines[Math.min(tick, lines.length - 1)]}
+            className="font-serif text-3xl italic leading-snug animate-in fade-in slide-in-from-bottom-2 duration-700"
+          >
+            {lines[Math.min(tick, lines.length - 1)]}
+          </p>
+        </div>
       )}
     </section>
   );
