@@ -76,7 +76,7 @@ Body: `{ pairing_id, chosen_song_id, ms_to_decide?, mutation_id? }`
 
 ### `POST /session/:id/skip`: Interview screen, "Don't know these"
 Body: `{ pairing_id, ms_to_decide?, reason?: "unknown_one" | "unknown_both" | "cant_choose" }` → `{ ok, replayed }`
-- Skips never change scores. A repeated skip is a no-op. Three skips in a row end the session (`completion.reason = "skip_bound"`).
+- Skips never change scores. A repeated skip is a no-op. Answers reset the consecutive-skip streak. Six answered choices remains the normal target. The separate early low-recognition rule (three total skips with at most two answers) remains unchanged. Five skips in a row end the session (`completion.reason = "skip_bound"`).
 
 ### `POST /session/:id/react`: Interview screen, the reaction row (from the 2nd answer on)
 Body: `{ kind: "thats_me" | "not_quite" | "harder", pairing_id? }`
