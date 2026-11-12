@@ -391,9 +391,10 @@ function Onboarding() {
           </section>
         )}
 
-        {criticStage && (
+        {(criticStage || (busy && (!pairing || pendingSkip) && phase === "playing")) && (
           <CriticStage
-            wait={entries.length + 1}
+            wait={criticStage || entries.length > 0 || pendingSkip ? entries.length + 1 : 0}
+            skip={!criticStage && skipNote ? skipLine(skipNote.index, skipNote.songs) : null}
             hunch={stageHunch}
             chosenTitle={stageTitle}
             entry={holdNext ? entries.at(-1) : undefined}
@@ -442,15 +443,6 @@ function Onboarding() {
           </section>
         )}
 
-        {busy && (!pairing || pendingSkip) && phase === "playing" && !criticStage && (
-          <CriticStage
-            wait={0}
-            chosenTitle=""
-            halftime={null}
-            onNext={() => {}}
-            skip={skipNote ? skipLine(skipNote.index, skipNote.songs) : null}
-          />
-        )}
 
         {/* Final report */}
         {phase === "done" && (
@@ -581,6 +573,11 @@ function CriticStage({
   const [tick, setTick] = useState(0);
   // Freeze the line set when the stage opens; the entry count changes mid-wait.
   const [fixedWait] = useState(wait);
+  // Keep the "You picked" title once known, so the screen never swaps layouts mid-wait.
+  const [title, setTitle] = useState(chosenTitle);
+  useEffect(() => {
+    if (chosenTitle) setTitle(chosenTitle);
+  }, [chosenTitle]);
   const lines = skip ? [skip] : fillerLines(fixedWait, hunch);
   useEffect(() => setTick(0), [skip]);
   // Each line holds at least 3.5s; the neutral opener also waits for the hunch,
@@ -594,9 +591,9 @@ function CriticStage({
   }, [entry, tick, lines.length, hunchKnown, skip]);
   return (
     <section aria-label="The Critic" className="max-w-2xl space-y-6 py-6 animate-in fade-in duration-500">
-      {chosenTitle && (
+      {title && (
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          You picked · {chosenTitle}
+          You picked · {title}
         </p>
       )}
       {entry ? (
