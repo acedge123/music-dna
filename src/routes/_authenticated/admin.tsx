@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import { CriticQualityPanel } from "@/components/musicdna/critic-quality-panel";
 import { SongFactsPanel } from "@/components/musicdna/song-facts-panel";
+import { SongWhysPanel } from "@/components/musicdna/song-whys-panel";
 import { ArchetypeProfilesPanel } from "@/components/musicdna/archetype-profiles-panel";
 import { DecadeCoveragePanel } from "@/components/musicdna/decade-coverage-panel";
 import { Button } from "@/components/ui/button";
@@ -65,10 +66,12 @@ type Tab =
   | "critic_quality"
   | "song_facts"
   | "decade_coverage"
-  | "archetype_profiles";
+  | "archetype_profiles"
+  | "song_whys";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
   { key: "song_facts", label: "Facts" },
+  { key: "song_whys", label: "Song Whys" },
   { key: "pairings", label: "Pairings" },
   { key: "archetypes", label: "Archetypes" },
   { key: "archetype_profiles", label: "Archetype v2" },
@@ -183,7 +186,8 @@ function AdminPage() {
           tab !== "critic_quality" &&
           tab !== "song_facts" &&
           tab !== "decade_coverage" &&
-          tab !== "archetype_profiles" && (
+          tab !== "archetype_profiles" &&
+          tab !== "song_whys" && (
             <button
               onClick={() => setEditing({ row: null })}
               className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
@@ -209,7 +213,9 @@ function AdminPage() {
         ))}
       </nav>
 
-      {tab === "archetype_profiles" ? (
+      {tab === "song_whys" ? (
+        <SongWhysPanel />
+      ) : tab === "archetype_profiles" ? (
         <ArchetypeProfilesPanel />
       ) : tab === "song_facts" ? (
         <SongFactsPanel />
@@ -242,7 +248,8 @@ function AdminPage() {
         tab !== "diagnostics" &&
         tab !== "shadow" &&
         tab !== "decade_coverage" &&
-        tab !== "archetype_profiles" && (
+        tab !== "archetype_profiles" &&
+        tab !== "song_whys" && (
           <EditDrawer
             entity={tab as Exclude<Entity, "decade_prompts">}
             row={editing.row}
