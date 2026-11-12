@@ -63,7 +63,6 @@ export const FILLER_PERSON: ReadonlyArray<readonly string[]> = [
   ["Bold move.", "I'll allow it."],
   ["Somebody raised you right.", "Or you rebelled perfectly."],
   ["Taste. Actual taste.", "I'm as surprised as you are."],
-  ["Music is in your blood.", "Possibly a little too much."],
   ["Dig it. We'll let you cook."],
   ["You might be my favorite interview today.", "Don't let it go to your head."],
   ["That was inconveniently persuasive."],
@@ -81,10 +80,10 @@ export const FILLER_SKIP = [
   "My fault. Let me find something you'll know.",
   "Swing and a miss. Mine, not yours.",
 ] as const;
-/** Both skipped songs are pre-2000: listener is probably younger. */
+/** Both skipped songs are pre-2000; playful wording, not an age inference. */
 export const SKIP_YOUNG = "What? No {artist}? Alright, youngin', I'll grab a new one.";
-/** Both skipped songs are 2020+: listener is probably older. */
-export const SKIP_OLD = "Don't know {artist}? OK boomer, I'll grab something older.";
+/** Compatibility field for clients using the recent-song skip branch; no age label. */
+export const SKIP_OLD = "My fault. Let me find something you'll know.";
 
 export type Hunch = keyof typeof FILLER_REACTION;
 

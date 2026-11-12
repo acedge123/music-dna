@@ -173,7 +173,7 @@ export function Reference() {
               </p>
             </section>
           )}
-          {state === "feedback" && <InterviewExchange entry={feedback} />}
+          {state === "feedback" && <InterviewExchange entry={feedback} choiceNumber={1} />}
           {state === "theory" && <ReadMoment read={theory} />}
           {state === "revision" && <ReadMoment read={revision} />}
           {(state === "result" || state === "public-share") && (

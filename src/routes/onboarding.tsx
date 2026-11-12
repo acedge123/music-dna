@@ -221,7 +221,7 @@ function Onboarding() {
   const waitingOnCritic = phase === "playing" && busy && pendingSongId !== null;
   const criticStage = phase === "playing" && (waitingOnCritic || holdNext);
   const stageEntry = entries.at(-1);
-  const stageTitle = waitingOnCritic
+  const stageTitle = pendingSkip ? "" : waitingOnCritic
     ? [pairing?.song_a, pairing?.song_b].find((s) => s?.id === pendingSongId)?.title ?? ""
     : stageEntry
       ? stageEntry.chosenSongId === stageEntry.pairing.song_a.id
@@ -597,7 +597,7 @@ function CriticStage({
   }, [entry, tick, lines.length]);
   return (
     <section aria-label="The Critic" className="max-w-2xl space-y-6 py-6 animate-in fade-in duration-500">
-      {title && (
+      {!skip && title && (
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
           You picked · {title}
         </p>
