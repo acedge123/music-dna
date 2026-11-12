@@ -96,8 +96,6 @@ export function SongWhysPanel() {
       ) : (
         <ul className="space-y-3">
           {rows.map((r) => {
-            const l = DIM_LABEL[r.axis];
-            const side = r.score > 50 ? l?.hi : l?.lo;
             return (
               <li key={r.id} className="space-y-2 border hairline rounded-sm p-4">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
