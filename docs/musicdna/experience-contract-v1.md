@@ -267,3 +267,13 @@ song cards so its arrival cannot displace an active choice. Collapsed reaction
 controls remain optional. AB-67's free-text pushback remains separate; its future
 control must be inline rather than reintroducing a Q3 checkpoint. No new routing,
 scoring, model, prompt, consent, public gate or learning activation is introduced.
+
+## Pick → Critic → next matchup sequencing (client guidance)
+
+After a pick, clients show a Critic-only screen: a "You picked · {title}" tag, then rotating stall lines from
+`src/musicdna/engine/critic-fillers.ts` (`CRITIC_FILLERS`, ~2.5s each, no repeats) until the read arrives.
+The next pairing is fetched in the background but stays hidden until the read lands (or fails after ~20s, which shows
+"I'll come back to that one"), then a "Next matchup" button reveals it. With `defer_read`, discard any `/read` response
+whose `answered` / `after_pairing_id` is not the current position. Stall lines are not evidence: they never name songs,
+traits or findings, and never hint at the next test. Halftime (pick 3) does not interrupt; pushback is an optional link on
+that read. The pick-4 early exit and pick-6 reveal are unchanged.

@@ -15,7 +15,8 @@ import { ArchetypeFit } from "@/components/musicdna/archetype-fit";
 import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/dna-summary";
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { fillerAt } from "@/musicdna/engine/critic-fillers";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -91,6 +92,8 @@ function Onboarding() {
     reactionReply,
     entries,
     milestone,
+    holdNext,
+    releaseNext,
     continueInterview,
     finishEarly,
     reveal,
@@ -213,6 +216,17 @@ function Onboarding() {
     );
   }
 
+  const waitingOnCritic = phase === "playing" && busy && pendingSongId !== null;
+  const criticStage = phase === "playing" && (waitingOnCritic || holdNext);
+  const stageEntry = entries.at(-1);
+  const stageTitle = waitingOnCritic
+    ? [pairing?.song_a, pairing?.song_b].find((s) => s?.id === pendingSongId)?.title ?? ""
+    : stageEntry
+      ? stageEntry.chosenSongId === stageEntry.pairing.song_a.id
+        ? stageEntry.pairing.song_a.title
+        : stageEntry.pairing.song_b.title
+      : "";
+
   // One active stage; prior exchanges stay in history.
   return (
     <>
@@ -312,7 +326,7 @@ function Onboarding() {
                 </p>
               </details>
             )}
-            {!milestone && (
+            {!milestone && !criticStage && (
               <InterviewHistory
                 entries={entries}
                 openerSongs={songs}
@@ -375,7 +389,17 @@ function Onboarding() {
           </section>
         )}
 
-        {pairing && phase === "playing" && !milestone && (
+        {criticStage && (
+          <CriticStage
+            seed={`${sessionId}:${entries.length}`}
+            chosenTitle={stageTitle}
+            entry={holdNext ? entries.at(-1) : undefined}
+            halftime={holdNext && entries.length === 3 ? sessionId : null}
+            onNext={releaseNext}
+          />
+        )}
+
+        {pairing && phase === "playing" && !milestone && !criticStage && (
           <section ref={pairingAnchorRef} className="space-y-4 pt-2">
             <p className="font-serif text-2xl md:text-3xl">
               {entries.length === 0 ? "Pick one. First instinct." : "Which one would you keep?"}
@@ -524,5 +548,61 @@ function Onboarding() {
         )}
       </main>
     </>
+  );
+}
+
+type StageEntry = { reaction: string; thesis: string };
+
+/** Critic-only screen between a pick and the next matchup. */
+function CriticStage({
+  seed,
+  chosenTitle,
+  entry,
+  halftime,
+  onNext,
+}: {
+  seed: string;
+  chosenTitle: string;
+  entry?: StageEntry;
+  halftime: string | null;
+  onNext: () => void;
+}) {
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (entry) return;
+    const t = setInterval(() => setTick((n) => n + 1), 2500);
+    return () => clearInterval(t);
+  }, [entry]);
+  return (
+    <section aria-label="The Critic" className="max-w-2xl space-y-6 py-6 animate-in fade-in duration-500">
+      {chosenTitle && (
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+          You picked · {chosenTitle}
+        </p>
+      )}
+      {entry ? (
+        <div className="space-y-4 animate-in fade-in duration-500">
+          <p className="whitespace-pre-wrap font-serif text-2xl leading-relaxed">{entry.reaction}</p>
+          {entry.thesis && (
+            <p className="font-serif text-xl leading-relaxed text-muted-foreground">{entry.thesis}</p>
+          )}
+          {halftime && (
+            <details className="text-sm">
+              <summary className="min-h-11 cursor-pointer py-3 text-muted-foreground">
+                Halfway. Push back on this?
+              </summary>
+              <HalftimePushback sessionId={halftime} />
+            </details>
+          )}
+          <Button onClick={onNext} className="min-h-11" autoFocus>
+            Next matchup <ArrowRight />
+          </Button>
+        </div>
+      ) : (
+        <p role="status" key={tick} className="font-serif text-3xl italic animate-in fade-in duration-500">
+          {fillerAt(seed, tick)}
+        </p>
+      )}
+    </section>
   );
 }
