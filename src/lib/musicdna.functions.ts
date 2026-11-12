@@ -3457,6 +3457,16 @@ export async function finalSynthesisImpl(
   userId: string,
   data: { sessionId: string },
 ): Promise<SynthPayload> {
+  const payload = await finalSynthesisCore(supabase, userId, data);
+  if (!payload.synthesis) return payload;
+  return { ...payload, dna_summary: await dnaSummaryFor(supabase, data.sessionId) };
+}
+
+async function finalSynthesisCore(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string },
+): Promise<SynthPayload> {
   const { data: saved } = await supabase
     .from("session_results")
     .select("version, content")
@@ -3466,11 +3476,7 @@ export async function finalSynthesisImpl(
     .limit(1)
     .maybeSingle();
   if (saved?.content && (saved.content as SynthPayload).synthesis) {
-    return {
-      ...(saved.content as SynthPayload),
-      result_version: saved.version,
-      dna_summary: await dnaSummaryFor(supabase, data.sessionId),
-    };
+    return { ...(saved.content as SynthPayload), result_version: saved.version };
   }
   const { ledger: savedLedger } = await loadChoiceEvidence(supabase, data.sessionId);
   const fresh = await computeFinalSynthesis(supabase, userId, data, savedLedger);
