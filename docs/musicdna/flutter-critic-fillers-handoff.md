@@ -30,7 +30,7 @@ Show one line per skip (increase `skipCount` each time). If both skipped songs a
 ## 5. Rules
 - Never write new filler lines on the client and never pick a reaction yourself. Use the server's `hunch` only, so "not what I expected" appears only when the pick really went against the listener's strongest earlier lean.
 - Halftime (pick 3) doesn't interrupt. Pushback is an optional link on that read (`POST /pushback`).
-- The pick-4 early exit and the pick-6 reveal are unchanged.
+- No automatic pick-4 early-exit prompt interrupts the interview. The pick-6 reveal and server completion are unchanged.
 
 ## Acceptance
 - Six picks: no repeated filler lines, and no "Next matchup" button.
