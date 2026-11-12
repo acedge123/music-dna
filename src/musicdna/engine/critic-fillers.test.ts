@@ -39,9 +39,9 @@ describe("critic fillers", () => {
     expect(skipLine(0, old)).toContain("youngin'");
     expect(skipLine(0, [{ artist: "The Cure", year: 1989 }, { artist: "Mitski", year: 2023 }])).not.toContain("youngin'");
   });
-  it("OK boomer when both skipped songs are 2020+", () => {
+  it("recent songs use the neutral skip branch", () => {
     const fresh = [{ artist: "Mitski", year: 2023 }, { artist: "Fontaines D.C.", year: 2024 }];
-    expect(skipLine(0, fresh)).toContain("OK boomer");
+    expect(skipLine(0, fresh)).toBe(SKIP_OLD);
     expect(skipLine(0, fresh)).not.toContain("youngin'");
   });
 });

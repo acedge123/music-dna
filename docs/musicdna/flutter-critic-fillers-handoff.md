@@ -5,7 +5,7 @@ All endpoints need `X-MusicDNA-Experience: 1`.
 
 ## 1. Load the lines once per app launch
 `GET /api/v1/critic-fillers` (no auth, no user data) →
-`{ contract, version, neutral[12], reaction: { against[12], with[8], early[8] }, person[9][1–2 lines], decade: { "1970s": [10 lines], "1980s"–"2020s": [9 lines each] }, skip[8], skip_young, skip_old }`.
+`{ contract, version, neutral[12], reaction: { against[12], with[8], early[8] }, person[8][1–2 lines], decade: { "1970s": [10 lines], "1980s"–"2020s": [9 lines each] }, skip[8], skip_young, skip_old }`.
 Cache it, and keep a bundled copy as an offline fallback. Never edit the lines in Dart.
 The final owner-approved list is from **Music_DNA_Quips.docx (12 November 2026)**; blank numbered entries and copied editorial instructions are not quips. Use each pool's actual length, never a hard-coded eight. Refresh the cached list on app launch; the contract and sequencing are unchanged.
 
@@ -25,6 +25,7 @@ The final owner-approved list is from **Music_DNA_Quips.docx (12 November 2026)*
 
 ## 4. After a skip
 Show one line per skip (increase `skipCount` each time). If both skipped songs are from before 2000, use `skip_young`. If both are from 2020 or later, use `skip_old`. Otherwise use `skip[skipCount % 8]`. Replace `{artist}` with the artist of `songs[skipCount % 2]`.
+`skip_old` remains for compatibility but now contains a neutral apology, never an age label. Retire bundled/cached “OK boomer” and “Music is in your blood” copy. A skip screen never shows “YOU PICKED” or a previous song. Skips do not increment answered-choice numbers: derive “after choice” and history labels from answered picks, not served matchup rounds. Preserve server round keys for feedback/reaction requests.
 
 ## 5. Rules
 - Never write new filler lines on the client and never pick a reaction yourself. Use the server's `hunch` only, so "not what I expected" appears only when the pick really went against the listener's strongest earlier lean.

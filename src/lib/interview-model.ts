@@ -42,3 +42,8 @@ export type Entry = {
   question: string;
   revision?: CurrentReadResult["revision"];
 };
+
+/** Display position counts answered picks only; round remains the server's reaction key. */
+export function answeredChoiceNumber(entries: readonly Pick<Entry, "pairing">[], pairingId: string): number {
+  return entries.findIndex((entry) => entry.pairing.id === pairingId) + 1;
+}

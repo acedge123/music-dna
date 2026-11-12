@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — waiting-copy and skip cleanup
+
+- [ ] Retire the boomer skip line and generic blood quip without changing rotation timing.
+- [ ] Skips never show a previous picked-song heading; visible choice numbering excludes skips, including history.
+- [ ] Verify pick → skip → pick in the preview and run focused regressions; Flutter receives shared copy after deployment.
+
 ## Current — reveal voice diagnosis, production credit blocker
 
 - [x] Session 49974641-02bf-4e72-a9cc-25d2ea44c8db reused deterministic fallbacks, not accepted Sol reveals; prepared payloads record OpenAI 429 insufficient credits. Initial drafts also encountered reference/schema or motive review rejection.

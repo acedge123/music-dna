@@ -1,4 +1,5 @@
 import type { Entry } from "@/lib/interview-model";
+import { answeredChoiceNumber } from "@/lib/interview-model";
 import { ReadMoment } from "./read-moment";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
@@ -6,14 +7,16 @@ import { History, ThumbsUp, MessageCircle, Zap } from "lucide-react";
 
 export function InterviewExchange({
   entry,
+  choiceNumber,
   children,
 }: {
   entry: Entry;
+  choiceNumber: number;
   children?: React.ReactNode;
 }) {
   return (
-    <article className="space-y-4 break-words" aria-label={`Choice ${entry.round}`}>
-      <p className="eyebrow">Choice {entry.round}</p>
+    <article className="space-y-4 break-words" aria-label={`Choice ${choiceNumber}`}>
+      <p className="eyebrow">Choice {choiceNumber}</p>
       <div className="space-y-2">
         {entry.reaction
           .split("\n")
@@ -87,14 +90,14 @@ export function InterviewHistory({
           )}
           <div className="space-y-8 py-6">
             {entries.map((entry) => (
-              <InterviewExchange key={entry.pairing.id} entry={entry} />
+              <InterviewExchange key={entry.pairing.id} entry={entry} choiceNumber={answeredChoiceNumber(entries, entry.pairing.id)} />
             ))}
           </div>
         </SheetContent>
       </Sheet>
       <div aria-live="polite">
         <div className="space-y-4">
-          <p className="eyebrow">The critic · after choice {latest.round}</p>
+          <p className="eyebrow">The critic · after choice {entries.length}</p>
           {reactionReply?.round === latest.round ? (
             <p
               role="status"
@@ -107,7 +110,7 @@ export function InterviewHistory({
           ) : (
             <p className="font-serif text-xl">{latest.reaction}</p>
           )}
-          {allowReactions && latest.round >= 2 && !reactedRounds.includes(latest.round) && (
+          {allowReactions && entries.length >= 2 && !reactedRounds.includes(latest.round) && (
             <div className="flex flex-wrap gap-2 pt-1">
               {(
                 [
