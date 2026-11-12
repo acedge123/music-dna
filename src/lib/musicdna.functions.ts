@@ -3458,7 +3458,10 @@ async function dnaSummaryFor(supabase: AuthedSupabase, sessionId: string): Promi
   const arch = archetypeId
     ? (await supabase.from("archetypes").select("name").eq("id", archetypeId).maybeSingle()).data
     : null;
-  return buildDnaSummary(ledger, arch?.name ? { name: arch.name } : null);
+  // Legacy archetype profiles use an older trait system; until the v2
+  // profiles are approved, the reading never shows a "confirmed" archetype.
+  const archetypesTrusted = process.env.MUSICDNA_ARCHETYPE_V2 === "1";
+  return buildDnaSummary(ledger, archetypesTrusted && arch?.name ? { name: arch.name } : null);
 }
 
 export const finalSynthesis = createServerFn({ method: "POST" })
