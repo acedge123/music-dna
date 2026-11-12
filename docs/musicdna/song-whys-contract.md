@@ -13,7 +13,7 @@ Table: `public.song_trait_explanations`. External writers use the service-role k
   - community: communal / solitary
   - perspective: observation / feeling
   - confidence: command / vulnerability
-  - tension: danger / release
+  - tension: pressure / release
   - texture: refinement / rawness
   - transformation: takes you somewhere / holds its shape
   Confirm poles against `public.axes` (`low_pole` / `high_pole`) before writing.

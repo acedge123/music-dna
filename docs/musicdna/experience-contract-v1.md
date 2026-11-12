@@ -195,7 +195,7 @@ For read-only saved-result recovery, the existing owner-only `GET /api/v1/sessio
 `POST /api/v1/session/:id/reveal` (v1) adds `dna_summary`, recomputed from frozen choice evidence on every read (never saved prose):
 - `archetype`: `{status:"confirmed"|"leaning", name}` only when finalize stored an archetype that passed score/margin floors and ledger support; otherwise `{status:"emerging", name:null}`. Never display an archetype name for `emerging`.
 - `dimensions[]` (max 3): `label`, `preferred`, `over`, `supporting`, `relevant`, `confidence` (`Clear`|`Leaning`|`Early`). Render counts as "`supporting` of `relevant` relevant comparisons".
-- `undecided[]`: split traits (`label` like "danger or release").
+- `undecided[]`: split traits (`label` like "pressure or release").
 - `receipts[]` (max 3): two `pattern`, at most one `contradiction`, each with chosen/rejected titles and artists plus a short `note`.
 - `single_lane`: lane name when every answered pick came from one lane, else null.
 - `matchups[]`: every answered matchup in order, `{chosen, chosen_artist, rejected, rejected_artist}`.
