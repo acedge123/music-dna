@@ -271,7 +271,7 @@ scoring, model, prompt, consent, public gate or learning activation is introduce
 ## Pick → Critic → next matchup sequencing (client guidance)
 
 After a pick, clients show a Critic-only screen: a "You picked · {title}" tag, then rotating stall lines from
-`src/musicdna/engine/critic-fillers.ts` (`CRITIC_FILLERS`, ~2.5s each, no repeats) until the read arrives.
+`src/musicdna/engine/critic-fillers.ts` (`fillerFor(wait, tick)`: wait 0 = opening, 1–6 = after each pick; each wait rotates its own thinking → tension → neutral lines every ~2.5s, so no line repeats in an interview) until the read arrives.
 The next pairing is fetched in the background but stays hidden until the read lands (or fails after ~20s, which shows
 "I'll come back to that one"), then the read and next pairing appear together automatically (no extra tap). With `defer_read`, discard any `/read` response
 whose `answered` / `after_pairing_id` is not the current position. Stall lines are not evidence: they never name songs,

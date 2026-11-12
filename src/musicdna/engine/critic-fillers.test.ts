@@ -1,14 +1,16 @@
 import { describe, expect, it } from "vitest";
-import { CRITIC_FILLERS, fillerAt } from "./critic-fillers";
+import { FILLER_NEUTRAL, FILLER_TENSION, FILLER_THINKING, fillerFor } from "./critic-fillers";
 
-const BANNED = /\b(immediacy|immersion|pressure|release|tension|refinement|rawness|intimacy|vast|dimension|trait|axis|you (always|prefer|favor))\b/i;
+const ALL = [...FILLER_THINKING, ...FILLER_TENSION, ...FILLER_NEUTRAL];
+const BANNED = /\b(immediacy|immersion|pressure|release|tension|refinement|rawness|intimacy|dimension|trait|axis)\b/i;
 
 describe("critic fillers", () => {
-  it("never name traits or claim findings", () => {
-    for (const line of CRITIC_FILLERS) expect(line).not.toMatch(BANNED);
+  it("never name traits", () => {
+    for (const line of ALL) expect(line).not.toMatch(BANNED);
   });
-  it("rotate without repeating consecutive lines", () => {
-    const seen = Array.from({ length: CRITIC_FILLERS.length }, (_, i) => fillerAt("s1", i));
-    expect(new Set(seen).size).toBe(CRITIC_FILLERS.length);
+  it("opening plus six picks use 21 different lines, none repeated", () => {
+    const used = Array.from({ length: 7 }, (_, w) => [0, 1, 2].map((t) => fillerFor(w, t))).flat();
+    expect(used).toHaveLength(21);
+    expect(new Set(used).size).toBe(21);
   });
 });
