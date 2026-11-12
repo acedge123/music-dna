@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { DIM_LABEL } from "@/musicdna/engine/axes";
+import { poleScoreLabel } from "@/musicdna/engine/axes";
 import { draftSongWhys, listSongWhys, reviewSongWhy, songWhysOverview } from "@/lib/song-whys.functions";
 
 const FILTERS = [
