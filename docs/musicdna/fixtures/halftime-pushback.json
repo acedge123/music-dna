@@ -1,0 +1,23 @@
+{
+  "request": { "text": "No, I hate slow songs", "mutation_id": "6f1c2b8e-4d1a-4c8e-9a51-3b7f0e2d9c11" },
+  "response": {
+    "contract": 1,
+    "mutation_id": "6f1c2b8e-4d1a-4c8e-9a51-3b7f0e2d9c11",
+    "text": "No, I hate slow songs",
+    "at_pick": 3,
+    "reply": "Noted — that's your call, not a vote. The next three picks will test it.",
+    "provenance": "self_report",
+    "counts_as_vote": false,
+    "replayed": false,
+    "created_at": null
+  },
+  "history_exchange": {
+    "type": "pushback",
+    "at": "2026-11-12T05:10:00Z",
+    "text": "No, I hate slow songs",
+    "at_pick": 3,
+    "reply": "Noted — that's your call, not a vote. The next three picks will test it.",
+    "mutation_id": "6f1c2b8e-4d1a-4c8e-9a51-3b7f0e2d9c11",
+    "provenance": "self_report"
+  }
+}

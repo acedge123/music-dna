@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { halftimePushback } from "@/lib/halftime-pushback.functions";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,8 @@ export function HalftimePushback({ sessionId }: { sessionId: string | null }) {
   const [busy, setBusy] = useState(false);
   const [reply, setReply] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  // One id per typed reply, so a retry after a timeout replays instead of duplicating.
+  const mutation = useRef<{ text: string; id: string } | null>(null);
   if (!sessionId) return null;
   if (reply) return <p className="font-serif text-xl italic leading-relaxed">{reply}</p>;
   if (!open)
@@ -28,7 +30,9 @@ export function HalftimePushback({ sessionId }: { sessionId: string | null }) {
     setBusy(true);
     setError(null);
     try {
-      const r = await send({ data: { sessionId, message: text.trim() } });
+      const t = text.trim();
+      if (mutation.current?.text !== t) mutation.current = { text: t, id: crypto.randomUUID() };
+      const r = await send({ data: { sessionId, message: t, mutationId: mutation.current.id } });
       setReply(r.reply);
     } catch {
       setError("Couldn't save that. Keep going — your picks still count.");
