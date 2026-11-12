@@ -3,7 +3,7 @@
 // archetype must be earned: enough relevant comparisons, a clear gap to the
 // runner-up, more than one genre, and no unmeasured thematic requirement.
 
-import type { Ledger } from "./evidence";
+import { MIN_CONTRAST, type Ledger } from "./evidence";
 
 export const ARCHETYPE_V2_VERSION = "archetype-v2";
 export const V2_SCORE_FLOOR = 0.5;
@@ -36,6 +36,8 @@ export type ArchetypeMatchV2 = {
   name: string;
   archetype_id: string;
   profile_version: number;
+  /** The exact profile weights matched, frozen with the reading. */
+  profile_core: Record<string, number>;
   version: typeof ARCHETYPE_V2_VERSION;
   score: number;
   status: "confirmed" | "leaning" | "none";
@@ -44,13 +46,18 @@ export type ArchetypeMatchV2 = {
 };
 
 /** Per-axis signed lean in [-1,1] from the ledger: (support - contradiction) / relevant. */
-export function ledgerLean(ledger: Ledger): Record<string, { lean: number; relevant: number }> {
-  const out: Record<string, { lean: number; relevant: number }> = {};
+export function ledgerLean(
+  ledger: Ledger,
+): Record<string, { lean: number; relevant: number; comparisons: string[] }> {
+  const out: Record<string, { lean: number; relevant: number; comparisons: string[] }> = {};
   for (const a of ledger.axes) {
     const relevant = a.supporting + a.contradicting;
     if (!relevant) continue;
     const sign = a.direction === "hi" ? 1 : -1;
-    out[a.axis] = { lean: (sign * (a.supporting - a.contradicting)) / relevant, relevant };
+    const comparisons = ledger.entries
+      .filter((e) => e.axis === a.axis && Math.abs(e.delta) >= MIN_CONTRAST)
+      .map((e) => e.pairing_id ?? `${e.chosen}|${e.rejected}`);
+    out[a.axis] = { lean: (sign * (a.supporting - a.contradicting)) / relevant, relevant, comparisons };
   }
   return out;
 }
@@ -58,17 +65,18 @@ export function ledgerLean(ledger: Ledger): Record<string, { lean: number; relev
 export function scoreProfile(profile: ArchetypeProfileV2, lean: ReturnType<typeof ledgerLean>) {
   let num = 0;
   let den = 0;
-  let relevant = 0;
+  // Distinct matchups: one pairing that tests several core traits counts once.
+  const seen = new Set<string>();
   let dimensions = 0;
   for (const [axis, w] of Object.entries(profile.core)) {
     den += Math.abs(w);
     const l = lean[axis];
     if (!l) continue;
     num += w * l.lean;
-    relevant += l.relevant;
+    for (const c of l.comparisons) seen.add(c);
     dimensions += 1;
   }
-  return { score: den ? num / den : 0, relevant, dimensions };
+  return { score: den ? num / den : 0, relevant: seen.size, dimensions };
 }
 
 export function matchArchetypeV2(
@@ -100,6 +108,7 @@ export function matchArchetypeV2(
     name: best.p.name,
     archetype_id: best.p.archetype_id,
     profile_version: best.p.version ?? 1,
+    profile_core: { ...best.p.core },
     version: ARCHETYPE_V2_VERSION,
     score: Math.round(best.score * 1000) / 1000,
     status,

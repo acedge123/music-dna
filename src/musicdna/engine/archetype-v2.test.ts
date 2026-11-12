@@ -54,3 +54,12 @@ describe("archetype v2 guards", () => {
     expect(m.profile_version).toBe(2);
   });
 });
+
+describe("distinct comparisons", () => {
+  it("two picks that each test two core traits count as 2 comparisons, not 4", () => {
+    const two = [1, 2].map((i) => pick(i, [80, 20], [80, 20], i % 2 ? "hip-hop" : "pop"));
+    const m = matchArchetypeV2(buildLedger(two, DIMS), profiles.slice(0, 2))!;
+    expect(m.status).not.toBe("confirmed");
+    expect(m.reasons).toContain("few_relevant_comparisons");
+  });
+});

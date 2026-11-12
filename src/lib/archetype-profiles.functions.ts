@@ -47,7 +47,13 @@ export const reviewArchetypeProfile = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
     const patch: Record<string, unknown> = { status: data.status };
-    if (data.core) patch.core = data.core;
+    if (data.core) {
+      // A changed shape is a new profile version, so saved readings keep naming the version they matched.
+      const cur = await context.supabase.from("archetype_profiles").select("version, core").eq("id", data.id).maybeSingle();
+      if (cur.error || !cur.data) throw new Error("Profile not found");
+      if (JSON.stringify(cur.data.core) !== JSON.stringify(data.core)) patch.version = cur.data.version + 1;
+      patch.core = data.core;
+    }
     if (data.status === "approved") {
       patch.approved_by = context.userId;
       patch.approved_at = new Date().toISOString();
