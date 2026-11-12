@@ -580,12 +580,16 @@ function CriticStage({
 }) {
   const [tick, setTick] = useState(0);
   const lines = skip ? [skip] : fillerLines(wait, hunch);
-  useEffect(() => setTick(0), [hunch, skip]);
+  useEffect(() => setTick(0), [skip]);
+  // Each line holds at least 3.5s; the neutral opener also waits for the hunch,
+  // so a fast save never flashes it twice or rushes the next lines.
+  const hunchKnown = lines.length > 1;
   useEffect(() => {
-    if (entry) return;
-    const t = setInterval(() => setTick((n) => n + 1), 2500);
-    return () => clearInterval(t);
-  }, [entry]);
+    if (entry || tick >= lines.length - 1) return;
+    if (tick === 0 && !hunchKnown && !skip) return;
+    const t = setTimeout(() => setTick((n) => n + 1), 3500);
+    return () => clearTimeout(t);
+  }, [entry, tick, lines.length, hunchKnown, skip]);
   return (
     <section aria-label="The Critic" className="max-w-2xl space-y-6 py-6 animate-in fade-in duration-500">
       {chosenTitle && (

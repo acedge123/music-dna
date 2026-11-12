@@ -16,7 +16,7 @@ Cache it, and keep a bundled copy as an offline fallback. Never edit the lines i
 2. `POST /api/v1/session/:id/choice` with `defer_read: true`. The response now includes
    `hunch`: `"against" | "with" | "early"` (computed inside the save, so no added latency; treat a missing value as `"early"`).
 3. Rotate every ~2.5s and hold on the last line:
-   `reaction[hunch][wait % 8]` → `person[(wait*2) % 16]` → `person[(wait*2+1) % 16]`.
+   `reaction[hunch][wait % 8]` → `person[(wait*2) % 16]` → `person[(wait*2+1) % 16]`. Hold every line at least 3.5 s; keep the neutral line up until `hunch` arrives, then continue (never reshow it).
 4. In parallel: `POST /read` `{ after_pairing_id, answered }` and fetch the next pairing. Keep the pairing hidden.
 5. When the read arrives, show it with the next matchup below it **automatically, without a tap**.
    Discard a read whose `answered`/`after_pairing_id` isn't current (a 409 also means discard).

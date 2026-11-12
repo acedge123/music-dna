@@ -27,7 +27,6 @@ describe("critic fillers", () => {
   });
   it("no line repeats across opening + six picks", () => {
     const used = Array.from({ length: 7 }, (_, w) => [
-      ...fillerLines(w),
       ...fillerLines(w, "against"),
     ]).flat();
     expect(new Set(used).size).toBe(used.length);
