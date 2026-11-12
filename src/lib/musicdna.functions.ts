@@ -1,3 +1,4 @@
+import { matchArchetypeV2, type ArchetypeProfileV2 } from "@/musicdna/engine/archetype-v2";
 import { refinePool, refineTargets } from "@/musicdna/engine/refine";
 import { buildDnaSummary, type DnaSummary } from "@/musicdna/engine/dna-summary";
 import { DIM_LABEL as SHARED_DIM_LABEL } from "@/musicdna/engine/axes";
@@ -3460,8 +3461,24 @@ async function dnaSummaryFor(supabase: AuthedSupabase, sessionId: string): Promi
     : null;
   // Legacy archetype profiles use an older trait system; until the v2
   // profiles are approved, the reading never shows a "confirmed" archetype.
-  const archetypesTrusted = process.env.MUSICDNA_ARCHETYPE_V2 === "1";
-  return buildDnaSummary(ledger, archetypesTrusted && arch?.name ? { name: arch.name } : null);
+  void arch;
+  if (process.env.MUSICDNA_ARCHETYPE_V2 !== "1") return buildDnaSummary(ledger, null);
+  const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+  const { data: rows } = await supabaseAdmin
+    .from("archetype_profiles")
+    .select("archetype_id, core, thematic_note, archetypes(name)")
+    .eq("status", "approved");
+  const profiles: ArchetypeProfileV2[] = (rows ?? []).map((r) => ({
+    archetype_id: r.archetype_id,
+    name: (r as unknown as { archetypes: { name: string } | null }).archetypes?.name ?? "",
+    core: r.core as Record<string, number>,
+    thematic_note: r.thematic_note,
+  }));
+  const m = matchArchetypeV2(ledger, profiles.filter((p) => p.name));
+  return buildDnaSummary(
+    ledger,
+    m && m.status !== "none" ? { name: m.name, status: m.status } : null,
+  );
 }
 
 export const finalSynthesis = createServerFn({ method: "POST" })
