@@ -3,7 +3,7 @@
 // archetype must be earned: enough relevant comparisons, a clear gap to the
 // runner-up, more than one genre, and no unmeasured thematic requirement.
 
-import type { Ledger } from "./evidence";
+import { MIN_CONTRAST, type Ledger } from "./evidence";
 
 export const ARCHETYPE_V2_VERSION = "archetype-v2";
 export const V2_SCORE_FLOOR = 0.5;
@@ -52,9 +52,9 @@ export function ledgerLean(
     const relevant = a.supporting + a.contradicting;
     if (!relevant) continue;
     const sign = a.direction === "hi" ? 1 : -1;
-    const comparisons = [...a.supporting_examples, ...a.contradicting_examples].map(
-      (e) => e.pairing_id ?? `${e.chosen}|${e.rejected}`,
-    );
+    const comparisons = ledger.entries
+      .filter((e) => e.axis === a.axis && Math.abs(e.delta) >= MIN_CONTRAST)
+      .map((e) => e.pairing_id ?? `${e.chosen}|${e.rejected}`);
     out[a.axis] = { lean: (sign * (a.supporting - a.contradicting)) / relevant, relevant, comparisons };
   }
   return out;
