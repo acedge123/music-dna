@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Share2, MessageCircle } from "lucide-react";
 import { readingLead } from "@/lib/critic-display";
 import { DecadeComparison, ExploreDecades } from "@/components/musicdna/explore-decades";
+import { ArchetypeFit } from "@/components/musicdna/archetype-fit";
 import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/dna-summary";
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
@@ -493,6 +494,16 @@ function Onboarding() {
                     Sharing publishes this reading only. Your conversation stays private.
                   </p>
                 </ReadingResult>
+                {sessionId &&
+                  resultVersion != null &&
+                  dnaSummary &&
+                  dnaSummary.archetype.status !== "emerging" && (
+                    <ArchetypeFit
+                      sessionId={sessionId}
+                      resultVersion={resultVersion}
+                      archetype={dnaSummary.archetype.name}
+                    />
+                  )}
                 {sessionId && resultVersion != null && (
                   <ReadingFeedback
                     key={`${sessionId}:${resultVersion}`}
