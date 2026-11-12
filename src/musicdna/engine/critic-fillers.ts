@@ -71,7 +71,6 @@ export const FILLER_PERSON = [
 
 /** After a skip: the Critic owns the miss. {artist} is a song shown in the skipped matchup. */
 export const FILLER_SKIP = [
-  "What? No {artist}? Alright, youngin', I'll grab a new one.",
   "Ah, my bad. Let me try a new angle.",
   "Not a {artist} person? Noted. Next.",
   "Fair. I'll dig deeper in the crates.",
@@ -79,7 +78,12 @@ export const FILLER_SKIP = [
   "Tough crowd. Pulling another record.",
   "{artist}? Never mind. Moving on.",
   "My fault. Let me find something you'll know.",
+  "Swing and a miss. Mine, not yours.",
 ] as const;
+/** Both skipped songs are pre-2000: listener is probably younger. */
+export const SKIP_YOUNG = "What? No {artist}? Alright, youngin', I'll grab a new one.";
+/** Both skipped songs are 2020+: listener is probably older. */
+export const SKIP_OLD = "Don't know {artist}? OK boomer, I'll grab something older.";
 
 export type Hunch = keyof typeof FILLER_REACTION;
 
@@ -91,8 +95,16 @@ export function fillerLines(wait: number, hunch?: Hunch | null): string[] {
   return [at(FILLER_REACTION[hunch], wait), at(FILLER_PERSON, wait * 2), at(FILLER_PERSON, wait * 2 + 1)];
 }
 
-export function skipLine(skipIndex: number, artist: string): string {
-  return at(FILLER_SKIP, skipIndex).replace("{artist}", artist);
+export function skipLine(
+  skipIndex: number,
+  songs: ReadonlyArray<{ artist: string; year?: number | null }>,
+): string {
+  const years = songs.map((x) => x.year).filter((y): y is number => typeof y === "number");
+  const known = years.length === songs.length && songs.length > 0;
+  const pick = (from: typeof songs) => from[skipIndex % from.length].artist;
+  if (known && Math.max(...years) < 2000) return SKIP_YOUNG.replace("{artist}", pick(songs));
+  if (known && Math.min(...years) >= 2020) return SKIP_OLD.replace("{artist}", pick(songs));
+  return at(FILLER_SKIP, skipIndex).replace("{artist}", pick(songs));
 }
 
 /**

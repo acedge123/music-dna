@@ -23,7 +23,7 @@ Cache it, and keep a bundled copy as an offline fallback. Never edit the lines i
 6. If the read hasn't arrived after 20s or fails (503), show "I'll come back to that one." and the next matchup. The pick is already saved.
 
 ## 4. After a skip
-Show one line: `skip[skipCount % 8]`, replacing `{artist}` with the artist of one song from the skipped matchup (random A/B). Increase `skipCount` per skip.
+Show one line per skip (increase `skipCount` each time). If both skipped songs are from before 2000, use `skip_young`. If both are from 2020 or later, use `skip_old`. Otherwise use `skip[skipCount % 8]`. Replace `{artist}` with the artist of `songs[skipCount % 2]`.
 
 ## 5. Rules
 - Never write new filler lines on the client and never pick a reaction yourself. Use the server's `hunch` only, so "not what I expected" appears only when the pick really went against the listener's strongest earlier lean.
