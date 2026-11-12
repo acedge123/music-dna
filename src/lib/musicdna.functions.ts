@@ -1123,7 +1123,7 @@ export async function nextPairingImpl(
             );
           })
         : rawBootPool;
-    const bootPool = preferEra(laneBootPool, era, answered);
+    const bootPool: typeof laneBootPool = preferEra<(typeof laneBootPool)[number]>(laneBootPool, era, answered);
     if (bootPool.length > 0) {
       // Prefer pairings whose two songs have different primary_lane so the
       // winner is diagnostic. Fall back to any lane-scoped bootstrap.
