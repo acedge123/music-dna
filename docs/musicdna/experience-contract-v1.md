@@ -202,3 +202,17 @@ For read-only saved-result recovery, the existing owner-only `GET /api/v1/sessio
 ## Refine My DNA (`mode=refine`)
 `POST /api/v1/session/:id/refine` `{ "operation_id"?: string }` → `{ session_id, mode:"refine", replayed }`. Retry with the same `operation_id` returns the same run. The child points at the root discover reading; drive it with the normal next/choice/skip/reveal. Matchups exclude the parent's answered pairings, target its split/early/untested traits and prefer genres not yet heard. The reveal's ledger, `dna_summary` and archetype fit are cumulative (parent + refine picks); the parent's saved reading never changes. Clients should prompt guests to create an account first.
 - `signature` (top-level, nullable): `{ name, hook }` written by Sol and passed by Terra, saved with the reading. Show it as the headline only when `dna_summary.archetype.status === "emerging"`, labelled as an early signature; older readings have none.
+
+## Saved report envelope (`GET /api/v1/session/:id/report`, report-envelope-v1)
+
+Owner-only, read-only. Bearer required; another owner's session returns `404 NOT_FOUND` (RLS). Optional `?version=N` selects an exact result version; without it, the first saved `pairings` result (v1) is returned. A GET makes **zero model calls** and never finalizes, starts a child run, publishes, or writes. To create a reading, clients still call `POST /reveal`.
+
+Errors: `400 INVALID_INPUT` (bad id/version), `401`, `404 NOT_FOUND`, `404 NO_RESULT` (session has no saved reading yet — do not treat as an empty report), `404 VERSION_NOT_FOUND`, `503 UNAVAILABLE`.
+
+Shape: `{ contract: 1, envelope_version, status: "ok", session, frozen, annotations }`.
+
+- `session` — `session_id`, `mode` (`discover|explore|refine`), `decade`, `parent_session_id`, `completed_at`.
+- `frozen` — **immutable**, replayed verbatim from the saved result: `result_version`, `source`, `saved_at`, `text` (Sol prose), `voice_version`, `narration_status`, `signature` (`{name, hook}` or `null`), `signature_status` (`present|absent`; absent on historical readings is valid and is never generated later), `reveal` (`{answered, twist, challenge}` or `null` on older rows), `archetype` (`{saved_at_finalize: true, status, name, ...}` when frozen at finalize, otherwise `{saved_at_finalize: false, status: "not_saved"}` — never rematched later).
+- `annotations` — **deterministic**, recomputed from frozen choice evidence only (no catalog rereads): `status` (`ok|unavailable`), `dna_summary_version`, `dna_summary` (same shape as reveal: `dimensions[]` with server `label`, `supporting`, `relevant`, `confidence` `Clear|Leaning|Early`; `undecided[]`; `receipts[]` with titles/artists; `archetype` `confirmed|leaning` with name or `emerging` with `null`; all ordered `matchups[]`; `single_lane`), `challenge`, `challenge_source` (`frozen|derived`). When `status` is `unavailable`, `dna_summary` is `null` but `frozen` is still authoritative.
+
+Fixtures: `docs/musicdna/fixtures/report-envelope-{ok,legacy,unavailable}.json`. Equivalence: for the same frozen evidence, `annotations.dna_summary` equals the reveal's `dna_summary`.
