@@ -193,11 +193,12 @@ For read-only saved-result recovery, the existing owner-only `GET /api/v1/sessio
 
 ## `dna_summary` on reveal (dna-summary-v1)
 `POST /api/v1/session/:id/reveal` (v1) adds `dna_summary`, recomputed from frozen choice evidence on every read (never saved prose):
-- `archetype`: `{status:"confirmed", name}` only when finalize stored an archetype that passed score/margin floors and ledger support; otherwise `{status:"emerging", name:null}`. Never display an archetype name for `emerging`.
+- `archetype`: `{status:"confirmed"|"leaning", name}` only when finalize stored an archetype that passed score/margin floors and ledger support; otherwise `{status:"emerging", name:null}`. Never display an archetype name for `emerging`.
 - `dimensions[]` (max 3): `label`, `preferred`, `over`, `supporting`, `relevant`, `confidence` (`Clear`|`Leaning`|`Early`). Render counts as "`supporting` of `relevant` relevant comparisons".
 - `undecided[]`: split traits (`label` like "danger or release").
 - `receipts[]` (max 3): two `pattern`, at most one `contradiction`, each with chosen/rejected titles and artists plus a short `note`.
 - `single_lane`: lane name when every answered pick came from one lane, else null.
+- `matchups[]`: every answered matchup in order, `{chosen, chosen_artist, rejected, rejected_artist}`.
 
 ## Refine My DNA (`mode=refine`)
 `POST /api/v1/session/:id/refine` `{ "operation_id"?: string }` → `{ session_id, mode:"refine", replayed }`. Retry with the same `operation_id` returns the same run. The child points at the root discover reading; drive it with the normal next/choice/skip/reveal. Matchups exclude the parent's answered pairings, target its split/early/untested traits and prefer genres not yet heard. The reveal's ledger, `dna_summary` and archetype fit are cumulative (parent + refine picks); the parent's saved reading never changes. Clients should prompt guests to create an account first.
