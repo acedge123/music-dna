@@ -1,0 +1,34 @@
+{
+  "contract": 1,
+  "envelope_version": "report-envelope-v1",
+  "status": "ok",
+  "session": {
+    "session_id": "00000000-0000-4000-8000-000000000001",
+    "mode": "discover",
+    "decade": null,
+    "parent_session_id": null,
+    "completed_at": "2026-11-11T04:02:00Z"
+  },
+  "frozen": {
+    "result_version": 1,
+    "source": "pairings",
+    "saved_at": null,
+    "text": "Older reading text.",
+    "voice_version": null,
+    "narration_status": "ok",
+    "signature": null,
+    "signature_status": "absent",
+    "reveal": null,
+    "archetype": {
+      "saved_at_finalize": false,
+      "status": "not_saved"
+    }
+  },
+  "annotations": {
+    "status": "unavailable",
+    "dna_summary_version": "dna-summary-v1",
+    "dna_summary": null,
+    "challenge": null,
+    "challenge_source": null
+  }
+}
