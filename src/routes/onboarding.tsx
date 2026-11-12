@@ -1,5 +1,4 @@
 import { createFileRoute, useNavigate, Link } from "@tanstack/react-router";
-import { halftimeSummary } from "@/musicdna/engine/halftime";
 import { z } from "zod";
 import { useInterview } from "@/hooks/use-interview";
 import { ReadingFeedback } from "@/components/musicdna/reading-feedback";
@@ -91,13 +90,8 @@ function Onboarding() {
     reactedRounds,
     reactionReply,
     entries,
-    milestone,
-    holdNext,
-    releaseNext,
     stageHunch,
     skipNote,
-    continueInterview,
-    finishEarly,
     reveal,
     synthesis,
     dnaSummary,
@@ -219,15 +213,10 @@ function Onboarding() {
   }
 
   const waitingOnCritic = phase === "playing" && busy && pendingSongId !== null;
-  const criticStage = phase === "playing" && (waitingOnCritic || holdNext);
-  const stageEntry = entries.at(-1);
-  const stageTitle = pendingSkip ? "" : waitingOnCritic
-    ? [pairing?.song_a, pairing?.song_b].find((s) => s?.id === pendingSongId)?.title ?? ""
-    : stageEntry
-      ? stageEntry.chosenSongId === stageEntry.pairing.song_a.id
-        ? stageEntry.pairing.song_a.title
-        : stageEntry.pairing.song_b.title
-      : "";
+  const criticStage = waitingOnCritic;
+  const stageTitle = waitingOnCritic
+    ? ([pairing?.song_a, pairing?.song_b].find((song) => song?.id === pendingSongId)?.title ?? "")
+    : "";
 
   // One active stage; prior exchanges stay in history.
   return (
@@ -328,7 +317,7 @@ function Onboarding() {
                 </p>
               </details>
             )}
-            {!milestone && !criticStage && (
+            {!criticStage && (
               <InterviewHistory
                 entries={entries}
                 openerSongs={songs}
@@ -343,54 +332,6 @@ function Onboarding() {
         )}
 
         {/* Current pairing */}
-        {milestone && (
-          <section
-            className="max-w-2xl space-y-6 py-8"
-            aria-label={milestone === 3 ? "Halftime" : "Initial reading available"}
-          >
-            <p className="eyebrow">{milestone === 3 ? "Halfway there" : "Four choices in"}</p>
-            <h2 className="display text-3xl md:text-4xl">
-              {milestone === 3 ? "The story isn't settled." : "I have an initial reading."}
-            </h2>
-            {milestone === 3 && (
-              <p className="whitespace-pre-wrap font-serif text-2xl leading-relaxed">
-                {halftimeSummary(
-                  entries.map((e) => ({
-                    chosenTitle:
-                      e.chosenSongId === e.pairing.song_a.id
-                        ? e.pairing.song_a.title
-                        : e.pairing.song_b.title,
-                    topDim: e.topDim,
-                    revised: Boolean(e.revision),
-                    direction: e.direction,
-                  })),
-                )}
-              </p>
-            )}
-            {milestone === 3 && <HalftimePushback sessionId={sessionId} />}
-            <p className="font-serif text-xl leading-relaxed">
-              {milestone === 3
-                ? null
-                : "See my take now, or give me two more picks to challenge it."}
-            </p>
-            <div className="flex flex-wrap gap-3">
-              {milestone === 4 && (
-                <Button
-                  onClick={() => void finishEarly()}
-                  disabled={busy}
-                  variant="outline"
-                  className="min-h-11"
-                >
-                  <MessageCircle /> See my take now
-                </Button>
-              )}
-              <Button onClick={continueInterview} disabled={busy} className="min-h-11">
-                {milestone === 3 ? "Three more" : "Give me two more"} <ArrowRight />
-              </Button>
-            </div>
-          </section>
-        )}
-
         {(criticStage || (busy && (!pairing || pendingSkip) && phase === "playing")) && (
           <CriticStage
             wait={criticStage || entries.length > 0 || pendingSkip ? entries.length + 1 : 0}
@@ -398,13 +339,10 @@ function Onboarding() {
             skip={!criticStage && skipNote ? skipLine(skipNote.index, skipNote.songs) : null}
             hunch={stageHunch}
             chosenTitle={stageTitle}
-            entry={holdNext ? entries.at(-1) : undefined}
-            halftime={holdNext && entries.length === 3 ? sessionId : null}
-            onNext={releaseNext}
           />
         )}
 
-        {pairing && phase === "playing" && !milestone && !criticStage && !(busy && pendingSkip) && (
+        {pairing && phase === "playing" && !criticStage && !(busy && pendingSkip) && (
           <section ref={pairingAnchorRef} className="space-y-4 pt-2">
             <p className="font-serif text-2xl md:text-3xl">
               {entries.length === 0 ? "Pick one. First instinct." : "Which one would you keep?"}
@@ -441,9 +379,9 @@ function Onboarding() {
                 {pendingSkip ? "Retry this skip" : "Skip — I don’t know these"}
               </Button>
             </div>
+            {entries.length === 3 && <HalftimePushback sessionId={sessionId} />}
           </section>
         )}
-
 
         {/* Final report */}
         {phase === "done" && (
@@ -551,8 +489,6 @@ function Onboarding() {
   );
 }
 
-type StageEntry = { reaction: string; thesis: string };
-
 /** Critic-only screen between a pick and the next matchup. */
 function CriticStage({
   wait,
@@ -560,18 +496,12 @@ function CriticStage({
   hunch,
   skip,
   chosenTitle,
-  entry,
-  halftime,
-  onNext,
 }: {
   wait: number;
   decade?: string | null;
   hunch?: Hunch | null;
   skip?: string | null;
   chosenTitle: string;
-  entry?: StageEntry;
-  halftime: string | null;
-  onNext: () => void;
 }) {
   const [tick, setTick] = useState(0);
   // Freeze the line set when the stage opens; the entry count changes mid-wait.
@@ -591,48 +521,30 @@ function CriticStage({
   useEffect(() => setTick(0), [skip]);
   // Each line holds ~2.5s and shows once; the last stays until the Critic answers.
   useEffect(() => {
-    if (entry || tick >= lines.length - 1) return;
+    if (tick >= lines.length - 1) return;
     const t = setTimeout(() => setTick((n) => n + 1), 2500);
     return () => clearTimeout(t);
-  }, [entry, tick, lines.length]);
+  }, [tick, lines.length]);
   return (
-    <section aria-label="The Critic" className="max-w-2xl space-y-6 py-6 animate-in fade-in duration-500">
+    <section
+      aria-label="The Critic"
+      className="max-w-2xl space-y-6 py-6 animate-in fade-in duration-500"
+    >
       {!skip && title && (
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
           You picked · {title}
         </p>
       )}
-      {entry ? (
-        <div className="space-y-4 animate-in fade-in duration-500">
-          <p className="whitespace-pre-wrap font-serif text-2xl leading-relaxed">{entry.reaction}</p>
-          {entry.thesis && (
-            <p className="font-serif text-xl leading-relaxed text-muted-foreground">{entry.thesis}</p>
-          )}
-          {halftime && (
-            <details className="text-sm">
-              <summary className="min-h-11 cursor-pointer py-3 text-muted-foreground">
-                Halfway. Push back on this?
-              </summary>
-              <HalftimePushback sessionId={halftime} />
-            </details>
-          )}
-          <Button onClick={onNext} className="min-h-11" autoFocus>
-            Next matchup <ArrowRight />
-          </Button>
-        </div>
-      ) : (
-        // Fixed-height slot anchored at the top: every line starts in the same spot,
-        // and the only motion is one planned short rise + fade per line.
-        <div className="min-h-[7.5rem]">
-          <p
-            role="status"
-            key={lines[Math.min(tick, lines.length - 1)]}
-            className="font-serif text-3xl italic leading-snug animate-in fade-in slide-in-from-bottom-2 duration-700"
-          >
-            {lines[Math.min(tick, lines.length - 1)]}
-          </p>
-        </div>
-      )}
+      {/* Fixed-height slot: one planned short rise + fade per line. */}
+      <div className="min-h-[7.5rem]">
+        <p
+          role="status"
+          key={lines[Math.min(tick, lines.length - 1)]}
+          className="font-serif text-3xl italic leading-snug animate-in fade-in slide-in-from-bottom-2 duration-700"
+        >
+          {lines[Math.min(tick, lines.length - 1)]}
+        </p>
+      </div>
     </section>
   );
 }

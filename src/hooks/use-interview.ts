@@ -103,12 +103,12 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     null,
   );
   const [entries, setEntries] = useState<Entry[]>([]);
-  // Next pairing stays hidden until the listener has seen the Critic's read.
-  const [holdNext, setHoldNext] = useState(false);
   const [stageHunch, setStageHunch] = useState<Hunch | null>(null);
-  const [skipNote, setSkipNote] = useState<{ songs: Array<{ artist: string; year?: number | null }>; index: number } | null>(null);
+  const [skipNote, setSkipNote] = useState<{
+    songs: Array<{ artist: string; year?: number | null }>;
+    index: number;
+  } | null>(null);
   const skipCount = useRef(0);
-  const [dismissedMilestones, setDismissedMilestones] = useState<number[]>([]);
   const [reveal, setReveal] = useState<{
     answered: number;
     twist: string | null;
@@ -145,8 +145,6 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     setBootError(null);
     setPhase("slot1");
     setEntries([]);
-    setHoldNext(false);
-    setDismissedMilestones([]);
     setReveal(undefined);
     setDnaSummary(null);
     setSignature(null);
@@ -633,38 +631,6 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     }
   }
 
-  async function finishEarly() {
-    if (busy || actionRef.current || entries.length < 4 || pendingSongId || pendingSkip) return;
-    actionRef.current = true;
-    setBusy(true);
-    try {
-      await loadFinalRead(undefined, true);
-      setPairing(null);
-      setPhase("done");
-    } finally {
-      actionRef.current = false;
-      setBusy(false);
-    }
-  }
-
-  const milestone =
-    phase === "playing" &&
-    pairing &&
-    !holdNext &&
-    entries.length === 4 &&
-    !dismissedMilestones.includes(entries.length) &&
-    !busy
-      ? entries.length
-      : null;
-  function releaseNext() {
-    setHoldNext(false);
-    startedAt.current = Date.now();
-  }
-  function continueInterview() {
-    setDismissedMilestones((prev) => [...prev, entries.length]);
-    startedAt.current = Date.now();
-  }
-
   // Reaction row. "That's me" is acknowledgement only. The other two change
   // what gets asked next — they never touch the scores.
   async function reactToRead(kind: "thats_me" | "not_quite" | "harder") {
@@ -840,13 +806,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     reactedRounds,
     reactionReply,
     entries,
-    milestone,
-    holdNext,
-    releaseNext,
     stageHunch,
     skipNote,
-    continueInterview,
-    finishEarly,
     reveal,
     synthesis,
     dnaSummary,

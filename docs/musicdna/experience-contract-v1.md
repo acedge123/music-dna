@@ -275,7 +275,7 @@ next pairing together automatically (no extra tap). Stall lines live in `src/mus
 
 1. While the vote saves: one `FILLER_NEUTRAL[wait]` line.
 2. When the vote returns: the vote response now includes `hunch` (`against` | `with` | `early`; absent on old replays →
-   treat as `early`). Show `FILLER_REACTION[hunch][wait]`, then `FILLER_PERSON[wait*2]` and `[wait*2+1]` every ~2.5s,
+   treat as `early`). Show `FILLER_REACTION[hunch][wait % pool.length]`, then each line of the nested `FILLER_PERSON[wait % FILLER_PERSON.length]` group in order every ~2.5s,
    holding on the last line. `fillerLines(wait, hunch)` returns this list. `wait` = 0 opening, 1–6 after each pick, so no
    line repeats in an interview.
 3. After a skip: one `skipLine(skipIndex, artist)` line, where artist is from one song in the skipped matchup.
@@ -284,4 +284,4 @@ next pairing together automatically (no extra tap). Stall lines live in `src/mus
 top trait opposite a prior lean of at least 15; first picks and weak leans are `early`. Lines never name traits or hint at
 the next test. If the read fails after ~20s, show "I'll come back to that one" with the next pairing. With `defer_read`,
 discard any `/read` response whose `answered` / `after_pairing_id` is not the current position. Halftime (pick 3) does not
-interrupt; pushback is an optional link. The pick-4 early exit and pick-6 reveal are unchanged.
+interrupt; pushback is an optional link. No automatic Q3 or Q4 checkpoint interrupts the interview; choice six keeps its final reveal. The server still owns completion.

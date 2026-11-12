@@ -6,6 +6,9 @@ import { useAuth } from "@/hooks/use-auth";
 import { friendlyAuthError } from "@/lib/auth-errors";
 
 export const Route = createFileRoute("/auth")({
+  validateSearch: (search: Record<string, unknown>): { mode?: "forgot" } => ({
+    mode: search.mode === "forgot" ? "forgot" : undefined,
+  }),
   head: () => ({
     meta: [
       { title: "Sign in — MusicDNA" },
@@ -27,16 +30,22 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
+  const { mode: requestedMode } = Route.useSearch();
   const { user, loading } = useAuth();
   const signedIn = !!user && !user.is_anonymous;
-  const [mode, setMode] = useState<"sign-in" | "sign-up" | "forgot">("sign-in");
+  const [mode, setMode] = useState<"sign-in" | "sign-up" | "forgot">(requestedMode ?? "sign-in");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    if (!loading && signedIn) void navigate({ to: "/onboarding", replace: true });
-  }, [navigate, loading, signedIn]);
+    if (!loading && signedIn && mode !== "forgot")
+      void navigate({ to: "/onboarding", replace: true });
+  }, [navigate, loading, signedIn, mode]);
+
+  useEffect(() => {
+    if (requestedMode === "forgot") setMode("forgot");
+  }, [requestedMode]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
@@ -71,7 +80,7 @@ function AuthPage() {
     }
   }
 
-  if (loading || signedIn)
+  if (loading || (signedIn && mode !== "forgot"))
     return (
       <main className="min-h-screen bg-background text-foreground flex items-center justify-center px-4">
         <p role="status" className="text-muted-foreground">
@@ -97,8 +106,8 @@ function AuthPage() {
           {mode === "forgot"
             ? "We'll email you a link to set a new one."
             : mode === "sign-in"
-            ? "Your readings persist across sessions."
-            : "Email and a password. No social, no ceremony."}
+              ? "Your readings persist across sessions."
+              : "Email and a password. No social, no ceremony."}
         </p>
         <form onSubmit={submit} className="space-y-4">
           <div>
@@ -116,21 +125,21 @@ function AuthPage() {
             />
           </div>
           {mode !== "forgot" && (
-          <div>
-            <label htmlFor="auth-password" className="eyebrow block mb-2">
-              Password
-            </label>
-            <input
-              id="auth-password"
-              autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
-              type="password"
-              required
-              minLength={6}
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full bg-surface border hairline-strong rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
-            />
-          </div>
+            <div>
+              <label htmlFor="auth-password" className="eyebrow block mb-2">
+                Password
+              </label>
+              <input
+                id="auth-password"
+                autoComplete={mode === "sign-in" ? "current-password" : "new-password"}
+                type="password"
+                required
+                minLength={6}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-surface border hairline-strong rounded-sm px-3 py-2.5 text-sm focus:outline-none focus:border-primary"
+              />
+            </div>
           )}
           <button
             type="submit"
@@ -166,4 +175,3 @@ function AuthPage() {
     </main>
   );
 }
-
