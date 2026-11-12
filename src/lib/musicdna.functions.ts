@@ -1,3 +1,4 @@
+import { refinePool, refineTargets } from "@/musicdna/engine/refine";
 import { buildDnaSummary, type DnaSummary } from "@/musicdna/engine/dna-summary";
 import { DIM_LABEL as SHARED_DIM_LABEL } from "@/musicdna/engine/axes";
 import { openerEra, preferEra, type EraWindow } from "@/musicdna/engine/opener-era";
@@ -636,7 +637,7 @@ import { PRIOR_SEED_WEIGHT, seedVectorFromPriors } from "@/musicdna/engine/prior
 import { buildStartSessionSeed } from "@/musicdna/engine/session";
 import { LEDGER_VERSION, buildLedger, type Ledger } from "@/musicdna/engine/evidence";
 import { ENGINE_VERSION } from "@/musicdna/engine/versions";
-import { loadChoiceEvidence } from "@/musicdna/adapters/choice-evidence";
+import { loadChoiceEvidence, loadReadingEvidence } from "@/musicdna/adapters/choice-evidence";
 import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
@@ -898,6 +899,18 @@ export async function nextPairingImpl(
     decade?: number | null;
     parent_session_id?: string | null;
   };
+  if (exploreSession.mode === "refine" && exploreSession.parent_session_id) {
+    return refineNextPairing(supabase, {
+      sessionId: data.sessionId,
+      userId: session.user_id,
+      parentSessionId: exploreSession.parent_session_id,
+      vector,
+      usedIds,
+      answered,
+      round,
+      stop,
+    });
+  }
   if (exploreSession.mode === "explore") {
     return exploreNextPairing(supabase, {
       sessionId: data.sessionId,
@@ -2069,7 +2082,7 @@ export async function finalizeSessionImpl(
       .select(
         "id,name,tagline,signature_axes,core_question,commentary_keywords,confidence_thresholds",
       ),
-    loadChoiceEvidence(supabase, data.sessionId),
+    loadReadingEvidence(supabase, data.sessionId),
   ]);
   const archetypes = archRes.data ?? [];
   const choices = evidence.choices.filter((c) => c.chosen && c.rejected);
@@ -2151,7 +2164,11 @@ export async function finalizeSessionImpl(
 
   // -------- Archetype (via engine.assignArchetype — one implementation of
   //          scoring/margin/flagging shared with tests and REST) --------
-  const vector = (session.vector ?? {}) as Record<string, number>;
+  const vector = await cumulativeVector(
+    supabase,
+    data.sessionId,
+    (session.vector ?? {}) as Record<string, number>,
+  );
   type ArchetypeRow = {
     id: string;
     name: string;
@@ -3432,7 +3449,7 @@ type SynthPayload = {
 
 async function dnaSummaryFor(supabase: AuthedSupabase, sessionId: string): Promise<DnaSummary> {
   const [{ ledger }, sess] = await Promise.all([
-    loadChoiceEvidence(supabase, sessionId),
+    loadReadingEvidence(supabase, sessionId),
     supabase.from("sessions").select("archetype_id").eq("id", sessionId).maybeSingle(),
   ]);
   const archetypeId = (sess.data as { archetype_id: string | null } | null)?.archetype_id;
@@ -3478,7 +3495,7 @@ async function finalSynthesisCore(
   if (saved?.content && (saved.content as SynthPayload).synthesis) {
     return { ...(saved.content as SynthPayload), result_version: saved.version };
   }
-  const { ledger: savedLedger } = await loadChoiceEvidence(supabase, data.sessionId);
+  const { ledger: savedLedger } = await loadReadingEvidence(supabase, data.sessionId);
   const fresh = await computeFinalSynthesis(supabase, userId, data, savedLedger);
   if (!fresh.synthesis) return fresh;
   // Only an approved Critic reading becomes the frozen v1. Safety text is shown
@@ -4122,7 +4139,7 @@ No prose, no markdown fences.`;
       // Extraction is best-effort; chat continues with the prior vector.
     }
 
-  const { ledger: chatLedger } = await loadChoiceEvidence(supabase, sessionId);
+  const { ledger: chatLedger } = await loadReadingEvidence(supabase, sessionId);
 
   const ctxLines: string[] = [];
   if (profile?.opening_songs?.length) {
@@ -4342,7 +4359,7 @@ No prose, no markdown fences.`;
         refinement = {};
       }
 
-    const { ledger: chatLedger } = await loadChoiceEvidence(supabase, sessionId);
+    const { ledger: chatLedger } = await loadReadingEvidence(supabase, sessionId);
 
     const ctxLines: string[] = [];
     if (profile?.opening_songs?.length) {
@@ -5137,5 +5154,115 @@ async function exploreNextPairing(
       ...(picked.selection_reason as object),
       explore: { decade, exploring },
     } as never,
+  };
+}
+
+
+/** Refine runs score on top of their parent: archetype fit uses both runs' vectors. */
+async function cumulativeVector(
+  supabase: AuthedSupabase,
+  sessionId: string,
+  own: Record<string, number>,
+): Promise<Record<string, number>> {
+  const { data } = await supabase
+    .from("sessions")
+    .select("mode, parent_session_id")
+    .eq("id", sessionId)
+    .maybeSingle();
+  const row = data as { mode?: string; parent_session_id?: string | null } | null;
+  if (row?.mode !== "refine" || !row.parent_session_id) return own;
+  const parent = await supabase
+    .from("sessions")
+    .select("vector")
+    .eq("id", row.parent_session_id)
+    .maybeSingle();
+  const pv = ((parent.data as { vector?: unknown } | null)?.vector ?? {}) as Record<string, number>;
+  const out: Record<string, number> = {};
+  for (const d of DIMS as readonly string[]) out[d] = (Number(pv[d]) || 0) + (Number(own[d]) || 0);
+  return out;
+}
+
+// "Refine My DNA": six more picks aimed at the parent's unsettled traits and
+// genres it hasn't heard. Uses the full playable pool, not discover routing.
+async function refineNextPairing(
+  supabase: AuthedSupabase,
+  ctx: {
+    sessionId: string;
+    userId: string;
+    parentSessionId: string;
+    vector: Record<string, number>;
+    usedIds: Set<string>;
+    answered: number;
+    round: number;
+    stop: { max_answered: number; confidence: number };
+  },
+) {
+  const dims = DIMS as readonly string[];
+  const done = () => ({
+    pairing: null,
+    round: ctx.round,
+    answered: ctx.answered,
+    max_rounds: ctx.stop.max_answered,
+    stop_reason: "catalog_exhausted" as const,
+    confidence: ctx.stop.confidence,
+    done: true as const,
+  });
+  const [parentEvidence, ownEvidence, parentRow, res] = await Promise.all([
+    loadChoiceEvidence(supabase, ctx.parentSessionId),
+    loadChoiceEvidence(supabase, ctx.sessionId),
+    supabase.from("sessions").select("vector").eq("id", ctx.parentSessionId).maybeSingle(),
+    supabase
+      .from("pairings")
+      .select(PLAYABLE_PAIRING_SELECT)
+      .eq("active", true)
+      .eq("is_bootstrap", false)
+      .range(0, PLAYABLE_PAIRING_LIMIT - 1),
+  ]);
+  if (res.error) throw new Error(res.error.message);
+  const heard = [...parentEvidence.choices, ...ownEvidence.choices]
+    .map((c) => String((c.chosen as { lane?: string; primary_lane?: string } | null)?.lane ?? ""))
+    .filter(Boolean);
+  const parentPairingIds = new Set(
+    parentEvidence.choices.map((c) => c.pairing_id).filter((x): x is string => !!x),
+  );
+  const pool = refinePool((res.data ?? []) as unknown as Array<PairingCandidate & { id: string; lane?: string | null; tests?: string[] | null }>, {
+    targets: refineTargets(buildLedger([...parentEvidence.choices, ...ownEvidence.choices], dims), dims),
+    heardLanes: heard,
+    parentPairingIds,
+  }).filter((p) => !ctx.usedIds.has(p.id));
+  const parentVector = ((parentRow.data as { vector?: unknown } | null)?.vector ?? {}) as Record<string, number>;
+  const rng = mulberry32(seedFrom(ctx.sessionId, ctx.round));
+  let picked = selectPairing({
+    pool: pool as unknown as PairingCandidate[],
+    vector: blendPrior(parentVector, ctx.vector, dims),
+    used_ids: new Set([...ctx.usedIds, ...parentPairingIds]),
+    session_lane: "general",
+    dims,
+    rng,
+    mode: "recognition_boost",
+    knobs: { fork_filter: "soft" } as never,
+  });
+  if (picked.kind === "empty") return done();
+  const chosen = picked.pairing as PairingCandidate & { id: string; tests?: string[] | null };
+  const exposureId = await recordServedOffer(
+    supabase,
+    ctx.userId,
+    ctx.sessionId,
+    chosen.id,
+    `${ctx.round}:${ctx.usedIds.size}`,
+  );
+  return {
+    pairing: {
+      ...(await withPairingArtwork(supabase, stripPrivatePairingFields(chosen))),
+      exposure_id: exposureId,
+    },
+    prompt: nextPromptFor((chosen.tests ?? []) as string[], topLeadAxis(ctx.vector)),
+    round: ctx.round + 1,
+    answered: ctx.answered,
+    max_rounds: ctx.stop.max_answered,
+    stop_reason: null,
+    confidence: ctx.stop.confidence,
+    done: false as const,
+    selection_reason: { ...(picked.selection_reason as object), refine: true } as never,
   };
 }
