@@ -16,7 +16,13 @@ function laneName(lane: string) {
 }
 
 /** Identity header: a confirmed archetype only when finalize stored one. */
-export function DnaIdentity({ summary }: { summary: DnaSummary }) {
+export function DnaIdentity({
+  summary,
+  signature,
+}: {
+  summary: DnaSummary;
+  signature?: { name: string; hook: string } | null;
+}) {
   return (
     <header className="space-y-2">
       <p className="eyebrow">
@@ -25,6 +31,14 @@ export function DnaIdentity({ summary }: { summary: DnaSummary }) {
       </p>
       {summary.archetype.status === "confirmed" ? (
         <h2 className="display text-4xl leading-tight md:text-5xl">{summary.archetype.name}</h2>
+      ) : signature ? (
+        <>
+          <h2 className="display text-4xl leading-tight md:text-5xl">{signature.name}</h2>
+          <p className="font-serif text-xl leading-relaxed">{signature.hook}</p>
+          <p className="text-xs text-muted-foreground">
+            An early signature from {summary.answered} picks, not a confirmed archetype.
+          </p>
+        </>
       ) : (
         <p className="text-sm leading-relaxed text-muted-foreground">
           {summary.answered} picks is a first impression, not a verdict. No archetype yet — the

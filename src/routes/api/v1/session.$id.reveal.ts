@@ -54,6 +54,7 @@ export const Route = createFileRoute("/api/v1/session/$id/reveal")({
             supporting_choices: synth.kept_choosing,
             tension: synth.counter_reads[0] ?? null,
             dna_summary: synth.dna_summary ?? null,
+            signature: synth.signature ?? null,
             full: { ...result, interpretation: synth.synthesis || result.interpretation },
             share_token: (result as { share_token?: string }).share_token ?? null,
           });
