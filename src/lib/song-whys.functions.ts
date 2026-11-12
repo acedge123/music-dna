@@ -219,7 +219,7 @@ export const reviewSongWhy = createServerFn({ method: "POST" })
     };
     if (data.audible_evidence) patch.audible_evidence = data.audible_evidence;
     if (data.interpretation) patch.interpretation = data.interpretation;
-    const { error } = await context.supabase.from("song_trait_explanations").update(patch).eq("id", data.id);
+    const { error } = await context.supabase.from("song_trait_explanations").update(patch as never).eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
