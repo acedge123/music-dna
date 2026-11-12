@@ -50,23 +50,24 @@ export const FILLER_REACTION = {
 
 /** About the person, claims nothing specific. Shown until the Critic's comment lands. */
 export const FILLER_PERSON = [
-  // Alternates praise and sarcasm; each wait shows one of each.
+  // Eight setup → punchline pairs. Each wait shows one pair, in order:
+  // praise first, then the Critic undercuts it.
   "I'm starting to like you.",
-  "Bold move. We'll see if it ages well.",
+  "Don't make it weird.",
   "You've got ears, I'll give you that.",
-  "Sure. Let's pretend that was easy.",
+  "Whether you use them is another question.",
   "Somebody raised you right.",
-  "Interesting choice. And by interesting I mean we'll talk.",
+  "Or you rebelled perfectly.",
   "Taste. Actual taste.",
-  "Cute. Real cute.",
+  "I'm as surprised as you are.",
   "Music is in your blood.",
-  "I've seen worse. Not often, but I have.",
+  "Possibly a little too much.",
   "Dig it. Let's keep cooking.",
-  "Oh, you think you're tricky.",
+  "Try not to burn anything.",
   "You might be my favorite interview today.",
   "Don't let it go to your head.",
   "Okay, you're good at this.",
-  "Strong opinions. I respect it. Mostly.",
+  "Suspiciously good, actually.",
 ] as const;
 
 /** After a skip: the Critic owns the miss. {artist} is a song shown in the skipped matchup. */
