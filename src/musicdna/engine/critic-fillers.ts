@@ -156,9 +156,9 @@ export function matchupDecade(songs: ReadonlyArray<{ year?: number | null }>): s
 
 export function fillerLines(wait: number, hunch?: Hunch | null, decade?: string | null): string[] {
   const era = decade ? FILLER_DECADE[decade] : undefined;
-  const tail = era ? [at(era, wait * 2), at(era, wait * 2 + 1)] : [...at(FILLER_PERSON, wait)];
-  if (!hunch) return [at(FILLER_NEUTRAL, wait), ...tail];
-  return [at(FILLER_NEUTRAL, wait), at(FILLER_REACTION[hunch], wait), ...(era ? tail.slice(0, 1) : tail)];
+  const person = [...at(FILLER_PERSON, wait)];
+  const middle = hunch ? [at(FILLER_REACTION[hunch], wait)] : [];
+  return [at(FILLER_NEUTRAL, wait), ...middle, ...(era ? [at(era, wait)] : []), ...(era && hunch ? [] : person)];
 }
 
 export function skipLine(

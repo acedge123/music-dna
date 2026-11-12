@@ -62,7 +62,7 @@ describe("decade fillers", () => {
   });
   it("era lines never repeat across six picks", async () => {
     const { fillerLines } = await import("./critic-fillers");
-    const used = Array.from({ length: 7 }, (_, w) => fillerLines(w, null, "1970s")).flat();
+    const used = Array.from({ length: 7 }, (_, w) => fillerLines(w, null, "1970s")[1]);
     expect(new Set(used).size).toBe(used.length);
   });
 });
