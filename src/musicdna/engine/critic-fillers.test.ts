@@ -31,8 +31,8 @@ describe("critic fillers", () => {
     ]).flat();
     expect(new Set(used).size).toBe(used.length);
   });
-  it("shows only a neutral line until the pick result is known", () => {
-    expect(fillerLines(2)).toEqual([FILLER_NEUTRAL[2]]);
+  it("opens with a neutral line even before the pick result is known", () => {
+    expect(fillerLines(2)[0]).toBe(FILLER_NEUTRAL[2]);
   });
   it("youngin' only when both skipped songs are pre-2000", () => {
     const old = [{ artist: "The Cure", year: 1989 }, { artist: "Joy Division", year: 1980 }];

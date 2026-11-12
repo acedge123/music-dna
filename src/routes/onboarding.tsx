@@ -15,7 +15,7 @@ import { ArchetypeFit } from "@/components/musicdna/archetype-fit";
 import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/dna-summary";
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { fillerLines, matchupDecade, skipLine, type Hunch } from "@/musicdna/engine/critic-fillers";
 
 export const Route = createFileRoute("/onboarding")({
