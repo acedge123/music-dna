@@ -5,7 +5,7 @@ All endpoints need `X-MusicDNA-Experience: 1`.
 
 ## 1. Load the lines once per app launch
 `GET /api/v1/critic-fillers` (no auth, no user data) →
-`{ contract, version, neutral[8], reaction: { against[8], with[8], early[8] }, person[16], skip[8] }`.
+`{ contract, version, neutral[8], reaction: { against[8], with[8], early[8] }, person[8][1–2 lines], skip[8] }`.
 Cache it, and keep a bundled copy as an offline fallback. Never edit the lines in Dart.
 
 ## 2. `wait` index
@@ -16,7 +16,7 @@ Cache it, and keep a bundled copy as an offline fallback. Never edit the lines i
 2. `POST /api/v1/session/:id/choice` with `defer_read: true`. The response now includes
    `hunch`: `"against" | "with" | "early"` (computed inside the save, so no added latency; treat a missing value as `"early"`).
 3. Rotate every ~2.5s and hold on the last line:
-   `reaction[hunch][wait % 8]` → `person[(wait*2) % 16]` → `person[(wait*2+1) % 16]` (these are written as setup → punchline pairs; never shuffle or split them). Hold every line at least 3.5 s; keep the neutral line up until `hunch` arrives, then continue (never reshow it).
+   `reaction[hunch][wait % 8]` → each line of `person[wait % 8]` in order (an entry is a setup → punchline pair or one stand-alone line; never shuffle or split them). Hold every line at least 3.5 s; keep the neutral line up until `hunch` arrives, then continue (never reshow it).
 4. In parallel: `POST /read` `{ after_pairing_id, answered }` and fetch the next pairing. Keep the pairing hidden.
 5. When the read arrives, show it with the next matchup below it **automatically, without a tap**.
    Discard a read whose `answered`/`after_pairing_id` isn't current (a 409 also means discard).

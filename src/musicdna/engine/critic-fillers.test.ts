@@ -13,7 +13,7 @@ import {
 
 const ALL = [
   ...FILLER_NEUTRAL,
-  ...FILLER_PERSON,
+  ...FILLER_PERSON.flat(),
   ...FILLER_SKIP,
   SKIP_YOUNG,
   SKIP_OLD,
