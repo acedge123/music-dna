@@ -4,7 +4,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { poleScoreLabel } from "@/musicdna/engine/axes";
-import { draftSongWhys, listSongWhys, reviewSongWhy, songWhysOverview } from "@/lib/song-whys.functions";
+import { approveAllSongWhys, draftSongWhys, listSongWhys, reviewSongWhy, songWhysOverview } from "@/lib/song-whys.functions";
 
 const FILTERS = [
   ["pending_review", "Ready to review"],
@@ -19,6 +19,7 @@ export function SongWhysPanel() {
   const [edit, setEdit] = useState<{ id: string; ev: string; it: string } | null>(null);
   const overview = useServerFn(songWhysOverview), draft = useServerFn(draftSongWhys);
   const list = useServerFn(listSongWhys), review = useServerFn(reviewSongWhy);
+  const approveAll = useServerFn(approveAllSongWhys);
   const qc = useQueryClient();
   const ov = useQuery({ queryKey: ["admin", "whys", "overview"], queryFn: () => overview() });
   const q = useQuery({ queryKey: ["admin", "whys", status], queryFn: () => list({ data: { status, page: 0 } }) });
@@ -32,6 +33,20 @@ export function SongWhysPanel() {
       refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Drafting failed");
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function runApproveAll() {
+    const scope = lane === "all" ? "all lanes" : lane;
+    if (!window.confirm(`Approve every waiting explanation (${scope})? Stale ones are skipped.`)) return;
+    setBusy(true);
+    try {
+      const r = await approveAll({ data: { lane: lane === "all" ? null : lane } });
+      toast.success(`${r.approved} approved${r.skipped_stale ? `, ${r.skipped_stale} stale skipped` : ""}`);
+      refresh();
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Approve all failed");
     } finally {
       setBusy(false);
     }
@@ -87,6 +102,11 @@ export function SongWhysPanel() {
             <option key={l} value={l}>{l}</option>
           ))}
         </select>
+        {status === "pending_review" && (ov.data?.totals.pending_review ?? 0) > 0 && (
+          <Button size="sm" disabled={busy} onClick={() => void runApproveAll()}>
+            Approve all{lane === "all" ? "" : ` (${lane})`}
+          </Button>
+        )}
       </div>
 
       {q.isPending ? (
