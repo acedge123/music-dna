@@ -7,7 +7,7 @@ const POLES: Record<string, [string, string]> = {
   community: ["solitude", "the singalong"],
   perspective: ["feeling", "witness"],
   confidence: ["vulnerability", "command"],
-  tension: ["release", "danger and pressure"],
+  tension: ["release", "pressure"],
   texture: ["rawness", "refinement"],
   transformation: ["holding its shape", "going somewhere"],
 };
