@@ -212,6 +212,7 @@
 - [x] Readings show no archetype until v2 profiles are approved and `MUSICDNA_ARCHETYPE_V2=1`
 - [x] `archetype_profiles` (10 drafts on current traits) + admin "Archetype v2" review tab + v2 matcher with tests
 - [x] `song_trait_explanations` table (review-first) + coverage count in admin
-- [ ] Owner approves/edits the 10 draft profiles, then turn on `MUSICDNA_ARCHETYPE_V2` in Vercel
+- [x] Six profiles approved; Transformer reworked; match frozen per saved reading
+- [ ] Finish Architect, Storyteller, Seeker, Believer (draft); then turn on `MUSICDNA_ARCHETYPE_V2` in Vercel
 - [ ] Sol/reviewer drafting job for the 100 most-picked songs + admin review queue
 - [ ] Freeze approved explanations into picks and feed the Critic/chat
