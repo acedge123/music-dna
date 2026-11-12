@@ -402,7 +402,7 @@ function Onboarding() {
           />
         )}
 
-        {pairing && phase === "playing" && !milestone && !criticStage && (
+        {pairing && phase === "playing" && !milestone && !criticStage && !(busy && pendingSkip) && (
           <section ref={pairingAnchorRef} className="space-y-4 pt-2">
             <p className="font-serif text-2xl md:text-3xl">
               {entries.length === 0 ? "Pick one. First instinct." : "Which one would you keep?"}
@@ -419,8 +419,8 @@ function Onboarding() {
               onChoose={(id) => void pick(id)}
             />
             {busy && (
-              <p role="status" className={skipNote ? "font-serif text-2xl italic" : "text-sm text-muted-foreground"}>
-                {skipNote ? skipLine(skipNote.index, skipNote.artist) : "Saving your choice…"}
+              <p role="status" className="text-sm text-muted-foreground">
+                Saving your choice…
               </p>
             )}
             {flowError && (
@@ -442,7 +442,7 @@ function Onboarding() {
           </section>
         )}
 
-        {busy && !pairing && phase === "playing" && !criticStage && (
+        {busy && (!pairing || pendingSkip) && phase === "playing" && !criticStage && (
           <CriticStage
             wait={0}
             chosenTitle=""
