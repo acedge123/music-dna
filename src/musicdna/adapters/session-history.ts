@@ -53,7 +53,16 @@ export type Exchange =
       revision: Record<string, string | number | boolean | null | Record<string, string>> | null;
     }
   | { type: "skip"; at: string; pairing_id: string | null; reason: string | null }
-  | { type: "reaction"; at: string; kind: string | null };
+  | { type: "reaction"; at: string; kind: string | null }
+  | {
+      type: "pushback";
+      at: string;
+      text: string;
+      at_pick: number;
+      reply: string | null;
+      mutation_id: string | null;
+      provenance: "self_report";
+    };
 
 export async function loadSessionHistory(client: Client, sessionId: string): Promise<Exchange[]> {
   const songCols = "id,title,artist,year,lane";
@@ -69,7 +78,7 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
       .from("event_log")
       .select("event_type, pairing_id, created_at, props")
       .eq("session_id", sessionId)
-      .in("event_type", ["read_shown", "pairing_skipped", "reaction_submitted"])
+      .in("event_type", ["read_shown", "pairing_skipped", "reaction_submitted", "halftime_pushback"])
       .order("created_at", { ascending: true }),
   ]);
   if (choicesRes.error) throw new Error(choicesRes.error.message);
@@ -163,6 +172,16 @@ export async function loadSessionHistory(client: Client, sessionId: string): Pro
         at: e.created_at,
         pairing_id: e.pairing_id,
         reason: (p.reason as string) ?? null,
+      });
+    } else if (e.event_type === "halftime_pushback") {
+      out.push({
+        type: "pushback",
+        at: e.created_at,
+        text: String(p.text ?? ""),
+        at_pick: typeof p.at_pick === "number" ? p.at_pick : 0,
+        reply: typeof p.reply === "string" ? p.reply : null,
+        mutation_id: typeof p.mutation_id === "string" ? p.mutation_id : null,
+        provenance: "self_report",
       });
     } else {
       out.push({ type: "reaction", at: e.created_at, kind: (p.kind as string) ?? null });
