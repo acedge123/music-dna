@@ -36,7 +36,10 @@ export function errorResponse(
     | "MUTATION_CONFLICT"
     | "INVALID_RESULT_VERSION"
     | "PERSISTENCE_FAILED"
-    | "CHAT_TURN_PENDING",
+    | "CHAT_TURN_PENDING"
+    | "UNAVAILABLE"
+    | "NO_RESULT"
+    | "VERSION_NOT_FOUND",
   message: string,
   status: number,
 ): Response {
