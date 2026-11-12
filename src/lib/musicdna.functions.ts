@@ -1,3 +1,4 @@
+import { buildDnaSummary, type DnaSummary } from "@/musicdna/engine/dna-summary";
 import { DIM_LABEL as SHARED_DIM_LABEL } from "@/musicdna/engine/axes";
 import { openerEra, preferEra, type EraWindow } from "@/musicdna/engine/opener-era";
 import { acknowledgeExposure } from "@/musicdna/adapters/exposure";
@@ -3425,7 +3426,21 @@ type SynthPayload = {
   /** Saved result version this payload was rendered from (RES04). */
   result_version?: number | null;
   reveal?: ReturnType<typeof revealBeats>;
+  /** Deterministic payoff panel, recomputed from frozen evidence; never saved prose. */
+  dna_summary?: DnaSummary;
 };
+
+async function dnaSummaryFor(supabase: AuthedSupabase, sessionId: string): Promise<DnaSummary> {
+  const [{ ledger }, sess] = await Promise.all([
+    loadChoiceEvidence(supabase, sessionId),
+    supabase.from("sessions").select("archetype_id").eq("id", sessionId).maybeSingle(),
+  ]);
+  const archetypeId = (sess.data as { archetype_id: string | null } | null)?.archetype_id;
+  const arch = archetypeId
+    ? (await supabase.from("archetypes").select("name").eq("id", archetypeId).maybeSingle()).data
+    : null;
+  return buildDnaSummary(ledger, arch?.name ? { name: arch.name } : null);
+}
 
 export const finalSynthesis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -3451,7 +3466,11 @@ export async function finalSynthesisImpl(
     .limit(1)
     .maybeSingle();
   if (saved?.content && (saved.content as SynthPayload).synthesis) {
-    return { ...(saved.content as SynthPayload), result_version: saved.version };
+    return {
+      ...(saved.content as SynthPayload),
+      result_version: saved.version,
+      dna_summary: await dnaSummaryFor(supabase, data.sessionId),
+    };
   }
   const { ledger: savedLedger } = await loadChoiceEvidence(supabase, data.sessionId);
   const fresh = await computeFinalSynthesis(supabase, userId, data, savedLedger);
