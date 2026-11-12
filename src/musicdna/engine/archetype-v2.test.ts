@@ -35,3 +35,22 @@ describe("matchArchetypeV2", () => {
     expect(m.status).not.toBe("confirmed");
   });
 });
+
+describe("archetype v2 guards", () => {
+  const strong = [1, 2, 3, 4].map((i) => pick(i, [80, 20], [80, 20], i % 2 ? "hip-hop" : "pop"));
+  it("a near-identical twin runner-up does not block a match", () => {
+    const twin = { archetype_id: "9", name: "Twin", core: { texture: 0.95, confidence: 0.7 } };
+    const m = matchArchetypeV2(buildLedger(strong, DIMS), [profiles[0], twin, profiles[1]])!;
+    expect(m).toMatchObject({ name: "The Architect", status: "confirmed" });
+  });
+  it("needs evidence on at least two core traits", () => {
+    const one = { archetype_id: "8", name: "Texture Only", core: { texture: 1, scale: 0.8 } };
+    const m = matchArchetypeV2(buildLedger(strong, DIMS), [one, profiles[1]])!;
+    expect(m.reasons).toContain("single_dimension");
+    expect(m.status).not.toBe("confirmed");
+  });
+  it("records the profile version it matched", () => {
+    const m = matchArchetypeV2(buildLedger(strong, DIMS), [{ ...profiles[0], version: 2 }, profiles[1]])!;
+    expect(m.profile_version).toBe(2);
+  });
+});

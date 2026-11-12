@@ -3439,6 +3439,8 @@ Mode: the earned reveal. Write a memorable opening and interpretation inside the
 type SynthEvidence = { tradeoff: string; examples: string[]; supporting: number; tested: number };
 type SynthCounter = { claim: string; impact: string; notes: string };
 type SynthPayload = {
+  /** Archetype v2 match frozen with the saved reading (profile version included). */
+  archetype_v2?: ArchetypeMatchV2 | null;
   voice_version?: string;
   audit_text?: string;
   narration_status?: "ok" | "insufficient" | "invalid_generation" | "narrator_failure";
