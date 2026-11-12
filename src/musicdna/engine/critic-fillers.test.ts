@@ -52,3 +52,17 @@ describe("pickHunch", () => {
   it("pick against a strong lean", () => expect(pickHunch({ tension: 40 }, "tension", -12, 3)).toBe("against"));
   it("pick with a strong lean", () => expect(pickHunch({ tension: -40 }, "tension", -12, 3)).toBe("with"));
 });
+
+describe("decade fillers", () => {
+  it("uses era lines only when both songs share a decade", async () => {
+    const { matchupDecade } = await import("./critic-fillers");
+    expect(matchupDecade([{ year: 1975 }, { year: 1979 }])).toBe("1970s");
+    expect(matchupDecade([{ year: 1979 }, { year: 1981 }])).toBeNull();
+    expect(matchupDecade([{ year: 1985 }, { year: null }])).toBeNull();
+  });
+  it("era lines never repeat across six picks", async () => {
+    const { fillerLines } = await import("./critic-fillers");
+    const used = Array.from({ length: 7 }, (_, w) => fillerLines(w, null, "1970s")).flat();
+    expect(new Set(used).size).toBe(used.length);
+  });
+});
