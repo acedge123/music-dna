@@ -214,5 +214,8 @@
 - [x] `song_trait_explanations` table (review-first) + coverage count in admin
 - [x] Six profiles approved; Transformer reworked; match frozen per saved reading
 - [ ] Finish Architect, Storyteller, Seeker, Believer (draft); then turn on `MUSICDNA_ARCHETYPE_V2` in Vercel
-- [ ] Sol/reviewer drafting job for the 100 most-picked songs + admin review queue
+- [x] Archetype v2 on in preview; "Does this archetype fit you?" question
+- [x] Song Whys drafting (batches of 10, most-picked first) + admin review queue
+- [ ] Vercel: set `MUSICDNA_ARCHETYPE_V2=1` (owner)
+- [ ] Validation report for Architect/Storyteller/Seeker/Believer + thematic notes
 - [ ] Freeze approved explanations into picks and feed the Critic/chat
