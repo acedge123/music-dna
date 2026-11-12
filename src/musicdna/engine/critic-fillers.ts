@@ -49,26 +49,17 @@ export const FILLER_REACTION = {
 } as const;
 
 /** About the person, claims nothing specific. Shown until the Critic's comment lands. */
-export const FILLER_PERSON = [
-  // Eight setup → punchline pairs. Each wait shows one pair, in order:
-  // praise first, then the Critic undercuts it.
-  "I'm starting to like you.",
-  "Don't make it weird.",
-  "You've got ears, I'll give you that.",
-  "Whether you use them is another question.",
-  "Somebody raised you right.",
-  "Or you rebelled perfectly.",
-  "Taste. Actual taste.",
-  "I'm as surprised as you are.",
-  "Music is in your blood.",
-  "Possibly a little too much.",
-  "Dig it. Let's keep cooking.",
-  "Try not to burn anything.",
-  "You might be my favorite interview today.",
-  "Don't let it go to your head.",
-  "Okay, you're good at this.",
-  "Suspiciously good, actually.",
-] as const;
+export const FILLER_PERSON: ReadonlyArray<readonly string[]> = [
+  // One beat per wait: a setup → punchline pair, or a single line that stands alone.
+  ["I'm starting to like you.", "Don't make it weird."],
+  ["Bold move.", "I'll allow it."],
+  ["Somebody raised you right.", "Or you rebelled perfectly."],
+  ["Taste. Actual taste.", "I'm as surprised as you are."],
+  ["Music is in your blood.", "Possibly a little too much."],
+  ["Dig it. We'll let you cook."],
+  ["You might be my favorite interview today.", "Don't let it go to your head."],
+  ["Okay, you're good at this.", "Suspiciously good, actually."],
+];
 
 /** After a skip: the Critic owns the miss. {artist} is a song shown in the skipped matchup. */
 export const FILLER_SKIP = [
@@ -93,7 +84,7 @@ const at = <T,>(list: readonly T[], i: number) => list[Math.max(0, i) % list.len
 /** Lines for one wait. Before `hunch` is known only the neutral line shows. */
 export function fillerLines(wait: number, hunch?: Hunch | null): string[] {
   if (!hunch) return [at(FILLER_NEUTRAL, wait)];
-  return [at(FILLER_NEUTRAL, wait), at(FILLER_REACTION[hunch], wait), at(FILLER_PERSON, wait * 2), at(FILLER_PERSON, wait * 2 + 1)];
+  return [at(FILLER_NEUTRAL, wait), at(FILLER_REACTION[hunch], wait), ...at(FILLER_PERSON, wait)];
 }
 
 export function skipLine(
