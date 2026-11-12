@@ -26,8 +26,8 @@ export function halftimeSummary(entries: HalftimeEntry[]): string {
       : thread
         ? "One thread keeps turning up."
         : "No single thread has won yet.";
-  const hook = thread && !revisedAny ? "the pattern holds or cracks" : "which story wins";
-  return `${list}. ${tension} Three more—let's see if ${hook}.`;
+  const hook = thread && !revisedAny ? "if the pattern holds or cracks" : "which story wins";
+  return `${list}. ${tension} Three more—let's see ${hook}.`;
 }
 
 // Critic's answer to halftime pushback. Deterministic and instant: the

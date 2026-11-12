@@ -16,6 +16,8 @@ const BodySchema = z.object({
   ms_to_decide: z.number().int().nonnegative().max(600_000).optional(),
   // Client-generated retry key. Same key or same pairing → same committed result.
   mutation_id: z.string().min(8).max(64).optional(),
+  // V1 only: save the vote now; request the running read separately.
+  defer_read: z.boolean().optional(),
 });
 
 const UUID = z.string().uuid();
@@ -49,6 +51,15 @@ export const Route = createFileRoute("/api/v1/session/$id/choice")({
           if (experienceVersion(request) !== 1) {
             const { vector, verdict, why, hesitation, dim, delta } = result;
             return jsonResponse({ vector, verdict, why, hesitation, dim, delta });
+          }
+          if (body.data.defer_read === true) {
+            return jsonResponse({
+              contract: 1,
+              replayed: result.replayed === true,
+              feedback: { verdict: result.verdict, why: result.why },
+              read: null,
+              read_pending: true,
+            });
           }
           const read = await currentReadImpl(supabase, userId, { sessionId: sid.data });
           return jsonResponse({

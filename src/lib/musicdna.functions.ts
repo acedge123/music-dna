@@ -1,3 +1,4 @@
+import { requireReadCursor, ReadSupersededError, type ReadCursor } from "@/musicdna/adapters/read-cursor";
 import {
   matchArchetypeV2,
   type ArchetypeMatchV2,
@@ -4906,7 +4907,7 @@ export const prepareReads = createServerFn({ method: "POST" })
 export async function currentReadImpl(
   supabase: AuthedSupabase,
   userId: string,
-  data: { sessionId: string },
+  data: { sessionId: string; afterChoice?: ReadCursor },
 ): Promise<CurrentReadResult> {
   const { data: session, error: sessionError } = await supabase
     .from("sessions")
@@ -4916,6 +4917,10 @@ export async function currentReadImpl(
   if (sessionError) throw new Error(sessionError.message);
   if (!session || session.user_id !== userId) throw new Error("forbidden");
   const { ledger } = await loadChoiceEvidence(supabase, data.sessionId);
+  if (data.afterChoice) {
+    if (ledger.answered !== data.afterChoice.answered) throw new ReadSupersededError();
+    await requireReadCursor(supabase, data.sessionId, data.afterChoice);
+  }
   const { data: rows, error: readError } = await supabase
     .from("event_log")
     .select("props")
@@ -4956,30 +4961,30 @@ export async function currentReadImpl(
     await poolUnusedDraft(data.sessionId, lastChoice).catch(() => {});
   }
   const lead = ledger.axes[0];
-  const { error } = await (
-    await trustedEventLog()
-  ).insert({
-    user_id: userId,
-    session_id: data.sessionId,
-    event_type: "read_shown",
-    props: {
-      axis: lead?.axis ?? null,
-      direction: lead?.direction ?? null,
-      tier: result.tier,
-      answered: ledger.answered,
-      thesis: result.thesis,
-      supporting: lead?.supporting ?? 0,
-      contradicting: lead?.contradicting ?? 0,
-      ledger: ledger.version,
-      policy: ledger.policy,
-      language: CLAIM_LANGUAGE_VERSION,
-      voice_version: authored.voice_version,
-      validation_reason: authored.validation_reason,
-      prepared_before_pick: !!prepared,
-      result,
-      revised: !!result.revision,
-      revision: result.revision,
-    } as never,
+  const props = {
+    axis: lead?.axis ?? null,
+    direction: lead?.direction ?? null,
+    tier: result.tier,
+    answered: ledger.answered,
+    thesis: result.thesis,
+    supporting: lead?.supporting ?? 0,
+    contradicting: lead?.contradicting ?? 0,
+    ledger: ledger.version,
+    policy: ledger.policy,
+    language: CLAIM_LANGUAGE_VERSION,
+    voice_version: authored.voice_version,
+    validation_reason: authored.validation_reason,
+    prepared_before_pick: !!prepared,
+    result,
+    revised: !!result.revision,
+    revision: result.revision,
+  };
+  if (data.afterChoice) {
+    const { saveDeferredRead } = await import("@/musicdna/adapters/deferred-read");
+    return saveDeferredRead(data.sessionId, userId, data.afterChoice, props);
+  }
+  const { error } = await (await trustedEventLog()).insert({
+    user_id: userId, session_id: data.sessionId, event_type: "read_shown", props: props as never,
   });
   if (error) throw new Error(`read_persistence_failed: ${error.message}`);
   return result;
