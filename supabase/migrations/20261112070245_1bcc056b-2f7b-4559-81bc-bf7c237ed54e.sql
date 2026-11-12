@@ -1,0 +1,1 @@
+UPDATE public.axes SET high_pole = 'pressure' WHERE key = 'tension' AND high_pole = 'danger/pressure';
