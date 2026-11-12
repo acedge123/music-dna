@@ -6,6 +6,13 @@ const state = vi.hoisted(() => ({
   failWrite: false,
 }));
 const generate = vi.hoisted(() => vi.fn());
+const guard = vi.hoisted(() => vi.fn());
+const saveDeferred = vi.hoisted(() => vi.fn());
+vi.mock("@/musicdna/adapters/deferred-read", () => ({ saveDeferredRead: saveDeferred }));
+vi.mock("@/musicdna/adapters/read-cursor", async (original) => ({
+  ...(await original<object>()),
+  requireReadCursor: guard,
+}));
 vi.mock("@/musicdna/adapters/llm-gateway", () => ({
   DEFAULT_MODEL: "test-model",
   callLovableAi: generate,
@@ -93,6 +100,8 @@ describe("current read service boundary", () => {
   beforeEach(() => {
     state.events = [];
     state.failWrite = false;
+    guard.mockReset().mockResolvedValue(undefined);
+    saveDeferred.mockReset().mockRejectedValue(new Error("superseded"));
     generate.mockReset().mockRejectedValue(new Error("test generation unavailable"));
   });
   it("routes interim observations through the current writer and reviewer with zero eligible claims", async () => {
@@ -158,6 +167,27 @@ describe("current read service boundary", () => {
     expect(first.revision?.changed_by).toMatchObject({ chosen: "A2 (X)", rejected: "B2 (Y)" });
     expect(await currentReadImpl(api as never, "user", { sessionId: "s" })).toEqual(first);
     expect(state.events).toHaveLength(2);
+  });
+  it("rejects an obsolete position before generation", async () => {
+    await expect(
+      currentReadImpl(client([40]) as never, "user", {
+        sessionId: "s",
+        afterChoice: { pairingId: "0", answered: 2 },
+      }),
+    ).rejects.toThrow("moved on");
+    expect(generate).not.toHaveBeenCalled();
+    expect(state.events).toEqual([]);
+  });
+  it("discards a draft if the listener advanced during generation", async () => {
+    guard.mockResolvedValue(undefined);
+    await expect(
+      currentReadImpl(client([40]) as never, "user", {
+        sessionId: "s",
+        afterChoice: { pairingId: "0", answered: 1 },
+      }),
+    ).rejects.toThrow("superseded");
+    expect(saveDeferred).toHaveBeenCalledOnce();
+    expect(state.events).toEqual([]);
   });
   it("does not acknowledge a read that failed persistence", async () => {
     state.failWrite = true;

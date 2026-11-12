@@ -231,3 +231,39 @@ Owner-only, normal bearer. Self-report: never a vote, score, ledger entry or rou
 ## Decades vs Refine children
 
 `GET /api/v1/session/:id/explore` `runs[]` contains only `mode=explore` children (every one has a decade). Refine children (`mode=refine`, `decade=null`) never appear there; they are listed by `GET /api/v1/sessions` and session detail with `mode`, `decade` and `parent_session_id`.
+
+## Uninterrupted mobile flow (AB-73, build 13)
+
+Opt-in `POST /session/:id/choice` body adds `defer_read: true`. The existing
+atomic vote, deterministic acknowledgement, score/evidence capture and replay
+run unchanged. V1 returns `{contract:1, replayed, feedback, read:null,
+read_pending:true}` without waiting for running-read narration. V0 and V1 requests
+without the option retain their existing shapes and inline behavior.
+
+After acknowledgement, fetch `/next` and paint the actual server pairing first.
+`POST /session/:id/read` with `{after_pairing_id:<last committed pairing UUID>,
+answered:<server progress.answered>}` obtains the same shared Critic writing and
+review path, with normal bearer/ownership checks. Response is `{contract:1,
+after_pairing_id, answered, read}`. Another listener/unknown session is 404;
+superseded choice position is 409 CONFLICT; unavailable narration is 503 UPSTREAM.
+Clients bind the response to that exact position and discard it after another
+choice, skip, session reload, final report or owner change. No automatic model
+retry after an uncertain outcome. A narration failure does not undo the vote or
+block the remaining choices. Existing saved history/readback still works.
+
+The model runs outside any database lock. The one new migration,
+`20261112183759_musicdna_deferred_read_cursor.sql`, adds the backend-only
+`save_musicdna_deferred_read` compare-and-save RPC. It locks the existing session
+row, checks owner/latest pairing/count/completion, replays the first saved result
+for that position, or discards the obsolete draft. Only service_role may execute;
+no listener table/RLS privileges, keys or existing migrations change. The private
+credential stays in the existing backend, never Flutter. Missing migration fails
+narration visibly; never fall back to an unguarded write.
+
+Mobile build 13 ignores optional milestone presentation at three/four; it does
+not offer early completion. Six is the normal server-owned completion target;
+server skip/catalog bounds remain authoritative. Running narration is below the
+song cards so its arrival cannot displace an active choice. Collapsed reaction
+controls remain optional. AB-67's free-text pushback remains separate; its future
+control must be inline rather than reintroducing a Q3 checkpoint. No new routing,
+scoring, model, prompt, consent, public gate or learning activation is introduced.
