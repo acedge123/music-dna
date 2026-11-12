@@ -12,6 +12,7 @@ import { ArrowRight, Share2, MessageCircle } from "lucide-react";
 import { readingLead } from "@/lib/critic-display";
 import { DecadeComparison, ExploreDecades } from "@/components/musicdna/explore-decades";
 import { AccountControl } from "@/components/musicdna/account-control";
+import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
 import { useEffect } from "react";
 
 export const Route = createFileRoute("/onboarding")({
@@ -346,6 +347,7 @@ function Onboarding() {
                 )}
               </p>
             )}
+            {milestone === 3 && <HalftimePushback sessionId={sessionId} />}
             <p className="font-serif text-xl leading-relaxed">
               {milestone === 3
                 ? null

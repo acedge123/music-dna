@@ -31,3 +31,10 @@ describe("halftimeSummary", () => {
     expect(halftimeSummary([e("A", "x"), e("B", "y"), e("C", null)])).toContain("No single thread");
   });
 });
+
+import { halftimePushbackReply } from "./halftime";
+describe("halftime pushback reply", () => {
+  it("hands disagreement to the next picks", () => {
+    expect(halftimePushbackReply("No, I hate slow songs")).toMatch(/next three/);
+  });
+});
