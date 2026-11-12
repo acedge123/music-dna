@@ -1,4 +1,8 @@
-import { matchArchetypeV2, type ArchetypeProfileV2 } from "@/musicdna/engine/archetype-v2";
+import {
+  matchArchetypeV2,
+  type ArchetypeMatchV2,
+  type ArchetypeProfileV2,
+} from "@/musicdna/engine/archetype-v2";
 import { refinePool, refineTargets } from "@/musicdna/engine/refine";
 import { buildDnaSummary, type DnaSummary } from "@/musicdna/engine/dna-summary";
 import { DIM_LABEL as SHARED_DIM_LABEL } from "@/musicdna/engine/axes";
@@ -3450,35 +3454,36 @@ type SynthPayload = {
   dna_summary?: DnaSummary;
 };
 
-async function dnaSummaryFor(supabase: AuthedSupabase, sessionId: string): Promise<DnaSummary> {
-  const [{ ledger }, sess] = await Promise.all([
-    loadReadingEvidence(supabase, sessionId),
-    supabase.from("sessions").select("archetype_id").eq("id", sessionId).maybeSingle(),
-  ]);
-  const archetypeId = (sess.data as { archetype_id: string | null } | null)?.archetype_id;
-  const arch = archetypeId
-    ? (await supabase.from("archetypes").select("name").eq("id", archetypeId).maybeSingle()).data
-    : null;
-  // Legacy archetype profiles use an older trait system; until the v2
-  // profiles are approved, the reading never shows a "confirmed" archetype.
-  void arch;
-  if (process.env.MUSICDNA_ARCHETYPE_V2 !== "1") return buildDnaSummary(ledger, null);
+/** Readings show only the archetype frozen with their saved version; legacy
+ *  profiles (old trait system) and later approvals never change a saved identity. */
+async function dnaSummaryFor(
+  supabase: AuthedSupabase,
+  sessionId: string,
+  frozen: ArchetypeMatchV2 | null | undefined,
+): Promise<DnaSummary> {
+  const { ledger } = await loadReadingEvidence(supabase, sessionId);
+  return buildDnaSummary(
+    ledger,
+    frozen && frozen.status !== "none" ? { name: frozen.name, status: frozen.status } : null,
+  );
+}
+
+/** Match against approved v2 profiles at save time; null while the switch is off. */
+async function computeArchetypeV2(ledger: Ledger): Promise<ArchetypeMatchV2 | null> {
+  if (process.env.MUSICDNA_ARCHETYPE_V2 !== "1") return null;
   const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
   const { data: rows } = await supabaseAdmin
     .from("archetype_profiles")
-    .select("archetype_id, core, thematic_note, archetypes(name)")
+    .select("archetype_id, version, core, thematic_note, archetypes(name)")
     .eq("status", "approved");
   const profiles: ArchetypeProfileV2[] = (rows ?? []).map((r) => ({
     archetype_id: r.archetype_id,
     name: (r as unknown as { archetypes: { name: string } | null }).archetypes?.name ?? "",
+    version: r.version,
     core: r.core as Record<string, number>,
     thematic_note: r.thematic_note,
   }));
-  const m = matchArchetypeV2(ledger, profiles.filter((p) => p.name));
-  return buildDnaSummary(
-    ledger,
-    m && m.status !== "none" ? { name: m.name, status: m.status } : null,
-  );
+  return matchArchetypeV2(ledger, profiles.filter((p) => p.name));
 }
 
 export const finalSynthesis = createServerFn({ method: "POST" })
@@ -3498,7 +3503,10 @@ export async function finalSynthesisImpl(
 ): Promise<SynthPayload> {
   const payload = await finalSynthesisCore(supabase, userId, data);
   if (!payload.synthesis) return payload;
-  return { ...payload, dna_summary: await dnaSummaryFor(supabase, data.sessionId) };
+  return {
+    ...payload,
+    dna_summary: await dnaSummaryFor(supabase, data.sessionId, payload.archetype_v2),
+  };
 }
 
 async function finalSynthesisCore(
@@ -3527,6 +3535,7 @@ async function finalSynthesisCore(
     fresh.narration_status === "narrator_failure"
   )
     return { ...fresh, result_version: null };
+  fresh.archetype_v2 = await computeArchetypeV2(savedLedger);
   const { error } = await supabase.from("session_results").insert({
     session_id: data.sessionId,
     user_id: userId,
