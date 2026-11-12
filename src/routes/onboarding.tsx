@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight, Share2, MessageCircle } from "lucide-react";
 import { readingLead } from "@/lib/critic-display";
 import { DecadeComparison, ExploreDecades } from "@/components/musicdna/explore-decades";
+import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/dna-summary";
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
 import { useEffect } from "react";
@@ -93,6 +94,7 @@ function Onboarding() {
     finishEarly,
     reveal,
     synthesis,
+    dnaSummary,
     auditText,
     kept,
     counters,
@@ -436,6 +438,7 @@ function Onboarding() {
               </div>
             ) : (
               <>
+                {dnaSummary && <DnaIdentity summary={dnaSummary} />}
                 <ReadingResult
                   showFullSynthesis
                   content={{
@@ -488,6 +491,7 @@ function Onboarding() {
                     Sharing publishes this reading only. Your conversation stays private.
                   </p>
                 </ReadingResult>
+                {dnaSummary && <DnaEvidence summary={dnaSummary} />}
                 {sessionId && resultVersion != null && (
                   <ReadingFeedback
                     key={`${sessionId}:${resultVersion}`}
@@ -498,6 +502,7 @@ function Onboarding() {
                 {sessionId && resultVersion != null && (
                   <>
                     <DecadeComparison sessionId={sessionId} />
+                    {dnaSummary && <DnaInvitation summary={dnaSummary} />}
                     <ExploreDecades sessionId={sessionId} />
                   </>
                 )}

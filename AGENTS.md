@@ -56,3 +56,5 @@
 - Decade runs: `mode=explore` children of a finished reading; discover routing untouched.
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
+
+- Reading DNA panel comes only from `buildDnaSummary` (frozen evidence + stored archetype) — no unearned counts/archetypes.

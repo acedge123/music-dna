@@ -1,3 +1,5 @@
+import { buildDnaSummary, type DnaSummary } from "@/musicdna/engine/dna-summary";
+import { DIM_LABEL as SHARED_DIM_LABEL } from "@/musicdna/engine/axes";
 import { openerEra, preferEra, type EraWindow } from "@/musicdna/engine/opener-era";
 import { acknowledgeExposure } from "@/musicdna/adapters/exposure";
 import { measuredCritic, recordServedOffer } from "@/musicdna/adapters/critic-quality";
@@ -100,18 +102,7 @@ const DIMS = [
 
 // Pole labels match the public.axes table verbatim so the LLM, the DB, and the
 // reveal copy all speak the same vocabulary.
-const DIM_LABEL: Record<string, { hi: string; lo: string }> = {
-  movement: { hi: "forward motion", lo: "stillness" },
-  atmosphere: { hi: "immersive mood", lo: "statement" },
-  immersion: { hi: "slow reveal", lo: "immediacy" },
-  scale: { hi: "vast", lo: "intimate" },
-  community: { hi: "communal", lo: "solitary" },
-  perspective: { hi: "witness", lo: "feeling" },
-  confidence: { hi: "command", lo: "vulnerability" },
-  tension: { hi: "danger", lo: "release" },
-  texture: { hi: "refinement", lo: "rawness" },
-  transformation: { hi: "takes you somewhere", lo: "holds its shape" },
-};
+const DIM_LABEL = SHARED_DIM_LABEL;
 
 // PERSONA + VOICE (imported above) live in @/musicdna/engine/critic so the
 // exact same critic voice ships to any client. `ai()` delegates to the
@@ -3435,7 +3426,21 @@ type SynthPayload = {
   /** Saved result version this payload was rendered from (RES04). */
   result_version?: number | null;
   reveal?: ReturnType<typeof revealBeats>;
+  /** Deterministic payoff panel, recomputed from frozen evidence; never saved prose. */
+  dna_summary?: DnaSummary;
 };
+
+async function dnaSummaryFor(supabase: AuthedSupabase, sessionId: string): Promise<DnaSummary> {
+  const [{ ledger }, sess] = await Promise.all([
+    loadChoiceEvidence(supabase, sessionId),
+    supabase.from("sessions").select("archetype_id").eq("id", sessionId).maybeSingle(),
+  ]);
+  const archetypeId = (sess.data as { archetype_id: string | null } | null)?.archetype_id;
+  const arch = archetypeId
+    ? (await supabase.from("archetypes").select("name").eq("id", archetypeId).maybeSingle()).data
+    : null;
+  return buildDnaSummary(ledger, arch?.name ? { name: arch.name } : null);
+}
 
 export const finalSynthesis = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -3448,6 +3453,16 @@ export const finalSynthesis = createServerFn({ method: "POST" })
 // RES04: the first pairing-based result is saved once and replayed verbatim
 // afterwards, so reopening or sharing the same version renders the same read.
 export async function finalSynthesisImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  data: { sessionId: string },
+): Promise<SynthPayload> {
+  const payload = await finalSynthesisCore(supabase, userId, data);
+  if (!payload.synthesis) return payload;
+  return { ...payload, dna_summary: await dnaSummaryFor(supabase, data.sessionId) };
+}
+
+async function finalSynthesisCore(
   supabase: AuthedSupabase,
   userId: string,
   data: { sessionId: string },
