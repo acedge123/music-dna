@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import { CriticQualityPanel } from "@/components/musicdna/critic-quality-panel";
 import { SongFactsPanel } from "@/components/musicdna/song-facts-panel";
+import { ArchetypeProfilesPanel } from "@/components/musicdna/archetype-profiles-panel";
 import { DecadeCoveragePanel } from "@/components/musicdna/decade-coverage-panel";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
@@ -63,12 +64,14 @@ type Tab =
   | "shadow"
   | "critic_quality"
   | "song_facts"
-  | "decade_coverage";
+  | "decade_coverage"
+  | "archetype_profiles";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
   { key: "song_facts", label: "Facts" },
   { key: "pairings", label: "Pairings" },
   { key: "archetypes", label: "Archetypes" },
+  { key: "archetype_profiles", label: "Archetype v2" },
   { key: "decade_prompts", label: "Decade Prompts" },
   { key: "decade_coverage", label: "Decade Coverage" },
   { key: "ontology", label: "Ontology" },
@@ -179,7 +182,8 @@ function AdminPage() {
           tab !== "shadow" &&
           tab !== "critic_quality" &&
           tab !== "song_facts" &&
-          tab !== "decade_coverage" && (
+          tab !== "decade_coverage" &&
+          tab !== "archetype_profiles" && (
             <button
               onClick={() => setEditing({ row: null })}
               className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
@@ -205,7 +209,9 @@ function AdminPage() {
         ))}
       </nav>
 
-      {tab === "song_facts" ? (
+      {tab === "archetype_profiles" ? (
+        <ArchetypeProfilesPanel />
+      ) : tab === "song_facts" ? (
         <SongFactsPanel />
       ) : tab === "critic_quality" ? (
         <CriticQualityPanel />
@@ -235,7 +241,8 @@ function AdminPage() {
         tab !== "ontology" &&
         tab !== "diagnostics" &&
         tab !== "shadow" &&
-        tab !== "decade_coverage" && (
+        tab !== "decade_coverage" &&
+        tab !== "archetype_profiles" && (
           <EditDrawer
             entity={tab as Exclude<Entity, "decade_prompts">}
             row={editing.row}

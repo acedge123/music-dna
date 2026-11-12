@@ -27,9 +27,13 @@ export function DnaIdentity({
     <header className="space-y-2">
       <p className="eyebrow">
         Your Music DNA ·{" "}
-        {summary.archetype.status === "confirmed" ? "Confirmed archetype" : "Emerging signature"}
+        {summary.archetype.status === "confirmed"
+          ? "Confirmed archetype"
+          : summary.archetype.status === "leaning"
+            ? "Leaning toward"
+            : "Emerging signature"}
       </p>
-      {summary.archetype.status === "confirmed" ? (
+      {summary.archetype.status !== "emerging" ? (
         <h2 className="display text-4xl leading-tight md:text-5xl">{summary.archetype.name}</h2>
       ) : signature ? (
         <>

@@ -207,3 +207,11 @@
 - [x] "Refine My DNA" cumulative six-more run (database change applied; web + REST)
 - [ ] Combined profile across readings on the Me page
 - [ ] Guest reading carried into a new account (safe account linking, still open)
+
+## Earn the archetype (plan 2026-11-12)
+- [x] Readings show no archetype until v2 profiles are approved and `MUSICDNA_ARCHETYPE_V2=1`
+- [x] `archetype_profiles` (10 drafts on current traits) + admin "Archetype v2" review tab + v2 matcher with tests
+- [x] `song_trait_explanations` table (review-first) + coverage count in admin
+- [ ] Owner approves/edits the 10 draft profiles, then turn on `MUSICDNA_ARCHETYPE_V2` in Vercel
+- [ ] Sol/reviewer drafting job for the 100 most-picked songs + admin review queue
+- [ ] Freeze approved explanations into picks and feed the Critic/chat

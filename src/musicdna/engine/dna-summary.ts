@@ -35,7 +35,7 @@ export type DnaReceipt = {
 };
 
 export type DnaArchetype =
-  | { status: "confirmed"; name: string }
+  | { status: "confirmed" | "leaning"; name: string }
   | { status: "emerging"; name: null };
 
 export type DnaSummary = {
@@ -66,7 +66,7 @@ export function relevantComparisonsLabel(d: Pick<DnaDimension, "supporting" | "r
 
 export function buildDnaSummary(
   ledger: Ledger,
-  archetype: { name: string } | null,
+  archetype: { name: string; status?: "confirmed" | "leaning" } | null,
 ): DnaSummary {
   const dimensions: DnaDimension[] = ledger.axes
     .filter((a) => CONFIDENCE[a.status] && a.supporting > 0)
@@ -134,7 +134,7 @@ export function buildDnaSummary(
     // The archetype only appears when finalize stored one (it already passed
     // the score/margin floors and ledger support). Otherwise: emerging.
     archetype: archetype?.name
-      ? { status: "confirmed", name: archetype.name }
+      ? { status: archetype.status ?? "confirmed", name: archetype.name }
       : { status: "emerging", name: null },
     single_lane: single?.value ?? null,
   };
