@@ -579,7 +579,9 @@ function CriticStage({
   onNext: () => void;
 }) {
   const [tick, setTick] = useState(0);
-  const lines = skip ? [skip] : fillerLines(wait, hunch);
+  // Freeze the line set when the stage opens; the entry count changes mid-wait.
+  const [fixedWait] = useState(wait);
+  const lines = skip ? [skip] : fillerLines(fixedWait, hunch);
   useEffect(() => setTick(0), [skip]);
   // Each line holds at least 3.5s; the neutral opener also waits for the hunch,
   // so a fast save never flashes it twice or rushes the next lines.
@@ -616,7 +618,7 @@ function CriticStage({
           </Button>
         </div>
       ) : (
-        <p role="status" key={tick} className="font-serif text-3xl italic animate-in fade-in duration-500">
+        <p role="status" key={lines[Math.min(tick, lines.length - 1)]} className="font-serif text-3xl italic animate-in fade-in duration-500">
           {lines[Math.min(tick, lines.length - 1)]}
         </p>
       )}
