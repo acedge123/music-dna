@@ -8,7 +8,7 @@ Six picks should end in a revelation, not a recap. Keep Sol's voice, but wrap it
    - **Confirmed archetype** (e.g. "The Atmospherist") only when the match clears today's confidence bar, or
    - **Emerging signature** — a short Sol-written name (e.g. "Polish With Teeth") plus a one-line hook, clearly marked as early.
    Sol's opening line and full prose follow underneath, unchanged in spirit.
-2. **Your dimensions** — the three strongest leanings as simple bars: plain-English pole ("Refinement over rawness"), count ("3 of 4 choices") and a confidence word (Clear / Leaning / Early). Split traits are listed briefly as "Still undecided".
+2. **Your dimensions** — the three strongest leanings as simple bars: plain-English pole ("Refinement over rawness"), count ("3 of 4 relevant comparisons") and a confidence word (Clear / Leaning / Early). Split traits are listed briefly as "Still undecided".
 3. **The receipts** — 3 picks max: two that built the pattern, one contradiction ("the pick that gives you character"), each one sentence, tied to actual songs.
 4. **The invitation** — honest about what's missing ("We've only heard you through hip-hop"), then user-chosen options:
    - Explore a decade (existing decade picker; no auto-routing)
@@ -22,8 +22,8 @@ Six picks should end in a revelation, not a recap. Keep Sol's voice, but wrap it
 - Confirmed archetype only above existing thresholds; otherwise "emerging". Old saved readings stay as they were (they show the new data panels, since those are computed from frozen evidence, but no new prose).
 - Matchups stay mysterious before picks; this only appears after the reading.
 
-## "Six more" run
-A new "refine" run linked to the finished reading: six more picks in the same lanes, preferring traits still undecided or early, then an updated reading saved as a new version comparing before/after. Discover routing for first runs is untouched. (Decade runs already exist and are reused.)
+## "Refine My DNA" run (cumulative)
+A "Refine My DNA" run linked to the finished reading: six more picks that build on the original evidence, deliberately test undecided or early traits, and spread across genres, then an updated reading saved as a new version comparing before/after. Discover routing for first runs is untouched. (Decade runs already exist and are reused.)
 
 ## Order of work
 1. Data panels + receipts + invitation on web (no AI change) — fastest visible win.
@@ -44,3 +44,8 @@ A new "refine" run linked to the finished reading: six more picks in the same la
 ## One reading or a growing profile?
 Today every reading stands on its own: each gets its own archetype, and decade runs are compared to the original but never change it.
 Proposed: keep each reading frozen as it was, and add a separate **combined profile** on the Me page that pools the evidence from all of a signed-in listener's finished readings. That profile carries the archetype, which becomes "confirmed" once the pooled evidence clears the bar. Each new run updates the combined profile; past readings and shares never change.
+
+## Guardrails
+- Protect the voice: Sol writes the identity and hook; Terra checks only that the facts hold up and never flattens the prose.
+- Respect confidence: an emerging signature is fine; never force an archetype when the evidence is weak.
+- Refine is cumulative: it pools with the original evidence, aims at uncertain traits and covers more genres.
