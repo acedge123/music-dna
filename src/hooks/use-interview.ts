@@ -102,6 +102,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     null,
   );
   const [entries, setEntries] = useState<Entry[]>([]);
+  // Next pairing stays hidden until the listener has seen the Critic's read.
+  const [holdNext, setHoldNext] = useState(false);
   const [dismissedMilestones, setDismissedMilestones] = useState<number[]>([]);
   const [reveal, setReveal] = useState<{
     answered: number;
@@ -462,7 +464,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         },
       });
 
-      let thesis = "Reading you now.";
+      let thesis = "I'll come back to that one.";
       let hook = "";
       let topDim: string | null = null;
       // The running read now comes with its own tier / direction / open
@@ -473,7 +475,12 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       let question = "";
       let revision: CurrentReadResult["revision"] = null;
       try {
-        const r = await readFn({ data: { sessionId } });
+        const r = await Promise.race([
+          readFn({ data: { sessionId } }),
+          new Promise<never>((_, reject) =>
+            setTimeout(() => reject(new Error("read_timeout")), 20000),
+          ),
+        ]);
         thesis = r.thesis;
         hook = r.hook ?? "";
         topDim = r.topDim;
@@ -534,6 +541,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         return;
       }
       setPairing(nxt as unknown as Pairing);
+      setHoldNext(true);
       setPendingSongId(null);
       setRound(nr);
       startedAt.current = Date.now();
@@ -635,11 +643,16 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   const milestone =
     phase === "playing" &&
     pairing &&
-    [3, 4].includes(entries.length) &&
+    !holdNext &&
+    entries.length === 4 &&
     !dismissedMilestones.includes(entries.length) &&
     !busy
       ? entries.length
       : null;
+  function releaseNext() {
+    setHoldNext(false);
+    startedAt.current = Date.now();
+  }
   function continueInterview() {
     setDismissedMilestones((prev) => [...prev, entries.length]);
     startedAt.current = Date.now();
@@ -816,6 +829,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     reactionReply,
     entries,
     milestone,
+    holdNext,
+    releaseNext,
     continueInterview,
     finishEarly,
     reveal,
