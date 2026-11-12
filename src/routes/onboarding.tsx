@@ -583,7 +583,7 @@ function CriticStage({
   useEffect(() => setTick(0), [skip]);
   // Each line holds at least 3.5s; the neutral opener also waits for the hunch,
   // so a fast save never flashes it twice or rushes the next lines.
-  const hunchKnown = hunch !== undefined;
+  const hunchKnown = lines.length > 1;
   useEffect(() => {
     if (entry || tick >= lines.length - 1) return;
     if (tick === 0 && !hunchKnown && !skip) return;

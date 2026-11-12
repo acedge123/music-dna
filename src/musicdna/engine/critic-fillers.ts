@@ -92,7 +92,7 @@ const at = <T,>(list: readonly T[], i: number) => list[Math.max(0, i) % list.len
 /** Lines for one wait. Before `hunch` is known only the neutral line shows. */
 export function fillerLines(wait: number, hunch?: Hunch | null): string[] {
   if (!hunch) return [at(FILLER_NEUTRAL, wait)];
-  return [at(FILLER_REACTION[hunch], wait), at(FILLER_PERSON, wait * 2), at(FILLER_PERSON, wait * 2 + 1)];
+  return [at(FILLER_NEUTRAL, wait), at(FILLER_REACTION[hunch], wait), at(FILLER_PERSON, wait * 2), at(FILLER_PERSON, wait * 2 + 1)];
 }
 
 export function skipLine(
