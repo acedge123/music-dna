@@ -103,7 +103,7 @@ export function SongWhysPanel() {
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="font-medium">{r.song}</p>
                   <p className="font-mono text-xs text-muted-foreground">
-                    {r.lane}{r.year ? ` · ${r.year}` : ""} · {r.axis} {r.score} ({side})
+                    {r.lane}{r.year ? ` · ${r.year}` : ""} · {poleScoreLabel(r.axis, r.score)} <span className="opacity-60">({r.axis} {r.score})</span>
                     {r.stale ? " · stale: song rescored" : ""}
                   </p>
                 </div>
