@@ -24,11 +24,11 @@ export function openerEra(years: Array<number | null | undefined>): EraWindow | 
   return { from, to };
 }
 
-type EraSong = { year?: number | null } | null | undefined;
+type EraSong = object | null | undefined;
 
 export function inEra(p: { song_a?: EraSong; song_b?: EraSong }, era: EraWindow): boolean {
   const ok = (s: EraSong) =>
-    typeof s?.year === "number" && s.year >= era.from && s.year <= era.to;
+    { const y = (s as { year?: unknown } | null | undefined)?.year; return typeof y === "number" && y >= era.from && y <= era.to; };
   return ok(p.song_a) && ok(p.song_b);
 }
 
