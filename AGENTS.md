@@ -53,8 +53,7 @@
 - Reading accuracy controls reuse the authenticated feedback write with owner/version readback; show Saved only after a durable match. Ratings are optional, below the completed read, never during picks or on shares, and reuse one operation key per reading/version.
 - Post-pick reads are pre-drafted and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
-- Decade runs: `mode=explore` children of a finished reading; discover routing untouched.
+- Decade/refine runs are children of a finished reading; see `src/musicdna/engine/AGENTS.md`.
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
 
-- Reading DNA panel comes only from `buildDnaSummary` (frozen evidence + stored archetype) — no unearned counts/archetypes.

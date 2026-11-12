@@ -42,7 +42,7 @@ async function rootReading(client: Authed, userId: string, sessionId: string) {
     parent_session_id: string | null;
     completed_at: string | null;
   };
-  return row.mode === "explore" && row.parent_session_id ? row.parent_session_id : row.id;
+  return row.mode !== "discover" && row.parent_session_id ? row.parent_session_id : row.id;
 }
 
 export const getExploreOptions = createServerFn({ method: "POST" })
@@ -216,3 +216,67 @@ export const getDecadeCoverage = createServerFn({ method: "GET" })
       coverage: await loadCoverage(context.supabase),
     };
   });
+
+
+export const startRefine = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((d: unknown) =>
+    z
+      .object({
+        sessionId: z.string().uuid(),
+        startKey: z.string().min(8).max(80).nullable().optional(),
+      })
+      .parse(d),
+  )
+  .handler(async ({ data, context }) => startRefineImpl(context.supabase, context.userId, data));
+
+/** "Refine My DNA": six more picks, cumulative with the root reading. Web + REST. */
+export async function startRefineImpl(
+  client: Authed,
+  userId: string,
+  data: { sessionId: string; startKey?: string | null },
+) {
+  const rootId = await rootReading(client, userId, data.sessionId);
+  const { data: parent } = await client
+    .from("sessions")
+    .select("lane, lane_confidence, completed_at")
+    .eq("id", rootId)
+    .maybeSingle();
+  if (!parent?.completed_at) throw new ExploreError("Finish your reading before refining it");
+  const key = data.startKey ? `${rootId}:refine:${data.startKey}` : null;
+  const existing = async () => {
+    if (!key) return null;
+    const { data: hit } = await client
+      .from("sessions")
+      .select("id")
+      .eq("user_id", userId)
+      .eq("explore_start_key" as never, key)
+      .maybeSingle();
+    return hit ? { sessionId: (hit as { id: string }).id, replayed: true } : null;
+  };
+  const prior = await existing();
+  if (prior) return prior;
+  const { data: row, error } = await client
+    .from("sessions")
+    .insert({
+      user_id: userId,
+      vector: {},
+      lane: parent.lane ?? "general",
+      lane_confidence: 1,
+      probe_candidate_lanes: [],
+      probe_state: { probes_shown: [], pending: {}, lane_alignment: {}, flips: [] },
+      mode: "refine",
+      parent_session_id: rootId,
+      explore_start_key: key,
+    } as never)
+    .select("id")
+    .single();
+  if (error) {
+    if ((error as { code?: string }).code === "23505") {
+      const winner = await existing();
+      if (winner) return winner;
+    }
+    throw new Error(error.message);
+  }
+  return { sessionId: (row as { id: string }).id, replayed: false };
+}

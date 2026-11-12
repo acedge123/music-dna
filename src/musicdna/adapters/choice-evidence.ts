@@ -15,3 +15,23 @@ export async function loadChoiceEvidence(client: SupabaseClient<Database>, sessi
   const choices = ((data ?? []) as EvidenceRow[]).map(snapshotChoice);
   return { choices, ledger: buildLedger(choices, DIMS) };
 }
+
+/**
+ * Evidence for a reading. A "Refine My DNA" run is cumulative: its parent's
+ * frozen choices come first, then its own. Every other session is itself.
+ */
+export async function loadReadingEvidence(client: SupabaseClient<Database>, sessionId: string) {
+  const { data } = await client
+    .from("sessions")
+    .select("mode, parent_session_id")
+    .eq("id", sessionId)
+    .maybeSingle();
+  const row = data as { mode?: string; parent_session_id?: string | null } | null;
+  if (row?.mode !== "refine" || !row.parent_session_id) return loadChoiceEvidence(client, sessionId);
+  const [parent, own] = await Promise.all([
+    loadChoiceEvidence(client, row.parent_session_id),
+    loadChoiceEvidence(client, sessionId),
+  ]);
+  const choices = [...parent.choices, ...own.choices];
+  return { choices, ledger: buildLedger(choices, DIMS), parentLedger: parent.ledger };
+}

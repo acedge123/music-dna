@@ -39,6 +39,7 @@ import { Route as ApiV1SessionIdFeedbackRouteImport } from './routes/api/v1/sess
 import { Route as ApiV1SessionIdNextRouteImport } from './routes/api/v1/session.$id.next'
 import { Route as ApiV1SessionIdPrepareRouteImport } from './routes/api/v1/session.$id.prepare'
 import { Route as ApiV1SessionIdReactRouteImport } from './routes/api/v1/session.$id.react'
+import { Route as ApiV1SessionIdRefineRouteImport } from './routes/api/v1/session.$id.refine'
 import { Route as ApiV1SessionIdRevealRouteImport } from './routes/api/v1/session.$id.reveal'
 import { Route as ApiV1SessionIdShareRouteImport } from './routes/api/v1/session.$id.share'
 import { Route as ApiV1SessionIdSkipRouteImport } from './routes/api/v1/session.$id.skip'
@@ -193,6 +194,11 @@ const ApiV1SessionIdReactRoute = ApiV1SessionIdReactRouteImport.update({
   path: '/react',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
+const ApiV1SessionIdRefineRoute = ApiV1SessionIdRefineRouteImport.update({
+  id: '/refine',
+  path: '/refine',
+  getParentRoute: () => ApiV1SessionIdRoute,
+} as any)
 const ApiV1SessionIdRevealRoute = ApiV1SessionIdRevealRouteImport.update({
   id: '/reveal',
   path: '/reveal',
@@ -239,6 +245,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/prepare': typeof ApiV1SessionIdPrepareRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
+  '/api/v1/session/$id/refine': typeof ApiV1SessionIdRefineRoute
   '/api/v1/session/$id/reveal': typeof ApiV1SessionIdRevealRoute
   '/api/v1/session/$id/share': typeof ApiV1SessionIdShareRoute
   '/api/v1/session/$id/skip': typeof ApiV1SessionIdSkipRoute
@@ -273,6 +280,7 @@ export interface FileRoutesByTo {
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/prepare': typeof ApiV1SessionIdPrepareRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
+  '/api/v1/session/$id/refine': typeof ApiV1SessionIdRefineRoute
   '/api/v1/session/$id/reveal': typeof ApiV1SessionIdRevealRoute
   '/api/v1/session/$id/share': typeof ApiV1SessionIdShareRoute
   '/api/v1/session/$id/skip': typeof ApiV1SessionIdSkipRoute
@@ -309,6 +317,7 @@ export interface FileRoutesById {
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/prepare': typeof ApiV1SessionIdPrepareRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
+  '/api/v1/session/$id/refine': typeof ApiV1SessionIdRefineRoute
   '/api/v1/session/$id/reveal': typeof ApiV1SessionIdRevealRoute
   '/api/v1/session/$id/share': typeof ApiV1SessionIdShareRoute
   '/api/v1/session/$id/skip': typeof ApiV1SessionIdSkipRoute
@@ -345,6 +354,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/prepare'
     | '/api/v1/session/$id/react'
+    | '/api/v1/session/$id/refine'
     | '/api/v1/session/$id/reveal'
     | '/api/v1/session/$id/share'
     | '/api/v1/session/$id/skip'
@@ -379,6 +389,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/prepare'
     | '/api/v1/session/$id/react'
+    | '/api/v1/session/$id/refine'
     | '/api/v1/session/$id/reveal'
     | '/api/v1/session/$id/share'
     | '/api/v1/session/$id/skip'
@@ -414,6 +425,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/prepare'
     | '/api/v1/session/$id/react'
+    | '/api/v1/session/$id/refine'
     | '/api/v1/session/$id/reveal'
     | '/api/v1/session/$id/share'
     | '/api/v1/session/$id/skip'
@@ -651,6 +663,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionIdReactRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
+    '/api/v1/session/$id/refine': {
+      id: '/api/v1/session/$id/refine'
+      path: '/refine'
+      fullPath: '/api/v1/session/$id/refine'
+      preLoaderRoute: typeof ApiV1SessionIdRefineRouteImport
+      parentRoute: typeof ApiV1SessionIdRoute
+    }
     '/api/v1/session/$id/reveal': {
       id: '/api/v1/session/$id/reveal'
       path: '/reveal'
@@ -700,6 +719,7 @@ interface ApiV1SessionIdRouteChildren {
   ApiV1SessionIdNextRoute: typeof ApiV1SessionIdNextRoute
   ApiV1SessionIdPrepareRoute: typeof ApiV1SessionIdPrepareRoute
   ApiV1SessionIdReactRoute: typeof ApiV1SessionIdReactRoute
+  ApiV1SessionIdRefineRoute: typeof ApiV1SessionIdRefineRoute
   ApiV1SessionIdRevealRoute: typeof ApiV1SessionIdRevealRoute
   ApiV1SessionIdShareRoute: typeof ApiV1SessionIdShareRoute
   ApiV1SessionIdSkipRoute: typeof ApiV1SessionIdSkipRoute
@@ -715,6 +735,7 @@ const ApiV1SessionIdRouteChildren: ApiV1SessionIdRouteChildren = {
   ApiV1SessionIdNextRoute: ApiV1SessionIdNextRoute,
   ApiV1SessionIdPrepareRoute: ApiV1SessionIdPrepareRoute,
   ApiV1SessionIdReactRoute: ApiV1SessionIdReactRoute,
+  ApiV1SessionIdRefineRoute: ApiV1SessionIdRefineRoute,
   ApiV1SessionIdRevealRoute: ApiV1SessionIdRevealRoute,
   ApiV1SessionIdShareRoute: ApiV1SessionIdShareRoute,
   ApiV1SessionIdSkipRoute: ApiV1SessionIdSkipRoute,

@@ -198,3 +198,6 @@ For read-only saved-result recovery, the existing owner-only `GET /api/v1/sessio
 - `undecided[]`: split traits (`label` like "danger or release").
 - `receipts[]` (max 3): two `pattern`, at most one `contradiction`, each with chosen/rejected titles and artists plus a short `note`.
 - `single_lane`: lane name when every answered pick came from one lane, else null.
+
+## Refine My DNA (`mode=refine`)
+`POST /api/v1/session/:id/refine` `{ "operation_id"?: string }` → `{ session_id, mode:"refine", replayed }`. Retry with the same `operation_id` returns the same run. The child points at the root discover reading; drive it with the normal next/choice/skip/reveal. Matchups exclude the parent's answered pairings, target its split/early/untested traits and prefer genres not yet heard. The reveal's ledger, `dna_summary` and archetype fit are cumulative (parent + refine picks); the parent's saved reading never changes. Clients should prompt guests to create an account first.
