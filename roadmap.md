@@ -2,9 +2,9 @@
 
 ## Current — waiting-copy and skip cleanup
 
-- [ ] Retire the boomer skip line and generic blood quip without changing rotation timing.
-- [ ] Skips never show a previous picked-song heading; visible choice numbering excludes skips, including history.
-- [ ] Verify pick → skip → pick in the preview and run focused regressions; Flutter receives shared copy after deployment.
+- [x] Retire the boomer skip line and generic blood quip without changing rotation timing; shared API retains its compatible neutral recent-song field.
+- [x] Skips never show a previous picked-song heading; visible choice numbering excludes skips, including history, while reaction keys remain server-bound.
+- [x] Real guest pick → skip → pick verified in the preview: no picked-song heading on skip, second choice numbered 2, two history entries, no page errors; 12 focused tests pass and preview build OK. Flutter handoff updated; production/mobile rollout remains deployment-dependent.
 
 ## Current — reveal voice diagnosis, production credit blocker
 
