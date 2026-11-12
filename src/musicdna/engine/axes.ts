@@ -25,10 +25,11 @@ export const DIM_LABEL: Record<string, { hi: string; lo: string }> = {
   transformation: { hi: "takes you somewhere", lo: "holds its shape" },
 };
 
-/** Display a 0–100 axis score from the pole it leans toward: immersion 15 → "Immediacy · 85/100". */
+/** Both poles, with the score on the side it leans toward: texture 85 → "Refinement 85 vs Rawness". */
 export function poleScoreLabel(axis: string, score: number): string {
   const l = DIM_LABEL[axis] ?? { hi: axis, lo: axis };
   const hi = score >= 50;
-  const name = hi ? l.hi : l.lo;
-  return `${name.charAt(0).toUpperCase()}${name.slice(1)} · ${Math.round(hi ? score : 100 - score)}/100`;
+  const cap = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
+  const [lead, other] = hi ? [l.hi, l.lo] : [l.lo, l.hi];
+  return `${cap(lead)} ${Math.round(hi ? score : 100 - score)} vs ${cap(other)}`;
 }
