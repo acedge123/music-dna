@@ -43,3 +43,22 @@ describe("buildDnaSummary", () => {
     expect(s.undecided.map((u) => u.axis)).toEqual(["texture"]);
   });
 });
+
+describe("receipts when the leads have no exception", () => {
+  it("uses a split trait as the complication and lists every matchup", () => {
+    const c = (i: number, axis: string, a: number, b: number): LedgerChoice => ({
+      pairing_id: `q${i}`,
+      tests: [axis],
+      chosen: { id: `c${i}`, title: `C${i}`, artist: "x", [axis]: a, lane: i % 2 ? "pop" : "rock" },
+      rejected: { id: `r${i}`, title: `R${i}`, artist: "y", [axis]: b, lane: "pop" },
+    });
+    const ledger = buildLedger(
+      [c(1, "confidence", 20, 80), c(2, "confidence", 20, 80), c(3, "community", 80, 20), c(4, "community", 20, 80)],
+      DIMS,
+    );
+    const s = buildDnaSummary(ledger, null);
+    expect(s.receipts.at(-1)?.kind).toBe("contradiction");
+    expect(s.receipts.at(-1)?.axis).toBe("community");
+    expect(s.matchups).toHaveLength(4);
+  });
+});
