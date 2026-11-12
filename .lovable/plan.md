@@ -15,7 +15,10 @@ AB-73 saves the pick first and fetches the Critic's read separately. That makes 
 - Short, in the Rolling Stone critic voice, and rotated without repeats in a session.
 - Never claim a finding or name a trait or song. They're stalling lines, not evidence. This keeps the ledger rule intact.
 - Never hint at what the next matchup tests (keep matchups mysterious).
-- Halftime (pick 3) and pick 6 keep their own existing moments.
+- Halftime (pick 3) stops interrupting: no forced pause or decision. The read shows normally with a small optional "Push back on this" link, and the interview keeps going. Pick 6 keeps the final reveal.
+
+## Before building
+- Merge PR #46 (AB-73) first; this plan uses its deferred-read path. Apply its migration only after separate approval.
 
 ## Scope
 - Web: change the interview screen to this sequence using the deferred-read path. No changes to scoring, selection, prompts or models.
