@@ -579,7 +579,7 @@ function CriticStage({
   onNext: () => void;
 }) {
   const [tick, setTick] = useState(0);
-  const lines = skip ? [skip, ...fillerLines(wait + 7, "early").slice(1)] : fillerLines(wait, hunch);
+  const lines = skip ? [skip] : fillerLines(wait, hunch);
   useEffect(() => setTick(0), [hunch, skip]);
   useEffect(() => {
     if (entry) return;

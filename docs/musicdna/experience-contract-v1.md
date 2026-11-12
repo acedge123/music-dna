@@ -270,10 +270,18 @@ scoring, model, prompt, consent, public gate or learning activation is introduce
 
 ## Pick → Critic → next matchup sequencing (client guidance)
 
-After a pick, clients show a Critic-only screen: a "You picked · {title}" tag, then rotating stall lines from
-`src/musicdna/engine/critic-fillers.ts` (`fillerFor(wait, tick)`: wait 0 = opening, 1–6 = after each pick; each wait rotates its own thinking → tension → neutral lines every ~2.5s, so no line repeats in an interview) until the read arrives.
-The next pairing is fetched in the background but stays hidden until the read lands (or fails after ~20s, which shows
-"I'll come back to that one"), then the read and next pairing appear together automatically (no extra tap). With `defer_read`, discard any `/read` response
-whose `answered` / `after_pairing_id` is not the current position. Stall lines are not evidence: they never name songs,
-traits or findings, and never hint at the next test. Halftime (pick 3) does not interrupt; pushback is an optional link on
-that read. The pick-4 early exit and pick-6 reveal are unchanged.
+After a pick, clients show a Critic-only screen ("You picked · {title}") until the read arrives, then show the read and
+next pairing together automatically (no extra tap). Stall lines live in `src/musicdna/engine/critic-fillers.ts`:
+
+1. While the vote saves: one `FILLER_NEUTRAL[wait]` line.
+2. When the vote returns: the vote response now includes `hunch` (`against` | `with` | `early`; absent on old replays →
+   treat as `early`). Show `FILLER_REACTION[hunch][wait]`, then `FILLER_PERSON[wait*2]` and `[wait*2+1]` every ~2.5s,
+   holding on the last line. `fillerLines(wait, hunch)` returns this list. `wait` = 0 opening, 1–6 after each pick, so no
+   line repeats in an interview.
+3. After a skip: one `skipLine(skipIndex, artist)` line, where artist is from one song in the skipped matchup.
+
+`hunch` comes from `pickHunch` inside the existing vote save (zero added latency): `against` only when the pick moved the
+top trait opposite a prior lean of at least 15; first picks and weak leans are `early`. Lines never name traits or hint at
+the next test. If the read fails after ~20s, show "I'll come back to that one" with the next pairing. With `defer_read`,
+discard any `/read` response whose `answered` / `after_pairing_id` is not the current position. Halftime (pick 3) does not
+interrupt; pushback is an optional link. The pick-4 early exit and pick-6 reveal are unchanged.
