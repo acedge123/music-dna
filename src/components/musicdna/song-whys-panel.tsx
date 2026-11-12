@@ -3,7 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { DIM_LABEL } from "@/musicdna/engine/axes";
+import { poleScoreLabel } from "@/musicdna/engine/axes";
 import { draftSongWhys, listSongWhys, reviewSongWhy, songWhysOverview } from "@/lib/song-whys.functions";
 
 const FILTERS = [
@@ -96,14 +96,12 @@ export function SongWhysPanel() {
       ) : (
         <ul className="space-y-3">
           {rows.map((r) => {
-            const l = DIM_LABEL[r.axis];
-            const side = r.score > 50 ? l?.hi : l?.lo;
             return (
               <li key={r.id} className="space-y-2 border hairline rounded-sm p-4">
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="font-medium">{r.song}</p>
                   <p className="font-mono text-xs text-muted-foreground">
-                    {r.lane}{r.year ? ` · ${r.year}` : ""} · {r.axis} {r.score} ({side})
+                    {r.lane}{r.year ? ` · ${r.year}` : ""} · {poleScoreLabel(r.axis, r.score)} <span className="opacity-60">({r.axis} {r.score})</span>
                     {r.stale ? " · stale: song rescored" : ""}
                   </p>
                 </div>
