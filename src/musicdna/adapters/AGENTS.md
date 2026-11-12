@@ -1,5 +1,7 @@
 # Adapter rules
 
+- Halftime pushback goes through `recordHalftimePushbackImpl` (web + REST `/pushback`); the event id is derived from session + mutation_id so retries replay instead of duplicating, and it is self-report only.
+
 - Saved reports are reopened via `GET /api/v1/session/:id/report` (`adapters/report-envelope.ts`): frozen fields replay the saved row, annotations derive from frozen choices, zero model calls or writes.
 
 - Raw critic writer/reviewer output is stored in `critic_quality_attempts.decision_trace` only for owner-QA sessions (admin-read, never exported), so failures can be diagnosed without retaining listener prose.

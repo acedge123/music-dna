@@ -217,3 +217,17 @@ Shape: `{ contract: 1, envelope_version, status: "ok", session, frozen, annotati
 - `annotations` — **deterministic**, recomputed from frozen choice evidence only (no catalog rereads): `status` (`ok|unavailable`), `dna_summary_version`, `dna_summary` (same shape as reveal: `dimensions[]` with server `label`, `supporting`, `relevant`, `confidence` `Clear|Leaning|Early`; `undecided[]`; `receipts[]` with titles/artists; `archetype` `confirmed|leaning` with name or `emerging` with `null`; all ordered `matchups[]`; `single_lane`), `challenge`, `challenge_source` (`frozen|derived`). When `status` is `unavailable`, `dna_summary` is `null` but `frozen` is still authoritative.
 
 Fixtures: `docs/musicdna/fixtures/report-envelope-{ok,legacy,unavailable}.json`. Equivalence: for the same frozen evidence, `annotations.dna_summary` equals the reveal's `dna_summary`.
+
+## Halftime pushback (`/api/v1/session/:id/pushback`, Q3)
+
+Owner-only, normal bearer. Self-report: never a vote, score, ledger entry or routing input; no LLM call.
+
+`POST` body: `{ "text": string (trimmed, 1–500 chars), "mutation_id": string (8–80, client-generated, reuse it on every retry of the same reply) }`.
+
+`200`: `{ contract: 1, mutation_id, text, at_pick, reply, provenance: "self_report", counts_as_vote: false, replayed, created_at }`. `reply` is the deterministic acknowledgement. A retry with the same `mutation_id` and text returns the saved row with `replayed: true` and inserts nothing. Errors: `400 INVALID_INPUT`, `401`, `404 NOT_FOUND` (missing or another owner's session), `409 MUTATION_CONFLICT` (same `mutation_id`, different text), `500 PERSISTENCE_FAILED` (safe to retry with the same id).
+
+`GET` returns `{ contract: 1, pushback: [...] }`. Session history (`GET /api/v1/session/:id`) also includes `{ type: "pushback", at, text, at_pick, reply, mutation_id, provenance: "self_report" }` exchanges in chronological order, so an ambiguous response can be resolved by readback.
+
+## Decades vs Refine children
+
+`GET /api/v1/session/:id/explore` `runs[]` contains only `mode=explore` children (every one has a decade). Refine children (`mode=refine`, `decade=null`) never appear there; they are listed by `GET /api/v1/sessions` and session detail with `mode`, `decade` and `parent_session_id`.

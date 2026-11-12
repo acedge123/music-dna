@@ -65,6 +65,8 @@ export async function exploreOptionsImpl(
       .select("id, decade, completed_at, started_at")
       .eq("parent_session_id", rootId)
       .eq("user_id", context.userId)
+      // Refine children share parent_session_id but have no decade; they never belong here.
+      .eq("mode", "explore")
       .order("started_at", { ascending: false }),
   ]);
   return {
