@@ -1,4 +1,7 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { useRef, useState } from "react";
+import { startRefine } from "@/lib/explore.functions";
 import { useAuth } from "@/hooks/use-auth";
 import {
   relevantComparisonsLabel,
@@ -89,10 +92,30 @@ export function DnaEvidence({ summary }: { summary: DnaSummary }) {
 }
 
 /** The invitation: honest about what's missing, user-chosen next steps. */
-export function DnaInvitation({ summary }: { summary: DnaSummary }) {
+export function DnaInvitation({ summary, sessionId }: { summary: DnaSummary; sessionId: string }) {
   const { user } = useAuth();
   const guest = !user || user.is_anonymous;
   const hook = summary.undecided[0];
+  const refineFn = useServerFn(startRefine);
+  const navigate = useNavigate();
+  const [askSave, setAskSave] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  // One key per deliberate tap, reused on retry so a double tap opens one run.
+  const startKey = useRef<string | null>(null);
+  const refine = async () => {
+    setBusy(true);
+    setError(null);
+    startKey.current ??= crypto.randomUUID();
+    try {
+      const r = await refineFn({ data: { sessionId, startKey: startKey.current } });
+      startKey.current = null;
+      void navigate({ to: "/onboarding", search: { session: r.sessionId } });
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Couldn't start six more.");
+      setBusy(false);
+    }
+  };
   return (
     <section className="space-y-4 border-t hairline pt-8" aria-labelledby="dna-invite-heading">
       <h3 id="dna-invite-heading" className="display text-3xl leading-tight">
@@ -105,23 +128,54 @@ export function DnaInvitation({ summary }: { summary: DnaSummary }) {
         {hook
           ? `${hook.label[0].toUpperCase()}${hook.label.slice(1)}? Still a coin flip. `
           : ""}
-        Want to find out what this taste sounds like in another era?
+        Six more picks will test what's still open, across new genres — or hear this taste in another era.
       </p>
-      {guest && (
-        <p className="text-sm leading-relaxed text-muted-foreground">
-          Save your readings first:{" "}
-          <Link to="/auth" className="underline underline-offset-4">
-            create an account
-          </Link>{" "}
-          so your next runs build one profile.
+      {askSave && (
+        <div role="dialog" aria-label="Save your reading" className="space-y-3 rounded-sm border hairline-strong p-4">
+          <p className="font-serif text-lg leading-snug">Save this reading first?</p>
+          <p className="text-sm leading-relaxed text-muted-foreground">
+            Six more picks build on this reading. Readings are kept with an account — as a guest,
+            they live only in this browser.
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row">
+            <Link
+              to="/auth"
+              className="inline-flex min-h-11 items-center rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground"
+            >
+              Create an account
+            </Link>
+            <button
+              type="button"
+              onClick={() => void refine()}
+              disabled={busy}
+              className="min-h-11 rounded-sm border hairline-strong px-5 py-3 text-sm disabled:opacity-50"
+            >
+              Continue as guest
+            </button>
+          </div>
+        </div>
+      )}
+      <div className="flex flex-col gap-3 sm:flex-row">
+        <button
+          type="button"
+          disabled={busy}
+          onClick={() => (guest ? setAskSave(true) : void refine())}
+          className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
+        >
+          {busy ? "Opening…" : "Refine My DNA — six more"}
+        </button>
+        <a
+          href="#explore-heading"
+          className="inline-flex min-h-11 items-center rounded-sm border hairline-strong px-5 py-3 text-sm"
+        >
+          Pick a decade
+        </a>
+      </div>
+      {error && (
+        <p role="alert" className="text-sm text-destructive">
+          {error}
         </p>
       )}
-      <a
-        href="#explore-heading"
-        className="inline-flex min-h-11 items-center rounded-sm border hairline-strong px-5 py-3 text-sm"
-      >
-        Pick a decade
-      </a>
     </section>
   );
 }

@@ -502,7 +502,7 @@ function Onboarding() {
                 {sessionId && resultVersion != null && (
                   <>
                     <DecadeComparison sessionId={sessionId} />
-                    {dnaSummary && <DnaInvitation summary={dnaSummary} />}
+                    {dnaSummary && <DnaInvitation summary={dnaSummary} sessionId={sessionId} />}
                     <ExploreDecades sessionId={sessionId} />
                   </>
                 )}
