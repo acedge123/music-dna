@@ -542,7 +542,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         return;
       }
       setPairing(nxt as unknown as Pairing);
-      setHoldNext(true);
+      // Read and next pairing arrive together; no extra click.
       setPendingSongId(null);
       setRound(nr);
       startedAt.current = Date.now();
