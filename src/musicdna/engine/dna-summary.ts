@@ -45,6 +45,8 @@ export type DnaSummary = {
   undecided: { axis: string; label: string }[];
   receipts: DnaReceipt[];
   archetype: DnaArchetype;
+  /** Every answered matchup, in order: what was picked over what. */
+  matchups: { chosen: string; chosen_artist: string; rejected: string; rejected_artist: string }[];
   /** Set when every answered choice came from one lane. */
   single_lane: string | null;
 };
@@ -109,18 +111,51 @@ export function buildDnaSummary(
     return true;
   };
   const byAxis = new Map(ledger.axes.map((a) => [a.axis, a]));
-  for (const d of dimensions) {
-    for (const e of byAxis.get(d.axis)?.supporting_examples ?? []) {
+  // Spread the pattern receipts across dimensions first, then fill from the top one.
+  for (const pass of [0, 1]) {
+    for (const d of dimensions) {
       if (receipts.length >= 2) break;
-      push("pattern", e, `A vote for ${d.preferred}.`);
+      const examples = byAxis.get(d.axis)?.supporting_examples ?? [];
+      for (const e of pass === 0 ? examples.slice(0, 1) : examples) {
+        if (receipts.length >= 2) break;
+        if (push("pattern", e, `A vote for ${d.preferred}.`) && pass === 0) break;
+      }
     }
-    if (receipts.length >= 2) break;
   }
+  let exception = false;
   outer: for (const d of dimensions) {
     for (const e of byAxis.get(d.axis)?.contradicting_examples ?? []) {
-      if (push("contradiction", e, `The exception: ${d.over} won this one.`)) break outer;
+      if (push("contradiction", e, `The exception: ${d.over} won this one.`)) {
+        exception = true;
+        break outer;
+      }
     }
   }
+  // No exception inside the leads: a split trait is the honest complication.
+  if (!exception) {
+    outer2: for (const u of ledger.axes.filter((a) => a.status === "mixed")) {
+      const l = DIM_LABEL[u.axis] ?? { hi: u.axis, lo: u.axis };
+      for (const e of [...u.contradicting_examples, ...u.supporting_examples]) {
+        const side = e.delta > 0 ? l.hi : l.lo;
+        if (push("contradiction", e, `The complication: ${side} won here, and ${l.hi} vs ${l.lo} is still split.`))
+          break outer2;
+      }
+    }
+  }
+  const seenMatchups = new Set<string>();
+  const matchups = ledger.entries
+    .filter((e) => {
+      const k = key(e);
+      if (seenMatchups.has(k)) return false;
+      seenMatchups.add(k);
+      return true;
+    })
+    .map((e) => ({
+      chosen: e.chosen,
+      chosen_artist: e.chosen_artist,
+      rejected: e.rejected,
+      rejected_artist: e.rejected_artist,
+    }));
 
   const lanes = ledger.confounds.filter((c) => c.kind === "lane");
   const single = lanes.find((c) => c.total > 0 && c.count === c.total);
@@ -131,6 +166,7 @@ export function buildDnaSummary(
     dimensions,
     undecided,
     receipts,
+    matchups,
     // The archetype only appears when finalize stored one (it already passed
     // the score/margin floors and ledger support). Otherwise: emerging.
     archetype: archetype?.name

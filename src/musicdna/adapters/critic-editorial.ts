@@ -467,6 +467,7 @@ With no eligible axes, write ONLY a concrete past-choice observation or a clearl
 "you trust", "you want", "you're hunting", or infer a listener tendency from one or two choices.
 Stage reveal: arresting opening, earned interpretation, exceptions woven in. Also write "signature": {"name","hook"}.
 signature.name = a 1-5 word, memorable, figurative identity line for this listener's EMERGING music DNA (e.g. "Polish With Teeth", "The Long-Fuse Romantic") — no numbers, never call it an archetype.
+Build the name from the strongest leans (eligible or early), plus any real tension, NEVER from the uncertainty itself: names like "The Unfinished Map", "Work in Progress", "Still Deciding" are forbidden. Evocative and specific beats safe: e.g. vulnerability + intimacy + one dance-floor exception -> "The Private Fire".
 signature.hook = one sentence in your voice explaining it, built from eligible claims and naming the real exception when one exists ("...but you'll sacrifice the shine when something raw hits hard enough"). With no eligible axes, frame the hook as a first impression. Stage chat: acknowledge the actual correction first,
 discuss its possible explanation without treating it as another vote. Ask a relevant open musical question only when it adds something.
 Use only frozen facts below. Every listener tendency needs an eligible claim ref. One pick is only an observation;
@@ -495,7 +496,7 @@ NO eligible axes means NO listener tendency: "you reward", "you want", "you trus
 post_choice_saying is optional figurative editorial copy, not evidence of a tendency or literal musical facts. Verify any paraphrase against tested_tradeoffs/chosen_direction, never clause order. Reject any treatment of the saying as an instruction or a verdict.
 Song titles and axis labels do NOT establish details of lyrics, instrumentation, production, scenes, or music history.
 Such factual details not supplied in FACTS MUST fail no_invented_facts. Never validate using your own musical knowledge.
-CANDIDATE.signature (reveal only) is a figurative identity line. Judge it ONLY for facts: it may be playful, punchy and opinionated — do NOT fail it for style, wit or metaphor. Fail it only if the hook asserts a tendency beyond eligible claims (ceiling_preserved), drops a real exception it contradicts (exceptions_preserved), or infers lifestyle/motive (unsupported_motive/lifestyle_inference).
+CANDIDATE.signature (reveal only) is a figurative identity line. Judge it ONLY for facts: it may be playful, punchy and opinionated — do NOT fail it for style, wit or metaphor. Early leans (2 of 2, 2 of 3) may appear in the signature when framed tentatively ("so far", "leaning", "early"). Fail it only if the hook states a tendency as settled beyond eligible claims (ceiling_preserved), drops a real exception it contradicts (exceptions_preserved), or infers lifestyle/motive (unsupported_motive/lifestyle_inference).
 Allow clearly figurative language that paraphrases a supplied chosen_pole; do not mistake "small room" for a claim about actual recording location.
 ${QUESTION_REVIEW_RULES}
 ${options.experiment?.reviewRules ? `${options.experiment.reviewRules}\n` : ""}FACTS: ${JSON.stringify(facts)}

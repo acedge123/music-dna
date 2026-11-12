@@ -60,7 +60,12 @@ export function DnaEvidence({ summary }: { summary: DnaSummary }) {
     <div className="space-y-10">
       {summary.dimensions.length > 0 && (
         <section className="space-y-4" aria-label="Your dimensions">
-          <h3 className="eyebrow">Your dimensions</h3>
+          <div className="space-y-1">
+            <h3 className="eyebrow">Your dimensions</h3>
+            <p className="text-xs text-muted-foreground">
+              Bars show how much evidence backs each lean: Clear, Leaning or Early.
+            </p>
+          </div>
           <ul className="space-y-5">
             {summary.dimensions.map((d) => (
               <li key={d.axis} className="space-y-2">
@@ -104,6 +109,26 @@ export function DnaEvidence({ summary }: { summary: DnaSummary }) {
             ))}
           </ul>
         </section>
+      )}
+      {summary.matchups.length > 0 && (
+        <details className="border-t hairline pt-4">
+          <summary className="min-h-11 cursor-pointer py-3 text-sm font-medium">
+            All {summary.matchups.length} matchups
+          </summary>
+          <ol className="space-y-2 pt-2 text-sm">
+            {summary.matchups.map((m, i) => (
+              <li key={`${m.chosen}|${m.rejected}`} className="flex gap-3">
+                <span className="font-mono text-xs text-primary">{i + 1}</span>
+                <span>
+                  <span className="font-medium">{m.chosen}</span>
+                  <span className="text-muted-foreground"> ({m.chosen_artist}) over </span>
+                  {m.rejected}
+                  <span className="text-muted-foreground"> ({m.rejected_artist})</span>
+                </span>
+              </li>
+            ))}
+          </ol>
+        </details>
       )}
     </div>
   );
