@@ -419,8 +419,8 @@ function Onboarding() {
               onChoose={(id) => void pick(id)}
             />
             {busy && (
-              <p role="status" className="text-sm text-muted-foreground">
-                Saving your choice…
+              <p role="status" className={skipNote ? "font-serif text-2xl italic" : "text-sm text-muted-foreground"}>
+                {skipNote ? skipLine(skipNote.index, skipNote.artist) : "Saving your choice…"}
               </p>
             )}
             {flowError && (
