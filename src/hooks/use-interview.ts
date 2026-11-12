@@ -1,5 +1,6 @@
 import type { DnaSummary } from "@/musicdna/engine/dna-summary";
 import { useEffect, useRef, useState } from "react";
+import type { Hunch } from "@/musicdna/engine/critic-fillers";
 import { useServerFn } from "@tanstack/react-start";
 import { resumeLatestSession } from "@/lib/resume.functions";
 import {
