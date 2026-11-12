@@ -36,6 +36,8 @@ export type ArchetypeMatchV2 = {
   name: string;
   archetype_id: string;
   profile_version: number;
+  /** The exact profile weights matched, frozen with the reading. */
+  profile_core: Record<string, number>;
   version: typeof ARCHETYPE_V2_VERSION;
   score: number;
   status: "confirmed" | "leaning" | "none";
@@ -106,6 +108,7 @@ export function matchArchetypeV2(
     name: best.p.name,
     archetype_id: best.p.archetype_id,
     profile_version: best.p.version ?? 1,
+    profile_core: { ...best.p.core },
     version: ARCHETYPE_V2_VERSION,
     score: Math.round(best.score * 1000) / 1000,
     status,
