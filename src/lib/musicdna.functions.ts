@@ -1,3 +1,4 @@
+import { openerEra, preferEra, type EraWindow } from "@/musicdna/engine/opener-era";
 import { acknowledgeExposure } from "@/musicdna/adapters/exposure";
 import { measuredCritic, recordServedOffer } from "@/musicdna/adapters/critic-quality";
 import type { CallMeasurement } from "@/musicdna/engine/critic-quality";
@@ -812,7 +813,10 @@ export async function nextPairingImpl(
   const openingAnalysis = (
     profileRes.data as { profiles?: { opening_analysis_json?: unknown } } | null
   )?.profiles?.opening_analysis_json as
-    | { per_song?: Array<{ lane?: string | null }>; secondary_lanes?: string[] | null }
+    | {
+        per_song?: Array<{ lane?: string | null; canon_id?: string | null }>;
+        secondary_lanes?: string[] | null;
+      }
     | null
     | undefined;
   const openerLanes = new Set<string>();
@@ -821,6 +825,18 @@ export async function nextPairingImpl(
   }
   for (const l of openingAnalysis?.secondary_lanes ?? []) {
     if (l && l !== "general") openerLanes.add(l);
+  }
+
+  // Opener era (soft): years of catalog-matched openers, in slot order.
+  const openerCanonIds = (openingAnalysis?.per_song ?? []).map((p) => p?.canon_id ?? null);
+  let era: EraWindow | null = null;
+  if (openerCanonIds.some(Boolean)) {
+    const { data: eraRows } = await supabase
+      .from("songs")
+      .select("id,year")
+      .in("id", openerCanonIds.filter((x): x is string => !!x));
+    const yearById = new Map((eraRows ?? []).map((r) => [r.id, r.year as number | null]));
+    era = openerEra(openerCanonIds.map((id) => (id ? (yearById.get(id) ?? null) : null)));
   }
 
   const pairingSelect = `
@@ -1094,7 +1110,7 @@ export async function nextPairingImpl(
     // (wants_wider_probe), fall back to the full bootstrap pool so we can
     // reach adjacent territory (rap/R&B/country/etc).
     const widenProbe = probeState.wants_wider_probe === true;
-    const bootPool =
+    const laneBootPool =
       openerLanes.size > 0 && !widenProbe
         ? rawBootPool.filter((p) => {
             const pairingLane = (p.lane ?? null) as string | null;
@@ -1107,6 +1123,7 @@ export async function nextPairingImpl(
             );
           })
         : rawBootPool;
+    const bootPool: typeof laneBootPool = preferEra<(typeof laneBootPool)[number]>(laneBootPool, era, answered);
     if (bootPool.length > 0) {
       // Prefer pairings whose two songs have different primary_lane so the
       // winner is diagnostic. Fall back to any lane-scoped bootstrap.
@@ -1184,6 +1201,14 @@ export async function nextPairingImpl(
           .eq("active", true)
           .eq("lane", sessionLane);
   if (pairingsRes.error) throw new Error(pairingsRes.error.message);
+  if (pairingsRes.data) {
+    const unused = (pairingsRes.data as unknown as Array<{ id: string; song_a?: { year?: number | null } | null; song_b?: { year?: number | null } | null }>).filter((p) => !usedIds.has(p.id));
+    const near = preferEra(unused, era, answered);
+    if (near !== unused) {
+      const keep = new Set(near.map((p) => p.id));
+      pairingsRes = { ...pairingsRes, data: pairingsRes.data.filter((p) => keep.has((p as { id: string }).id)) };
+    }
+  }
 
   // -------- Hydrate recognition data for the current pool --------
   // View mirrors pairings visibility; a failed read isn't fatal — selector
