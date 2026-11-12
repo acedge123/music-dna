@@ -204,6 +204,6 @@
 ## Final reading payoff (plan 2026-11-12)
 - [x] Music DNA panel: identity status, top-3 dimensions ("X of Y relevant comparisons"), receipts with one contradiction, invitation with guest save prompt (web + v1 `dna_summary`)
 - [ ] Sol signature name + hook with Terra fact check (touches the Critic; test voice separately)
-- [ ] "Refine My DNA" cumulative six-more run — needs a session-mode database change (approval required)
+- [x] "Refine My DNA" cumulative six-more run (database change applied; web + REST)
 - [ ] Combined profile across readings on the Me page
 - [ ] Guest reading carried into a new account (safe account linking, still open)
