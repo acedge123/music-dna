@@ -442,7 +442,7 @@ function Onboarding() {
           </section>
         )}
 
-        {busy && !pairing && phase === "playing" && (
+        {busy && !pairing && phase === "playing" && !criticStage && (
           <CriticStage
             wait={0}
             chosenTitle=""
