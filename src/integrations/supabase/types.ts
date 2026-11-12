@@ -14,6 +14,59 @@ export type Database = {
   }
   public: {
     Tables: {
+      archetype_profiles: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          archetype_id: string
+          core: Json
+          created_at: string
+          distinguishers: string | null
+          id: string
+          status: string
+          supporting: Json
+          thematic_note: string | null
+          updated_at: string
+          version: number
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          archetype_id: string
+          core?: Json
+          created_at?: string
+          distinguishers?: string | null
+          id?: string
+          status?: string
+          supporting?: Json
+          thematic_note?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          archetype_id?: string
+          core?: Json
+          created_at?: string
+          distinguishers?: string | null
+          id?: string
+          status?: string
+          supporting?: Json
+          thematic_note?: string | null
+          updated_at?: string
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "archetype_profiles_archetype_id_fkey"
+            columns: ["archetype_id"]
+            isOneToOne: false
+            referencedRelation: "archetypes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       archetypes: {
         Row: {
           commentary_keywords: string[]
@@ -2211,6 +2264,82 @@ export type Database = {
           },
           {
             foreignKeyName: "song_facts_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      song_trait_explanations: {
+        Row: {
+          audible_evidence: string
+          axis: string
+          confidence: string
+          created_at: string
+          drafted_by: string
+          id: string
+          interpretation: string
+          review_note: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          score_at_write: number
+          scoring_version: string | null
+          song_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          audible_evidence: string
+          axis: string
+          confidence?: string
+          created_at?: string
+          drafted_by?: string
+          id?: string
+          interpretation: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score_at_write: number
+          scoring_version?: string | null
+          song_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          audible_evidence?: string
+          axis?: string
+          confidence?: string
+          created_at?: string
+          drafted_by?: string
+          id?: string
+          interpretation?: string
+          review_note?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          score_at_write?: number
+          scoring_version?: string | null
+          song_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "song_trait_explanations_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "song_trait_explanations_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "song_trait_explanations_song_id_fkey"
             columns: ["song_id"]
             isOneToOne: false
             referencedRelation: "songs"
