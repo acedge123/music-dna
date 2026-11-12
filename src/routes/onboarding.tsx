@@ -440,9 +440,7 @@ function Onboarding() {
         )}
 
         {busy && !pairing && phase === "playing" && (
-          <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground">
-            Thinking…
-          </p>
+          <CriticStage seed={`${sessionId}:open`} chosenTitle="" halftime={null} onNext={() => {}} />
         )}
 
         {/* Final report */}
