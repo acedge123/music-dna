@@ -190,3 +190,11 @@ Decades: 1970, 1980, 1990, 2000, 2010, 2020. The run must be started by the same
 `GET /api/v1/sessions?limit=30&cursor=...` remains caller-scoped and backward compatible. Summaries additionally include `mode` (`discover` or `explore`), nullable `decade` and `parent_session_id`. `has_more` and opaque `next_cursor` support older readings; URL-encode the returned cursor as one query parameter. The cursor uses stable descending `started_at,id` order and is validated before querying. Existing clients may ignore the new fields. Authentication and row ownership remain mandatory. This endpoint never publishes a reading or starts generation.
 
 For read-only saved-result recovery, the existing owner-only `GET /api/v1/session/:id/chat?limit=1` includes `result_versions`; use the earliest `source=pairings` saved version and its frozen content. Absence of a saved version is pending, never an invented version1. Reopening or a lost-response check must read the saved version before requesting generation.
+
+## `dna_summary` on reveal (dna-summary-v1)
+`POST /api/v1/session/:id/reveal` (v1) adds `dna_summary`, recomputed from frozen choice evidence on every read (never saved prose):
+- `archetype`: `{status:"confirmed", name}` only when finalize stored an archetype that passed score/margin floors and ledger support; otherwise `{status:"emerging", name:null}`. Never display an archetype name for `emerging`.
+- `dimensions[]` (max 3): `label`, `preferred`, `over`, `supporting`, `relevant`, `confidence` (`Clear`|`Leaning`|`Early`). Render counts as "`supporting` of `relevant` relevant comparisons".
+- `undecided[]`: split traits (`label` like "danger or release").
+- `receipts[]` (max 3): two `pattern`, at most one `contradiction`, each with chosen/rejected titles and artists plus a short `note`.
+- `single_lane`: lane name when every answered pick came from one lane, else null.
