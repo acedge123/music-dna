@@ -15,8 +15,8 @@ import { ArchetypeFit } from "@/components/musicdna/archetype-fit";
 import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/dna-summary";
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
-import { useEffect, useState } from "react";
-import { fillerLines, skipLine, type Hunch } from "@/musicdna/engine/critic-fillers";
+import { useEffect, useRef, useState } from "react";
+import { fillerLines, matchupDecade, skipLine, type Hunch } from "@/musicdna/engine/critic-fillers";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -394,6 +394,7 @@ function Onboarding() {
         {(criticStage || (busy && (!pairing || pendingSkip) && phase === "playing")) && (
           <CriticStage
             wait={criticStage || entries.length > 0 || pendingSkip ? entries.length + 1 : 0}
+            decade={pairing ? matchupDecade([pairing.song_a, pairing.song_b]) : null}
             skip={!criticStage && skipNote ? skipLine(skipNote.index, skipNote.songs) : null}
             hunch={stageHunch}
             chosenTitle={stageTitle}
@@ -555,6 +556,7 @@ type StageEntry = { reaction: string; thesis: string };
 /** Critic-only screen between a pick and the next matchup. */
 function CriticStage({
   wait,
+  decade,
   hunch,
   skip,
   chosenTitle,
@@ -563,6 +565,7 @@ function CriticStage({
   onNext,
 }: {
   wait: number;
+  decade?: string | null;
   hunch?: Hunch | null;
   skip?: string | null;
   chosenTitle: string;
@@ -578,17 +581,20 @@ function CriticStage({
   useEffect(() => {
     if (chosenTitle) setTitle(chosenTitle);
   }, [chosenTitle]);
-  const lines = skip ? [skip] : fillerLines(fixedWait, hunch);
+  const [fixedDecade] = useState(decade ?? null);
+  // Lines may still gain the pick reaction while the opener shows; after that they freeze.
+  const live = skip ? [skip] : fillerLines(fixedWait, hunch, fixedDecade);
+  const frozen = useRef<string[] | null>(null);
+  if (tick === 0) frozen.current = null;
+  else if (!frozen.current) frozen.current = live;
+  const lines = frozen.current ?? live;
   useEffect(() => setTick(0), [skip]);
-  // Each line holds at least 3.5s; the neutral opener also waits for the hunch,
-  // so a fast save never flashes it twice or rushes the next lines.
-  const hunchKnown = lines.length > 1;
+  // Each line holds ~2.5s and shows once; the last stays until the Critic answers.
   useEffect(() => {
     if (entry || tick >= lines.length - 1) return;
-    if (tick === 0 && !hunchKnown && !skip) return;
-    const t = setTimeout(() => setTick((n) => n + 1), 3500);
+    const t = setTimeout(() => setTick((n) => n + 1), 2500);
     return () => clearTimeout(t);
-  }, [entry, tick, lines.length, hunchKnown, skip]);
+  }, [entry, tick, lines.length]);
   return (
     <section aria-label="The Critic" className="max-w-2xl space-y-6 py-6 animate-in fade-in duration-500">
       {title && (

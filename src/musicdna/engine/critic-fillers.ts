@@ -82,9 +82,83 @@ export type Hunch = keyof typeof FILLER_REACTION;
 const at = <T,>(list: readonly T[], i: number) => list[Math.max(0, i) % list.length];
 
 /** Lines for one wait. Before `hunch` is known only the neutral line shows. */
-export function fillerLines(wait: number, hunch?: Hunch | null): string[] {
-  if (!hunch) return [at(FILLER_NEUTRAL, wait)];
-  return [at(FILLER_NEUTRAL, wait), at(FILLER_REACTION[hunch], wait), ...at(FILLER_PERSON, wait)];
+/** Era quips, used when both songs in the matchup share a decade. Pop-history jokes, no traits. */
+export const FILLER_DECADE: Record<string, readonly string[]> = {
+  "1970s": [
+    "Somewhere a lava lamp just approved.",
+    "Hold on, flipping the 8-track.",
+    "Bell-bottoms recognize bell-bottoms.",
+    "Let me blow the dust off this one.",
+    "The disco ball is watching you.",
+    "Very Bicentennial of you.",
+    "Shag carpet energy. I'm into it.",
+    "Somebody check if this is on vinyl.",
+  ],
+  "1980s": [
+    "Rewinding the cassette with a pencil.",
+    "I can hear the hairspray.",
+    "Pretty sure this was on MTV when MTV played music.",
+    "Shoulder pads are back in the building.",
+    "Very Walkman of you.",
+    "Hold on, my Rubik's cube is almost done.",
+    "This is a mixtape decision. Respect.",
+    "Neon approves.",
+  ],
+  "1990s": [
+    "Hold on, my CD is skipping.",
+    "Flannel detected.",
+    "Very TRL of you.",
+    "Dialing up. Give me a second.",
+    "Somebody's Discman is getting a workout.",
+    "As if. Kidding. Mostly.",
+    "That's a burned-CD choice if I ever saw one.",
+    "Let me page someone about this.",
+  ],
+  "2000s": [
+    "Updating your MySpace Top 8.",
+    "Very iPod-click-wheel of you.",
+    "Hold on, this ringtone cost me $2.99.",
+    "Frosted tips are trembling.",
+    "Burning this onto a mix CD as we speak.",
+    "Somewhere a flip phone just snapped shut.",
+    "That's an away-message lyric.",
+    "LimeWire says this file is totally safe.",
+  ],
+  "2010s": [
+    "Adding a filter to that choice.",
+    "That's a playlist-cover choice.",
+    "Very festival-wristband of you.",
+    "Hold on, the aux cord is fighting me.",
+    "Somebody's Tumblr just lit up.",
+    "Vine would've looped that.",
+    "That choice has its own hashtag.",
+    "Checking if this went platinum or just viral.",
+  ],
+  "2020s": [
+    "Let me check if this trended on TikTok.",
+    "That's a sped-up-version choice.",
+    "Very main-character of you.",
+    "Hold on, the algorithm wants a word.",
+    "No skips. Well, one skip. Maybe.",
+    "That pick is giving.",
+    "Screenshotting that for the group chat.",
+    "Logging off. Logging back on. Okay.",
+  ],
+};
+
+/** The shared decade of a matchup, e.g. "1980s"; null when songs span decades or years are missing. */
+export function matchupDecade(songs: ReadonlyArray<{ year?: number | null }>): string | null {
+  const ds = songs.map((x) => (typeof x.year === "number" ? Math.floor(x.year / 10) * 10 : null));
+  if (ds.length === 0 || ds.some((d) => d === null) || new Set(ds).size !== 1) return null;
+  const key = `${ds[0]}s`;
+  return FILLER_DECADE[key] ? key : null;
+}
+
+export function fillerLines(wait: number, hunch?: Hunch | null, decade?: string | null): string[] {
+  const era = decade ? FILLER_DECADE[decade] : undefined;
+  const person = [...at(FILLER_PERSON, wait)];
+  const middle = hunch ? [at(FILLER_REACTION[hunch], wait)] : [];
+  return [at(FILLER_NEUTRAL, wait), ...middle, ...(era ? [at(era, wait)] : []), ...(era && hunch ? [] : person)];
 }
 
 export function skipLine(

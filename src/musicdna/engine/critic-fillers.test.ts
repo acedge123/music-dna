@@ -31,8 +31,8 @@ describe("critic fillers", () => {
     ]).flat();
     expect(new Set(used).size).toBe(used.length);
   });
-  it("shows only a neutral line until the pick result is known", () => {
-    expect(fillerLines(2)).toEqual([FILLER_NEUTRAL[2]]);
+  it("opens with a neutral line even before the pick result is known", () => {
+    expect(fillerLines(2)[0]).toBe(FILLER_NEUTRAL[2]);
   });
   it("youngin' only when both skipped songs are pre-2000", () => {
     const old = [{ artist: "The Cure", year: 1989 }, { artist: "Joy Division", year: 1980 }];
@@ -51,4 +51,18 @@ describe("pickHunch", () => {
   it("weak lean is too early", () => expect(pickHunch({ tension: 10 }, "tension", -10, 3)).toBe("early"));
   it("pick against a strong lean", () => expect(pickHunch({ tension: 40 }, "tension", -12, 3)).toBe("against"));
   it("pick with a strong lean", () => expect(pickHunch({ tension: -40 }, "tension", -12, 3)).toBe("with"));
+});
+
+describe("decade fillers", () => {
+  it("uses era lines only when both songs share a decade", async () => {
+    const { matchupDecade } = await import("./critic-fillers");
+    expect(matchupDecade([{ year: 1975 }, { year: 1979 }])).toBe("1970s");
+    expect(matchupDecade([{ year: 1979 }, { year: 1981 }])).toBeNull();
+    expect(matchupDecade([{ year: 1985 }, { year: null }])).toBeNull();
+  });
+  it("era lines never repeat across six picks", async () => {
+    const { fillerLines } = await import("./critic-fillers");
+    const used = Array.from({ length: 7 }, (_, w) => fillerLines(w, null, "1970s")[1]);
+    expect(new Set(used).size).toBe(used.length);
+  });
 });
