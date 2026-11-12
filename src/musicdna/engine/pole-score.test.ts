@@ -1,6 +1,6 @@
 import { expect, it } from "vitest";
 import { poleScoreLabel } from "./axes";
-it("shows the leaning pole's strength", () => {
-  expect(poleScoreLabel("immersion", 15)).toBe("Immediacy · 85/100");
-  expect(poleScoreLabel("immersion", 70)).toBe("Slow reveal · 70/100");
+it("names both poles with the score on the leaning side", () => {
+  expect(poleScoreLabel("texture", 85)).toBe("Refinement 85 vs Rawness");
+  expect(poleScoreLabel("immersion", 15)).toBe("Immediacy 85 vs Slow reveal");
 });
