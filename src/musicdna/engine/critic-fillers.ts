@@ -50,22 +50,23 @@ export const FILLER_REACTION = {
 
 /** About the person, claims nothing specific. Shown until the Critic's comment lands. */
 export const FILLER_PERSON = [
-  "Music is in your blood.",
-  "Dig it. Let's keep cooking.",
-  "You've got ears, I'll give you that.",
-  "This is getting good.",
-  "You don't make this easy. Good.",
+  // Alternates praise and sarcasm; each wait shows one of each.
   "I'm starting to like you.",
+  "Bold move. We'll see if it ages well.",
+  "You've got ears, I'll give you that.",
+  "Sure. Let's pretend that was easy.",
   "Somebody raised you right.",
-  "Keep 'em coming.",
+  "Interesting choice. And by interesting I mean we'll talk.",
   "Taste. Actual taste.",
-  "We're onto something.",
-  "You and me, we're getting somewhere.",
-  "Hold that thought.",
-  "Almost got you figured out. Almost.",
-  "Stay with me.",
-  "Right. Here's what I'm hearing…",
-  "Okay, the Critic has notes.",
+  "Cute. Real cute.",
+  "Music is in your blood.",
+  "I've seen worse. Not often, but I have.",
+  "Dig it. Let's keep cooking.",
+  "Oh, you think you're tricky.",
+  "You might be my favorite interview today.",
+  "Don't let it go to your head.",
+  "Okay, you're good at this.",
+  "Strong opinions. I respect it. Mostly.",
 ] as const;
 
 /** After a skip: the Critic owns the miss. {artist} is a song shown in the skipped matchup. */
