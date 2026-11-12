@@ -37,3 +37,10 @@ A new "refine" run linked to the finished reading: six more picks in the same la
 - Synthesis schema adds `signature_name`, `signature_hook`; saved in the same result version; missing on old versions = render without.
 - Refine run modeled like decade explore (`mode=refine`, `parent_session_id`), selector bias toward low-evidence axes, behind its own default-off flag until tested.
 - v1 reveal gains `dna_summary { dimensions[], undecided[], receipts[], archetype { status, name } , signature }` under the experience header only.
+
+## Save before "six more"
+- Guests who tap "Six more" or a decade are asked to save first (sign in / create account), so the reading is kept and the new run can attach to it. Signed-in listeners skip the prompt. Guests can decline; then the new run is unsaved and unlinked.
+
+## One reading or a growing profile?
+Today every reading stands on its own: each gets its own archetype, and decade runs are compared to the original but never change it.
+Proposed: keep each reading frozen as it was, and add a separate **combined profile** on the Me page that pools the evidence from all of a signed-in listener's finished readings. That profile carries the archetype, which becomes "confirmed" once the pooled evidence clears the bar. Each new run updates the combined profile; past readings and shares never change.
