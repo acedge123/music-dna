@@ -141,6 +141,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     setBootError(null);
     setPhase("slot1");
     setEntries([]);
+    setHoldNext(false);
     setDismissedMilestones([]);
     setReveal(undefined);
     setDnaSummary(null);
