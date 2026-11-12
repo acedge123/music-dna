@@ -448,7 +448,7 @@ function Onboarding() {
             chosenTitle=""
             halftime={null}
             onNext={() => {}}
-            skip={skipNote ? skipLine(skipNote.index, skipNote.artist) : null}
+            skip={skipNote ? skipLine(skipNote.index, skipNote.songs) : null}
           />
         )}
 

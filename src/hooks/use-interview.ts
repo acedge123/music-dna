@@ -106,7 +106,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   // Next pairing stays hidden until the listener has seen the Critic's read.
   const [holdNext, setHoldNext] = useState(false);
   const [stageHunch, setStageHunch] = useState<Hunch | null>(null);
-  const [skipNote, setSkipNote] = useState<{ artist: string; index: number } | null>(null);
+  const [skipNote, setSkipNote] = useState<{ songs: Array<{ artist: string; year?: number | null }>; index: number } | null>(null);
   const skipCount = useRef(0);
   const [dismissedMilestones, setDismissedMilestones] = useState<number[]>([]);
   const [reveal, setReveal] = useState<{
@@ -755,7 +755,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     const currentPairing = pairing;
     try {
       setSkipNote({
-        artist: (Math.random() < 0.5 ? currentPairing.song_a : currentPairing.song_b).artist,
+        songs: [currentPairing.song_a, currentPairing.song_b],
         index: skipCount.current++,
       });
       await skipFn({ data: { sessionId, pairingId: currentPairing.id, msToDecide: ms } });

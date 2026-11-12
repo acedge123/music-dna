@@ -4,6 +4,8 @@ import {
   FILLER_PERSON,
   FILLER_REACTION,
   FILLER_SKIP,
+  SKIP_OLD,
+  SKIP_YOUNG,
   fillerLines,
   pickHunch,
   skipLine,
@@ -13,6 +15,8 @@ const ALL = [
   ...FILLER_NEUTRAL,
   ...FILLER_PERSON,
   ...FILLER_SKIP,
+  SKIP_YOUNG,
+  SKIP_OLD,
   ...Object.values(FILLER_REACTION).flat(),
 ];
 const BANNED = /\b(immediacy|immersion|pressure|release|tension|refinement|rawness|intimacy|dimension|trait|axis)\b/i;
@@ -31,8 +35,15 @@ describe("critic fillers", () => {
   it("shows only a neutral line until the pick result is known", () => {
     expect(fillerLines(2)).toEqual([FILLER_NEUTRAL[2]]);
   });
-  it("skip lines can name the skipped artist", () => {
-    expect(skipLine(0, "The Cure")).toBe("What? No The Cure? Alright, youngin', I'll grab a new one.");
+  it("youngin' only when both skipped songs are pre-2000", () => {
+    const old = [{ artist: "The Cure", year: 1989 }, { artist: "Joy Division", year: 1980 }];
+    expect(skipLine(0, old)).toContain("youngin'");
+    expect(skipLine(0, [{ artist: "The Cure", year: 1989 }, { artist: "Mitski", year: 2023 }])).not.toContain("youngin'");
+  });
+  it("OK boomer when both skipped songs are 2020+", () => {
+    const fresh = [{ artist: "Mitski", year: 2023 }, { artist: "Fontaines D.C.", year: 2024 }];
+    expect(skipLine(0, fresh)).toContain("OK boomer");
+    expect(skipLine(0, fresh)).not.toContain("youngin'");
   });
 });
 
