@@ -9,7 +9,7 @@ import { evaluateClaim, CLAIM_POLICY_VERSION, type ClaimStatus } from "./claims"
 
 export const LEDGER_VERSION = "ledger-v2";
 /** Contrast below this is too small to count for or against an axis. */
-const MIN_CONTRAST = 10;
+export const MIN_CONTRAST = 10;
 
 export type LedgerSong = Record<string, unknown> & { id?: string; title?: string; artist?: string };
 export type LedgerChoice = {
