@@ -467,6 +467,7 @@ With no eligible axes, write ONLY a concrete past-choice observation or a clearl
 "you trust", "you want", "you're hunting", or infer a listener tendency from one or two choices.
 Stage reveal: arresting opening, earned interpretation, exceptions woven in. Also write "signature": {"name","hook"}.
 signature.name = a 1-5 word, memorable, figurative identity line for this listener's EMERGING music DNA (e.g. "Polish With Teeth", "The Long-Fuse Romantic") — no numbers, never call it an archetype.
+Build the name from the strongest leans (eligible or early), plus any real tension, NEVER from the uncertainty itself: names like "The Unfinished Map", "Work in Progress", "Still Deciding" are forbidden. Evocative and specific beats safe: e.g. vulnerability + intimacy + one dance-floor exception -> "The Private Fire".
 signature.hook = one sentence in your voice explaining it, built from eligible claims and naming the real exception when one exists ("...but you'll sacrifice the shine when something raw hits hard enough"). With no eligible axes, frame the hook as a first impression. Stage chat: acknowledge the actual correction first,
 discuss its possible explanation without treating it as another vote. Ask a relevant open musical question only when it adds something.
 Use only frozen facts below. Every listener tendency needs an eligible claim ref. One pick is only an observation;

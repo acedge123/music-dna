@@ -130,6 +130,8 @@ export function DecadeComparison({ sessionId }: { sessionId: string }) {
   });
   if (q.isPending)
     return <p className="text-sm text-muted-foreground">Comparing with your original reading…</p>;
+  // Not a decade run: nothing to compare, so show nothing.
+  if (q.isSuccess && !q.data) return null;
   if (q.isError || !q.data)
     return (
       <p role="alert" className="text-sm text-destructive">

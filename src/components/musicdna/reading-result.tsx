@@ -8,7 +8,9 @@ export function ReadingResult({
   label = "The read",
   showInsufficientHint = true,
   showFullSynthesis = false,
+  afterReveal,
 }: {
+  afterReveal?: ReactNode;
   content: ReadingContent;
   children?: ReactNode;
   label?: string;
@@ -41,6 +43,7 @@ export function ReadingResult({
           </p>
         )}
       </header>
+      {afterReveal}
       {!showFullSynthesis &&
         (examples.length > 0 ? (
           <section className="space-y-3" aria-label="Supporting choices">

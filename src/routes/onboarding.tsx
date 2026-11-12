@@ -441,6 +441,7 @@ function Onboarding() {
               <>
                 {dnaSummary && <DnaIdentity summary={dnaSummary} signature={signature} />}
                 <ReadingResult
+                  afterReveal={dnaSummary ? <DnaEvidence summary={dnaSummary} /> : undefined}
                   showFullSynthesis
                   content={{
                     synthesis: synthesis ?? "",
@@ -492,7 +493,6 @@ function Onboarding() {
                     Sharing publishes this reading only. Your conversation stays private.
                   </p>
                 </ReadingResult>
-                {dnaSummary && <DnaEvidence summary={dnaSummary} />}
                 {sessionId && resultVersion != null && (
                   <ReadingFeedback
                     key={`${sessionId}:${resultVersion}`}
