@@ -20,7 +20,7 @@ export const DIM_LABEL: Record<string, { hi: string; lo: string }> = {
   community: { hi: "communal", lo: "solitary" },
   perspective: { hi: "witness", lo: "feeling" },
   confidence: { hi: "command", lo: "vulnerability" },
-  tension: { hi: "danger", lo: "release" },
+  tension: { hi: "pressure", lo: "release" },
   texture: { hi: "refinement", lo: "rawness" },
   transformation: { hi: "takes you somewhere", lo: "holds its shape" },
 };
