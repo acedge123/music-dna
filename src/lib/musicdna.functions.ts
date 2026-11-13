@@ -1,3 +1,4 @@
+import { checkpointsEnabled, shouldPrepareForPick } from "@/musicdna/engine/checkpoints";
 import { pickHunch } from "@/musicdna/engine/critic-fillers";
 import { requireReadCursor, ReadSupersededError, type ReadCursor } from "@/musicdna/adapters/read-cursor";
 import {
@@ -4737,6 +4738,12 @@ export async function prepareReadsImpl(
   } | null;
   if (!pairing?.song_a || !pairing.song_b) return { prepared: 0 };
   if (choices.some((c) => c.pairing_id === pairing.id)) return { prepared: 0 };
+  // Checkpoint flow: no per-pick Critic drafts except picks that land on a checkpoint or finish.
+  if (
+    checkpointsEnabled(process.env.MUSICDNA_CRITIC_CHECKPOINTS) &&
+    !shouldPrepareForPick("checkpoints", buildLedger(choices, DIMS).answered + 1)
+  )
+    return { prepared: 0, skipped: "checkpoint_flow" as const };
   const priorProps = (shown?.[0]?.props ?? null) as {
     axis?: string;
     direction?: "hi" | "lo";

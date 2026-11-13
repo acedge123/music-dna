@@ -37,6 +37,6 @@ export function halftimePushbackReply(text: string): string {
   const t = text.trim().toLowerCase();
   if (!t) return "Noted. Keep picking.";
   if (/\b(yes|yep|exactly|spot on|nailed|right)\b/.test(t))
-    return "Glad we agree. Now I'll try to break it — three more.";
-  return "Fair. You've said your piece; let's see if the next three back you up or back me up.";
+    return "Glad we agree. Now I'll try to break it.";
+  return "Fair. You've said your piece; let's see if the next picks back you up or back me up.";
 }
