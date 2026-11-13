@@ -10,6 +10,7 @@ import {
 import { useEffect, useState, type ReactNode } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { AuthContext } from "@/hooks/use-auth";
+import { trackPageView } from "@/lib/tga-analytics";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -133,6 +134,14 @@ function RootComponent() {
   const router = useRouter();
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+
+  // Shared TGA Analytics: one page view on load and on every route change.
+  useEffect(() => {
+    trackPageView();
+    return router.subscribe("onResolved", (e) => {
+      if (e.pathChanged) trackPageView();
+    });
+  }, [router]);
 
   // Single centralized auth listener. Filter to identity transitions so we
   // don't thrash the router/cache on TOKEN_REFRESHED (~hourly) or every
