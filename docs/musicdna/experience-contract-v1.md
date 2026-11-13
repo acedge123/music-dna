@@ -285,3 +285,18 @@ top trait opposite a prior lean of at least 15; first picks and weak leans are `
 the next test. If the read fails after ~20s, show "I'll come back to that one" with the next pairing. With `defer_read`,
 discard any `/read` response whose `answered` / `after_pairing_id` is not the current position. Halftime (pick 3) does not
 interrupt; pushback is an optional link. No automatic Q3 or Q4 checkpoint interrupts the interview; choice six keeps its final reveal. The server still owns completion.
+
+## Critic checkpoints (flag `MUSICDNA_CRITIC_CHECKPOINTS=1`, default off)
+
+Status: implemented on web + server, unit-tested; not deployed/enabled; Flutter not started.
+
+`GET /api/v1/interview-flow` (no auth) → `{ contract: 1, flow: "per_pick" | "checkpoints", checkpoints: [{index, after_answered, actions}], finish_early_min_answered }`. Read once at interview start and keep it for that interview.
+
+When `flow = "checkpoints"` (counts are **answered** choices; skips never count):
+1. Answered 1, 3, 5: `POST /choice` as today, show a static quip (≥2.5 s, `/critic-fillers`), then `GET /next` and show the pair automatically. Do **not** call `/read` or `/prepare` (server returns `prepared: 0, skipped: "checkpoint_flow"`).
+2. Answered 2 (checkpoint 1) and 4 (checkpoint 2): `POST /choice`, waiting quips, `GET /read` (one Critic write covering every saved choice), then `GET /next` in the background. Show the read alone, with optional pushback (`POST /pushback`). Keep the next pair hidden.
+   - Checkpoint 1: button **Next pairing**.
+   - Checkpoint 2: **Get my reading now** → `POST /reveal` with `finish_early: true` (four-choice reading), or **Keep going (final pair)** → show held pair.
+   - If `/read` fails: show "still chewing" with Retry (`GET /read` again; replay-safe) and still allow Continue.
+3. Answered 6: go straight to the final reading; no intermediate `/read`.
+4. Resume: if answered is 2 or 4 and the latest exchange has a saved read, restore the checkpoint screen (read from session history), not the next pair.

@@ -54,3 +54,5 @@
 - Post-pick reads are pre-drafted and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
+
+- Critic checkpoint flow is gated by `MUSICDNA_CRITIC_CHECKPOINTS=1` (rules in `engine/checkpoints.ts`, served at `/api/v1/interview-flow`). When on, the Critic writes only after answered picks 2 and 4, and pre-drafts only for those picks and the final one, so the flag-off per-pick flow stays the instant revert.

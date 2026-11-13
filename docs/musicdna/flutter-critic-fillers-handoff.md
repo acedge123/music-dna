@@ -36,3 +36,6 @@ Show one line per skip (increase `skipCount` each time). If both skipped songs a
 - Six picks: no repeated filler lines, and no "Next matchup" button.
 - The old matchup is never visible under a new read.
 - The first pick always shows an `early` reaction.
+
+## Checkpoint flow (behind flag)
+See "Critic checkpoints" in experience-contract-v1.md. Quips still play between every pick; in checkpoint flow, picks 1/3/5 hold a quip ~2.5 s, then show the next pair automatically.
