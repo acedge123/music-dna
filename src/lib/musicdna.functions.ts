@@ -4801,8 +4801,10 @@ export async function prepareReadsImpl(
   if (!pairing?.song_a || !pairing.song_b) return { prepared: 0 };
   if (choices.some((c) => c.pairing_id === pairing.id)) return { prepared: 0 };
   // Checkpoint flow: no per-pick Critic drafts except picks that land on a checkpoint or finish.
+  const savedFlow = await savedSessionFlow(data.sessionId).catch(() => null);
+  if (!savedFlow) return { prepared: 0, skipped: "flow_unknown" as const };
   if (
-    (await savedSessionFlow(data.sessionId)) === "checkpoints" &&
+    savedFlow === "checkpoints" &&
     !shouldPrepareForPick("checkpoints", buildLedger(choices, DIMS).answered + 1)
   )
     return { prepared: 0, skipped: "checkpoint_flow" as const };
