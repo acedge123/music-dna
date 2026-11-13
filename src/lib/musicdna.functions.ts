@@ -1,4 +1,9 @@
-import { checkpointsEnabled, shouldPrepareForPick, type InterviewFlow } from "@/musicdna/engine/checkpoints";
+import {
+  assignInterviewFlow,
+  savedFlowFromProps,
+  shouldPrepareForPick,
+  type InterviewFlow,
+} from "@/musicdna/engine/checkpoints";
 import { pickHunch } from "@/musicdna/engine/critic-fillers";
 import { requireReadCursor, ReadSupersededError, type ReadCursor } from "@/musicdna/adapters/read-cursor";
 import {
@@ -637,7 +642,7 @@ const ALL_LANES: Lane[] = [
 
 export const startSession = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
-  .handler(async ({ context }) => startSessionImpl(context.supabase, context.userId));
+  .handler(async ({ context }) => startSessionImpl(context.supabase, context.userId, { client: "web" }));
 
 // Prior seeding lives in the engine so priors weighting is testable and
 // shared by any future caller (see src/musicdna/engine/priors.ts).
@@ -687,7 +692,11 @@ import {
 import { applyChoice } from "@/musicdna/engine/choice";
 export { PRIOR_SEED_WEIGHT, seedVectorFromPriors };
 
-export async function startSessionImpl(supabase: AuthedSupabase, userId: string) {
+export async function startSessionImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  opts: { client: "web" | "mobile"; capability?: string | null } = { client: "mobile" },
+) {
   const { data: profile } = await supabase
     .from("profiles")
     .select("opening_lane, opening_lane_confidence, opening_analysis_json")
@@ -715,9 +724,12 @@ export async function startSessionImpl(supabase: AuthedSupabase, userId: string)
     .single();
   if (error) throw new Error(error.message);
   // Freeze the flow for this interview so a reload or flag flip mid-run can't switch sequences.
-  const flow: InterviewFlow = checkpointsEnabled(process.env.MUSICDNA_CRITIC_CHECKPOINTS)
-    ? "checkpoints"
-    : "per_pick";
+  // If it can't be saved, the interview isn't started: remove the row and fail loudly.
+  const flow = assignInterviewFlow({
+    flag: process.env.MUSICDNA_CRITIC_CHECKPOINTS,
+    client: opts.client,
+    capability: opts.capability,
+  });
   const { error: flowError } = await (await trustedEventLog()).insert({
     user_id: userId,
     session_id: data.id,
@@ -725,25 +737,46 @@ export async function startSessionImpl(supabase: AuthedSupabase, userId: string)
     client: "server",
     props: { flow } as never,
   } as never);
-  if (flowError) console.warn("[musicdna] interview_flow_assigned write failed:", flowError.message);
+  if (flowError) {
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    await supabaseAdmin.from("sessions").delete().eq("id", data.id);
+    throw new Error("interview_flow_save_failed");
+  }
   return { sessionId: data.id, lane: seed.lane, lane_confidence: seed.lane_confidence, flow };
 }
 
-/** The flow frozen at interview start; sessions from before this existed follow the current flag. */
-export async function sessionFlowImpl(sessionId: string | null | undefined): Promise<InterviewFlow> {
-  const current: InterviewFlow = checkpointsEnabled(process.env.MUSICDNA_CRITIC_CHECKPOINTS)
-    ? "checkpoints"
-    : "per_pick";
-  if (!sessionId) return current;
-  const { data } = await (await trustedEventLog())
+export class FlowLookupError extends Error {}
+
+/**
+ * The flow frozen at interview start. Caller must own the session (checked through their RLS
+ * client); lookup failures throw rather than substituting the current flag.
+ */
+export async function sessionFlowImpl(
+  supabase: AuthedSupabase,
+  userId: string,
+  sessionId: string,
+): Promise<InterviewFlow> {
+  const { data: own, error: ownErr } = await supabase
+    .from("sessions")
+    .select("id,user_id")
+    .eq("id", sessionId)
+    .maybeSingle();
+  if (ownErr) throw new FlowLookupError("flow_lookup_failed");
+  if (!own || own.user_id !== userId) throw new FlowLookupError("not_found");
+  return savedSessionFlow(sessionId);
+}
+
+/** Server-internal read of a session's saved flow (ownership already checked). Throws on failure. */
+export async function savedSessionFlow(sessionId: string): Promise<InterviewFlow> {
+  const { data, error } = await (await trustedEventLog())
     .select("props")
     .eq("session_id", sessionId)
     .eq("event_type", "interview_flow_assigned")
     .eq("client", "server")
     .order("created_at", { ascending: true })
     .limit(1);
-  const f = (data?.[0]?.props as { flow?: string } | null)?.flow;
-  return f === "checkpoints" || f === "per_pick" ? f : current;
+  if (error) throw new FlowLookupError("flow_lookup_failed");
+  return savedFlowFromProps(data?.[0]?.props ?? null);
 }
 
 // ============ Next pairing ============
@@ -4768,8 +4801,10 @@ export async function prepareReadsImpl(
   if (!pairing?.song_a || !pairing.song_b) return { prepared: 0 };
   if (choices.some((c) => c.pairing_id === pairing.id)) return { prepared: 0 };
   // Checkpoint flow: no per-pick Critic drafts except picks that land on a checkpoint or finish.
+  const savedFlow = await savedSessionFlow(data.sessionId).catch(() => null);
+  if (!savedFlow) return { prepared: 0, skipped: "flow_unknown" as const };
   if (
-    (await sessionFlowImpl(data.sessionId)) === "checkpoints" &&
+    savedFlow === "checkpoints" &&
     !shouldPrepareForPick("checkpoints", buildLedger(choices, DIMS).answered + 1)
   )
     return { prepared: 0, skipped: "checkpoint_flow" as const };
