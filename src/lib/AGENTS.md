@@ -1,0 +1,1 @@
+- TGA Analytics (`tga-analytics*.ts`): web sends page views + allowlisted interview milestones (no song titles, free text or IDs) via server fn `sendTgaAnalytics`; the tenant key stays server-side in `ANALYTICS_API_KEY`.

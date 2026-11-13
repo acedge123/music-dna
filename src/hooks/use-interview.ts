@@ -1,3 +1,4 @@
+import { forwardInterviewEvent } from "@/lib/tga-analytics";
 import type { DnaSummary } from "@/musicdna/engine/dna-summary";
 import { useEffect, useRef, useState } from "react";
 import type { Hunch } from "@/musicdna/engine/critic-fillers";
@@ -91,6 +92,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   };
   const track = (e: EventInput) => {
     logEvent({ data: e } as never).catch(() => {});
+    forwardInterviewEvent(e.event_type, e.props);
   };
 
   // phase + slot state
