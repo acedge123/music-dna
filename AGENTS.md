@@ -54,3 +54,4 @@
 - Post-pick reads are pre-drafted and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
+- Shared TGA Analytics: web forwards page views and an allowlisted set of interview milestones (no song titles, free text or IDs) through `sendTgaAnalytics`, keeping the tenant key server-side in `ANALYTICS_API_KEY` — so the key is never shipped to browsers.
