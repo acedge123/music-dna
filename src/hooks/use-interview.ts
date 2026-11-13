@@ -26,6 +26,24 @@ import type { Phase, Refined, Pairing, Entry } from "@/lib/interview-model";
 import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
 import { shouldResumeInterview } from "@/musicdna/engine/reading-support";
 import { withRequestDeadline } from "@/lib/request-deadline";
+import { getInterviewFlow } from "@/lib/interview-flow.functions";
+import { checkpointIndex, type InterviewFlow } from "@/musicdna/engine/checkpoints";
+
+type NextResult = {
+  pairing: Pairing | null;
+  round: number;
+  done: boolean;
+  max_rounds?: number;
+  selection_reason?: unknown;
+  prompt?: string;
+};
+export type Checkpoint = {
+  index: 1 | 2;
+  /** Saved Critic read text; null while it failed and can be retried. */
+  thesis: string | null;
+  next: NextResult;
+};
+const QUIP_HOLD_MS = 2500;
 
 export function useInterview(requestedSession?: string, fresh?: string) {
   const reducedMotion = usePrefersReducedMotion();
@@ -44,6 +62,10 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   const synthFn = useServerFn(finalSynthesis);
   const readFn = useServerFn(currentRead);
   const prepareFn = useServerFn(prepareReads);
+  const flowFn = useServerFn(getInterviewFlow);
+  const [flow, setFlow] = useState<InterviewFlow>("per_pick");
+  const flowRef = useRef<InterviewFlow>("per_pick");
+  const [checkpoint, setCheckpoint] = useState<Checkpoint | null>(null);
 
   type EventInput = {
     event_type:
@@ -159,9 +181,13 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     setResultVersion(null);
     setReactionReply(null);
     setReactedRounds([]);
+    setCheckpoint(null);
     playStartedRef.current = false;
     const opening = (async () => {
       await ensureAnonSession();
+      const f = await flowFn().catch(() => ({ flow: "per_pick" as InterviewFlow }));
+      flowRef.current = f.flow;
+      setFlow(f.flow);
       const o = (await getOpenerFn()) as OnboardingOpener;
       if (cancelled) return;
       setOpener(o);
@@ -235,6 +261,14 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         if (cancelled) return;
         setSessionId(resumed.sessionId);
         setPhase("done");
+        return;
+      }
+      const resumeCp = flowRef.current === "checkpoints" ? checkpointIndex(restored.length) : null;
+      const lastThesis = restored.at(-1)?.thesis;
+      if (resumeCp && lastThesis) {
+        // Back on the checkpoint screen with its saved read; the next pair stays hidden.
+        setCheckpoint({ index: resumeCp, thesis: lastThesis, next: nx as NextResult });
+        setSessionId(resumed.sessionId);
         return;
       }
       setPairing(nx.pairing);
@@ -469,7 +503,14 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         },
       });
 
-      let thesis = "I'll come back to that one.";
+      const answeredNow = entries.length + 1;
+      const cpFlow = flowRef.current === "checkpoints";
+      const cpIndex = cpFlow ? checkpointIndex(answeredNow) : null;
+      // Checkpoint flow: picks between checkpoints get a quip only, no Critic write.
+      const writeRead = !cpFlow || cpIndex !== null || answeredNow >= 6;
+      const quipHold = cpFlow && !writeRead ? new Promise((r) => setTimeout(r, QUIP_HOLD_MS)) : null;
+      let readFailed = false;
+      let thesis = cpFlow && !writeRead ? "" : "I'll come back to that one.";
       let hook = "";
       let topDim: string | null = null;
       // The running read now comes with its own tier / direction / open
@@ -479,7 +520,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       let direction: Entry["direction"] = "forming";
       let question = "";
       let revision: CurrentReadResult["revision"] = null;
-      try {
+      if (writeRead && !(cpFlow && answeredNow >= 6)) try {
         const r = await Promise.race([
           readFn({ data: { sessionId } }),
           new Promise<never>((_, reject) =>
@@ -494,7 +535,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         question = r.question ?? "";
         revision = r.revision;
       } catch {
-        /* keep default */
+        readFailed = true;
       }
       prevTopDim.current = topDim ?? prevTopDim.current;
       setNextPrompt(hook || null);
@@ -526,15 +567,20 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         max_rounds,
         selection_reason,
         prompt,
-      } = (await nextFn({ data: { sessionId } })) as {
-        pairing: Pairing | null;
-        round: number;
-        done: boolean;
-        max_rounds?: number;
-        selection_reason?: unknown;
-        prompt?: string;
-      };
+      } = (await nextFn({ data: { sessionId } })) as NextResult;
+      if (quipHold) await quipHold;
       if (max_rounds) setMaxRounds(max_rounds);
+      if (cpIndex && !(isDone && cpIndex === 1 && !nxt)) {
+        // Critic gets its own screen; the next pair waits behind Continue.
+        setCheckpoint({
+          index: cpIndex,
+          thesis: readFailed ? null : thesis,
+          next: { pairing: nxt, round: nr, done: isDone, max_rounds, selection_reason, prompt },
+        });
+        setPendingSongId(null);
+        setBusy(false);
+        return;
+      }
       // The prompt comes from the pairing actually selected, so it always
       // matches what the next matchup tests.
       if (prompt) setNextPrompt(prompt);
@@ -685,6 +731,60 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     }
   }
 
+  // Checkpoint buttons. Continue reveals the held pair; finish asks for the four-choice reading.
+  function continueFromCheckpoint() {
+    const cp = checkpoint;
+    if (!cp || !sessionId) return;
+    if (cp.next.done || !cp.next.pairing) {
+      void finishFromCheckpoint();
+      return;
+    }
+    setCheckpoint(null);
+    setPairing(cp.next.pairing);
+    setRound(cp.next.round);
+    if (cp.next.prompt) setNextPrompt(cp.next.prompt);
+    startedAt.current = Date.now();
+    track({
+      event_type: "pairing_shown",
+      session_id: sessionId,
+      pairing_id: cp.next.pairing.id,
+      props: {
+        round: cp.next.round,
+        tests: cp.next.pairing.tests,
+        selection_reason: cp.next.selection_reason,
+        exposure_id: cp.next.pairing.exposure_id,
+        after_checkpoint: cp.index,
+      },
+    });
+  }
+  async function finishFromCheckpoint() {
+    if (!sessionId || busy) return;
+    setBusy(true);
+    try {
+      track({ event_type: "session_completed", session_id: sessionId, props: { rounds: entries.length, early: true } });
+      await loadFinalRead(sessionId, true);
+      setCheckpoint(null);
+      setPhase("done");
+    } finally {
+      setBusy(false);
+    }
+  }
+  async function retryCheckpointRead() {
+    if (!checkpoint || !sessionId || busy) return;
+    setBusy(true);
+    try {
+      const r = await withRequestDeadline(readFn({ data: { sessionId } }), "read_timeout");
+      setCheckpoint((cp) => (cp ? { ...cp, thesis: r.thesis } : cp));
+      setEntries((prev) =>
+        prev.map((e, i) => (i === prev.length - 1 ? { ...e, thesis: r.thesis, tier: r.tier, direction: r.direction } : e)),
+      );
+    } catch {
+      toast.error("The Critic is still thinking. You can keep going.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   // Share the read, not the conversation: /s/:id renders the public card and
   // invites the recipient to start an independent reading (TGA-312 is separate).
   async function shareRead() {
@@ -827,5 +927,10 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     shareRead,
     skip,
     loadFinalRead,
+    flow,
+    checkpoint,
+    continueFromCheckpoint,
+    finishFromCheckpoint,
+    retryCheckpointRead,
   };
 }
