@@ -54,4 +54,3 @@
 - Post-pick reads are pre-drafted and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
-- TGA Analytics: web sends page views + allowlisted milestones (no titles/text/IDs) via server fn `sendTgaAnalytics`; key stays server-side.
