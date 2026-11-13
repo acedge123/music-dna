@@ -111,6 +111,11 @@ function Onboarding() {
     shareRead,
     skip,
     loadFinalRead,
+    flow,
+    checkpoint,
+    continueFromCheckpoint,
+    finishFromCheckpoint,
+    retryCheckpointRead,
   } = useInterview(session, fresh);
   useEffect(() => {
     // Never pin the previous render's ID while a fresh search is booting.
@@ -317,7 +322,7 @@ function Onboarding() {
                 </p>
               </details>
             )}
-            {!criticStage && (
+            {!criticStage && !checkpoint && (
               <InterviewHistory
                 entries={entries}
                 openerSongs={songs}
@@ -329,6 +334,61 @@ function Onboarding() {
               />
             )}
           </>
+        )}
+
+        {checkpoint && phase === "playing" && !criticStage && (
+          <section aria-label="The Critic" className="max-w-2xl space-y-8 py-6 animate-in fade-in duration-500">
+            <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
+              After {entries.length} choices
+            </p>
+            {checkpoint.thesis ? (
+              <p className="font-serif text-3xl leading-snug">{checkpoint.thesis}</p>
+            ) : (
+              <div className="space-y-3">
+                <p role="alert" className="font-serif text-2xl italic text-muted-foreground">
+                  The Critic is still chewing on that. Your picks are saved.
+                </p>
+                <Button
+                  type="button"
+                  variant="outline"
+                  disabled={busy}
+                  onClick={() => void retryCheckpointRead()}
+                  className="min-h-11 rounded-sm px-5 py-3"
+                >
+                  Try again
+                </Button>
+              </div>
+            )}
+            <HalftimePushback key={checkpoint.index} sessionId={sessionId} />
+            <div className="flex flex-col gap-3 sm:flex-row">
+              {checkpoint.index === 2 && (
+                <Button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => void finishFromCheckpoint()}
+                  className="min-h-11 rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground"
+                >
+                  {busy ? "Writing your reading…" : "Get my reading now"}
+                </Button>
+              )}
+              {(checkpoint.index === 1 || (!checkpoint.next.done && checkpoint.next.pairing)) && (
+                <Button
+                  type="button"
+                  variant={checkpoint.index === 2 ? "outline" : "default"}
+                  disabled={busy}
+                  onClick={continueFromCheckpoint}
+                  className="min-h-11 rounded-sm px-5 py-3 text-sm"
+                >
+                  {checkpoint.index === 1 ? "Next pairing" : "Keep going (final pair)"} <ArrowRight />
+                </Button>
+              )}
+            </div>
+            {resultError && (
+              <p role="alert" className="text-sm">
+                {resultError}
+              </p>
+            )}
+          </section>
         )}
 
         {/* Current pairing */}
@@ -379,7 +439,9 @@ function Onboarding() {
                 {pendingSkip ? "Retry this skip" : "Skip — I don’t know these"}
               </Button>
             </div>
-            {entries.length === 3 && <HalftimePushback sessionId={sessionId} />}
+            {flow === "per_pick" && entries.length === 3 && (
+              <HalftimePushback sessionId={sessionId} />
+            )}
           </section>
         )}
 

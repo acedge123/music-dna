@@ -25,6 +25,7 @@ import { Route as SSessionIdRouteImport } from './routes/s.$sessionId'
 import { Route as ApiPublicVersionRouteImport } from './routes/api/public/version'
 import { Route as ApiV1AccountRouteImport } from './routes/api/v1/account'
 import { Route as ApiV1CriticFillersRouteImport } from './routes/api/v1/critic-fillers'
+import { Route as ApiV1InterviewFlowRouteImport } from './routes/api/v1/interview-flow'
 import { Route as ApiV1SessionRouteImport } from './routes/api/v1/session'
 import { Route as ApiV1SessionsRouteImport } from './routes/api/v1/sessions'
 import { Route as ApiPublicTestActionRouteImport } from './routes/api/public/test/$action'
@@ -126,6 +127,11 @@ const ApiV1AccountRoute = ApiV1AccountRouteImport.update({
 const ApiV1CriticFillersRoute = ApiV1CriticFillersRouteImport.update({
   id: '/api/v1/critic-fillers',
   path: '/api/v1/critic-fillers',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiV1InterviewFlowRoute = ApiV1InterviewFlowRouteImport.update({
+  id: '/api/v1/interview-flow',
+  path: '/api/v1/interview-flow',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiV1SessionRoute = ApiV1SessionRouteImport.update({
@@ -261,6 +267,7 @@ export interface FileRoutesByFullPath {
   '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/critic-fillers': typeof ApiV1CriticFillersRoute
+  '/api/v1/interview-flow': typeof ApiV1InterviewFlowRoute
   '/api/v1/session': typeof ApiV1SessionRouteWithChildren
   '/api/v1/sessions': typeof ApiV1SessionsRoute
   '/api/public/test/$action': typeof ApiPublicTestActionRoute
@@ -301,6 +308,7 @@ export interface FileRoutesByTo {
   '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/critic-fillers': typeof ApiV1CriticFillersRoute
+  '/api/v1/interview-flow': typeof ApiV1InterviewFlowRoute
   '/api/v1/session': typeof ApiV1SessionRouteWithChildren
   '/api/v1/sessions': typeof ApiV1SessionsRoute
   '/api/public/test/$action': typeof ApiPublicTestActionRoute
@@ -343,6 +351,7 @@ export interface FileRoutesById {
   '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/critic-fillers': typeof ApiV1CriticFillersRoute
+  '/api/v1/interview-flow': typeof ApiV1InterviewFlowRoute
   '/api/v1/session': typeof ApiV1SessionRouteWithChildren
   '/api/v1/sessions': typeof ApiV1SessionsRoute
   '/api/public/test/$action': typeof ApiPublicTestActionRoute
@@ -385,6 +394,7 @@ export interface FileRouteTypes {
     | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/critic-fillers'
+    | '/api/v1/interview-flow'
     | '/api/v1/session'
     | '/api/v1/sessions'
     | '/api/public/test/$action'
@@ -425,6 +435,7 @@ export interface FileRouteTypes {
     | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/critic-fillers'
+    | '/api/v1/interview-flow'
     | '/api/v1/session'
     | '/api/v1/sessions'
     | '/api/public/test/$action'
@@ -466,6 +477,7 @@ export interface FileRouteTypes {
     | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/critic-fillers'
+    | '/api/v1/interview-flow'
     | '/api/v1/session'
     | '/api/v1/sessions'
     | '/api/public/test/$action'
@@ -505,6 +517,7 @@ export interface RootRouteChildren {
   ApiPublicVersionRoute: typeof ApiPublicVersionRoute
   ApiV1AccountRoute: typeof ApiV1AccountRoute
   ApiV1CriticFillersRoute: typeof ApiV1CriticFillersRoute
+  ApiV1InterviewFlowRoute: typeof ApiV1InterviewFlowRoute
   ApiV1SessionRoute: typeof ApiV1SessionRouteWithChildren
   ApiV1SessionsRoute: typeof ApiV1SessionsRoute
   ApiPublicTestActionRoute: typeof ApiPublicTestActionRoute
@@ -625,6 +638,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/critic-fillers'
       fullPath: '/api/v1/critic-fillers'
       preLoaderRoute: typeof ApiV1CriticFillersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/interview-flow': {
+      id: '/api/v1/interview-flow'
+      path: '/api/v1/interview-flow'
+      fullPath: '/api/v1/interview-flow'
+      preLoaderRoute: typeof ApiV1InterviewFlowRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/session': {
@@ -874,6 +894,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicVersionRoute: ApiPublicVersionRoute,
   ApiV1AccountRoute: ApiV1AccountRoute,
   ApiV1CriticFillersRoute: ApiV1CriticFillersRoute,
+  ApiV1InterviewFlowRoute: ApiV1InterviewFlowRoute,
   ApiV1SessionRoute: ApiV1SessionRouteWithChildren,
   ApiV1SessionsRoute: ApiV1SessionsRoute,
   ApiPublicTestActionRoute: ApiPublicTestActionRoute,
