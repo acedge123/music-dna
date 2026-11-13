@@ -8,7 +8,7 @@ export const V1_CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers":
-    "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-MusicDNA-Experience",
+    "Content-Type, Authorization, X-Requested-With, Accept, Origin, X-MusicDNA-Experience, X-MusicDNA-Interview-Flow",
   "Access-Control-Max-Age": "86400",
 } as const;
 

@@ -185,9 +185,17 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     playStartedRef.current = false;
     const opening = (async () => {
       await ensureAnonSession();
-      const f = await flowFn({
-        data: { sessionId: shouldResumeInterview({ session: requestedSession, fresh }) ? requestedSession : null },
-      }).catch(() => ({ flow: "per_pick" as InterviewFlow }));
+      const resumeId = shouldResumeInterview({ session: requestedSession, fresh })
+        ? requestedSession
+        : null;
+      // A resumed interview must use its saved flow: retry once, then fail rather than guess.
+      // A brand-new interview gets its flow from startSession, so a failure here is harmless.
+      const f = await flowFn({ data: { sessionId: resumeId } })
+        .catch(() => flowFn({ data: { sessionId: resumeId } }))
+        .catch((e) => {
+          if (resumeId) throw e;
+          return { flow: "per_pick" as InterviewFlow };
+        });
       flowRef.current = f.flow;
       setFlow(f.flow);
       const o = (await getOpenerFn()) as OnboardingOpener;
