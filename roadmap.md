@@ -230,4 +230,4 @@
 - [x] Web + server: Critic only after picks 2 and 4, Next pairing button, "Get my reading now" / "Keep going (final pair)" after 4, quips between all picks, pushback in checkpoints; unit tests and docs.
 - [ ] Set `MUSICDNA_CRITIC_CHECKPOINTS=1` in Vercel and run a live 4- and 6-choice test. Blocker: owner flips the flag.
 - [ ] Flutter adopts the flow (Codex).
-- [ ] Archetype display: confirm `MUSICDNA_ARCHETYPE_V2=1` in Vercel. Blocker: owner check.
+- [x] `MUSICDNA_ARCHETYPE_V2=1` set in Vercel by owner; applies to new readings after redeploy.
