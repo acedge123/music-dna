@@ -714,7 +714,36 @@ export async function startSessionImpl(supabase: AuthedSupabase, userId: string)
     .select("id")
     .single();
   if (error) throw new Error(error.message);
-  return { sessionId: data.id, lane: seed.lane, lane_confidence: seed.lane_confidence };
+  // Freeze the flow for this interview so a reload or flag flip mid-run can't switch sequences.
+  const flow: InterviewFlow = checkpointsEnabled(process.env.MUSICDNA_CRITIC_CHECKPOINTS)
+    ? "checkpoints"
+    : "per_pick";
+  const { error: flowError } = await (await trustedEventLog()).insert({
+    user_id: userId,
+    session_id: data.id,
+    event_type: "interview_flow_assigned",
+    client: "server",
+    props: { flow } as never,
+  } as never);
+  if (flowError) console.warn("[musicdna] interview_flow_assigned write failed:", flowError.message);
+  return { sessionId: data.id, lane: seed.lane, lane_confidence: seed.lane_confidence, flow };
+}
+
+/** The flow frozen at interview start; sessions from before this existed follow the current flag. */
+export async function sessionFlowImpl(sessionId: string | null | undefined): Promise<InterviewFlow> {
+  const current: InterviewFlow = checkpointsEnabled(process.env.MUSICDNA_CRITIC_CHECKPOINTS)
+    ? "checkpoints"
+    : "per_pick";
+  if (!sessionId) return current;
+  const { data } = await (await trustedEventLog())
+    .select("props")
+    .eq("session_id", sessionId)
+    .eq("event_type", "interview_flow_assigned")
+    .eq("client", "server")
+    .order("created_at", { ascending: true })
+    .limit(1);
+  const f = (data?.[0]?.props as { flow?: string } | null)?.flow;
+  return f === "checkpoints" || f === "per_pick" ? f : current;
 }
 
 // ============ Next pairing ============
@@ -4740,7 +4769,7 @@ export async function prepareReadsImpl(
   if (choices.some((c) => c.pairing_id === pairing.id)) return { prepared: 0 };
   // Checkpoint flow: no per-pick Critic drafts except picks that land on a checkpoint or finish.
   if (
-    checkpointsEnabled(process.env.MUSICDNA_CRITIC_CHECKPOINTS) &&
+    (await sessionFlowImpl(data.sessionId)) === "checkpoints" &&
     !shouldPrepareForPick("checkpoints", buildLedger(choices, DIMS).answered + 1)
   )
     return { prepared: 0, skipped: "checkpoint_flow" as const };
