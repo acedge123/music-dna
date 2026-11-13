@@ -290,13 +290,17 @@ interrupt; pushback is an optional link. No automatic Q3 or Q4 checkpoint interr
 
 Status: implemented on web + server, unit-tested; not deployed/enabled; Flutter not started.
 
-`GET /api/v1/interview-flow` (no auth) → `{ contract: 1, flow: "per_pick" | "checkpoints", checkpoints: [{index, after_answered, actions}], finish_early_min_answered }`. The flow is frozen per interview when it starts: `POST /api/v1/session` returns `flow`; on resume call `GET /api/v1/interview-flow?session=<id>` to get that interview's saved flow (older interviews without one follow the current setting). Never switch an in-progress interview to a different flow.
+**Interview flow is assigned once, at session creation, and saved with the interview.**
+- `POST /api/v1/session` returns `{ session_id, lane, lane_confidence, flow }`. If the flow can't be saved, no interview is created and the call returns `503 PERSISTENCE_FAILED`; retry.
+- Mobile opt-in: send `X-MusicDNA-Interview-Flow: checkpoints-v1` on `POST /api/v1/session`. Only clients sending it can be assigned `checkpoints` (and only while `MUSICDNA_CRITIC_CHECKPOINTS=1`). Builds without the header always get `per_pick`. Web gets `checkpoints` whenever the flag is on.
+- `GET /api/v1/interview-flow?session=<id>`: bearer required, owner only. Returns `{ contract: 1, flow, saved: true, checkpoints, finish_early_min_answered }` from the saved flow. `401` signed out, `404 NOT_FOUND` not yours/unknown, `400 INVALID_INPUT` bad id, `503 UNAVAILABLE` lookup failed — retry; never substitute the current flag. Interviews created before flows were saved report `per_pick`.
+- `GET /api/v1/interview-flow` without `session` (no auth) previews what a new interview would get for the headers sent (`saved: false`). Use it for display only; the source of truth is the `flow` returned by `POST /session`.
 
 When `flow = "checkpoints"` (counts are **answered** choices; skips never count):
 1. Answered 1, 3, 5: `POST /choice` as today, show a static quip (≥2.5 s, `/critic-fillers`), then `GET /next` and show the pair automatically. Do **not** call `/read` or `/prepare` (server returns `prepared: 0, skipped: "checkpoint_flow"`).
-2. Answered 2 (checkpoint 1) and 4 (checkpoint 2): `POST /choice`, waiting quips, `GET /read` (one Critic write covering every saved choice), then `GET /next` in the background. Show the read alone, with optional pushback (`POST /pushback`). Keep the next pair hidden.
+2. Answered 2 (checkpoint 1) and 4 (checkpoint 2): `POST /choice`, waiting quips, `POST /read` with `{ after_pairing_id, answered }` (one Critic write covering every saved choice; there is no GET handler), then `GET /next` in the background. Show the read alone, with optional pushback (`POST /pushback`). Keep the next pair hidden.
    - Checkpoint 1: button **Next pairing**.
    - Checkpoint 2: **Get my reading now** → `POST /reveal` with `finish_early: true` (four-choice reading), or **Keep going (final pair)** → show held pair.
-   - If `/read` fails: show "still chewing" with Retry (`GET /read` again; replay-safe) and still allow Continue.
+   - If `/read` fails: show "still chewing" with Retry (`POST /read` again with the same body; replay-safe) and still allow Continue.
 3. Answered 6: go straight to the final reading; no intermediate `/read`.
 4. Resume: if answered is 2 or 4 and the latest exchange has a saved read, restore the checkpoint screen (read from session history), not the next pair.

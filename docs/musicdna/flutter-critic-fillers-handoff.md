@@ -40,4 +40,4 @@ Show one line per skip (increase `skipCount` each time). If both skipped songs a
 ## Checkpoint flow (behind flag)
 See "Critic checkpoints" in experience-contract-v1.md. Quips still play between every pick; in checkpoint flow, picks 1/3/5 hold a quip ~2.5 s, then show the next pair automatically.
 
-**Flow is fixed per interview.** Take `flow` from the `POST /api/v1/session` response when starting. On resume/reload call `GET /api/v1/interview-flow?session=<id>` and use that interview's saved flow. Never switch an interview that is already in progress; calling the endpoint without `session` gives the flow for new interviews only.
+**Flow is fixed per interview.** Send `X-MusicDNA-Interview-Flow: checkpoints-v1` on `POST /api/v1/session` once this build supports checkpoints, and use the `flow` in its response. On resume/reload call `GET /api/v1/interview-flow?session=<id>` with the bearer; on `503` retry, never fall back to the current setting. Checkpoint reads are `POST /read` with `{ after_pairing_id, answered }`.
