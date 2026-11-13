@@ -35,6 +35,6 @@ describe("halftimeSummary", () => {
 import { halftimePushbackReply } from "./halftime";
 describe("halftime pushback reply", () => {
   it("hands disagreement to the next picks", () => {
-    expect(halftimePushbackReply("No, I hate slow songs")).toMatch(/next three/);
+    expect(halftimePushbackReply("No, I hate slow songs")).toMatch(/next picks/);
   });
 });
