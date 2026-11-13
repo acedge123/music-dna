@@ -4,7 +4,7 @@
 1. Choice 1 -> short funny quip -> choice 2 appears automatically.
 2. Choice 2 -> waiting quips -> Critic reply on its own screen (both choices considered, 2-3 sentences) -> **Next pairing** button.
 3. Choice 3 -> quip -> choice 4 automatically.
-4. Choice 4 -> Critic checkpoint #2 (uses all four choices, adds something new) -> two buttons: **Get my reading now** or **Keep going for two more**.
+4. Choice 4 -> Critic checkpoint #2 (uses all four choices, adds something new) -> two buttons: **Get my reading now** or **Keep going (final pair)**.
 5. Choices 5 and 6 with a quip between, then the final reading as today.
 - Optional pushback moves into both Critic checkpoint screens; the separate pick-3 link goes away.
 - Quips keep their current list, timing and no-repeat rules.
