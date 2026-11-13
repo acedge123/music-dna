@@ -290,7 +290,7 @@ interrupt; pushback is an optional link. No automatic Q3 or Q4 checkpoint interr
 
 Status: implemented on web + server, unit-tested; not deployed/enabled; Flutter not started.
 
-`GET /api/v1/interview-flow` (no auth) → `{ contract: 1, flow: "per_pick" | "checkpoints", checkpoints: [{index, after_answered, actions}], finish_early_min_answered }`. Read once at interview start and keep it for that interview.
+`GET /api/v1/interview-flow` (no auth) → `{ contract: 1, flow: "per_pick" | "checkpoints", checkpoints: [{index, after_answered, actions}], finish_early_min_answered }`. The flow is frozen per interview when it starts: `POST /api/v1/session` returns `flow`; on resume call `GET /api/v1/interview-flow?session=<id>` to get that interview's saved flow (older interviews without one follow the current setting). Never switch an in-progress interview to a different flow.
 
 When `flow = "checkpoints"` (counts are **answered** choices; skips never count):
 1. Answered 1, 3, 5: `POST /choice` as today, show a static quip (≥2.5 s, `/critic-fillers`), then `GET /next` and show the pair automatically. Do **not** call `/read` or `/prepare` (server returns `prepared: 0, skipped: "checkpoint_flow"`).

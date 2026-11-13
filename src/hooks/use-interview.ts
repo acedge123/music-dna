@@ -185,7 +185,9 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     playStartedRef.current = false;
     const opening = (async () => {
       await ensureAnonSession();
-      const f = await flowFn().catch(() => ({ flow: "per_pick" as InterviewFlow }));
+      const f = await flowFn({
+        data: { sessionId: shouldResumeInterview({ session: requestedSession, fresh }) ? requestedSession : null },
+      }).catch(() => ({ flow: "per_pick" as InterviewFlow }));
       flowRef.current = f.flow;
       setFlow(f.flow);
       const o = (await getOpenerFn()) as OnboardingOpener;
@@ -330,7 +332,14 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     playStartedRef.current = true;
     (async () => {
       try {
-        const { sessionId } = await startFn({});
+        const { sessionId, flow: startedFlow } = (await startFn({})) as {
+          sessionId: string;
+          flow?: InterviewFlow;
+        };
+        if (startedFlow) {
+          flowRef.current = startedFlow;
+          setFlow(startedFlow);
+        }
         pinnedSession.current = sessionId;
         setSessionId(sessionId);
         const { pairing, round, selection_reason, done, prompt, max_rounds } = (await nextFn({
