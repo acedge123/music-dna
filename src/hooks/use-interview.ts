@@ -510,7 +510,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       const writeRead = !cpFlow || cpIndex !== null || answeredNow >= 6;
       const quipHold = cpFlow && !writeRead ? new Promise((r) => setTimeout(r, QUIP_HOLD_MS)) : null;
       let readFailed = false;
-      let thesis = cpFlow && !writeRead ? "" : "I'll come back to that one.";
+      let thesis = cpFlow && cpIndex === null ? "" : "I'll come back to that one.";
       let hook = "";
       let topDim: string | null = null;
       // The running read now comes with its own tier / direction / open
