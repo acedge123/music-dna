@@ -185,7 +185,9 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     playStartedRef.current = false;
     const opening = (async () => {
       await ensureAnonSession();
-      const f = await flowFn().catch(() => ({ flow: "per_pick" as InterviewFlow }));
+      const f = await flowFn({
+        data: { sessionId: shouldResumeInterview({ session: requestedSession, fresh }) ? requestedSession : null },
+      }).catch(() => ({ flow: "per_pick" as InterviewFlow }));
       flowRef.current = f.flow;
       setFlow(f.flow);
       const o = (await getOpenerFn()) as OnboardingOpener;

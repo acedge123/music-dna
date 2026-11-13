@@ -1,4 +1,4 @@
-import { checkpointsEnabled, shouldPrepareForPick } from "@/musicdna/engine/checkpoints";
+import { checkpointsEnabled, shouldPrepareForPick, type InterviewFlow } from "@/musicdna/engine/checkpoints";
 import { pickHunch } from "@/musicdna/engine/critic-fillers";
 import { requireReadCursor, ReadSupersededError, type ReadCursor } from "@/musicdna/adapters/read-cursor";
 import {
