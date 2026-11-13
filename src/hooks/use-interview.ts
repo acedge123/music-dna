@@ -332,7 +332,14 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     playStartedRef.current = true;
     (async () => {
       try {
-        const { sessionId } = await startFn({});
+        const { sessionId, flow: startedFlow } = (await startFn({})) as {
+          sessionId: string;
+          flow?: InterviewFlow;
+        };
+        if (startedFlow) {
+          flowRef.current = startedFlow;
+          setFlow(startedFlow);
+        }
         pinnedSession.current = sessionId;
         setSessionId(sessionId);
         const { pairing, round, selection_reason, done, prompt, max_rounds } = (await nextFn({
