@@ -43,7 +43,7 @@ export const Route = createFileRoute("/api/v1/interview-flow")({
           });
           return jsonResponse(body(flow, false));
         }
-        if (!UUID.test(sid)) return errorResponse("BAD_REQUEST", "Invalid session id.", 400);
+        if (!UUID.test(sid)) return errorResponse("INVALID_INPUT", "Invalid session id.", 400);
         try {
           const { supabase, userId } = await verifyBearer(request);
           const { sessionFlowImpl } = await import("@/lib/musicdna.functions");
@@ -52,7 +52,7 @@ export const Route = createFileRoute("/api/v1/interview-flow")({
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);
           if (msg === "not_found") return errorResponse("NOT_FOUND", "Session not found.", 404);
-          return errorResponse("FLOW_LOOKUP_FAILED", "Couldn't read this interview's flow. Retry.", 503);
+          return errorResponse("UNAVAILABLE", "Couldn't read this interview's flow. Retry.", 503);
         }
       },
     },

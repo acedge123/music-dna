@@ -31,7 +31,7 @@ export const Route = createFileRoute("/api/v1/session")({
           if (e instanceof HttpError) return errorResponse(e.code, e.message, e.status);
           const msg = e instanceof Error ? e.message : String(e);
           if (msg === "interview_flow_save_failed")
-            return errorResponse("FLOW_SAVE_FAILED", "Couldn't start the interview. Retry.", 503);
+            return errorResponse("PERSISTENCE_FAILED", "Couldn't start the interview. Retry.", 503);
           return errorResponse("INTERNAL", msg, 500);
         }
       },
