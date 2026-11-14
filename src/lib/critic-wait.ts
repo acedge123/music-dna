@@ -1,4 +1,10 @@
-import { FILLER_DECADE, FILLER_NEUTRAL, FILLER_PERSON, fillerLines, type Hunch } from "@/musicdna/engine/critic-fillers";
+import {
+  FILLER_DECADE,
+  FILLER_NEUTRAL,
+  FILLER_PERSON,
+  fillerLines,
+  type Hunch,
+} from "@/musicdna/engine/critic-fillers";
 
 export const QUIP_INTERVAL_MS = 2500;
 
@@ -11,21 +17,30 @@ export function quipBudget(flow: "per_pick" | "checkpoints", answered: number): 
   return 1;
 }
 
-export function waitQuips(wait: number, hunch: Hunch | null, decade: string | null, budget: number, used: ReadonlySet<string>): string[] {
+export function waitQuips(
+  wait: number,
+  hunch: Hunch | null,
+  decade: string | null,
+  budget: number,
+  used: ReadonlySet<string>,
+): string[] {
   const neutral = FILLER_NEUTRAL[wait % FILLER_NEUTRAL.length];
   const person = FILLER_PERSON[wait % FILLER_PERSON.length] ?? [];
   const era = decade ? FILLER_DECADE[decade] : undefined;
   // A three-line wait gives the setup/punchline room, without an intervening reaction.
-  const primary = budget === 3 && !era && person.length === 2
-    ? [neutral, ...person]
-    : fillerLines(wait, hunch, decade);
+  const primary =
+    budget === 3 && !era && person.length === 2
+      ? [neutral, ...person]
+      : fillerLines(wait, hunch, decade);
   const groups: readonly (readonly string[])[] = [
     primary,
-    ...(Number.isFinite(budget) ? [] : [
-      ...FILLER_PERSON,
-      ...(era ? era.map((line) => [line]) : []),
-      ...FILLER_NEUTRAL.map((line) => [line]),
-    ]),
+    ...(Number.isFinite(budget)
+      ? []
+      : [
+          ...FILLER_PERSON,
+          ...(era ? era.map((line) => [line]) : []),
+          ...FILLER_NEUTRAL.map((line) => [line]),
+        ]),
   ];
   const selected: string[] = [];
   const seen = new Set(used);

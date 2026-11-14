@@ -18,9 +18,14 @@ describe("checkpoint wait pacing", () => {
     expect(lines.some((line) => used.has(line))).toBe(false);
   });
   it("keeps the opener stable when the saved hunch arrives", () => {
-    expect(waitQuips(1, null, null, 1, new Set())).toEqual(waitQuips(1, "against", null, 1, new Set()));
+    expect(waitQuips(1, null, null, 1, new Set())).toEqual(
+      waitQuips(1, "against", null, 1, new Set()),
+    );
   });
   it("keeps setup and punchline adjacent within the three-line budget", () => {
-    expect(waitQuips(2, "early", null, 3, new Set()).slice(1)).toEqual(["Somebody raised you right.", "Or you rebelled perfectly."]);
+    expect(waitQuips(2, "early", null, 3, new Set()).slice(1)).toEqual([
+      "Somebody raised you right.",
+      "Or you rebelled perfectly.",
+    ]);
   });
 });

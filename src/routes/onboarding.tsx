@@ -339,7 +339,10 @@ function Onboarding() {
         )}
 
         {checkpoint && phase === "playing" && !criticStage && (
-          <section aria-label="The Critic" className="max-w-2xl space-y-8 py-6 animate-in fade-in duration-500">
+          <section
+            aria-label="The Critic"
+            className="max-w-2xl space-y-8 py-6 animate-in fade-in duration-500"
+          >
             <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
               After {entries.length} choices
             </p>
@@ -381,7 +384,8 @@ function Onboarding() {
                   onClick={continueFromCheckpoint}
                   className="min-h-11 rounded-sm px-5 py-3 text-sm"
                 >
-                  {checkpoint.index === 1 ? "Next pairing" : "Keep going (final pair)"} <ArrowRight />
+                  {checkpoint.index === 1 ? "Next pairing" : "Keep going (final pair)"}{" "}
+                  <ArrowRight />
                 </Button>
               )}
             </div>
