@@ -80,7 +80,7 @@ const ENTITIES: { key: Tab; label: string }[] = [
   { key: "decade_prompts", label: "Decade Prompts" },
   { key: "decade_coverage", label: "Decade Coverage" },
   { key: "ontology", label: "Ontology" },
-  { key: "residuals", label: "Residuals" },
+  { key: "residuals", label: "Legacy Rankings" },
   { key: "diagnostics", label: "Diagnostics" },
   { key: "shadow", label: "Shadow Router" },
   { key: "critic_quality", label: "Critic QA" },
@@ -1002,7 +1002,7 @@ function NewPromptInline({ onCreate }: { onCreate: (text: string) => Promise<voi
   );
 }
 
-// ---------------- Residuals: sessions the current archetype set couldn't confidently place ----------------
+// Legacy cosine diagnostics only; never a V2 validation or identity surface.
 function ResidualsPanel() {
   const load = useServerFn(adminResidualQueue);
   const [reason, setReason] = useState<"any" | "low_score" | "ambiguous" | "no_archetypes">("any");
@@ -1021,16 +1021,16 @@ function ResidualsPanel() {
   return (
     <div>
       <div className="mb-6 rounded-sm border hairline bg-muted/20 p-4">
-        <p className="eyebrow mb-2">Residual review</p>
+        <p className="eyebrow mb-2">Legacy ranking diagnostics</p>
         <p className="text-sm text-muted-foreground mb-4 max-w-2xl">
-          Sessions the current archetype set couldn't confidently place. When the same shape keeps
-          showing up here — same lane, same near-tied top 3, same "no fit" — that's the signal that
-          a new archetype may need to be born. Not before.
+          Historical cosine rankings, not the frozen Archetype v2 match. A legacy low score or
+          near-tie does not invalidate a V2 identity. These scores are not comparable to V2 scores
+          and are not evidence for approving a new profile.
         </p>
         <div className="grid grid-cols-2 md:grid-cols-5 gap-4 text-sm">
           <Stat label="Completed" value={total.toLocaleString()} />
           <Stat label="Flagged" value={flagged.toLocaleString()} />
-          <Stat label="Residual rate" value={`${rate}%`} />
+          <Stat label="Legacy residual rate" value={`${rate}%`} />
           <Stat label="Low score" value={reasons.low_score.toLocaleString()} tone="warn" />
           <Stat label="Ambiguous" value={reasons.ambiguous.toLocaleString()} tone="warn" />
         </div>
@@ -1091,9 +1091,9 @@ function ResidualsPanel() {
               <th className="text-left px-3 py-2">Completed</th>
               <th className="text-left px-3 py-2">Lane</th>
               <th className="text-left px-3 py-2">Reason</th>
-              <th className="text-left px-3 py-2">Score</th>
-              <th className="text-left px-3 py-2">Margin</th>
-              <th className="text-left px-3 py-2">Top 3</th>
+              <th className="text-left px-3 py-2">Legacy score</th>
+              <th className="text-left px-3 py-2">Legacy margin</th>
+              <th className="text-left px-3 py-2">Legacy top 3</th>
               <th className="text-left px-3 py-2">Session</th>
             </tr>
           </thead>
@@ -1197,8 +1197,8 @@ function OntologyPanel() {
       <div className="mb-6 rounded-sm border hairline bg-muted/20 p-4">
         <p className="eyebrow mb-2">Ontology</p>
         <p className="text-sm text-muted-foreground max-w-3xl mb-4">
-          Not for users. For you. Catalog shape, where listeners actually land, and which pairings
-          and songs are earning their keep. Move the bottom bars.
+          Catalog coverage and matchup health. Assignment counts and the heatmap use legacy
+          rankings, not frozen V2 identities.
         </p>
         <div className="grid grid-cols-2 md:grid-cols-6 gap-4 text-sm">
           <Stat label="Songs" value={`${d.totals.active_songs}/${d.totals.songs}`} />
@@ -1207,7 +1207,7 @@ function OntologyPanel() {
           <Stat label="Sessions" value={d.totals.sessions_sampled.toLocaleString()} />
           <Stat label="Choices" value={d.totals.choices_sampled.toLocaleString()} />
           <Stat
-            label="Unassigned"
+            label="Legacy unassigned"
             value={d.unassigned_sessions.toLocaleString()}
             tone={d.unassigned_sessions > 0 ? "warn" : undefined}
           />
@@ -1226,7 +1226,7 @@ function OntologyPanel() {
                   : "border-transparent text-muted-foreground hover:text-foreground"
               }`}
             >
-              {s}
+              {s === "heatmap" ? "Legacy heatmap" : s}
             </button>
           ),
         )}
@@ -1579,10 +1579,10 @@ function HeatmapView({ d, laneFilter }: { d: OntologyData; laneFilter: string })
 
   return (
     <div>
-      <p className="eyebrow mb-2">Lane × winning archetype (real sessions)</p>
+      <p className="eyebrow mb-2">Lane × legacy winning archetype</p>
       <p className="text-xs text-muted-foreground mb-3">
-        Where listeners actually land. Sparse columns are archetypes nobody's earning; dense
-        off-lane cells hint at cross-lane taste.
+        Counts of stored legacy assignments, not V2 matches or evidence of cross-lane taste. Sparse
+        columns do not establish that an approved V2 profile lacks support.
       </p>
       <div className="overflow-x-auto border hairline rounded-sm">
         <table className="w-full text-xs">
@@ -2017,27 +2017,28 @@ function DiagnosticsPanel() {
       <p className="text-xs text-muted-foreground mb-4 max-w-2xl">
         Read-only diagnostic views over the instrumentation event log. See{" "}
         <code className="font-mono">docs/musicdna/instrumentation.md</code> for each field's
-        contract and the derived-measure definitions.
+        contract and the derived-measure definitions. Winner stability, independence, contradiction
+        and residual measures below use legacy rankings, not V2 validation.
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
         <Card label="Sessions final" value={d.headline.sessions_final} />
-        <Card label="Residual rate" value={pct(d.headline.residual_rate)} />
+        <Card label="Legacy residual rate" value={pct(d.headline.residual_rate)} />
         <Card label="Feedback captured" value={d.headline.feedback_captured} />
         <Card label="Human agreement" value={pct(d.headline.accuracy_rate)} />
       </div>
 
-      <Table title="Session stability (winner by round)" block={d.session_stability} />
+      <Table title="Legacy session stability (winner by round)" block={d.session_stability} />
       <Table
-        title="Axis independence (distinct supporting axes per session)"
+        title="Legacy axis independence (distinct supporting axes per session)"
         block={d.axis_independence}
       />
       <Table
-        title="Contradiction load (evidence pushing against the winner)"
+        title="Legacy contradiction load (evidence pushing against the winner)"
         block={d.contradiction_load}
       />
-      <Table title="Residual rate (sessions where nobody fit cleanly)" block={d.residual_rate} />
-      <Table title="Human agreement (fit tier vs. listener feedback)" block={d.human_agreement} />
+      <Table title="Legacy residual rate (cosine-fit flags)" block={d.residual_rate} />
+      <Table title="Legacy fit tier vs. listener feedback" block={d.human_agreement} />
     </div>
   );
 }

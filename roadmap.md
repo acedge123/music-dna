@@ -1,5 +1,12 @@
 # Roadmap
 
+## Current — staged legacy Archetype retirement
+
+- [x] Label residual rankings, winner heatmap and ranking-derived admin diagnostics as legacy-only; remove misleading V2/profile-validation conclusions. No computation, API, routing, flags or historical changes.
+- [x] Record approved retirement decision and compatibility gates in `docs/musicdna/legacy-archetype-retirement.md` and project memory.
+- [x] Admin lint and 7 existing routing regressions pass; preview build OK. Authenticated admin rendering remains unverified because this project's externally managed account session cannot be restored here.
+- [ ] Disable ranking-only computation after migrating mobile/share/history consumers and validating compatibility; preserve trusted non-ranking choice records. Blocker: older-client and deployed authenticated compatibility acceptance.
+
 ## Current — flagged Song Whys
 
 - [x] Implement optional frozen approved, score-matched audible descriptions behind default-off `MUSICDNA_SONG_WHYS_V1`; prepared/live fingerprints include annotations. Review SQL remains outside applied migration history.
