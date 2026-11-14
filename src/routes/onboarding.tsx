@@ -471,10 +471,10 @@ function Onboarding() {
         {/* Final report */}
         {stage === "final" && (
           <section ref={doneAnchorRef} className="space-y-14 pt-6 animate-in fade-in duration-700">
-            {resultError ? (
+            {resultError || !synthesis || resultVersion == null ? (
               <div className="space-y-4">
                 <p role="alert" className="text-sm">
-                  {resultError}
+                  {resultError || "Your choices are saved, but the full reading isn't ready yet. Try again."}
                 </p>
                 <Button
                   type="button"
