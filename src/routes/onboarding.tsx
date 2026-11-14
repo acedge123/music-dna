@@ -120,7 +120,9 @@ function Onboarding() {
     finishFromCheckpoint,
     retryCheckpointRead,
   } = useInterview(session, fresh);
-  useEffect(() => { usedQuips.current.clear(); }, [sessionId]);
+  useEffect(() => {
+    usedQuips.current.clear();
+  }, [sessionId]);
   useEffect(() => {
     // Never pin the previous render's ID while a fresh search is booting.
     if (
@@ -400,7 +402,9 @@ function Onboarding() {
         )}
 
         {/* Current pairing */}
-        {(finalWriting || criticStage || (busy && (!pairing || pendingSkip) && phase === "playing")) && (
+        {(finalWriting ||
+          criticStage ||
+          (busy && (!pairing || pendingSkip) && phase === "playing")) && (
           <CriticStage
             wait={criticStage || entries.length > 0 || pendingSkip ? entries.length + 1 : 0}
             flow={flow}

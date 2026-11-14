@@ -528,7 +528,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       const cpIndex = cpFlow ? checkpointIndex(answeredNow) : null;
       // Checkpoint flow: picks between checkpoints get a quip only, no Critic write.
       const writeRead = !cpFlow || cpIndex !== null || answeredNow >= 6;
-      const quipHold = cpFlow && !writeRead ? new Promise((r) => setTimeout(r, QUIP_HOLD_MS)) : null;
+      const quipHold =
+        cpFlow && !writeRead ? new Promise((r) => setTimeout(r, QUIP_HOLD_MS)) : null;
       let readFailed = false;
       let thesis = cpFlow && cpIndex === null ? "" : "I'll come back to that one.";
       let hook = "";
@@ -540,23 +541,24 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       let direction: Entry["direction"] = "forming";
       let question = "";
       let revision: CurrentReadResult["revision"] = null;
-      if (writeRead && !(cpFlow && answeredNow >= 6)) try {
-        const r = await Promise.race([
-          readFn({ data: { sessionId } }),
-          new Promise<never>((_, reject) =>
-            setTimeout(() => reject(new Error("read_timeout")), 20000),
-          ),
-        ]);
-        thesis = r.thesis;
-        hook = r.hook ?? "";
-        topDim = r.topDim;
-        tier = r.tier;
-        direction = r.direction;
-        question = r.question ?? "";
-        revision = r.revision;
-      } catch {
-        readFailed = true;
-      }
+      if (writeRead && !(cpFlow && answeredNow >= 6))
+        try {
+          const r = await Promise.race([
+            readFn({ data: { sessionId } }),
+            new Promise<never>((_, reject) =>
+              setTimeout(() => reject(new Error("read_timeout")), 20000),
+            ),
+          ]);
+          thesis = r.thesis;
+          hook = r.hook ?? "";
+          topDim = r.topDim;
+          tier = r.tier;
+          direction = r.direction;
+          question = r.question ?? "";
+          revision = r.revision;
+        } catch {
+          readFailed = true;
+        }
       prevTopDim.current = topDim ?? prevTopDim.current;
       setNextPrompt(hook || null);
 
@@ -784,7 +786,11 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     if (!sessionId || busy) return;
     setBusy(true);
     try {
-      track({ event_type: "session_completed", session_id: sessionId, props: { rounds: entries.length, early: true } });
+      track({
+        event_type: "session_completed",
+        session_id: sessionId,
+        props: { rounds: entries.length, early: true },
+      });
       await loadFinalRead(sessionId, true);
       setCheckpoint(null);
       setPhase("done");
@@ -799,7 +805,11 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       const r = await withRequestDeadline(readFn({ data: { sessionId } }), "read_timeout");
       setCheckpoint((cp) => (cp ? { ...cp, thesis: r.thesis } : cp));
       setEntries((prev) =>
-        prev.map((e, i) => (i === prev.length - 1 ? { ...e, thesis: r.thesis, tier: r.tier, direction: r.direction } : e)),
+        prev.map((e, i) =>
+          i === prev.length - 1
+            ? { ...e, thesis: r.thesis, tier: r.tier, direction: r.direction }
+            : e,
+        ),
       );
     } catch {
       toast.error("The Critic is still thinking. You can keep going.");
