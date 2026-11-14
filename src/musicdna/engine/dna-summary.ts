@@ -6,6 +6,7 @@
 import { DIM_LABEL } from "./axes";
 import type { ClaimStatus } from "./claims";
 import type { Ledger, LedgerEntry } from "./evidence";
+import type { SongWhyColor } from "./song-why-color";
 
 export const DNA_SUMMARY_VERSION = "dna-summary-v1";
 
@@ -32,6 +33,7 @@ export type DnaReceipt = {
   rejected: string;
   rejected_artist: string;
   note: string;
+  song_whys?: { chosen: SongWhyColor[]; rejected: SongWhyColor[] };
 };
 
 export type DnaArchetype =
@@ -107,6 +109,7 @@ export function buildDnaSummary(
       rejected: e.rejected,
       rejected_artist: e.rejected_artist,
       note,
+      ...(e.song_whys ? { song_whys: e.song_whys } : {}),
     });
     return true;
   };

@@ -46,6 +46,7 @@ export function hypotheticalChoice(
   },
   chosen: Record<string, unknown>,
   rejected: Record<string, unknown>,
+  songWhys?: LedgerChoice["song_whys"],
 ): LedgerChoice {
   const c = expectedCatalog(pairing, chosen, rejected);
   const song = (s: typeof c.chosen) => ({
@@ -61,6 +62,7 @@ export function hypotheticalChoice(
     pairing_id: pairing.id,
     pairing_revision: c.pairing_revision,
     pairing_saying: pairing.user_facing_tradeoff ?? null,
+    ...(songWhys ? { song_whys: songWhys } : {}),
     tests: c.tests,
     diagnostic_weight: c.diagnostic_weight,
     chosen: song(c.chosen),
