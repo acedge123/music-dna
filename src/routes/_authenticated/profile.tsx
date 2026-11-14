@@ -15,6 +15,7 @@ import { toast } from "sonner";
 import { setShared } from "@/lib/share-publish.functions";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
+import { GuestSaveForm } from "@/components/musicdna/guest-reading-save";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   head: () => ({
@@ -600,64 +601,11 @@ function ProfilePage() {
 
 function ClaimDnaBanner() {
   const { user } = useAuth();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [busy, setBusy] = useState(false);
-  const [done, setDone] = useState(false);
-
-  if (!user || !user.is_anonymous || done) return null;
-
-  async function claim(e: React.FormEvent) {
-    e.preventDefault();
-    setBusy(true);
-    try {
-      // Attach email first (may trigger confirmation), then password.
-      const { error: emailErr } = await supabase.auth.updateUser({ email });
-      if (emailErr) throw emailErr;
-      const { error: pwErr } = await supabase.auth.updateUser({ password });
-      if (pwErr) throw pwErr;
-      setDone(true);
-      toast.success("Saved. Check your email to confirm — then you can sign in anywhere.");
-    } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Couldn't save your DNA");
-    } finally {
-      setBusy(false);
-    }
-  }
-
+  if (!user?.is_anonymous) return null;
   return (
-    <section className="mb-10 border hairline-strong rounded-sm bg-surface px-5 py-5 max-w-2xl">
-      <p className="eyebrow mb-2">Save your DNA · Free · 10 seconds</p>
-      <p className="font-serif text-lg leading-snug mb-4">
-        Right now this reading lives on this device. Drop an email and password to keep it forever
-        and pull it up on your phone.
-      </p>
-      <form onSubmit={claim} className="flex flex-col sm:flex-row gap-2">
-        <input
-          type="email"
-          required
-          placeholder="you@somewhere.com"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-          className="flex-1 bg-background border hairline-strong rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"
-        />
-        <input
-          type="password"
-          required
-          minLength={6}
-          placeholder="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="flex-1 bg-background border hairline-strong rounded-sm px-3 py-2 text-sm focus:outline-none focus:border-primary"
-        />
-        <button
-          type="submit"
-          disabled={busy}
-          className="bg-primary text-primary-foreground rounded-sm px-4 py-2 text-sm font-medium hover:opacity-90 disabled:opacity-50"
-        >
-          {busy ? "…" : "Save it"}
-        </button>
-      </form>
+    <section className="mb-10 max-w-2xl space-y-4 border border-border rounded p-5">
+      <h2 className="font-serif text-2xl">Keep your DNA.</h2>
+      <GuestSaveForm />
     </section>
   );
 }
