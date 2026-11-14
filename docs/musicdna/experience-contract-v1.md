@@ -304,3 +304,7 @@ When `flow = "checkpoints"` (counts are **answered** choices; skips never count)
    - If `/read` fails: show "still chewing" with Retry (`POST /read` again with the same body; replay-safe) and still allow Continue.
 3. Answered 6: go straight to the final reading; no intermediate `/read`.
 4. Resume: if answered is 2 or 4 and the latest exchange has a saved read, restore the checkpoint screen (read from session history), not the next pair.
+
+## Share card (Instagram)
+
+`GET /api/v1/share/:token/card?format=story|square` returns an `image/svg+xml` card (1080x1920 story, 1080x1080 square) for **published** readings only. Unpublished or revoked tokens return 404 like `/share/:token`. The card shows the first sentence of the saved reading, the saved Archetype and up to three "X over Y" receipts. Flutter should render it with `flutter_svg`, rasterize it to PNG and hand it to the Instagram Stories share intent (or `share_plus`). Publication consent is unchanged: call `POST /session/:id/share` first.

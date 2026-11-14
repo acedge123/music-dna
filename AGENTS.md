@@ -55,3 +55,4 @@
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
 - `interviewStage` separates screens; `quip-sequences` preserves joke order and compatibility.
+- Critic exemplars (`critic_exemplars`, admin-only) are approved style references added to the final-reading writer only behind default-off `MUSICDNA_CRITIC_EXEMPLARS_V1`; they never act as evidence or saved content. Share cards render from published frozen content only (`/api/v1/share/:token/card`), so web and Flutter share the same image without a new consent path.
