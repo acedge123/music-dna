@@ -14,8 +14,9 @@ import { ArchetypeFit } from "@/components/musicdna/archetype-fit";
 import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/dna-summary";
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
-import { useEffect, useRef, useState } from "react";
-import { fillerLines, matchupDecade, skipLine, type Hunch } from "@/musicdna/engine/critic-fillers";
+import { useEffect, useRef } from "react";
+import { matchupDecade, skipLine } from "@/musicdna/engine/critic-fillers";
+import { CriticStage } from "@/components/musicdna/critic-stage";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -69,6 +70,7 @@ function HomeLogo() {
 function Onboarding() {
   const { session, fresh } = Route.useSearch();
   const navigate = useNavigate();
+  const usedQuips = useRef(new Set<string>());
   const {
     phase,
     songs,
@@ -395,6 +397,9 @@ function Onboarding() {
         {(criticStage || (busy && (!pairing || pendingSkip) && phase === "playing")) && (
           <CriticStage
             wait={criticStage || entries.length > 0 || pendingSkip ? entries.length + 1 : 0}
+            flow={flow}
+            finalReading={!!pendingSongId && entries.length >= maxRounds - 1}
+            used={usedQuips.current}
             decade={pairing ? matchupDecade([pairing.song_a, pairing.song_b]) : null}
             skip={!criticStage && skipNote ? skipLine(skipNote.index, skipNote.songs) : null}
             hunch={stageHunch}
@@ -548,65 +553,5 @@ function Onboarding() {
         )}
       </main>
     </>
-  );
-}
-
-/** Critic-only screen between a pick and the next matchup. */
-function CriticStage({
-  wait,
-  decade,
-  hunch,
-  skip,
-  chosenTitle,
-}: {
-  wait: number;
-  decade?: string | null;
-  hunch?: Hunch | null;
-  skip?: string | null;
-  chosenTitle: string;
-}) {
-  const [tick, setTick] = useState(0);
-  // Freeze the line set when the stage opens; the entry count changes mid-wait.
-  const [fixedWait] = useState(wait);
-  // Keep the "You picked" title once known, so the screen never swaps layouts mid-wait.
-  const [title, setTitle] = useState(chosenTitle);
-  useEffect(() => {
-    if (chosenTitle) setTitle(chosenTitle);
-  }, [chosenTitle]);
-  const [fixedDecade] = useState(decade ?? null);
-  // Lines may still gain the pick reaction while the opener shows; after that they freeze.
-  const live = skip ? [skip] : fillerLines(fixedWait, hunch, fixedDecade);
-  const frozen = useRef<string[] | null>(null);
-  if (tick === 0) frozen.current = null;
-  else if (!frozen.current) frozen.current = live;
-  const lines = frozen.current ?? live;
-  useEffect(() => setTick(0), [skip]);
-  // Each line holds ~2.5s and shows once; the last stays until the Critic answers.
-  useEffect(() => {
-    if (tick >= lines.length - 1) return;
-    const t = setTimeout(() => setTick((n) => n + 1), 2500);
-    return () => clearTimeout(t);
-  }, [tick, lines.length]);
-  return (
-    <section
-      aria-label="The Critic"
-      className="max-w-2xl space-y-6 py-6 animate-in fade-in duration-500"
-    >
-      {!skip && title && (
-        <p className="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground">
-          You picked · {title}
-        </p>
-      )}
-      {/* Fixed-height slot: one planned short rise + fade per line. */}
-      <div className="min-h-[7.5rem]">
-        <p
-          role="status"
-          key={lines[Math.min(tick, lines.length - 1)]}
-          className="font-serif text-3xl italic leading-snug animate-in fade-in slide-in-from-bottom-2 duration-700"
-        >
-          {lines[Math.min(tick, lines.length - 1)]}
-        </p>
-      </div>
-    </section>
   );
 }

@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — checkpoint waiting-screen pacing
+
+- [ ] Stabilize the first quip through save/read transitions; checkpoint flow uses one quip after 1/3/5, up to three after 2 and four after 4.
+- [ ] Keep unused approved quips rotating throughout final-reading waits, preserving punchlines and showing ongoing activity without delaying ready results.
+- [ ] Run focused pacing regressions and preview checks; update Flutter sequencing notes. Production rollout remains deployment-dependent.
+
 ## Current — waiting-copy and skip cleanup
 
 - [x] Retire the boomer skip line and generic blood quip without changing rotation timing; shared API retains its compatible neutral recent-song field.
