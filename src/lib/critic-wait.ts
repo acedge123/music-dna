@@ -1,4 +1,4 @@
-import { type Hunch } from "@/musicdna/engine/critic-fillers";
+import { FILLER_REACTION, type Hunch } from "@/musicdna/engine/critic-fillers";
 import {
   PERSON_QUIP_GROUPS,
   NEUTRAL_QUIP_GROUPS,
@@ -27,22 +27,35 @@ export function waitQuips(
   used: ReadonlySet<string>,
 ): string[] {
   const neutral = NEUTRAL_QUIP_GROUPS[wait % NEUTRAL_QUIP_GROUPS.length];
-  const person = PERSON_QUIP_GROUPS[wait % PERSON_QUIP_GROUPS.length];
+  // Avoid a confident prediction followed by a contradictory surprise claim (or vice versa).
+  // The used set contains only quips actually displayed earlier in this interview.
+  const priorWith = FILLER_REACTION.with.some((line) => used.has(line));
+  const priorAgainst = FILLER_REACTION.against.some((line) => used.has(line));
+  const reactionHunch: Hunch | null =
+    (hunch === "with" && priorAgainst) || (hunch === "against" && priorWith)
+      ? "early"
+      : hunch;
+  // The surprise punchline should not follow a confident "called it" moment.
+  const personIndex = wait % PERSON_QUIP_GROUPS.length;
+  const person = PERSON_QUIP_GROUPS[
+    priorWith && personIndex === 3 ? 4 : personIndex
+  ];
   const era = eraQuipGroups(decade);
   const groups: QuipGroup[] = [neutral];
   if (era.length) {
-    if (hunch && Number.isFinite(budget)) groups.push(reactionQuipGroup(hunch, wait));
+    if (reactionHunch && Number.isFinite(budget)) groups.push(reactionQuipGroup(reactionHunch, wait));
     groups.push(era[wait % era.length]);
   } else if (budget === 3 || !Number.isFinite(budget)) {
     groups.push(person);
   } else {
-    if (hunch) groups.push(reactionQuipGroup(hunch, wait));
+    if (reactionHunch) groups.push(reactionQuipGroup(reactionHunch, wait));
     groups.push(person);
   }
   if (!Number.isFinite(budget)) {
     // Separate unrelated praise bits with a neutral/era beat, never another conditional claim.
     PERSON_QUIP_GROUPS.forEach((group, index) => {
-      groups.push(era[index % Math.max(era.length, 1)] ?? NEUTRAL_QUIP_GROUPS[index], group);
+      groups.push(era[index % Math.max(era.length, 1)] ?? NEUTRAL_QUIP_GROUPS[index]);
+      if (!(priorWith && group.id === "person-3")) groups.push(group);
     });
     groups.push(...era, ...NEUTRAL_QUIP_GROUPS);
   }
