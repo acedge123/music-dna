@@ -1,4 +1,4 @@
-import { FILLER_DECADE, FILLER_NEUTRAL, FILLER_PERSON, FILLER_REACTION, fillerLines, type Hunch } from "@/musicdna/engine/critic-fillers";
+import { FILLER_DECADE, FILLER_NEUTRAL, FILLER_PERSON, fillerLines, type Hunch } from "@/musicdna/engine/critic-fillers";
 
 export const QUIP_INTERVAL_MS = 2500;
 

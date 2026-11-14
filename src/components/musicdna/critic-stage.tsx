@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import type { Hunch } from "@/musicdna/engine/critic-fillers";
 import { QUIP_INTERVAL_MS, quipBudget, waitQuips } from "@/lib/critic-wait";
@@ -18,16 +18,19 @@ export function CriticStage({ wait, decade, hunch, skip, chosenTitle, flow, fina
   const [index, setIndex] = useState(0);
   const [title, setTitle] = useState(chosenTitle);
   const budget = finalReading ? Infinity : quipBudget(flow, context.wait);
-  const candidates = context.skip ? [context.skip] : waitQuips(context.wait, hunch, context.decade, budget, context.used);
+  const candidates = useMemo(() => context.skip ? [context.skip] : waitQuips(context.wait, hunch, context.decade, budget, context.used), [context, hunch, budget]);
   const queue = useRef<string[]>(candidates);
   // Only unseen tail lines may change as the fast hunch arrives; the displayed opener never does.
   const activeHunch = useRef(hunch);
+  const activeBudget = useRef(budget);
   useEffect(() => {
-    if (index === 0 && activeHunch.current !== hunch) {
+    if ((index === 0 && activeHunch.current !== hunch) || activeBudget.current !== budget) {
       activeHunch.current = hunch;
-      queue.current = [queue.current[0] ?? candidates[0], ...candidates.slice(1)].filter((line): line is string => Boolean(line));
+      activeBudget.current = budget;
+      const shown = queue.current.slice(0, index + 1);
+      queue.current = [...shown, ...candidates.filter((line) => !shown.includes(line))];
     }
-  }, [hunch, index, candidates]);
+  }, [hunch, index, candidates, budget]);
   useEffect(() => { if (chosenTitle) setTitle(chosenTitle); }, [chosenTitle]);
   const line = queue.current[index];
   useEffect(() => { if (line) used.add(line); }, [line, used]);
