@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — consistent quip dwell timing
+
+- [x] Use displayed-line timestamps and reject stale/doubled callbacks; each next quip gets 2.5 seconds, with no catch-up bursts.
+- [x] 14 regressions and lint pass; isolated real browser rotation across hunch/final updates measured 2498–2501ms between lines, build OK. Ready results still replace waits immediately; production split-second behavior not independently reproduced.
+
 ## Current — admin quip library
 
 - [x] Add read-only searchable quips with ordered setup/punchline groups, tone, conditions and compatibility; no copy edits or interview changes.

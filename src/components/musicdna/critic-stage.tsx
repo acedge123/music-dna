@@ -2,6 +2,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import type { Hunch } from "@/musicdna/engine/critic-fillers";
 import { QUIP_INTERVAL_MS, quipBudget, waitQuips } from "@/lib/critic-wait";
+import { advanceQuip } from "@/lib/quip-clock";
 
 export function CriticStage({
   wait,
@@ -24,7 +25,8 @@ export function CriticStage({
 }) {
   // Capture one wait identity and its opener. Saving a vote must not restart it.
   const [context] = useState(() => ({ wait, decade, skip, chosenTitle, used: new Set(used) }));
-  const [index, setIndex] = useState(0);
+  const [clock, setClock] = useState(() => ({ index: 0, shownAt: Date.now() }));
+  const { index } = clock;
   const [title, setTitle] = useState(chosenTitle);
   const budget = finalReading ? Infinity : quipBudget(flow, context.wait);
   const candidates = useMemo(
@@ -54,11 +56,14 @@ export function CriticStage({
     if (line) used.add(line);
   }, [line, used]);
   useEffect(() => {
-    const timer = setTimeout(() => {
-      if (index < queue.current.length - 1) setIndex((n) => n + 1);
-    }, QUIP_INTERVAL_MS);
+    const timer = setTimeout(
+      () => {
+        setClock((current) => advanceQuip(current, index, Date.now(), queue.current.length));
+      },
+      Math.max(0, QUIP_INTERVAL_MS - (Date.now() - clock.shownAt)),
+    );
     return () => clearTimeout(timer);
-  }, [index, budget]);
+  }, [clock, index, candidates]);
 
   return (
     <section aria-label="The Critic" className="max-w-2xl space-y-6 py-6">
