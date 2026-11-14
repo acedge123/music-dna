@@ -277,3 +277,4 @@
 - [ ] Set `MUSICDNA_CRITIC_CHECKPOINTS=1` in Vercel and run a live 4- and 6-choice test. Blocker: owner flips the flag.
 - [ ] Flutter adopts the flow (Codex).
 - [x] `MUSICDNA_ARCHETYPE_V2=1` set in Vercel by owner; applies to new readings after redeploy.
+- [ ] Share: Instagram button directly on reading page (awaiting user yes)
