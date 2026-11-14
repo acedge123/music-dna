@@ -115,8 +115,13 @@ function AuthPage() {
         </p>
         {user?.is_anonymous && (
           <div className="mb-6 space-y-3 border border-border rounded p-4 text-sm">
-            <p>Signing in to a different account won't move your guest reading. Keep your guest session to preserve access.</p>
-            <Link to="/save-reading" className="underline">Keep my guest readings with a new account</Link>
+            <p>
+              Signing in to a different account won't move your guest reading. Keep your guest
+              session to preserve access.
+            </p>
+            <Link to="/save-reading" className="underline">
+              Keep my guest readings with a new account
+            </Link>
           </div>
         )}
         <form onSubmit={submit} className="space-y-4">
