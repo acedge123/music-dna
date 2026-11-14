@@ -1,5 +1,12 @@
 # Roadmap
 
+## Current — separate checkpoint interview stages
+
+- [x] Keep flag-on pairing, quip wait, checkpoint commentary and final/retry screens mutually exclusive; preserve flag-off presentation. Unsaved/empty final output shows a retry, not a false completed report.
+- [x] Add ordered quip relationship metadata and compatible group selection without changing approved copy; Flutter reference updated without changing the API shape.
+- [x] 26 focused tests and touched-file lint pass; real guest first pick/wait/next pairing verified with no page errors in flag-off preview.
+- [ ] Full checkpoint/final and mobile acceptance: preview uses per_pick; requires flag-enabled deployed client tests. Recording's underlying production narration failure is not diagnosed from the video alone.
+
 ## Current — checkpoint waiting-screen pacing
 
 - [x] Stabilize the first quip through save/read transitions; checkpoint flow uses one quip after 1/3/5, up to three after 2 and four after 4.

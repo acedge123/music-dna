@@ -17,6 +17,7 @@ import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
 import { useEffect, useRef } from "react";
 import { matchupDecade, skipLine } from "@/musicdna/engine/critic-fillers";
 import { CriticStage } from "@/components/musicdna/critic-stage";
+import { interviewStage } from "@/lib/interview-stage";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -225,6 +226,15 @@ function Onboarding() {
 
   const waitingOnCritic = phase === "playing" && busy && pendingSongId !== null;
   const criticStage = waitingOnCritic;
+  const stage = interviewStage({
+    phase,
+    busy,
+    pairing: !!pairing,
+    pendingPick: pendingSongId !== null,
+    pendingSkip: pendingSkip !== null,
+    checkpoint: !!checkpoint,
+    finalWriting,
+  });
   const stageTitle = waitingOnCritic
     ? ([pairing?.song_a, pairing?.song_b].find((song) => song?.id === pendingSongId)?.title ?? "")
     : "";
@@ -318,7 +328,7 @@ function Onboarding() {
                 </div>
               </div>
             </header>
-            {entries.length === 0 && refined && (
+            {flow === "per_pick" && stage === "pairing" && entries.length === 0 && refined && (
               <details className="max-w-2xl">
                 <summary className="cursor-pointer font-serif text-2xl leading-snug">
                   {readingLead(refined.observation || refined.hypothesis)}
@@ -328,7 +338,7 @@ function Onboarding() {
                 </p>
               </details>
             )}
-            {!criticStage && !checkpoint && (
+            {flow === "per_pick" && stage === "pairing" && (
               <InterviewHistory
                 entries={entries}
                 openerSongs={songs}
@@ -342,7 +352,7 @@ function Onboarding() {
           </>
         )}
 
-        {checkpoint && phase === "playing" && !criticStage && !finalWriting && (
+        {checkpoint && stage === "checkpoint" && (
           <section
             aria-label="The Critic"
             className="max-w-2xl space-y-8 py-6 animate-in fade-in duration-500"
@@ -402,9 +412,7 @@ function Onboarding() {
         )}
 
         {/* Current pairing */}
-        {(finalWriting ||
-          criticStage ||
-          (busy && (!pairing || pendingSkip) && phase === "playing")) && (
+        {stage === "wait" && (
           <CriticStage
             wait={criticStage || entries.length > 0 || pendingSkip ? entries.length + 1 : 0}
             flow={flow}
@@ -417,7 +425,7 @@ function Onboarding() {
           />
         )}
 
-        {pairing && phase === "playing" && !criticStage && !(busy && pendingSkip) && (
+        {pairing && stage === "pairing" && (
           <section ref={pairingAnchorRef} className="space-y-4 pt-2">
             <p className="font-serif text-2xl md:text-3xl">
               {entries.length === 0 ? "Pick one. First instinct." : "Which one would you keep?"}
@@ -461,12 +469,13 @@ function Onboarding() {
         )}
 
         {/* Final report */}
-        {phase === "done" && (
+        {stage === "final" && (
           <section ref={doneAnchorRef} className="space-y-14 pt-6 animate-in fade-in duration-700">
-            {resultError ? (
+            {resultError || !synthesis || resultVersion == null ? (
               <div className="space-y-4">
                 <p role="alert" className="text-sm">
-                  {resultError}
+                  {resultError ||
+                    "Your choices are saved, but the full reading isn't ready yet. Try again."}
                 </p>
                 <Button
                   type="button"
@@ -474,7 +483,7 @@ function Onboarding() {
                   onClick={() => void loadFinalRead()}
                   className="min-h-11 rounded-sm border hairline-strong px-5 py-3"
                 >
-                  Retry saved reading
+                  Try my reading again
                 </Button>
               </div>
             ) : (

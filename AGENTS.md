@@ -54,3 +54,4 @@
 - Post-pick reads are pre-drafted and reused only on exact `readFingerprint` match; only approved stand-alone first-pick drafts enter `critic_reaction_pool`.
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
+- `interviewStage` separates screens; `quip-sequences` preserves joke order and compatibility.
