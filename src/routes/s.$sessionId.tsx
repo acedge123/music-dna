@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getPublicSession } from "@/lib/share.functions";
+import { ShareToInstagram } from "@/components/musicdna/share-to-instagram";
 import { ReadingResult } from "@/components/musicdna/reading-result";
 import { parseReadingContent } from "@/lib/reading-content";
 
@@ -100,6 +101,10 @@ function SharePage() {
             </ul>
           </section>
         )}
+        <section className="mt-10">
+          <p className="eyebrow mb-3">Post it</p>
+          <ShareToInstagram token={Route.useParams().sessionId} />
+        </section>
         <section className="mt-16 border-t hairline pt-10">
           <p className="eyebrow mb-3">Your choices can tell a different story.</p>
           <h2 className="font-serif text-3xl leading-tight mb-6 max-w-xl">

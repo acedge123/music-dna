@@ -50,6 +50,7 @@ import { Route as ApiV1SessionIdReportRouteImport } from './routes/api/v1/sessio
 import { Route as ApiV1SessionIdRevealRouteImport } from './routes/api/v1/session.$id.reveal'
 import { Route as ApiV1SessionIdShareRouteImport } from './routes/api/v1/session.$id.share'
 import { Route as ApiV1SessionIdSkipRouteImport } from './routes/api/v1/session.$id.skip'
+import { Route as ApiV1ShareTokenCardRouteImport } from './routes/api/v1/share.$token.card'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -256,6 +257,11 @@ const ApiV1SessionIdSkipRoute = ApiV1SessionIdSkipRouteImport.update({
   path: '/skip',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
+const ApiV1ShareTokenCardRoute = ApiV1ShareTokenCardRouteImport.update({
+  id: '/card',
+  path: '/card',
+  getParentRoute: () => ApiV1ShareTokenRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -281,7 +287,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/onboarding/opener': typeof ApiV1OnboardingOpenerRoute
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
-  '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
+  '/api/v1/share/$token': typeof ApiV1ShareTokenRouteWithChildren
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
@@ -298,6 +304,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/session/$id/reveal': typeof ApiV1SessionIdRevealRoute
   '/api/v1/session/$id/share': typeof ApiV1SessionIdShareRoute
   '/api/v1/session/$id/skip': typeof ApiV1SessionIdSkipRoute
+  '/api/v1/share/$token/card': typeof ApiV1ShareTokenCardRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -323,7 +330,7 @@ export interface FileRoutesByTo {
   '/api/v1/onboarding/opener': typeof ApiV1OnboardingOpenerRoute
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
-  '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
+  '/api/v1/share/$token': typeof ApiV1ShareTokenRouteWithChildren
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
@@ -340,6 +347,7 @@ export interface FileRoutesByTo {
   '/api/v1/session/$id/reveal': typeof ApiV1SessionIdRevealRoute
   '/api/v1/session/$id/share': typeof ApiV1SessionIdShareRoute
   '/api/v1/session/$id/skip': typeof ApiV1SessionIdSkipRoute
+  '/api/v1/share/$token/card': typeof ApiV1ShareTokenCardRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -367,7 +375,7 @@ export interface FileRoutesById {
   '/api/v1/onboarding/opener': typeof ApiV1OnboardingOpenerRoute
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
-  '/api/v1/share/$token': typeof ApiV1ShareTokenRoute
+  '/api/v1/share/$token': typeof ApiV1ShareTokenRouteWithChildren
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
@@ -384,6 +392,7 @@ export interface FileRoutesById {
   '/api/v1/session/$id/reveal': typeof ApiV1SessionIdRevealRoute
   '/api/v1/session/$id/share': typeof ApiV1SessionIdShareRoute
   '/api/v1/session/$id/skip': typeof ApiV1SessionIdSkipRoute
+  '/api/v1/share/$token/card': typeof ApiV1ShareTokenCardRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -428,6 +437,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/reveal'
     | '/api/v1/session/$id/share'
     | '/api/v1/session/$id/skip'
+    | '/api/v1/share/$token/card'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -470,6 +480,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/reveal'
     | '/api/v1/session/$id/share'
     | '/api/v1/session/$id/skip'
+    | '/api/v1/share/$token/card'
   id:
     | '__root__'
     | '/'
@@ -513,6 +524,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/reveal'
     | '/api/v1/session/$id/share'
     | '/api/v1/session/$id/skip'
+    | '/api/v1/share/$token/card'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -536,7 +548,7 @@ export interface RootRouteChildren {
   ApiPublicTestActionRoute: typeof ApiPublicTestActionRoute
   ApiV1OnboardingOpenerRoute: typeof ApiV1OnboardingOpenerRoute
   ApiV1OnboardingReactRoute: typeof ApiV1OnboardingReactRoute
-  ApiV1ShareTokenRoute: typeof ApiV1ShareTokenRoute
+  ApiV1ShareTokenRoute: typeof ApiV1ShareTokenRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -828,6 +840,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionIdSkipRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
+    '/api/v1/share/$token/card': {
+      id: '/api/v1/share/$token/card'
+      path: '/card'
+      fullPath: '/api/v1/share/$token/card'
+      preLoaderRoute: typeof ApiV1ShareTokenCardRouteImport
+      parentRoute: typeof ApiV1ShareTokenRoute
+    }
   }
 }
 
@@ -900,6 +919,18 @@ const ApiV1SessionRouteWithChildren = ApiV1SessionRoute._addFileChildren(
   ApiV1SessionRouteChildren,
 )
 
+interface ApiV1ShareTokenRouteChildren {
+  ApiV1ShareTokenCardRoute: typeof ApiV1ShareTokenCardRoute
+}
+
+const ApiV1ShareTokenRouteChildren: ApiV1ShareTokenRouteChildren = {
+  ApiV1ShareTokenCardRoute: ApiV1ShareTokenCardRoute,
+}
+
+const ApiV1ShareTokenRouteWithChildren = ApiV1ShareTokenRoute._addFileChildren(
+  ApiV1ShareTokenRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
@@ -921,7 +952,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicTestActionRoute: ApiPublicTestActionRoute,
   ApiV1OnboardingOpenerRoute: ApiV1OnboardingOpenerRoute,
   ApiV1OnboardingReactRoute: ApiV1OnboardingReactRoute,
-  ApiV1ShareTokenRoute: ApiV1ShareTokenRoute,
+  ApiV1ShareTokenRoute: ApiV1ShareTokenRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
