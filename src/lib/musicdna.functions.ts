@@ -654,6 +654,7 @@ import { loadChoiceEvidence, loadReadingEvidence } from "@/musicdna/adapters/cho
 import { hasReadingSupport } from "@/musicdna/engine/reading-support";
 import { loadPublicDefiningChoices } from "@/musicdna/adapters/public-evidence";
 import { expectedCatalog } from "@/musicdna/engine/evidence-snapshot";
+import { selectSongWhyColor } from "@/musicdna/engine/song-why-color";
 import {
   preparedOutcome,
   hypotheticalChoice,
@@ -1801,7 +1802,9 @@ export async function recordChoiceImpl(
       p_mutation_id: data.mutationId ?? null,
       p_prior_vector: session.vector ?? {},
       p_update: updatePayload,
-      p_response: { ...response, _expected_catalog: expectedCatalog(pairing, winner, loser) },
+      p_response: { ...response, _expected_catalog: expectedCatalog(pairing, winner, loser),
+        ...(process.env.MUSICDNA_SONG_WHYS_V1 === "1" ? { _capture_song_whys: true } : {}),
+      },
     } as never,
   );
   if (rpcErr) {
@@ -4799,6 +4802,16 @@ export async function prepareReadsImpl(
     song_b: Record<string, unknown> & { id: string };
   } | null;
   if (!pairing?.song_a || !pairing.song_b) return { prepared: 0 };
+  const useSongWhys = process.env.MUSICDNA_SONG_WHYS_V1 === "1";
+  const whyRows = useSongWhys ? await supabase.from("song_trait_explanations")
+    .select("id,song_id,axis,score_at_write,audible_evidence,scoring_version,status")
+    .in("song_id", [pairing.song_a.id, pairing.song_b.id]).eq("status", "approved") : null;
+  if (whyRows?.error) return { prepared: 0, skipped: "song_whys_unavailable" as const };
+  const hypothetical = (chosen: Record<string, unknown>, rejected: Record<string, unknown>) =>
+    hypotheticalChoice(pairing, chosen, rejected, useSongWhys ? {
+      chosen: selectSongWhyColor(whyRows?.data ?? [], chosen, pairing.tests ?? []),
+      rejected: selectSongWhyColor(whyRows?.data ?? [], rejected, pairing.tests ?? []),
+    } : undefined);
   if (choices.some((c) => c.pairing_id === pairing.id)) return { prepared: 0 };
   // Checkpoint flow: no per-pick Critic drafts except picks that land on a checkpoint or finish.
   const savedFlow = await savedSessionFlow(data.sessionId).catch(() => null);
@@ -4840,7 +4853,7 @@ export async function prepareReadsImpl(
     ? branches.flatMap(([chosen, rejected]) =>
         ([[synthDraftKey, SYNTH_VOICE]] as const).map(async ([slot, voice]) => {
           const ledger = buildLedger(
-            [...choices, hypotheticalChoice(pairing, chosen, rejected)],
+            [...choices, hypothetical(chosen, rejected)],
             DIMS,
           );
           const key = {
@@ -4901,7 +4914,7 @@ export async function prepareReadsImpl(
   const done = await Promise.all([
     ...revealDrafts,
     ...branches.map(async ([chosen, rejected]) => {
-      const ledger = buildLedger([...choices, hypotheticalChoice(pairing, chosen, rejected)], DIMS);
+      const ledger = buildLedger([...choices, hypothetical(chosen, rejected)], DIMS);
       const key = {
         session_id: data.sessionId,
         user_id: userId,
@@ -4937,7 +4950,7 @@ export async function prepareReadsImpl(
                 ? {
                     pool: {
                       fingerprint: poolFingerprint(
-                        hypotheticalChoice(pairing, chosen, rejected),
+                        hypothetical(chosen, rejected),
                         CRITIC_EXPRESSION_VERSION,
                         CRITIC_REVIEW_VERSION,
                       ),

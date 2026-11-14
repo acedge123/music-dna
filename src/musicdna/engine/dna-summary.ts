@@ -6,6 +6,7 @@
 import { DIM_LABEL } from "./axes";
 import type { ClaimStatus } from "./claims";
 import type { Ledger, LedgerEntry } from "./evidence";
+import type { SongWhyColor } from "./song-why-color";
 
 export const DNA_SUMMARY_VERSION = "dna-summary-v1";
 
@@ -32,6 +33,7 @@ export type DnaReceipt = {
   rejected: string;
   rejected_artist: string;
   note: string;
+  song_whys?: { chosen: SongWhyColor[]; rejected: SongWhyColor[] };
 };
 
 export type DnaArchetype =
@@ -107,6 +109,7 @@ export function buildDnaSummary(
       rejected: e.rejected,
       rejected_artist: e.rejected_artist,
       note,
+      ...(e.song_whys ? { song_whys: e.song_whys } : {}),
     });
     return true;
   };
@@ -137,7 +140,13 @@ export function buildDnaSummary(
       const l = DIM_LABEL[u.axis] ?? { hi: u.axis, lo: u.axis };
       for (const e of [...u.contradicting_examples, ...u.supporting_examples]) {
         const side = e.delta > 0 ? l.hi : l.lo;
-        if (push("contradiction", e, `The complication: ${side} won here, and ${l.hi} vs ${l.lo} is still split.`))
+        if (
+          push(
+            "contradiction",
+            e,
+            `The complication: ${side} won here, and ${l.hi} vs ${l.lo} is still split.`,
+          )
+        )
           break outer2;
       }
     }
