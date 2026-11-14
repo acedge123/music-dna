@@ -29,10 +29,10 @@ export function CriticStage({
   const budget = finalReading ? Infinity : quipBudget(flow, context.wait);
   const candidates = useMemo(
     () =>
-      context.skip
+      context.skip && !finalReading
         ? [context.skip]
         : waitQuips(context.wait, hunch, context.decade, budget, context.used),
-    [context, hunch, budget],
+    [context, hunch, budget, finalReading],
   );
   const queue = useRef<string[]>(candidates);
   // Only unseen tail lines may change as the fast hunch arrives; the displayed opener never does.
@@ -58,7 +58,7 @@ export function CriticStage({
       if (index < queue.current.length - 1) setIndex((n) => n + 1);
     }, QUIP_INTERVAL_MS);
     return () => clearTimeout(timer);
-  }, [index]);
+  }, [index, budget]);
 
   return (
     <section aria-label="The Critic" className="max-w-2xl space-y-6 py-6">

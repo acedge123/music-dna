@@ -2,9 +2,10 @@
 
 ## Current — checkpoint waiting-screen pacing
 
-- [ ] Stabilize the first quip through save/read transitions; checkpoint flow uses one quip after 1/3/5, up to three after 2 and four after 4.
-- [ ] Keep unused approved quips rotating throughout final-reading waits, preserving punchlines and showing ongoing activity without delaying ready results.
-- [ ] Run focused pacing regressions and preview checks; update Flutter sequencing notes. Production rollout remains deployment-dependent.
+- [x] Stabilize the first quip through save/read transitions; checkpoint flow uses one quip after 1/3/5, up to three after 2 and four after 4.
+- [x] Keep unused approved quips rotating throughout final-reading waits, preserving punchlines and showing ongoing activity without delaying ready results.
+- [x] 18 focused regressions passed; guest first-pick preview showed each sampled line once with no page errors. Flutter sequencing notes updated.
+- [ ] Checkpoint/full-six production acceptance: waits on deployment and both-client testing; final wait pool verified in focused tests, not a completed browser six-pick run.
 
 ## Current — waiting-copy and skip cleanup
 
