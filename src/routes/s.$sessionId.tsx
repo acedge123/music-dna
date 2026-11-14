@@ -1,3 +1,4 @@
+import { ArchetypeArt } from "@/components/musicdna/archetype-art";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getPublicSession } from "@/lib/share.functions";
 import { ShareToInstagram } from "@/components/musicdna/share-to-instagram";
@@ -89,6 +90,7 @@ function SharePage() {
           if (!arch?.name || (arch.status !== "confirmed" && arch.status !== "leaning")) return null;
           return (
             <header className="mb-10 space-y-2">
+              <ArchetypeArt name={arch.name} className="mb-4" />
               <p className="eyebrow">Their Music DNA · {arch.status === "confirmed" ? "Confirmed archetype" : "Leaning toward"}</p>
               <p className="display text-4xl leading-tight md:text-5xl">{arch.name}</p>
             </header>
