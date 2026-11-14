@@ -60,6 +60,7 @@ export const Route = createFileRoute("/_authenticated/admin")({
 type Entity = "songs" | "pairings" | "archetypes";
 type Tab =
   | Entity
+  | "hall_of_fame"
   | "decade_prompts"
   | "residuals"
   | "ontology"
