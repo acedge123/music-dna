@@ -8,7 +8,10 @@ export function cardInputFromPublished(
   const content = loaded.session?.content as any;
   const synthesis: string = content?.synthesis ?? loaded.session?.interpretation ?? "A reading in progress.";
   const headline = (synthesis.match(/^[^.!?]+[.!?]/)?.[0] ?? synthesis).trim();
-  const archetype = content?.archetype_v2?.name ?? loaded.session?.archetype?.name ?? null;
+  const a2 = content?.archetype_v2;
+  const archetype = a2
+    ? (a2.status === "confirmed" || a2.status === "leaning" ? a2.name : null)
+    : (loaded.session?.archetype?.name ?? null);
   const traits = (loaded.definingChoices ?? []).slice(0, 3).map((c) => `${c.chosen} over ${c.rejected}`);
   return { headline, archetype, traits, url };
 }

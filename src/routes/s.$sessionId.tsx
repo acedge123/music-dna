@@ -84,6 +84,16 @@ function SharePage() {
 
       <article className="mx-auto max-w-3xl px-6 py-16">
         <h1 className="sr-only">A shared MusicDNA reading</h1>
+        {(() => {
+          const arch = (session as { content?: { archetype_v2?: { name?: string; status?: string } } }).content?.archetype_v2;
+          if (!arch?.name || (arch.status !== "confirmed" && arch.status !== "leaning")) return null;
+          return (
+            <header className="mb-10 space-y-2">
+              <p className="eyebrow">Their Music DNA · {arch.status === "confirmed" ? "Confirmed archetype" : "Leaning toward"}</p>
+              <p className="display text-4xl leading-tight md:text-5xl">{arch.name}</p>
+            </header>
+          );
+        })()}
         <ReadingResult
           content={{ ...content, result_version: version }}
           label="A shared MusicDNA reading"
