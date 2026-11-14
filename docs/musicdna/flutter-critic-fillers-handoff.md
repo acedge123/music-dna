@@ -40,4 +40,10 @@ Show one line per skip (increase `skipCount` each time). If both skipped songs a
 ## Checkpoint flow (behind flag)
 See "Critic checkpoints" in experience-contract-v1.md. Quips still play between every pick; in checkpoint flow, picks 1/3/5 hold a quip ~2.5 s, then show the next pair automatically.
 
+### Checkpoint pacing update (14 November 2026)
+- Capture the wait identity, neutral opener, picked title and era once on tap. Keep the same screen and timer through choice-save → read → next/final requests. Never restart the opener animation on hunch arrival or answered-count updates.
+- Flag-on budgets: one line after answers 1/3/5; **up to three after 2**, **up to four after 4**. These are ceilings, not mandatory delays: show a ready checkpoint immediately. A three-line slot may be neutral → complete setup/punchline, without a reaction diluting it.
+- After answer 6, continue rotating unused approved groups every 2.5 seconds until the reading arrives; do not stop after four lines. Use the primary wait lines, then unused person groups, same-era lines and neutral lines. Keep setup/punchline pairs adjacent; skip a group if either line was already shown. Track only actually displayed lines for this interview. Do not add extra conditional reactions as long-wait entertainment.
+- Show an ongoing activity indicator with “Writing your full reading…” during the final wait. If the finite approved pool is exhausted, keep the indicator active rather than repeating quips. Stop immediately when the reading or existing retryable failure arrives. This changes presentation, not model latency, timeouts or saved results.
+
 **Flow is fixed per interview.** Send `X-MusicDNA-Interview-Flow: checkpoints-v1` on `POST /api/v1/session` once this build supports checkpoints, and use the `flow` in its response. On resume/reload call `GET /api/v1/interview-flow?session=<id>` with the bearer; on `503` retry, never fall back to the current setting. Checkpoint reads are `POST /read` with `{ after_pairing_id, answered }`.
