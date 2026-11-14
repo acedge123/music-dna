@@ -22,10 +22,16 @@ export async function setSharePublication(
       .order("version", { ascending: false })
       .limit(1)
       .maybeSingle();
-    return {
-      ...(await legacySetSharePublication(client, userId, sessionId, publish)),
-      result_version: latest?.version ?? null,
-    };
+    try {
+      return {
+        ...(await legacySetSharePublication(client, userId, sessionId, publish)),
+        result_version: latest?.version ?? null,
+      };
+    } catch (e) {
+      // Once the publication-snapshot migration is applied, the database refuses
+      // direct edits even while the V2 flag is off; use the reviewed RPC instead.
+      if (!(e instanceof Error) || !e.message.includes("publish_saved_read")) throw e;
+    }
   }
   return persistenceRpc<{
     is_public: boolean;
