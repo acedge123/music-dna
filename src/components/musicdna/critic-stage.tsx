@@ -56,9 +56,12 @@ export function CriticStage({
     if (line) used.add(line);
   }, [line, used]);
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setClock((current) => advanceQuip(current, index, Date.now(), queue.current.length));
-    }, Math.max(0, QUIP_INTERVAL_MS - (Date.now() - clock.shownAt)));
+    const timer = setTimeout(
+      () => {
+        setClock((current) => advanceQuip(current, index, Date.now(), queue.current.length));
+      },
+      Math.max(0, QUIP_INTERVAL_MS - (Date.now() - clock.shownAt)),
+    );
     return () => clearTimeout(timer);
   }, [clock, index, candidates]);
 
