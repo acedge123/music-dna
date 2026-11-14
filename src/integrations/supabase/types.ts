@@ -346,6 +346,66 @@ export type Database = {
           },
         ]
       }
+      critic_exemplars: {
+        Row: {
+          approved_at: string | null
+          approved_by: string | null
+          created_at: string
+          created_by: string
+          id: string
+          source_attempt_id: string | null
+          source_session_id: string | null
+          status: string
+          tags: string[]
+          text: string
+          updated_at: string
+          why_it_works: string | null
+        }
+        Insert: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by: string
+          id?: string
+          source_attempt_id?: string | null
+          source_session_id?: string | null
+          status?: string
+          tags?: string[]
+          text: string
+          updated_at?: string
+          why_it_works?: string | null
+        }
+        Update: {
+          approved_at?: string | null
+          approved_by?: string | null
+          created_at?: string
+          created_by?: string
+          id?: string
+          source_attempt_id?: string | null
+          source_session_id?: string | null
+          status?: string
+          tags?: string[]
+          text?: string
+          updated_at?: string
+          why_it_works?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critic_exemplars_source_attempt_id_fkey"
+            columns: ["source_attempt_id"]
+            isOneToOne: false
+            referencedRelation: "critic_quality_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_exemplars_source_session_id_fkey"
+            columns: ["source_session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       critic_profile: {
         Row: {
           bluntness: number
