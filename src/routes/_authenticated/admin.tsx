@@ -7,6 +7,7 @@ import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import { CriticQualityPanel } from "@/components/musicdna/critic-quality-panel";
 import { SongFactsPanel } from "@/components/musicdna/song-facts-panel";
 import { SongWhysPanel } from "@/components/musicdna/song-whys-panel";
+import { QuipLibraryPanel } from "@/components/musicdna/quip-library-panel";
 import { ArchetypeProfilesPanel } from "@/components/musicdna/archetype-profiles-panel";
 import { DecadeCoveragePanel } from "@/components/musicdna/decade-coverage-panel";
 import { Button } from "@/components/ui/button";
@@ -67,7 +68,8 @@ type Tab =
   | "song_facts"
   | "decade_coverage"
   | "archetype_profiles"
-  | "song_whys";
+  | "song_whys"
+  | "quips";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
   { key: "song_facts", label: "Facts" },
@@ -82,6 +84,7 @@ const ENTITIES: { key: Tab; label: string }[] = [
   { key: "diagnostics", label: "Diagnostics" },
   { key: "shadow", label: "Shadow Router" },
   { key: "critic_quality", label: "Critic QA" },
+  { key: "quips", label: "Quips" },
 ];
 
 type Row = Record<string, unknown> & { id: string };
@@ -187,7 +190,8 @@ function AdminPage() {
           tab !== "song_facts" &&
           tab !== "decade_coverage" &&
           tab !== "archetype_profiles" &&
-          tab !== "song_whys" && (
+          tab !== "song_whys" &&
+          tab !== "quips" && (
             <button
               onClick={() => setEditing({ row: null })}
               className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
@@ -213,7 +217,9 @@ function AdminPage() {
         ))}
       </nav>
 
-      {tab === "song_whys" ? (
+      {tab === "quips" ? (
+        <QuipLibraryPanel />
+      ) : tab === "song_whys" ? (
         <SongWhysPanel />
       ) : tab === "archetype_profiles" ? (
         <ArchetypeProfilesPanel />
