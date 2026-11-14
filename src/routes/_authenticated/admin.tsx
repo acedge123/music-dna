@@ -1581,8 +1581,8 @@ function HeatmapView({ d, laneFilter }: { d: OntologyData; laneFilter: string })
     <div>
       <p className="eyebrow mb-2">Lane × legacy winning archetype</p>
       <p className="text-xs text-muted-foreground mb-3">
-        Counts of stored legacy assignments, not V2 matches or evidence of cross-lane taste.
-        Sparse columns do not establish that an approved V2 profile lacks support.
+        Counts of stored legacy assignments, not V2 matches or evidence of cross-lane taste. Sparse
+        columns do not establish that an approved V2 profile lacks support.
       </p>
       <div className="overflow-x-auto border hairline rounded-sm">
         <table className="w-full text-xs">
@@ -2017,8 +2017,8 @@ function DiagnosticsPanel() {
       <p className="text-xs text-muted-foreground mb-4 max-w-2xl">
         Read-only diagnostic views over the instrumentation event log. See{" "}
         <code className="font-mono">docs/musicdna/instrumentation.md</code> for each field's
-        contract and the derived-measure definitions. Winner stability, independence,
-        contradiction and residual measures below use legacy rankings, not V2 validation.
+        contract and the derived-measure definitions. Winner stability, independence, contradiction
+        and residual measures below use legacy rankings, not V2 validation.
       </p>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-3 mb-6">
