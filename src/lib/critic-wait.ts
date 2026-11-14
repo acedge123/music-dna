@@ -1,10 +1,5 @@
-import {
-  FILLER_DECADE,
-  FILLER_NEUTRAL,
-  FILLER_PERSON,
-  fillerLines,
-  type Hunch,
-} from "@/musicdna/engine/critic-fillers";
+import { type Hunch } from "@/musicdna/engine/critic-fillers";
+import { PERSON_QUIP_GROUPS, NEUTRAL_QUIP_GROUPS, eraQuipGroups, reactionQuipGroup, selectQuipGroups, type QuipGroup } from "./quip-sequences";
 
 export const QUIP_INTERVAL_MS = 2500;
 
@@ -24,34 +19,25 @@ export function waitQuips(
   budget: number,
   used: ReadonlySet<string>,
 ): string[] {
-  const neutral = FILLER_NEUTRAL[wait % FILLER_NEUTRAL.length];
-  const person = FILLER_PERSON[wait % FILLER_PERSON.length] ?? [];
-  const era = decade ? FILLER_DECADE[decade] : undefined;
-  // A three-line wait gives the setup/punchline room, without an intervening reaction.
-  const primary =
-    budget === 3 && !era && person.length === 2
-      ? [neutral, ...person]
-      : fillerLines(wait, hunch, decade);
-  const groups: readonly (readonly string[])[] = [
-    primary,
-    ...(Number.isFinite(budget)
-      ? []
-      : [
-          ...FILLER_PERSON,
-          ...(era ? era.map((line) => [line]) : []),
-          ...FILLER_NEUTRAL.map((line) => [line]),
-        ]),
-  ];
-  const selected: string[] = [];
-  const seen = new Set(used);
-  for (const group of groups) {
-    // Never replay a setup or orphan its punchline after earlier exposure.
-    if (group !== primary && group.some((line) => seen.has(line))) continue;
-    for (const line of group) {
-      if (!line || seen.has(line) || selected.length >= budget) continue;
-      selected.push(line);
-      seen.add(line);
-    }
+  const neutral = NEUTRAL_QUIP_GROUPS[wait % NEUTRAL_QUIP_GROUPS.length];
+  const person = PERSON_QUIP_GROUPS[wait % PERSON_QUIP_GROUPS.length];
+  const era = eraQuipGroups(decade);
+  const groups: QuipGroup[] = [neutral];
+  if (era.length) {
+    if (hunch && Number.isFinite(budget)) groups.push(reactionQuipGroup(hunch, wait));
+    groups.push(era[wait % era.length]);
+  } else if (budget === 3 || !Number.isFinite(budget)) {
+    groups.push(person);
+  } else {
+    if (hunch) groups.push(reactionQuipGroup(hunch, wait));
+    groups.push(person);
   }
-  return selected;
+  if (!Number.isFinite(budget)) {
+    // Separate unrelated praise bits with a neutral/era beat, never another conditional claim.
+    PERSON_QUIP_GROUPS.forEach((group, index) => {
+      groups.push(era[index % Math.max(era.length, 1)] ?? NEUTRAL_QUIP_GROUPS[index], group);
+    });
+    groups.push(...era, ...NEUTRAL_QUIP_GROUPS);
+  }
+  return selectQuipGroups(groups, budget, used);
 }

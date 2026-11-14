@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { quipBudget, waitQuips } from "./critic-wait";
+import { PERSON_QUIP_GROUPS, reactionQuipGroup, selectQuipGroups } from "./quip-sequences";
 
 describe("checkpoint wait pacing", () => {
   it("uses at most three quips after answer 2", () => expect(quipBudget("checkpoints", 2)).toBe(3));
@@ -27,5 +28,14 @@ describe("checkpoint wait pacing", () => {
       "Somebody raised you right.",
       "Or you rebelled perfectly.",
     ]);
+  });
+  it("never splits a two-part group to fit a one-line budget", () => {
+    expect(selectQuipGroups([PERSON_QUIP_GROUPS[0]], 1, new Set())).toEqual([]);
+  });
+  it("never selects an orphaned punchline when its setup was seen", () => {
+    expect(selectQuipGroups([PERSON_QUIP_GROUPS[0]], 3, new Set([PERSON_QUIP_GROUPS[0].lines[0]]))).toEqual([]);
+  });
+  it("keeps incompatible prediction reactions and praise groups out of the same queue", () => {
+    expect(selectQuipGroups([reactionQuipGroup("against", 2), PERSON_QUIP_GROUPS[0]], 4, new Set()).length).toBe(1);
   });
 });
