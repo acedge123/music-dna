@@ -2,8 +2,9 @@
 
 ## Current — admin quip library
 
-- [ ] Add read-only searchable quips with ordered setup/punchline groups, tone, conditions and compatibility; no copy edits or interview changes.
-- [ ] Check admin access and layout; retain existing permissions.
+- [x] Add read-only searchable quips with ordered setup/punchline groups, tone, conditions and compatibility; no copy edits or interview changes.
+- [x] Isolated browser check: 8 personality groups, search finds the complete favorite-interview joke, 390px layout has no overflow or page errors; 10 relationship regressions pass and build OK.
+- [ ] Authenticated admin-tab acceptance: external-managed auth prevents restoring an admin session; existing admin gate retained unchanged.
 
 ## Current — separate checkpoint interview stages
 
