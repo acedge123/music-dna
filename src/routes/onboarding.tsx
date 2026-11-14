@@ -86,6 +86,7 @@ function Onboarding() {
     pendingSkip,
     flowError,
     resultError,
+    finalWriting,
     resultVersion,
     shareBusy,
     maxRounds,
@@ -119,6 +120,7 @@ function Onboarding() {
     finishFromCheckpoint,
     retryCheckpointRead,
   } = useInterview(session, fresh);
+  useEffect(() => { usedQuips.current.clear(); }, [sessionId]);
   useEffect(() => {
     // Never pin the previous render's ID while a fresh search is booting.
     if (
@@ -338,7 +340,7 @@ function Onboarding() {
           </>
         )}
 
-        {checkpoint && phase === "playing" && !criticStage && (
+        {checkpoint && phase === "playing" && !criticStage && !finalWriting && (
           <section
             aria-label="The Critic"
             className="max-w-2xl space-y-8 py-6 animate-in fade-in duration-500"
@@ -398,11 +400,11 @@ function Onboarding() {
         )}
 
         {/* Current pairing */}
-        {(criticStage || (busy && (!pairing || pendingSkip) && phase === "playing")) && (
+        {(finalWriting || criticStage || (busy && (!pairing || pendingSkip) && phase === "playing")) && (
           <CriticStage
             wait={criticStage || entries.length > 0 || pendingSkip ? entries.length + 1 : 0}
             flow={flow}
-            finalReading={!!pendingSongId && entries.length >= maxRounds - 1}
+            finalReading={finalWriting}
             used={usedQuips.current}
             decade={pairing ? matchupDecade([pairing.song_a, pairing.song_b]) : null}
             skip={!criticStage && skipNote ? skipLine(skipNote.index, skipNote.songs) : null}

@@ -113,6 +113,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
   const [pendingSkip, setPendingSkip] = useState<string | null>(null);
   const [flowError, setFlowError] = useState<string | null>(null);
   const [resultError, setResultError] = useState<string | null>(null);
+  const [finalWriting, setFinalWriting] = useState(false);
   const [resultVersion, setResultVersion] = useState<number | null>(null);
   const [shareBusy, setShareBusy] = useState(false);
   const actionRef = useRef(false);
@@ -643,6 +644,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     const sid = sidOverride ?? sessionId;
     if (!sid) return;
     setResultError(null);
+    setFinalWriting(true);
     try {
       // Bounded wait: the server keeps writing and saves the reading, so a
       // timeout only offers a retry that replays the saved result.
@@ -693,6 +695,8 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       setResultError(
         "Still writing your reading. Your choices are saved — retry in a moment to see it.",
       );
+    } finally {
+      if (generation === bootGeneration.current) setFinalWriting(false);
     }
   }
 
@@ -917,6 +921,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     pendingSkip,
     flowError,
     resultError,
+    finalWriting,
     resultVersion,
     shareBusy,
     round,
