@@ -61,6 +61,10 @@ function AuthPage() {
         return;
       }
       if (mode === "sign-up") {
+        if (user?.is_anonymous) {
+          await navigate({ to: "/save-reading" });
+          return;
+        }
         const { error } = await supabase.auth.signUp({
           email,
           password,
@@ -109,6 +113,12 @@ function AuthPage() {
               ? "Your readings persist across sessions."
               : "Email and a password. No social, no ceremony."}
         </p>
+        {user?.is_anonymous && (
+          <div className="mb-6 space-y-3 border border-border rounded p-4 text-sm">
+            <p>Signing in to a different account won't move your guest reading. Keep your guest session to preserve access.</p>
+            <Link to="/save-reading" className="underline">Keep my guest readings with a new account</Link>
+          </div>
+        )}
         <form onSubmit={submit} className="space-y-4">
           <div>
             <label htmlFor="auth-email" className="eyebrow block mb-2">

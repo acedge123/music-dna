@@ -2,8 +2,10 @@
 
 ## Current — guest reading saving
 
-- [ ] Add post-reading guest save prompt and shared verified in-place account upgrade, preserving source reading URL; remove unsafe signup handoff and premature Saved copy.
-- [ ] Document Flutter contract and test upgrade/owner checks. Existing-account transfer must remain unavailable until a separately approved atomic ownership migration exists.
+- [x] Add post-reading guest save prompt and shared verified in-place account upgrade, preserving source reading URL; remove unsafe signup handoff and premature Saved copy. Ordinary guest signup redirects to upgrade; sign-in warns it cannot transfer.
+- [x] Document Flutter contract in `docs/musicdna/flutter-guest-save-contract.md`; four identity/confirmation tests pass.
+- [ ] Hosted confirmation/upgrade/readback acceptance: external-managed Auth prevents authenticated end-to-end validation; redirect allowlist/email delivery need deployment verification.
+- [ ] Existing-account transfer: requires separately approved atomic ownership migration and shared endpoint; kept unavailable rather than pretending sign-in saves a guest reading.
 
 ## Current — consistent quip dwell timing
 
