@@ -40,7 +40,7 @@ export function DnaIdentity({
             <img
               src={archetypeArt(summary.archetype.name)!}
               alt={`Ink illustration for ${summary.archetype.name}`}
-              className="my-3 aspect-square w-full max-w-sm rounded-sm border border-border object-cover sepia-[.15]"
+              className="my-3 h-auto w-full max-w-sm rounded-sm border border-border"
             />
           ) : null}
           <h2 className="display text-4xl leading-tight md:text-5xl">{summary.archetype.name}</h2>
