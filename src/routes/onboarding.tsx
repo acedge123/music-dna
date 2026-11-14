@@ -474,7 +474,8 @@ function Onboarding() {
             {resultError || !synthesis || resultVersion == null ? (
               <div className="space-y-4">
                 <p role="alert" className="text-sm">
-                  {resultError || "Your choices are saved, but the full reading isn't ready yet. Try again."}
+                  {resultError ||
+                    "Your choices are saved, but the full reading isn't ready yet. Try again."}
                 </p>
                 <Button
                   type="button"
