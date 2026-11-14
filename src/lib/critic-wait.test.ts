@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { FILLER_REACTION } from "@/musicdna/engine/critic-fillers";
 import { quipBudget, waitQuips } from "./critic-wait";
 import { PERSON_QUIP_GROUPS, reactionQuipGroup, selectQuipGroups } from "./quip-sequences";
 
@@ -28,6 +29,21 @@ describe("checkpoint wait pacing", () => {
       "Somebody raised you right.",
       "Or you rebelled perfectly.",
     ]);
+  });
+  it("does not follow a confident prediction with a surprise claim", () => {
+    const used = new Set<string>([FILLER_REACTION.with[0]]);
+    const lines = waitQuips(5, "against", null, 4, used);
+    expect(lines.some((line) => FILLER_REACTION.against.includes(line as never))).toBe(false);
+  });
+  it("does not follow a surprise claim with a confident prediction", () => {
+    const used = new Set<string>([FILLER_REACTION.against[0]]);
+    const lines = waitQuips(4, "with", null, 4, used);
+    expect(lines.some((line) => FILLER_REACTION.with.includes(line as never))).toBe(false);
+  });
+  it("avoids a surprise punchline after an earlier confident prediction", () => {
+    const used = new Set<string>([FILLER_REACTION.with[0]]);
+    expect(waitQuips(3, "early", null, 3, used)).not.toContain("I'm as surprised as you are.");
+    expect(waitQuips(6, "early", null, Infinity, used)).not.toContain("I'm as surprised as you are.");
   });
   it("never splits a two-part group to fit a one-line budget", () => {
     expect(selectQuipGroups([PERSON_QUIP_GROUPS[0]], 1, new Set())).toEqual([]);
