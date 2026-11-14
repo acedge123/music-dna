@@ -17,7 +17,7 @@ beforeAll(async () => {
       ('pending','a','scale',80,'Pending description must not be used.',NULL,'pending_review'),
       ('stale','a','scale',70,'Old score must not be used here.',NULL,'approved'),
       ('other','a','texture',80,'Untested texture must not be used.',NULL,'approved');`);
-  await db.exec(readFileSync("supabase/migrations/20261114021500_musicdna_frozen_song_whys.sql", "utf8"));
+  await db.exec(readFileSync("docs/musicdna/song-whys-capture-review.sql", "utf8"));
   await db.exec("CREATE TRIGGER capture BEFORE INSERT OR UPDATE ON choices FOR EACH ROW EXECUTE FUNCTION public.capture_choice_evidence();");
 }, 30000);
 afterAll(async () => { await db?.close(); });

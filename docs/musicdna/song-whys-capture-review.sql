@@ -34,7 +34,7 @@ BEGIN
     AND w.axis IN (SELECT jsonb_array_elements_text(catalog->'tests'))
     AND w.score_at_write=(rejected->'values'->>w.axis)::numeric;
   NEW.evidence:=NEW.evidence || jsonb_build_object('song_whys',jsonb_build_object('version','song-whys-v1','chosen',why_chosen,'rejected',why_rejected));
- END;
+ END IF;
  RETURN NEW;
 END;
 $function$;

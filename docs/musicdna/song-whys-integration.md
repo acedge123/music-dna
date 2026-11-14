@@ -2,7 +2,7 @@
 
 ## Flag and rollout
 
-`MUSICDNA_SONG_WHYS_V1=1` enables capture and hypothetical preparation for future picks; unset or `0` is off. Apply `20261114021500_musicdna_frozen_song_whys.sql` only with owner approval before enabling. No historical backfill. Existing recordings without reviewed descriptions remain usable.
+`MUSICDNA_SONG_WHYS_V1=1` enables capture and hypothetical preparation for future picks; unset or `0` is off. Apply `docs/musicdna/song-whys-capture-review.sql` as a forward migration only with owner approval before enabling. No historical backfill. Existing recordings without reviewed descriptions remain usable.
 
 Lovable preview can have its own server environment flag, set through Lovable secrets/settings; this does not change Vercel. Production at musicdna.fm requires the same flag in Vercel and redeployment. An admin-managed shared flag system is possible, but is not added in this change. Existing safety/learning/release flags are untouched.
 
