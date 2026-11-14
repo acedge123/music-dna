@@ -829,8 +829,16 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       if (!publication.share_token || publication.result_version !== resultVersion)
         throw new Error("Publication version mismatch");
       const url = `${window.location.origin}/s/${publication.share_token}`;
-      if (navigator.share) await navigator.share({ title: "My MusicDNA read", url });
-      else {
+      let shared = false;
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: "My MusicDNA read", url });
+          shared = true;
+        } catch (e) {
+          if (e instanceof DOMException && e.name === "AbortError") throw e;
+        }
+      }
+      if (!shared) {
         await navigator.clipboard.writeText(url);
         toast.success("Reading link copied. Your conversation stays private.");
       }
