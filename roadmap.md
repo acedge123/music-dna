@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — flagged Song Whys
+
+- [ ] Freeze approved, score-matched audible descriptions into new votes behind default-off `MUSICDNA_SONG_WHYS_V1`; preserve prepared/live fingerprints.
+- [ ] Supply frozen descriptions to existing Critic writer/reviewer and deterministic final receipts; keep scores, claims, routing and quips unchanged.
+- [ ] Add compatibility tests and Flutter/flag documentation; database migration and deployed acceptance require separate approval.
+
 ## Current — guest reading saving
 
 - [x] Add post-reading guest save prompt and shared verified in-place account upgrade, preserving source reading URL; remove unsafe signup handoff and premature Saved copy. Ordinary guest signup redirects to upgrade; sign-in warns it cannot transfer.
