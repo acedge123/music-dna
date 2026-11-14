@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — consistent quip dwell timing
+
+- [ ] Use displayed-line timestamps and reject stale/doubled callbacks; each next quip gets 2.5 seconds, with no catch-up bursts.
+- [ ] Run clock regressions and browser timing checks through hunch/final updates; ready results still replace waits immediately.
+
 ## Current — admin quip library
 
 - [x] Add read-only searchable quips with ordered setup/punchline groups, tone, conditions and compatibility; no copy edits or interview changes.
