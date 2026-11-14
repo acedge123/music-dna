@@ -3,6 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { useRef, useState } from "react";
 import { startRefine } from "@/lib/explore.functions";
 import { useAuth } from "@/hooks/use-auth";
+import { archetypeArt } from "./archetype-art";
 import {
   relevantComparisonsLabel,
   type DnaConfidence,
@@ -34,7 +35,16 @@ export function DnaIdentity({
             : "Emerging signature"}
       </p>
       {summary.archetype.status !== "emerging" ? (
-        <h2 className="display text-4xl leading-tight md:text-5xl">{summary.archetype.name}</h2>
+        <>
+          {archetypeArt(summary.archetype.name) ? (
+            <img
+              src={archetypeArt(summary.archetype.name)!}
+              alt={`Ink illustration for ${summary.archetype.name}`}
+              className="my-3 aspect-square w-full max-w-sm rounded-sm border border-border object-cover sepia-[.15]"
+            />
+          ) : null}
+          <h2 className="display text-4xl leading-tight md:text-5xl">{summary.archetype.name}</h2>
+        </>
       ) : signature ? (
         <>
           <h2 className="display text-4xl leading-tight md:text-5xl">{signature.name}</h2>
