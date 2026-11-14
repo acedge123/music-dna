@@ -7,6 +7,7 @@ import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import { CriticQualityPanel } from "@/components/musicdna/critic-quality-panel";
 import { SongFactsPanel } from "@/components/musicdna/song-facts-panel";
 import { SongWhysPanel } from "@/components/musicdna/song-whys-panel";
+import { CriticExemplarsPanel } from "@/components/musicdna/critic-exemplars-panel";
 import { QuipLibraryPanel } from "@/components/musicdna/quip-library-panel";
 import { ArchetypeProfilesPanel } from "@/components/musicdna/archetype-profiles-panel";
 import { DecadeCoveragePanel } from "@/components/musicdna/decade-coverage-panel";
@@ -85,6 +86,7 @@ const ENTITIES: { key: Tab; label: string }[] = [
   { key: "shadow", label: "Shadow Router" },
   { key: "critic_quality", label: "Critic QA" },
   { key: "quips", label: "Quips" },
+  { key: "hall_of_fame", label: "Hall of Fame" },
 ];
 
 type Row = Record<string, unknown> & { id: string };
@@ -217,7 +219,9 @@ function AdminPage() {
         ))}
       </nav>
 
-      {tab === "quips" ? (
+      {tab === "hall_of_fame" ? (
+        <CriticExemplarsPanel />
+      ) : tab === "quips" ? (
         <QuipLibraryPanel />
       ) : tab === "song_whys" ? (
         <SongWhysPanel />
