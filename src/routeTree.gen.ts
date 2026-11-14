@@ -17,6 +17,7 @@ import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as ReferenceRouteImport } from './routes/reference'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as SaveReadingRouteImport } from './routes/save-reading'
 import { Route as TermsRouteImport } from './routes/terms'
 import { Route as Authenticated1980RouteImport } from './routes/_authenticated/1980'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
@@ -87,6 +88,11 @@ const ReferenceRoute = ReferenceRouteImport.update({
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SaveReadingRoute = SaveReadingRouteImport.update({
+  id: '/save-reading',
+  path: '/save-reading',
   getParentRoute: () => rootRouteImport,
 } as any)
 const TermsRoute = TermsRouteImport.update({
@@ -259,6 +265,7 @@ export interface FileRoutesByFullPath {
   '/privacy': typeof PrivacyRoute
   '/reference': typeof ReferenceRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/save-reading': typeof SaveReadingRoute
   '/terms': typeof TermsRoute
   '/1980': typeof Authenticated1980Route
   '/admin': typeof AuthenticatedAdminRoute
@@ -300,6 +307,7 @@ export interface FileRoutesByTo {
   '/privacy': typeof PrivacyRoute
   '/reference': typeof ReferenceRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/save-reading': typeof SaveReadingRoute
   '/terms': typeof TermsRoute
   '/1980': typeof Authenticated1980Route
   '/admin': typeof AuthenticatedAdminRoute
@@ -343,6 +351,7 @@ export interface FileRoutesById {
   '/privacy': typeof PrivacyRoute
   '/reference': typeof ReferenceRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/save-reading': typeof SaveReadingRoute
   '/terms': typeof TermsRoute
   '/_authenticated/1980': typeof Authenticated1980Route
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
@@ -386,6 +395,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reference'
     | '/reset-password'
+    | '/save-reading'
     | '/terms'
     | '/1980'
     | '/admin'
@@ -427,6 +437,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reference'
     | '/reset-password'
+    | '/save-reading'
     | '/terms'
     | '/1980'
     | '/admin'
@@ -469,6 +480,7 @@ export interface FileRouteTypes {
     | '/privacy'
     | '/reference'
     | '/reset-password'
+    | '/save-reading'
     | '/terms'
     | '/_authenticated/1980'
     | '/_authenticated/admin'
@@ -512,6 +524,7 @@ export interface RootRouteChildren {
   PrivacyRoute: typeof PrivacyRoute
   ReferenceRoute: typeof ReferenceRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  SaveReadingRoute: typeof SaveReadingRoute
   TermsRoute: typeof TermsRoute
   SSessionIdRoute: typeof SSessionIdRoute
   ApiPublicVersionRoute: typeof ApiPublicVersionRoute
@@ -582,6 +595,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/save-reading': {
+      id: '/save-reading'
+      path: '/save-reading'
+      fullPath: '/save-reading'
+      preLoaderRoute: typeof SaveReadingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/terms': {
@@ -889,6 +909,7 @@ const rootRouteChildren: RootRouteChildren = {
   PrivacyRoute: PrivacyRoute,
   ReferenceRoute: ReferenceRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  SaveReadingRoute: SaveReadingRoute,
   TermsRoute: TermsRoute,
   SSessionIdRoute: SSessionIdRoute,
   ApiPublicVersionRoute: ApiPublicVersionRoute,

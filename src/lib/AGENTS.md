@@ -1,1 +1,2 @@
 - TGA Analytics (`tga-analytics*.ts`): web sends page views + allowlisted interview milestones (no song titles, free text or IDs) via server fn `sendTgaAnalytics`; the tenant key stays server-side in `ANALYTICS_API_KEY`.
+- Guest upgrades keep the Supabase identity, require confirmed email before password setup, and verify owner-scoped reading readback before Saved; never use ordinary signup or sign-in as a guest transfer.

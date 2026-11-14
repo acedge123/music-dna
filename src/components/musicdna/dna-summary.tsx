@@ -168,21 +168,25 @@ export function DnaInvitation({ summary, sessionId }: { summary: DnaSummary; ses
         {summary.single_lane
           ? `But I've only heard you through ${laneName(summary.single_lane)}. `
           : ""}
-        {hook
-          ? `${hook.label[0].toUpperCase()}${hook.label.slice(1)}? Still a coin flip. `
-          : ""}
-        Six more picks will test what's still open, across new genres — or hear this taste in another era.
+        {hook ? `${hook.label[0].toUpperCase()}${hook.label.slice(1)}? Still a coin flip. ` : ""}
+        Six more picks will test what's still open, across new genres — or hear this taste in
+        another era.
       </p>
       {askSave && (
-        <div role="dialog" aria-label="Save your reading" className="space-y-3 rounded-sm border hairline-strong p-4">
+        <div
+          role="dialog"
+          aria-label="Save your reading"
+          className="space-y-3 rounded-sm border hairline-strong p-4"
+        >
           <p className="font-serif text-lg leading-snug">Save this reading first?</p>
           <p className="text-sm leading-relaxed text-muted-foreground">
-            Six more picks build on this reading. Readings are kept with an account — as a guest,
-            they live only in this browser.
+            Six more picks build on this reading. Your guest reading is stored, but access depends
+            on this browser's guest session.
           </p>
           <div className="flex flex-col gap-2 sm:flex-row">
             <Link
-              to="/auth"
+              to="/save-reading"
+              search={{ session: sessionId }}
               className="inline-flex min-h-11 items-center rounded-sm bg-primary px-5 py-3 text-sm font-medium text-primary-foreground"
             >
               Create an account
