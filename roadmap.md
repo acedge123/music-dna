@@ -2,8 +2,8 @@
 
 ## Current — consistent quip dwell timing
 
-- [ ] Use displayed-line timestamps and reject stale/doubled callbacks; each next quip gets 2.5 seconds, with no catch-up bursts.
-- [ ] Run clock regressions and browser timing checks through hunch/final updates; ready results still replace waits immediately.
+- [x] Use displayed-line timestamps and reject stale/doubled callbacks; each next quip gets 2.5 seconds, with no catch-up bursts.
+- [x] 14 regressions and lint pass; isolated real browser rotation across hunch/final updates measured 2498–2501ms between lines, build OK. Ready results still replace waits immediately; production split-second behavior not independently reproduced.
 
 ## Current — admin quip library
 
