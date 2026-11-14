@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — admin quip library
+
+- [ ] Add read-only searchable quips with ordered setup/punchline groups, tone, conditions and compatibility; no copy edits or interview changes.
+- [ ] Check admin access and layout; retain existing permissions.
+
 ## Current — separate checkpoint interview stages
 
 - [x] Keep flag-on pairing, quip wait, checkpoint commentary and final/retry screens mutually exclusive; preserve flag-off presentation. Unsaved/empty final output shows a retry, not a false completed report.
