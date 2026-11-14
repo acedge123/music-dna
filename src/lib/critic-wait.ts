@@ -1,5 +1,12 @@
 import { type Hunch } from "@/musicdna/engine/critic-fillers";
-import { PERSON_QUIP_GROUPS, NEUTRAL_QUIP_GROUPS, eraQuipGroups, reactionQuipGroup, selectQuipGroups, type QuipGroup } from "./quip-sequences";
+import {
+  PERSON_QUIP_GROUPS,
+  NEUTRAL_QUIP_GROUPS,
+  eraQuipGroups,
+  reactionQuipGroup,
+  selectQuipGroups,
+  type QuipGroup,
+} from "./quip-sequences";
 
 export const QUIP_INTERVAL_MS = 2500;
 

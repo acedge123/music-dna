@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
 import { interviewStage } from "./interview-stage";
 
-const playing = { phase: "playing", busy: false, pairing: true, pendingPick: false, pendingSkip: false, checkpoint: false, finalWriting: false };
+const playing = {
+  phase: "playing",
+  busy: false,
+  pairing: true,
+  pendingPick: false,
+  pendingSkip: false,
+  checkpoint: false,
+  finalWriting: false,
+};
 describe("exclusive checkpoint stages", () => {
   it("holds checkpoint 2 or 4 separately from a fetched next pairing", () => {
     expect(interviewStage({ ...playing, checkpoint: true })).toBe("checkpoint");

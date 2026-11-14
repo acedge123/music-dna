@@ -226,7 +226,15 @@ function Onboarding() {
 
   const waitingOnCritic = phase === "playing" && busy && pendingSongId !== null;
   const criticStage = waitingOnCritic;
-  const stage = interviewStage({ phase, busy, pairing: !!pairing, pendingPick: pendingSongId !== null, pendingSkip: pendingSkip !== null, checkpoint: !!checkpoint, finalWriting });
+  const stage = interviewStage({
+    phase,
+    busy,
+    pairing: !!pairing,
+    pendingPick: pendingSongId !== null,
+    pendingSkip: pendingSkip !== null,
+    checkpoint: !!checkpoint,
+    finalWriting,
+  });
   const stageTitle = waitingOnCritic
     ? ([pairing?.song_a, pairing?.song_b].find((song) => song?.id === pendingSongId)?.title ?? "")
     : "";
