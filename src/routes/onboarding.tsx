@@ -18,6 +18,7 @@ import { useEffect, useRef } from "react";
 import { matchupDecade, skipLine } from "@/musicdna/engine/critic-fillers";
 import { CriticStage } from "@/components/musicdna/critic-stage";
 import { interviewStage } from "@/lib/interview-stage";
+import { GuestReadingSave } from "@/components/musicdna/guest-reading-save";
 
 export const Route = createFileRoute("/onboarding")({
   ssr: false,
@@ -488,6 +489,7 @@ function Onboarding() {
               </div>
             ) : (
               <>
+                {sessionId && <GuestReadingSave key={sessionId} sessionId={sessionId} />}
                 {dnaSummary && <DnaIdentity summary={dnaSummary} signature={signature} />}
                 <ReadingResult
                   afterReveal={dnaSummary ? <DnaEvidence summary={dnaSummary} /> : undefined}

@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — guest reading saving
+
+- [ ] Add post-reading guest save prompt and shared verified in-place account upgrade, preserving source reading URL; remove unsafe signup handoff and premature Saved copy.
+- [ ] Document Flutter contract and test upgrade/owner checks. Existing-account transfer must remain unavailable until a separately approved atomic ownership migration exists.
+
 ## Current — consistent quip dwell timing
 
 - [x] Use displayed-line timestamps and reject stale/doubled callbacks; each next quip gets 2.5 seconds, with no catch-up bursts.
