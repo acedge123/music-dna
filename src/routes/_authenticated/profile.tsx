@@ -1,3 +1,4 @@
+import { ArchetypeArt } from "@/components/musicdna/archetype-art";
 import { shareUrl } from "@/lib/share-url";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
@@ -240,6 +241,7 @@ function ProfilePage() {
               <p className="eyebrow mb-6">Your latest reading</p>
               {latest.archetype && (
                 <>
+                  <ArchetypeArt name={latest.archetype.name} className="mb-4" />
                   <h1 className="display text-5xl md:text-6xl mb-3">{latest.archetype.name}</h1>
                   {latest.archetype.tagline && (
                     <p className="text-lg text-muted-foreground italic">
