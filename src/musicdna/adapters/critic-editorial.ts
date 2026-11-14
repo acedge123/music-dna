@@ -198,12 +198,19 @@ export function criticFacts(ledger: Ledger, labels: AxisLabels) {
       rejected: e.rejected,
       rejected_artist: e.rejected_artist,
       post_choice_saying: e.pairing_saying ?? null,
-      ...(ledger.entries.some((other) => evidenceId(other) === evidenceId(e) && other.song_whys) ? {
-        audible_details: ledger.entries
-          .filter((other) => evidenceId(other) === evidenceId(e) && Math.abs(other.delta) >= 20 && other.song_whys)
-          .slice(0, 2)
-          .map((other) => ({ axis: other.axis, ...other.song_whys })),
-      } : {}),
+      ...(ledger.entries.some((other) => evidenceId(other) === evidenceId(e) && other.song_whys)
+        ? {
+            audible_details: ledger.entries
+              .filter(
+                (other) =>
+                  evidenceId(other) === evidenceId(e) &&
+                  Math.abs(other.delta) >= 20 &&
+                  other.song_whys,
+              )
+              .slice(0, 2)
+              .map((other) => ({ axis: other.axis, ...other.song_whys })),
+          }
+        : {}),
       tested_tradeoffs: ledger.entries
         .filter((other) => evidenceId(other) === evidenceId(e) && Math.abs(other.delta) >= 20)
         .map((other) => ({

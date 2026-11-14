@@ -105,14 +105,18 @@ export function DnaEvidence({ summary }: { summary: DnaSummary }) {
                   {r.kind === "contradiction" ? "The pick that gives you character. " : ""}
                   {r.note}
                 </p>
-                {r.song_whys && (["chosen", "rejected"] as const).map((side) =>
-                  r.song_whys?.[side].map((why) => (
-                    <p key={`${side}-${why.id}`} className="mt-2 text-sm leading-relaxed text-muted-foreground">
-                      <span className="font-medium text-foreground">{r[side]}: </span>
-                      {why.audible_evidence}
-                    </p>
-                  )),
-                )}
+                {r.song_whys &&
+                  (["chosen", "rejected"] as const).map((side) =>
+                    r.song_whys?.[side].map((why) => (
+                      <p
+                        key={`${side}-${why.id}`}
+                        className="mt-2 text-sm leading-relaxed text-muted-foreground"
+                      >
+                        <span className="font-medium text-foreground">{r[side]}: </span>
+                        {why.audible_evidence}
+                      </p>
+                    )),
+                  )}
               </li>
             ))}
           </ul>

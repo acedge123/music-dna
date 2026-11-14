@@ -118,10 +118,23 @@ export function buildLedger(choices: LedgerChoice[], allDims: readonly string[])
         choice_id: c.choice_id ?? null,
         pairing_revision: c.pairing_revision ?? null,
         pairing_saying: c.pairing_saying ?? null,
-        ...(c.song_whys ? { song_whys: {
-          chosen: c.song_whys.chosen.filter((w) => w.song_id === c.chosen?.id && w.axis === axis && w.score_at_write === a).slice(0, 1),
-          rejected: c.song_whys.rejected.filter((w) => w.song_id === c.rejected?.id && w.axis === axis && w.score_at_write === b).slice(0, 1),
-        } } : {}),
+        ...(c.song_whys
+          ? {
+              song_whys: {
+                chosen: c.song_whys.chosen
+                  .filter(
+                    (w) => w.song_id === c.chosen?.id && w.axis === axis && w.score_at_write === a,
+                  )
+                  .slice(0, 1),
+                rejected: c.song_whys.rejected
+                  .filter(
+                    (w) =>
+                      w.song_id === c.rejected?.id && w.axis === axis && w.score_at_write === b,
+                  )
+                  .slice(0, 1),
+              },
+            }
+          : {}),
         catalog_revision: c.catalog_revision ?? null,
         index,
         pairing_id: c.pairing_id ?? null,

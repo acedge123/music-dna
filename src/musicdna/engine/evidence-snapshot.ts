@@ -40,11 +40,14 @@ export const EvidenceSnapshot = z.object({
     })
     .optional(),
   contrasts: z.record(z.number().finite()),
-  song_whys: z.object({
-    version: z.literal("song-whys-v1"),
-    chosen: z.array(SongWhyColor),
-    rejected: z.array(SongWhyColor),
-  }).optional().catch(undefined),
+  song_whys: z
+    .object({
+      version: z.literal("song-whys-v1"),
+      chosen: z.array(SongWhyColor),
+      rejected: z.array(SongWhyColor),
+    })
+    .optional()
+    .catch(undefined),
 });
 export type ChoiceEvidenceSnapshot = z.infer<typeof EvidenceSnapshot>;
 export type EvidenceRow = {
@@ -93,10 +96,24 @@ export function snapshotChoice(row: EvidenceRow): LedgerChoice {
         ? (s.editorial?.user_facing_tradeoff ?? null)
         : null,
     tests: s.catalog.tests,
-    ...(s.song_whys ? { song_whys: {
-      chosen: s.song_whys.chosen.filter((w) => w.song_id === s.catalog.chosen.id && s.catalog.tests.includes(w.axis) && s.catalog.chosen.values[w.axis] === w.score_at_write),
-      rejected: s.song_whys.rejected.filter((w) => w.song_id === s.catalog.rejected.id && s.catalog.tests.includes(w.axis) && s.catalog.rejected.values[w.axis] === w.score_at_write),
-    } } : {}),
+    ...(s.song_whys
+      ? {
+          song_whys: {
+            chosen: s.song_whys.chosen.filter(
+              (w) =>
+                w.song_id === s.catalog.chosen.id &&
+                s.catalog.tests.includes(w.axis) &&
+                s.catalog.chosen.values[w.axis] === w.score_at_write,
+            ),
+            rejected: s.song_whys.rejected.filter(
+              (w) =>
+                w.song_id === s.catalog.rejected.id &&
+                s.catalog.tests.includes(w.axis) &&
+                s.catalog.rejected.values[w.axis] === w.score_at_write,
+            ),
+          },
+        }
+      : {}),
     diagnostic_weight: s.catalog.diagnostic_weight,
     chosen: song(s.catalog.chosen),
     rejected: song(s.catalog.rejected),

@@ -140,7 +140,13 @@ export function buildDnaSummary(
       const l = DIM_LABEL[u.axis] ?? { hi: u.axis, lo: u.axis };
       for (const e of [...u.contradicting_examples, ...u.supporting_examples]) {
         const side = e.delta > 0 ? l.hi : l.lo;
-        if (push("contradiction", e, `The complication: ${side} won here, and ${l.hi} vs ${l.lo} is still split.`))
+        if (
+          push(
+            "contradiction",
+            e,
+            `The complication: ${side} won here, and ${l.hi} vs ${l.lo} is still split.`,
+          )
+        )
           break outer2;
       }
     }
