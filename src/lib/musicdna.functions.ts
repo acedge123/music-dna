@@ -1,3 +1,4 @@
+import { exemplarMessages } from "@/musicdna/adapters/critic-exemplars";
 import {
   assignInterviewFlow,
   savedFlowFromProps,
@@ -3736,7 +3737,7 @@ async function computeFinalSynthesis(
       data.sessionId,
       ledger,
       DIM_LABEL,
-      [{ role: "system", content: SYNTH_VOICE }],
+      [{ role: "system", content: SYNTH_VOICE }, ...(await exemplarMessages(data.sessionId))],
       { stage: "reveal" },
     ));
   const synthesis = narrated.text;
@@ -4849,6 +4850,7 @@ export async function prepareReadsImpl(
     vector: {},
     dims: [],
   }).done;
+  const exemplarMsgs = finalPick ? await exemplarMessages(data.sessionId) : [];
   const revealDrafts = finalPick
     ? branches.flatMap(([chosen, rejected]) =>
         ([[synthDraftKey, SYNTH_VOICE]] as const).map(async ([slot, voice]) => {
@@ -4881,7 +4883,7 @@ export async function prepareReadsImpl(
                 data.sessionId,
                 ledger,
                 DIM_LABEL,
-                [{ role: "system", content: voice }],
+                [{ role: "system", content: voice }, ...exemplarMsgs],
                 { stage: "reveal" },
               ),
               new Promise<never>((_, reject) =>

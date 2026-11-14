@@ -12,3 +12,4 @@
 - Post-choice sayings come only from the optional editorial block frozen by the vote trigger, alongside ledger-tested directions; never reread mutable sayings for historical choices or treat editorial metaphors as claim evidence.
 - Critic quality stays local and separate from inference/feedback: shared attempts retain nullable measurements, admin-only rubric scores target exact output, and client-reported exposure binds to a trusted offer ID; none automatically promotes routing or learning.
 - Song fact cards (`song_facts`) are admin-reviewed, source-cited catalog color; only approved rows may reach the critic, they never count as listener evidence, and live use must be frozen into the vote snapshot behind a default-off flag.
+- Critic exemplars (`critic_exemplars`, admin-only) are style references for the final-reading writer behind default-off `MUSICDNA_CRITIC_EXEMPLARS_V1`; never evidence or saved content. Share cards render only from published frozen content.
