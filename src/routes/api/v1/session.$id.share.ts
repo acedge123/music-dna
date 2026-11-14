@@ -1,3 +1,4 @@
+import { shareUrl } from "@/lib/share-url";
 // POST /api/v1/session/:id/share   { "publish": true | false }
 // Explicit publish / revoke for a completed reading (D03). Revoke rotates the
 // token, so previously copied links stop working.
@@ -38,11 +39,10 @@ export const Route = createFileRoute("/api/v1/session/$id/share")({
             );
             // Canonical URL + the result version being published, so mobile
             // clients never have to guess either (SHR01, TGA-311).
-            const origin = new URL(request.url).origin;
             return jsonResponse({
               contract: 1,
               ...out,
-              share_url: out.share_token ? `${origin}/s/${out.share_token}` : null,
+              share_url: out.share_token ? shareUrl(out.share_token) : null,
             });
           } catch (e) {
             if (e instanceof PersistenceError) return errorResponse(e.code, e.message, e.status);

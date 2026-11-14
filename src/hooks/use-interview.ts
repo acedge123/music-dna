@@ -1,3 +1,4 @@
+import { shareUrl } from "@/lib/share-url";
 import { forwardInterviewEvent } from "@/lib/tga-analytics";
 import type { DnaSummary } from "@/musicdna/engine/dna-summary";
 import { useEffect, useRef, useState } from "react";
@@ -828,7 +829,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       const publication = await shareFn({ data: { sessionId, publish: true, resultVersion } });
       if (!publication.share_token || publication.result_version !== resultVersion)
         throw new Error("Publication version mismatch");
-      const url = `${window.location.origin}/s/${publication.share_token}`;
+      const url = shareUrl(publication.share_token);
       let shared = false;
       if (navigator.share) {
         try {
