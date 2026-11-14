@@ -190,7 +190,8 @@ function AdminPage() {
           tab !== "song_facts" &&
           tab !== "decade_coverage" &&
           tab !== "archetype_profiles" &&
-          tab !== "song_whys" && tab !== "quips" && (
+          tab !== "song_whys" &&
+          tab !== "quips" && (
             <button
               onClick={() => setEditing({ row: null })}
               className="rounded-sm bg-primary text-primary-foreground px-4 py-2 text-sm font-medium hover:opacity-90"
