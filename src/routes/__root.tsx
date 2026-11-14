@@ -12,6 +12,7 @@ import type { Session } from "@supabase/supabase-js";
 import { AuthContext } from "@/hooks/use-auth";
 import { trackPageView } from "@/lib/tga-analytics";
 
+import { Toaster } from "@/components/ui/sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 
@@ -190,6 +191,7 @@ function RootComponent() {
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <AuthContext.Provider value={{ session, user: session?.user ?? null, loading }}>
         <Outlet />
+        <Toaster />
       </AuthContext.Provider>
     </QueryClientProvider>
   );
