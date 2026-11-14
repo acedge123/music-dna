@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — separate checkpoint interview stages
+
+- [ ] Keep flag-on pairing, quip wait, checkpoint commentary and final/retry screens mutually exclusive; preserve flag-off presentation.
+- [ ] Add ordered quip relationship metadata and compatible group selection without changing approved copy.
+- [ ] Run focused regressions and verify checkpoint sequencing, final wait/retry and mobile layout; production model failure remains separate from presentation.
+
 ## Current — checkpoint waiting-screen pacing
 
 - [x] Stabilize the first quip through save/read transitions; checkpoint flow uses one quip after 1/3/5, up to three after 2 and four after 4.
