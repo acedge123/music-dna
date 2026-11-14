@@ -2,9 +2,10 @@
 
 ## Current — flagged Song Whys
 
-- [ ] Freeze approved, score-matched audible descriptions into new votes behind default-off `MUSICDNA_SONG_WHYS_V1`; preserve prepared/live fingerprints.
-- [ ] Supply frozen descriptions to existing Critic writer/reviewer and deterministic final receipts; keep scores, claims, routing and quips unchanged.
-- [ ] Add compatibility tests and Flutter/flag documentation; database migration and deployed acceptance require separate approval.
+- [x] Implement optional frozen approved, score-matched audible descriptions behind default-off `MUSICDNA_SONG_WHYS_V1`; prepared/live fingerprints include annotations. Review SQL remains outside applied migration history.
+- [x] Supply frozen descriptions to existing Critic writer/reviewer and deterministic final receipts; scores, claims, routing and quips unchanged.
+- [x] 60 focused tests pass, including isolated PostgreSQL capture/immutability; touched-module lint and preview build OK; isolated desktop/390px receipts render without overflow. Flutter/flag contract: `docs/musicdna/song-whys-integration.md`.
+- [ ] Apply reviewed capture SQL after explicit owner approval, then enable flag and verify a real completed reading. Production migration/deployment and external-managed authenticated acceptance are not available in this turn; flag stays off.
 
 ## Current — guest reading saving
 
