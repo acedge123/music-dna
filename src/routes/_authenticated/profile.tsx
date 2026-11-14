@@ -1,3 +1,4 @@
+import { shareUrl } from "@/lib/share-url";
 import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { queryOptions, useSuspenseQuery, useQuery } from "@tanstack/react-query";
@@ -194,7 +195,7 @@ function ProfilePage() {
       return;
     }
     if (!slug) return;
-    const url = `${window.location.origin}/s/${slug}`;
+    const url = shareUrl(slug);
     const title = `MusicDNA: ${latest.archetype?.name ?? "A reading"}`;
     const text = latest.archetype?.tagline ? `${title} — ${latest.archetype.tagline}` : title;
     logEvent({
