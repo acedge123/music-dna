@@ -2,12 +2,13 @@
 
 ## Current — opening interview parity
 
-- [ ] Prepare and obtain approval for a narrow opener-profile lookup repair; reproduce the failed relationship lookup and add shared web/REST regression checks before implementation.
-- [ ] Verify anonymous web opener persistence/readback against registered mobile behavior; include guest coverage in the repair and do not assume anonymous identities cannot save profiles.
-- [ ] After approval, repair the lookup and verify era preference, fallback, ownership, skips and resume without changing selection policy, catalog or saved readings.
+- [x] Approved narrow repair; reproduced the unsupported sessions-to-profiles lookup as PGRST200 using a real anonymous caller, while its direct profile read succeeds.
+- [x] Read Discover opener analysis directly by visible session owner; shared three-song save requires returned owner/song data before success. Completed and Explore/refine selection bypass the opener lookup; policy/catalog/flags/history unchanged.
+- [x] Real anonymous web and REST receive older Pop matchups from a 12-pair eligible 1973–1993 pool; saved openers read back, reload restores matchup, skip produces another older matchup with zero answered/one skipped and no page errors.
+- [ ] Registered-owner and production/mobile acceptance: external-managed registered test access is unavailable; Vercel must deploy this repair and Codex/owner must verify mobile. Registered/guest owner wiring is covered by focused tests.
 - [x] Trace shared web/REST creation and selection: era bias falls back when fewer than three eligible near-era matchups exist; profile-based opener persistence is not session-frozen. Reproduced these exact openers on web with a 2002/2001 first pairing; exact fallback cause remains unproven.
 - [x] Add visible Preparing your interview / Noted stage during third-song classification and first-offer loading; real guest opener-to-pairing browser check, eight regressions and page lint pass. No selection, model, flags or Flutter changes.
-- [ ] Cross-client diagnosis: Codex must inspect Flutter request ordering, API destination, saved flow and opener response; compare with web before changing era-selection policy.
+- [ ] Cross-client deployment confirmation: shared lookup failure is reproduced, but Flutter's deployed API destination/revision and registered opener readback still need Codex verification; no era-policy change authorized.
 
 ## Current — staged legacy Archetype retirement
 

@@ -77,8 +77,11 @@ describe("shared opener profile", () => {
         ...chain,
         single: vi.fn().mockResolvedValue(result),
         in: vi.fn(() => {
-          throw new Error("catalog-year-query-reached");
+          if (table === "songs") throw new Error("catalog-year-query-reached");
+          return chain;
         }),
+        order: vi.fn().mockReturnValue(chain),
+        limit: vi.fn().mockResolvedValue({ data: [], error: null }),
       };
       // Return-this mocks need their original chain extended in place.
       Object.assign(chain, extended);
@@ -88,10 +91,21 @@ describe("shared opener profile", () => {
     await expect(nextPairingImpl({ from } as never, { sessionId: "session" })).rejects.toThrow(
       "catalog-year-query-reached",
     );
-    expect(queries.map((q) => q.table)).toEqual(["choices", "sessions", "profiles", "songs"]);
-    expect(queries[2].chain.eq).toHaveBeenCalledWith("user_id", "visible-owner");
-    expect(queries[2].chain.select).toHaveBeenCalledWith("opening_analysis_json");
-    expect(queries[3].chain.select).toHaveBeenCalledWith("id,year");
+    expect(queries.map((q) => q.table)).toEqual(["choices", "sessions", "event_log", "profiles", "songs"]);
+    expect(queries[3].chain.eq).toHaveBeenCalledWith("user_id", "visible-owner");
+    expect(queries[3].chain.select).toHaveBeenCalledWith("opening_analysis_json");
+    expect(queries[4].chain.select).toHaveBeenCalledWith("id,year");
+  });
+  it("completed interviews do not depend on current opener profiles", async () => {
+    const { chain } = clientWith({ data: null, error: null });
+    const from = vi.fn((table: string) => {
+      if (table === "profiles") throw new Error("unexpected profile read");
+      return Object.assign(chain, {
+        single: vi.fn().mockResolvedValue({ data: { user_id: "owner", completed_at: "2026-11-15", vector: {} }, error: null }),
+      });
+    });
+    expect(await nextPairingImpl({ from } as never, { sessionId: "completed" })).toMatchObject({ done: true, pairing: null });
+    expect(from.mock.calls.map(([table]) => table)).toEqual(["choices", "sessions"]);
   });
 });
 
