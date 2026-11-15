@@ -7,6 +7,7 @@ import { sayingProblem } from "@/musicdna/engine/pairing-eligibility";
 import { CriticQualityPanel } from "@/components/musicdna/critic-quality-panel";
 import { SongFactsPanel } from "@/components/musicdna/song-facts-panel";
 import { SongWhysPanel } from "@/components/musicdna/song-whys-panel";
+import { SongIntakePanel } from "@/components/musicdna/song-intake-panel";
 import { CriticExemplarsPanel } from "@/components/musicdna/critic-exemplars-panel";
 import { QuipLibraryPanel } from "@/components/musicdna/quip-library-panel";
 import { ArchetypeProfilesPanel } from "@/components/musicdna/archetype-profiles-panel";
@@ -71,9 +72,11 @@ type Tab =
   | "decade_coverage"
   | "archetype_profiles"
   | "song_whys"
+  | "song_intake"
   | "quips";
 const ENTITIES: { key: Tab; label: string }[] = [
   { key: "songs", label: "Songs" },
+  { key: "song_intake", label: "Song Intake" },
   { key: "song_facts", label: "Facts" },
   { key: "song_whys", label: "Song Whys" },
   { key: "pairings", label: "Pairings" },
@@ -194,6 +197,7 @@ function AdminPage() {
           tab !== "decade_coverage" &&
           tab !== "archetype_profiles" &&
           tab !== "song_whys" &&
+          tab !== "song_intake" &&
           tab !== "quips" && (
             <button
               onClick={() => setEditing({ row: null })}
@@ -220,7 +224,9 @@ function AdminPage() {
         ))}
       </nav>
 
-      {tab === "hall_of_fame" ? (
+      {tab === "song_intake" ? (
+        <SongIntakePanel />
+      ) : tab === "hall_of_fame" ? (
         <CriticExemplarsPanel />
       ) : tab === "quips" ? (
         <QuipLibraryPanel />
