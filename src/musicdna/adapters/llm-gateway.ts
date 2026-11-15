@@ -203,17 +203,34 @@ export async function callLovableAi(
 }
 
 /** Catalog intake is a separate, admin-requested call; Critic model behavior stays unchanged. */
-export async function scoreIntakeRecording(prompt: string, schema: Record<string, unknown>) {
-  const { generateResponse } = await import("@lovable.dev/ai-gateway");
-  const result = await generateResponse({
-    model: "openai/gpt-6-astra",
+export async function scoreIntakeRecording(
+  prompt: string,
+  schema: Record<string, unknown>,
+  opts: { fetchImpl?: typeof fetch } = {},
+) {
+  const fields = {
     input: prompt,
-    reasoning: { effort: "low" },
-    text: { format: { type: "json_schema", name: "song_intake", strict: true, schema } },
-  });
+    reasoning: { effort: "low" as const },
+    text: { format: { type: "json_schema" as const, name: "song_intake", strict: true, schema } },
+  };
+  const openaiKey = process.env.OPENAI_API_KEY;
+  let result: import("@lovable.dev/ai-gateway").ResponseFor<"responses", "openai/gpt-6-astra">;
+  if (openaiKey) {
+    const response = await (opts.fetchImpl ?? fetch)("https://api.openai.com/v1/responses", {
+      method: "POST",
+      headers: { Authorization: `Bearer ${openaiKey}`, "Content-Type": "application/json" },
+      body: JSON.stringify({ model: "gpt-6-astra", store: false, ...fields }),
+    });
+    if (!response.ok) throw new Error(`OpenAI song scoring failed (${response.status}).`);
+    result = await response.json();
+  } else {
+    // Preview retains its managed connection; production never needs a second AI key.
+    const { generateResponse } = await import("@lovable.dev/ai-gateway");
+    result = await generateResponse({ model: "openai/gpt-6-astra", ...fields });
+  }
   if (result.status !== "completed")
     throw new Error("Song scoring did not complete. Review before retrying.");
-  const text = result.output
+  const text = (result.output ?? [])
     .flatMap((item) =>
       item.type === "message"
         ? item.content.flatMap((part) => (part.type === "output_text" ? [part.text] : []))

@@ -1,6 +1,6 @@
 # Adapter rules
 
-- Listener intake captures three-song profile writes transactionally; admin-requested AI proposals require exact-draft atomic promotion into inactive songs, preserving retries, deletion, existing scores and routing.
+- Listener intake captures three-song profile writes transactionally; admin AI scoring prefers the existing direct OpenAI key with managed preview fallback and requires exact-draft atomic promotion into inactive songs, preserving retries, deletion, existing scores and routing.
 
 - Halftime pushback goes through `recordHalftimePushbackImpl` (web + REST `/pushback`); the event id is derived from session + mutation_id so retries replay instead of duplicating, and it is self-report only.
 
