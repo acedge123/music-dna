@@ -20,6 +20,7 @@ import { acknowledgeExposure } from "@/musicdna/adapters/exposure";
 import { measuredCritic, recordServedOffer } from "@/musicdna/adapters/critic-quality";
 import type { CallMeasurement } from "@/musicdna/engine/critic-quality";
 import { requireVisibleSession } from "@/musicdna/adapters/session-access";
+import { loadOpenerAnalysis, saveOpeningProfile } from "@/musicdna/adapters/opener-profile";
 import { withPairingArtwork } from "@/musicdna/adapters/song-artwork";
 import { persistenceRpc, PersistenceError } from "@/musicdna/adapters/persistence";
 import { loadChatPage } from "@/musicdna/adapters/chat-history";
@@ -841,7 +842,7 @@ export async function nextPairingImpl(
   supabase: AuthedSupabase,
   data: { sessionId: string; steer?: "not_quite" | "harder" },
 ) {
-  const [usedRes, sessionRes, profileRes] = await Promise.all([
+  const [usedRes, sessionRes] = await Promise.all([
     supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
     supabase
       .from("sessions")
@@ -850,11 +851,6 @@ export async function nextPairingImpl(
       )
       .eq("id", data.sessionId)
       .single(),
-    supabase
-      .from("sessions")
-      .select("user_id, profiles!inner(opening_analysis_json)")
-      .eq("id", data.sessionId)
-      .maybeSingle(),
   ]);
   const session = requireVisibleSession(sessionRes);
   const sessionLane = (session?.lane as Lane | null) ?? "general";
@@ -869,39 +865,6 @@ export async function nextPairingImpl(
     ((session as { bootstrap_choices_json?: unknown } | null)?.bootstrap_choices_json as
       | BootstrapChoiceEntry[]
       | null) ?? [];
-
-  // Extract the set of lanes the opener songs actually landed in. Used by
-  // the bootstrap phase to keep probe pairings inside the user's stated
-  // taste territory (rock/pop/alt if that's what they named) instead of
-  // reaching for R&B or country cold. Empty = fall back to any bootstrap.
-  const openingAnalysis = (
-    profileRes.data as { profiles?: { opening_analysis_json?: unknown } } | null
-  )?.profiles?.opening_analysis_json as
-    | {
-        per_song?: Array<{ lane?: string | null; canon_id?: string | null }>;
-        secondary_lanes?: string[] | null;
-      }
-    | null
-    | undefined;
-  const openerLanes = new Set<string>();
-  for (const p of openingAnalysis?.per_song ?? []) {
-    if (p?.lane && p.lane !== "unknown" && p.lane !== "general") openerLanes.add(p.lane);
-  }
-  for (const l of openingAnalysis?.secondary_lanes ?? []) {
-    if (l && l !== "general") openerLanes.add(l);
-  }
-
-  // Opener era (soft): years of catalog-matched openers, in slot order.
-  const openerCanonIds = (openingAnalysis?.per_song ?? []).map((p) => p?.canon_id ?? null);
-  let era: EraWindow | null = null;
-  if (openerCanonIds.some(Boolean)) {
-    const { data: eraRows } = await supabase
-      .from("songs")
-      .select("id,year")
-      .in("id", openerCanonIds.filter((x): x is string => !!x));
-    const yearById = new Map((eraRows ?? []).map((r) => [r.id, r.year as number | null]));
-    era = openerEra(openerCanonIds.map((id) => (id ? (yearById.get(id) ?? null) : null)));
-  }
 
   const pairingSelect = `
       id, tests, diagnostic_weight, lane, is_bootstrap,
@@ -995,6 +958,37 @@ export async function nextPairingImpl(
       round,
       stop,
     });
+  }
+
+  // Extract the set of lanes the opener songs actually landed in. Used by
+  // the bootstrap phase to keep probe pairings inside the user's stated
+  // taste territory (rock/pop/alt if that's what they named) instead of
+  // reaching for R&B or country cold. Empty = fall back to any bootstrap.
+  const openingAnalysis = (await loadOpenerAnalysis(supabase, session.user_id)) as
+    | {
+        per_song?: Array<{ lane?: string | null; canon_id?: string | null }>;
+        secondary_lanes?: string[] | null;
+      }
+    | null
+    | undefined;
+  const openerLanes = new Set<string>();
+  for (const p of openingAnalysis?.per_song ?? []) {
+    if (p?.lane && p.lane !== "unknown" && p.lane !== "general") openerLanes.add(p.lane);
+  }
+  for (const l of openingAnalysis?.secondary_lanes ?? []) {
+    if (l && l !== "general") openerLanes.add(l);
+  }
+
+  // Opener era (soft): years of catalog-matched openers, in slot order.
+  const openerCanonIds = (openingAnalysis?.per_song ?? []).map((p) => p?.canon_id ?? null);
+  let era: EraWindow | null = null;
+  if (openerCanonIds.some(Boolean)) {
+    const { data: eraRows } = await supabase
+      .from("songs")
+      .select("id,year")
+      .in("id", openerCanonIds.filter((x): x is string => !!x));
+    const yearById = new Map((eraRows ?? []).map((r) => [r.id, r.year as number | null]));
+    era = openerEra(openerCanonIds.map((id) => (id ? (yearById.get(id) ?? null) : null)));
   }
 
   // ---- Shadow router (Step 0 of Agent Brain integration) -----------------
@@ -3442,16 +3436,13 @@ export async function commitOpeningThreeImpl(
     }
   }
 
-  await supabase
-    .from("profiles")
-    .update({
-      opening_songs: allThree,
-      opening_hypothesis: llm.hypothesis,
-      opening_lane: llm.lane,
-      opening_lane_confidence: llm.confidence,
-      opening_analysis_json: JSON.parse(JSON.stringify(llm)),
-    })
-    .eq("user_id", userId);
+  await saveOpeningProfile(supabase, userId, {
+    opening_songs: allThree,
+    opening_hypothesis: llm.hypothesis,
+    opening_lane: llm.lane,
+    opening_lane_confidence: llm.confidence,
+    opening_analysis_json: JSON.parse(JSON.stringify(llm)),
+  });
 
   return llm;
 }
