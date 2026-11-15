@@ -91,7 +91,13 @@ describe("shared opener profile", () => {
     await expect(nextPairingImpl({ from } as never, { sessionId: "session" })).rejects.toThrow(
       "catalog-year-query-reached",
     );
-    expect(queries.map((q) => q.table)).toEqual(["choices", "sessions", "event_log", "profiles", "songs"]);
+    expect(queries.map((q) => q.table)).toEqual([
+      "choices",
+      "sessions",
+      "event_log",
+      "profiles",
+      "songs",
+    ]);
     expect(queries[3].chain.eq).toHaveBeenCalledWith("user_id", "visible-owner");
     expect(queries[3].chain.select).toHaveBeenCalledWith("opening_analysis_json");
     expect(queries[4].chain.select).toHaveBeenCalledWith("id,year");
@@ -101,10 +107,18 @@ describe("shared opener profile", () => {
     const from = vi.fn((table: string) => {
       if (table === "profiles") throw new Error("unexpected profile read");
       return Object.assign(chain, {
-        single: vi.fn().mockResolvedValue({ data: { user_id: "owner", completed_at: "2026-11-15", vector: {} }, error: null }),
+        single: vi
+          .fn()
+          .mockResolvedValue({
+            data: { user_id: "owner", completed_at: "2026-11-15", vector: {} },
+            error: null,
+          }),
       });
     });
-    expect(await nextPairingImpl({ from } as never, { sessionId: "completed" })).toMatchObject({ done: true, pairing: null });
+    expect(await nextPairingImpl({ from } as never, { sessionId: "completed" })).toMatchObject({
+      done: true,
+      pairing: null,
+    });
     expect(from.mock.calls.map(([table]) => table)).toEqual(["choices", "sessions"]);
   });
 });
