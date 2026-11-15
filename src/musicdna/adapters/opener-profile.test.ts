@@ -107,12 +107,10 @@ describe("shared opener profile", () => {
     const from = vi.fn((table: string) => {
       if (table === "profiles") throw new Error("unexpected profile read");
       return Object.assign(chain, {
-        single: vi
-          .fn()
-          .mockResolvedValue({
-            data: { user_id: "owner", completed_at: "2026-11-15", vector: {} },
-            error: null,
-          }),
+        single: vi.fn().mockResolvedValue({
+          data: { user_id: "owner", completed_at: "2026-11-15", vector: {} },
+          error: null,
+        }),
       });
     });
     expect(await nextPairingImpl({ from } as never, { sessionId: "completed" })).toMatchObject({
