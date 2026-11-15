@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — listener song intake
+
+- [ ] Capture all three opener submissions atomically for guests and registered listeners; deduplicate demand without counting save retries.
+- [ ] Add admin-only AI scoring and reviewed promotion, without automatic activation or pairing/routing changes.
+- [ ] Verify capture, privacy, replay, scoring validation and promotion; document shared Flutter behavior and deployment acceptance limits.
+
 ## Current — opening interview parity
 
 - [x] Approved narrow repair; reproduced the unsupported sessions-to-profiles lookup as PGRST200 using a real anonymous caller, while its direct profile read succeeds.
