@@ -1,5 +1,10 @@
 import { describe, expect, it, vi, afterEach } from "vitest";
-import { createLovableLlmGateway, callLovableAi, DEFAULT_MODEL, scoreIntakeRecording } from "./llm-gateway";
+import {
+  createLovableLlmGateway,
+  callLovableAi,
+  DEFAULT_MODEL,
+  scoreIntakeRecording,
+} from "./llm-gateway";
 
 function mockFetch(responseBody: unknown, opts: { status?: number } = {}) {
   const calls: Array<{ url: string; init: RequestInit }> = [];
@@ -19,26 +24,43 @@ describe("direct OpenAI intake scoring", () => {
   it("uses the existing OpenAI key without requiring a Lovable key", async () => {
     vi.stubEnv("OPENAI_API_KEY", "test-openai-intake");
     vi.stubEnv("LOVABLE_API_KEY", "");
-    const { impl, calls } = mockFetch({ status: "completed", output: [{ type: "message", content: [{ type: "output_text", text: '{"title":"Roxanne"}' }] }] });
+    const { impl, calls } = mockFetch({
+      status: "completed",
+      output: [
+        { type: "message", content: [{ type: "output_text", text: '{"title":"Roxanne"}' }] },
+      ],
+    });
     const schema = { type: "object", properties: {} };
-    expect(await scoreIntakeRecording("Score Roxanne", schema, { fetchImpl: impl })).toBe('{"title":"Roxanne"}');
+    expect(await scoreIntakeRecording("Score Roxanne", schema, { fetchImpl: impl })).toBe(
+      '{"title":"Roxanne"}',
+    );
     expect(calls).toHaveLength(1);
     expect(calls[0].url).toBe("https://api.openai.com/v1/responses");
     expect(calls[0].init.headers).toMatchObject({ Authorization: "Bearer test-openai-intake" });
-    expect(JSON.parse(String(calls[0].init.body))).toEqual({ model: "gpt-6-astra", store: false, input: "Score Roxanne", reasoning: { effort: "low" }, text: { format: { type: "json_schema", name: "song_intake", strict: true, schema } } });
+    expect(JSON.parse(String(calls[0].init.body))).toEqual({
+      model: "gpt-6-astra",
+      store: false,
+      input: "Score Roxanne",
+      reasoning: { effort: "low" },
+      text: { format: { type: "json_schema", name: "song_intake", strict: true, schema } },
+    });
   });
 
   it("does not retry or switch providers when OpenAI rejects scoring", async () => {
     vi.stubEnv("OPENAI_API_KEY", "test-openai-intake");
     const { impl, calls } = mockFetch({ error: "denied" }, { status: 429 });
-    await expect(scoreIntakeRecording("Score", {}, { fetchImpl: impl })).rejects.toThrow("OpenAI song scoring failed (429)");
+    await expect(scoreIntakeRecording("Score", {}, { fetchImpl: impl })).rejects.toThrow(
+      "OpenAI song scoring failed (429)",
+    );
     expect(calls).toHaveLength(1);
   });
 
   it("rejects incomplete OpenAI output rather than saving it", async () => {
     vi.stubEnv("OPENAI_API_KEY", "test-openai-intake");
     const { impl } = mockFetch({ status: "incomplete", output: [] });
-    await expect(scoreIntakeRecording("Score", {}, { fetchImpl: impl })).rejects.toThrow("did not complete");
+    await expect(scoreIntakeRecording("Score", {}, { fetchImpl: impl })).rejects.toThrow(
+      "did not complete",
+    );
   });
 });
 
