@@ -866,37 +866,6 @@ export async function nextPairingImpl(
       | BootstrapChoiceEntry[]
       | null) ?? [];
 
-  // Extract the set of lanes the opener songs actually landed in. Used by
-  // the bootstrap phase to keep probe pairings inside the user's stated
-  // taste territory (rock/pop/alt if that's what they named) instead of
-  // reaching for R&B or country cold. Empty = fall back to any bootstrap.
-  const openingAnalysis = (await loadOpenerAnalysis(supabase, session.user_id)) as
-    | {
-        per_song?: Array<{ lane?: string | null; canon_id?: string | null }>;
-        secondary_lanes?: string[] | null;
-      }
-    | null
-    | undefined;
-  const openerLanes = new Set<string>();
-  for (const p of openingAnalysis?.per_song ?? []) {
-    if (p?.lane && p.lane !== "unknown" && p.lane !== "general") openerLanes.add(p.lane);
-  }
-  for (const l of openingAnalysis?.secondary_lanes ?? []) {
-    if (l && l !== "general") openerLanes.add(l);
-  }
-
-  // Opener era (soft): years of catalog-matched openers, in slot order.
-  const openerCanonIds = (openingAnalysis?.per_song ?? []).map((p) => p?.canon_id ?? null);
-  let era: EraWindow | null = null;
-  if (openerCanonIds.some(Boolean)) {
-    const { data: eraRows } = await supabase
-      .from("songs")
-      .select("id,year")
-      .in("id", openerCanonIds.filter((x): x is string => !!x));
-    const yearById = new Map((eraRows ?? []).map((r) => [r.id, r.year as number | null]));
-    era = openerEra(openerCanonIds.map((id) => (id ? (yearById.get(id) ?? null) : null)));
-  }
-
   const pairingSelect = `
       id, tests, diagnostic_weight, lane, is_bootstrap,
       song_a:songs!pairings_song_a_id_fkey(id,title,artist,year,primary_lane,lane,movement,atmosphere,immersion,scale,community,perspective,confidence,tension,texture,transformation),
@@ -989,6 +958,37 @@ export async function nextPairingImpl(
       round,
       stop,
     });
+  }
+
+  // Extract the set of lanes the opener songs actually landed in. Used by
+  // the bootstrap phase to keep probe pairings inside the user's stated
+  // taste territory (rock/pop/alt if that's what they named) instead of
+  // reaching for R&B or country cold. Empty = fall back to any bootstrap.
+  const openingAnalysis = (await loadOpenerAnalysis(supabase, session.user_id)) as
+    | {
+        per_song?: Array<{ lane?: string | null; canon_id?: string | null }>;
+        secondary_lanes?: string[] | null;
+      }
+    | null
+    | undefined;
+  const openerLanes = new Set<string>();
+  for (const p of openingAnalysis?.per_song ?? []) {
+    if (p?.lane && p.lane !== "unknown" && p.lane !== "general") openerLanes.add(p.lane);
+  }
+  for (const l of openingAnalysis?.secondary_lanes ?? []) {
+    if (l && l !== "general") openerLanes.add(l);
+  }
+
+  // Opener era (soft): years of catalog-matched openers, in slot order.
+  const openerCanonIds = (openingAnalysis?.per_song ?? []).map((p) => p?.canon_id ?? null);
+  let era: EraWindow | null = null;
+  if (openerCanonIds.some(Boolean)) {
+    const { data: eraRows } = await supabase
+      .from("songs")
+      .select("id,year")
+      .in("id", openerCanonIds.filter((x): x is string => !!x));
+    const yearById = new Map((eraRows ?? []).map((r) => [r.id, r.year as number | null]));
+    era = openerEra(openerCanonIds.map((id) => (id ? (yearById.get(id) ?? null) : null)));
   }
 
   // ---- Shadow router (Step 0 of Agent Brain integration) -----------------
