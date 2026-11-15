@@ -7,12 +7,14 @@ Repair **#1 only**: loading the listener’s opening-song analysis so the existi
 - Web and mobile’s next-matchup endpoint both use `nextPairingImpl`.
 - That function requests `profiles!inner(...)` through `sessions`, then ignores the lookup error. The supplied schema has no direct sessions-to-profiles relationship, so this is a concrete suspected failure point—not evidence that mobile’s older matchup was random luck.
 - With no opening analysis, both opener-era preference and opener-lane restrictions lose their inputs.
+- Anonymous web users receive a guest identity and can save owner-scoped profiles; a read-only check found all 87 anonymous sessions from the last seven days have profiles with three analyzed openers. That confirms guest storage is possible, not that every request is reliable. The current on-screen session is now registered, so it cannot establish its earlier guest state.
 
 ## Proposed repair
 1. Reproduce the relationship lookup failure and confirm the owner’s profile can be read directly using the same caller-scoped access.
 2. Read and validate the session first; fetch `profiles.opening_analysis_json` directly using that validated session’s `user_id`. Never accept an owner ID from the client or use privileged access.
 3. Pass the returned analysis into the existing opener-lane and opener-era logic. Keep the current treatment of a genuinely missing profile or unmatched songs; report a real query failure rather than silently treating it as missing opener data.
 4. Keep web and REST on the same implementation, with unchanged response shapes and no new feature flag.
+5. Verify guest opener saving and immediate owner-scoped readback before selection. The shared opener save currently ignores update errors and can succeed with no matched profile row: require a confirmed save for both guest and registered users, and show a retryable failure rather than continuing without their inputs. Reuse existing profiles; do not add a staging table or change account ownership.
 
 ## Rules that stay unchanged
 - Three ranked opening songs, weighted 3–2–1.
@@ -24,6 +26,7 @@ Repair **#1 only**: loading the listener’s opening-song analysis so the existi
 ## Regression checks
 Add tests beside the existing selection/adapter tests, not just tests of the standalone era helper:
 - A visible session loads its owner’s opening analysis directly; no unsupported relationship query is used.
+- Anonymous and registered users both save exactly three ranked openers and read their own analysis back; a failed or zero-row save cannot falsely report success or continue into selection.
 - An inaccessible/nonexistent session never proceeds to another listener’s profile lookup.
 - With only **True (1983)** matched, the calculated window is **1973–1993**; three eligible pairs inside that window exclude a 2002/2003 or 2024/2025 candidate during the opening choices.
 - No matched years keeps the current fallback; fewer than three eligible near-era pairs also keeps the current fallback.
@@ -35,13 +38,14 @@ Add tests beside the existing selection/adapter tests, not just tests of the sta
 ## Acceptance before calling it fixed
 - Run the new regression tests and relevant existing era, pairing, session-access, decade/refine and client-contract tests; check preview compilation and errors.
 - In a fresh preview interview, enter **True, Roxanne and Little Red Corvette**. Check the stored matched IDs/years and selected eligible pool, then confirm the displayed first matchup reflects the recovered preference. Do not count one randomly older matchup as proof.
+- Run that first-opener-to-matchup check as an anonymous guest, including immediate stored-analysis readback. Repeat with a registered user where authorized test access is available; report unavailable checks explicitly.
 - Verify reload and skip still work. Compare REST selection against the same controlled opener inputs where authenticated access is available.
 - Report verified preview results separately from production/mobile results. Production requires the updated Vercel deployment; actual Flutter rendering remains Codex’s check.
 
 ## Boundaries and rollback
-No database migration, data edits, environment changes or production activation. Keep the implementation diff restricted to the lookup repair and focused tests; reverting it restores the previous behavior without affecting saved data.
+No database migration, operator data edits, environment changes or production activation. Normal test interviews save their own inputs as usual. Keep the implementation diff restricted to the lookup repair, verified shared opener save and focused tests; reverting it restores the previous behavior without affecting saved data.
 
 **Known separate issue:** opener analysis is currently stored on the account profile, not frozen per session. Another interview may overwrite it. Session-specific opener persistence is outside this repair and will not be claimed solved.
 
 ## Technical details
-Primary change: `src/lib/musicdna.functions.ts` (`nextPairingImpl`). Reuse the existing era policy in `src/musicdna/engine/opener-era.ts`; add focused tests for the database-read wiring as well as concrete era outcomes. Preserve caller-scoped Supabase access and the existing web/REST entry points.
+Primary changes: `src/lib/musicdna.functions.ts` (`nextPairingImpl` and the shared `commitOpeningThreeImpl` save). Reuse the existing era policy in `src/musicdna/engine/opener-era.ts`; add focused tests for the database-read/save wiring as well as concrete era outcomes. Preserve caller-scoped Supabase access and the existing web/REST entry points.
