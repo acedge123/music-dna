@@ -201,3 +201,25 @@ export async function callLovableAi(
   });
   return (json.choices?.[0]?.message?.content ?? "").trim();
 }
+
+/** Catalog intake is a separate, admin-requested call; Critic model behavior stays unchanged. */
+export async function scoreIntakeRecording(prompt: string, schema: Record<string, unknown>) {
+  const { generateResponse } = await import("@lovable.dev/ai-gateway");
+  const result = await generateResponse({
+    model: "openai/gpt-6-astra",
+    input: prompt,
+    reasoning: { effort: "low" },
+    text: { format: { type: "json_schema", name: "song_intake", strict: true, schema } },
+  });
+  if (result.status !== "completed")
+    throw new Error("Song scoring did not complete. Review before retrying.");
+  const text = result.output
+    .flatMap((item) =>
+      item.type === "message"
+        ? item.content.flatMap((part) => (part.type === "output_text" ? [part.text] : []))
+        : [],
+    )
+    .join("");
+  if (!text) throw new Error("Song scoring returned no draft.");
+  return text;
+}
