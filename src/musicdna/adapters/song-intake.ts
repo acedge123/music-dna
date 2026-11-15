@@ -3,35 +3,68 @@ import { DIMS, DIM_LABEL } from "@/musicdna/engine/axes";
 
 export const INTAKE_VERSION = "listener-intake-v1";
 export const INTAKE_MODEL = "openai/gpt-6-astra";
-export const INTAKE_LANES = ["alternative", "pop", "hip_hop", "electronic", "classic_rock", "metal", "country", "r_and_b", "yacht_rock", "disco", "punk", "reggae", "general"] as const;
-export const intakeDraftSchema = z.object({
-  title: z.string().trim().min(1).max(200),
-  artist: z.string().trim().min(1).max(200),
-  year: z.number().int().min(1900).max(2100).nullable(),
-  lane: z.enum(INTAKE_LANES),
-  identity_confident: z.boolean(),
-  rationale: z.string().trim().min(20).max(1800),
-  scores: z.object({
-    movement: z.number().int().min(0).max(100), atmosphere: z.number().int().min(0).max(100),
-    immersion: z.number().int().min(0).max(100), scale: z.number().int().min(0).max(100),
-    community: z.number().int().min(0).max(100), perspective: z.number().int().min(0).max(100),
-    confidence: z.number().int().min(0).max(100), tension: z.number().int().min(0).max(100),
-    texture: z.number().int().min(0).max(100), transformation: z.number().int().min(0).max(100),
-  }).strict(),
-}).strict();
+export const INTAKE_LANES = [
+  "alternative",
+  "pop",
+  "hip_hop",
+  "electronic",
+  "classic_rock",
+  "metal",
+  "country",
+  "r_and_b",
+  "yacht_rock",
+  "disco",
+  "punk",
+  "reggae",
+  "general",
+] as const;
+export const intakeDraftSchema = z
+  .object({
+    title: z.string().trim().min(1).max(200),
+    artist: z.string().trim().min(1).max(200),
+    year: z.number().int().min(1900).max(2100).nullable(),
+    lane: z.enum(INTAKE_LANES),
+    identity_confident: z.boolean(),
+    rationale: z.string().trim().min(20).max(1800),
+    scores: z
+      .object({
+        movement: z.number().int().min(0).max(100),
+        atmosphere: z.number().int().min(0).max(100),
+        immersion: z.number().int().min(0).max(100),
+        scale: z.number().int().min(0).max(100),
+        community: z.number().int().min(0).max(100),
+        perspective: z.number().int().min(0).max(100),
+        confidence: z.number().int().min(0).max(100),
+        tension: z.number().int().min(0).max(100),
+        texture: z.number().int().min(0).max(100),
+        transformation: z.number().int().min(0).max(100),
+      })
+      .strict(),
+  })
+  .strict();
 export type IntakeDraft = z.infer<typeof intakeDraftSchema>;
 export function canPromoteIntake(draft: IntakeDraft) {
   return draft.identity_confident && draft.year !== null;
 }
 export const INTAKE_JSON_SCHEMA = {
-  type: "object", additionalProperties: false,
+  type: "object",
+  additionalProperties: false,
   required: ["title", "artist", "year", "lane", "identity_confident", "rationale", "scores"],
   properties: {
-    title: { type: "string" }, artist: { type: "string" },
-    year: { type: ["integer", "null"] }, lane: { type: "string", enum: [...INTAKE_LANES] },
-    identity_confident: { type: "boolean" }, rationale: { type: "string" },
-    scores: { type: "object", additionalProperties: false, required: [...DIMS],
-      properties: Object.fromEntries(DIMS.map((axis) => [axis, { type: "integer", minimum: 0, maximum: 100 }])) },
+    title: { type: "string" },
+    artist: { type: "string" },
+    year: { type: ["integer", "null"] },
+    lane: { type: "string", enum: [...INTAKE_LANES] },
+    identity_confident: { type: "boolean" },
+    rationale: { type: "string" },
+    scores: {
+      type: "object",
+      additionalProperties: false,
+      required: [...DIMS],
+      properties: Object.fromEntries(
+        DIMS.map((axis) => [axis, { type: "integer", minimum: 0, maximum: 100 }]),
+      ),
+    },
   },
 };
 export function intakeScoringPrompt(title: string, artist: string) {
