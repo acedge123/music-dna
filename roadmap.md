@@ -2,6 +2,8 @@
 
 ## Current — opening interview parity
 
+- [ ] Prepare and obtain approval for a narrow opener-profile lookup repair; reproduce the failed relationship lookup and add shared web/REST regression checks before implementation.
+- [ ] After approval, repair the lookup and verify era preference, fallback, ownership, skips and resume without changing selection policy, catalog or saved readings.
 - [x] Trace shared web/REST creation and selection: era bias falls back when fewer than three eligible near-era matchups exist; profile-based opener persistence is not session-frozen. Reproduced these exact openers on web with a 2002/2001 first pairing; exact fallback cause remains unproven.
 - [x] Add visible Preparing your interview / Noted stage during third-song classification and first-offer loading; real guest opener-to-pairing browser check, eight regressions and page lint pass. No selection, model, flags or Flutter changes.
 - [ ] Cross-client diagnosis: Codex must inspect Flutter request ordering, API destination, saved flow and opener response; compare with web before changing era-selection policy.
