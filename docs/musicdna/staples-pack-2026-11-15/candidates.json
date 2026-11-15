@@ -381,13 +381,13 @@
     "release_year_source": "existing_catalog_not_independently_verified"
   },
   {
-    "id": "golden_earring__twilight_zone",
+    "id": "duran_duran__hungry_like_the_wolf",
     "target_decade": 1980,
-    "title": "Twilight Zone",
-    "artist": "Golden Earring",
+    "title": "Hungry Like The Wolf",
+    "artist": "Duran Duran",
     "source_url": "https://www.billboard.com/charts/year-end/1983/hot-100-songs/",
     "chart_year": 1983,
-    "chart_rank": 19,
+    "chart_rank": 17,
     "chart_status": "completed",
     "publisher": "Billboard",
     "territory": "US",
@@ -400,13 +400,13 @@
     "catalog_matches": []
   },
   {
-    "id": "little_river_band__the_other_guy",
+    "id": "prince__little_red_corvette",
     "target_decade": 1980,
-    "title": "The Other Guy",
-    "artist": "Little River Band",
+    "title": "Little Red Corvette",
+    "artist": "Prince",
     "source_url": "https://www.billboard.com/charts/year-end/1983/hot-100-songs/",
     "chart_year": 1983,
-    "chart_rank": 65,
+    "chart_rank": 25,
     "chart_status": "completed",
     "publisher": "Billboard",
     "territory": "US",
@@ -419,23 +419,34 @@
     "catalog_matches": []
   },
   {
-    "id": "stray_cats__she_s_sexy_17",
+    "id": "spandau_ballet__true",
     "target_decade": 1980,
-    "title": "(she's) Sexy + 17",
-    "artist": "Stray Cats",
+    "title": "True",
+    "artist": "Spandau Ballet",
     "source_url": "https://www.billboard.com/charts/year-end/1983/hot-100-songs/",
     "chart_year": 1983,
-    "chart_rank": 84,
+    "chart_rank": 92,
     "chart_status": "completed",
     "publisher": "Billboard",
     "territory": "US",
     "retrieved_at": "2026-11-15",
     "source_access": "direct_publisher",
-    "release_year": null,
+    "release_year": 1983,
     "identity_review": "pending",
     "scores": null,
-    "catalog_status": "missing_exact_identity",
-    "catalog_matches": []
+    "catalog_status": "already_active",
+    "catalog_matches": [
+      {
+        "id": "c3ca0324-516f-5008-71d9-1b8cbb6cd00c",
+        "title": "True",
+        "artist": "Spandau Ballet",
+        "year": 1983,
+        "lane": "pop",
+        "active": true,
+        "active_pairings": 1
+      }
+    ],
+    "release_year_source": "existing_catalog_not_independently_verified"
   },
   {
     "id": "prince__when_doves_cry",

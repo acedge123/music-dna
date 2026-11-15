@@ -1,4 +1,11 @@
-export const STAPLES_TARGETS = { 1970: 10, 1980: 25, 1990: 25, 2000: 25, 2010: 25, 2020: 50 } as const;
+export const STAPLES_TARGETS = {
+  1970: 10,
+  1980: 25,
+  1990: 25,
+  2000: 25,
+  2010: 25,
+  2020: 50,
+} as const;
 
 export type StapleCandidate = {
   id: string;
@@ -26,7 +33,8 @@ export function validateStaplesShortlist(rows: StapleCandidate[]) {
     if (ids.has(row.id) || identities.has(identity)) errors.push(`${row.id}: duplicate recording`);
     ids.add(row.id);
     identities.add(identity);
-    if (!Object.hasOwn(STAPLES_TARGETS, row.target_decade)) errors.push(`${row.id}: unknown decade`);
+    if (!Object.hasOwn(STAPLES_TARGETS, row.target_decade))
+      errors.push(`${row.id}: unknown decade`);
     if (!Number.isInteger(row.chart_rank) || row.chart_rank < 1 || row.chart_rank > 100)
       errors.push(`${row.id}: invalid source rank`);
     if (!row.source_url.startsWith("https://")) errors.push(`${row.id}: missing source`);

@@ -1,21 +1,7 @@
 {
   "retrieved_at": "2026-11-15",
   "discarded_wrong_year_publisher_pages": [
-    1991,
-    1992,
-    1993,
-    1994,
-    1995,
-    1996,
-    1997,
-    1998,
-    1999,
-    2000,
-    2001,
-    2002,
-    2003,
-    2004,
-    2005
+    1991, 1992, 1993, 1994, 1995, 1996, 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005
   ],
   "reason": "Returned 2006 winner Bad Day instead of requested year; none of these responses used as source evidence",
   "other_limitations": [
