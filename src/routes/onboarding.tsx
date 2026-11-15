@@ -7,7 +7,7 @@ import { InterviewHistory } from "@/components/musicdna/interview-history";
 import { OpeningSongInput as RankedInput } from "@/components/musicdna/opening-song-input";
 import { SongChoices } from "@/components/musicdna/song-choices";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Share2, MessageCircle } from "lucide-react";
+import { ArrowRight, Share2, MessageCircle, LoaderCircle } from "lucide-react";
 import { readingLead } from "@/lib/critic-display";
 import { DecadeComparison, ExploreDecades } from "@/components/musicdna/explore-decades";
 import { ArchetypeFit } from "@/components/musicdna/archetype-fit";
@@ -218,6 +218,30 @@ function Onboarding() {
                   </>
                 )}
               </Button>
+            </div>
+          </section>
+        </main>
+      </>
+    );
+  }
+
+  // Slot-three classification and first-offer loading share one visible stage.
+  // No extra dwell: the first matchup replaces it as soon as it is ready.
+  if (
+    (phase === "slot3" && busy) ||
+    (phase === "playing" && !pairing && entries.length === 0 && !checkpoint && !finalWriting)
+  ) {
+    return (
+      <>
+        <HomeLogo />
+        <main className="mx-auto max-w-4xl px-5 pt-24 pb-16 sm:px-6">
+          <section aria-label="Preparing your interview" className="max-w-2xl space-y-6 py-6">
+            <h1 className="flex items-center gap-2 font-mono text-sm text-muted-foreground">
+              <LoaderCircle aria-hidden="true" className="size-4 motion-safe:animate-spin" />
+              Preparing your interview…
+            </h1>
+            <div className="min-h-[7.5rem]">
+              <p role="status" className="font-serif text-3xl italic leading-snug">Noted.</p>
             </div>
           </section>
         </main>
