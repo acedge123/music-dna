@@ -1,5 +1,10 @@
 # Roadmap
 
+## Planned — fix three: decade staples pack
+
+- [ ] Approve the sourced 1970s–2020s staples-pack plan, then audit candidates against the current catalog before paid AI scoring or database changes.
+- [ ] Review AI-scored missing recordings and within-lane pairing coverage; activation requires separate explicit approval after regression checks.
+
 ## Current — listener song intake
 
 - [x] Capture all three opener submissions atomically for guests and registered listeners; deduplicate demand without counting save retries. Applied intake/capture and hardening migrations; a real preview guest saved three entries and opened an older Pop matchup with no page errors.
