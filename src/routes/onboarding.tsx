@@ -241,7 +241,9 @@ function Onboarding() {
               Preparing your interview…
             </h1>
             <div className="min-h-[7.5rem]">
-              <p role="status" className="font-serif text-3xl italic leading-snug">Noted.</p>
+              <p role="status" className="font-serif text-3xl italic leading-snug">
+                Noted.
+              </p>
             </div>
           </section>
         </main>
