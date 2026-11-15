@@ -1,0 +1,4 @@
+ALTER FUNCTION public.promote_musicdna_opener_song(uuid,jsonb) SECURITY INVOKER;
+ALTER POLICY intake_admin_read ON public.staged_opener_songs USING ((auth.jwt()->>'is_anonymous') IS DISTINCT FROM 'true' AND public.has_role(auth.uid(),'admin'));
+ALTER POLICY intake_admin_update ON public.staged_opener_songs USING ((auth.jwt()->>'is_anonymous') IS DISTINCT FROM 'true' AND public.has_role(auth.uid(),'admin')) WITH CHECK ((auth.jwt()->>'is_anonymous') IS DISTINCT FROM 'true' AND public.has_role(auth.uid(),'admin'));
+ALTER POLICY intake_submissions_admin_read ON public.staged_opener_submissions USING ((auth.jwt()->>'is_anonymous') IS DISTINCT FROM 'true' AND public.has_role(auth.uid(),'admin'));
