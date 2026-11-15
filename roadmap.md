@@ -2,8 +2,9 @@
 
 ## Planned — fix three: decade staples pack
 
-- [ ] Approve the sourced 1970s–2020s staples-pack plan, then audit candidates against the current catalog before paid AI scoring or database changes.
-- [ ] Review AI-scored missing recordings and within-lane pairing coverage; activation requires separate explicit approval after regression checks.
+- [x] Plan approved; prepared 160 sourced review candidates and a read-only 886-song catalog identity/pair-count baseline in docs/musicdna/staples-pack-2026-11-15. Initial audit: 43 active, 2 inactive, 9 identity holds, 106 without exact identity; no scoring or writes.
+- [ ] First owner review gate: approve shortlist direction and resolve source/year balance holds (1991–2005 publisher pages returned 2006; early-2000s coverage and provisional-2026 sourcing remain incomplete). Original recording identities/years remain pending; no candidate is scoring-ready.
+- [ ] After shortlist/identity review, run bounded OpenAI scoring for verified missing recordings and prepare within-lane pairing/coverage artifacts; production writes and activation require separate explicit approval.
 
 ## Current — listener song intake
 
