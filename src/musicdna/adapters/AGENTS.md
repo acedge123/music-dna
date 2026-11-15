@@ -1,5 +1,7 @@
 # Adapter rules
 
+- Listener intake captures three-song profile writes transactionally; admin-requested AI proposals require exact-draft atomic promotion into inactive songs, preserving retries, deletion, existing scores and routing.
+
 - Halftime pushback goes through `recordHalftimePushbackImpl` (web + REST `/pushback`); the event id is derived from session + mutation_id so retries replay instead of duplicating, and it is self-report only.
 
 - Saved reports are reopened via `GET /api/v1/session/:id/report` (`adapters/report-envelope.ts`): frozen fields replay the saved row, annotations derive from frozen choices, zero model calls or writes.
