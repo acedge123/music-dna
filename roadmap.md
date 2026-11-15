@@ -2,8 +2,9 @@
 
 ## Current — opening interview parity
 
-- [ ] Trace web/REST opener-era selection and initial presentation for True, Roxanne and Little Red Corvette.
-- [ ] Restore a visible web preparation stage without adding model calls or artificial waits; document confirmed differences and validate the opening flow.
+- [x] Trace shared web/REST creation and selection: era bias falls back when fewer than three eligible near-era matchups exist; profile-based opener persistence is not session-frozen. Reproduced these exact openers on web with a 2002/2001 first pairing; exact fallback cause remains unproven.
+- [x] Add visible Preparing your interview / Noted stage during third-song classification and first-offer loading; real guest opener-to-pairing browser check, eight regressions and page lint pass. No selection, model, flags or Flutter changes.
+- [ ] Cross-client diagnosis: Codex must inspect Flutter request ordering, API destination, saved flow and opener response; compare with web before changing era-selection policy.
 
 ## Current — staged legacy Archetype retirement
 
