@@ -266,7 +266,8 @@ function AdminPage() {
         tab !== "shadow" &&
         tab !== "decade_coverage" &&
         tab !== "archetype_profiles" &&
-        tab !== "song_whys" && (
+        tab !== "song_whys" &&
+        tab !== "song_intake" && (
           <EditDrawer
             entity={tab as Exclude<Entity, "decade_prompts">}
             row={editing.row}

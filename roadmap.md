@@ -2,9 +2,10 @@
 
 ## Current — listener song intake
 
-- [ ] Capture all three opener submissions atomically for guests and registered listeners; deduplicate demand without counting save retries.
-- [ ] Add admin-only AI scoring and reviewed promotion, without automatic activation or pairing/routing changes.
-- [ ] Verify capture, privacy, replay, scoring validation and promotion; document shared Flutter behavior and deployment acceptance limits.
+- [x] Capture all three opener submissions atomically for guests and registered listeners; deduplicate demand without counting save retries. Applied intake/capture and hardening migrations; a real preview guest saved three entries and opened an older Pop matchup with no page errors.
+- [x] Add admin-only AI scoring and exact-draft atomic promotion into inactive songs. One real SDK proposal identified Roxanne (1978) with ten validated dimensions; no catalog songs approved or activated.
+- [x] 42 focused regressions pass including database guest/registered capture, demand replay, privacy denial, deletion and promotion replay; touched-module lint and preview build pass. Shared Flutter behavior documented in docs/musicdna/song-intake.md. New security warnings resolved; 52 pre-existing findings remain outside scope.
+- [ ] Registered admin UI scoring→promotion and production/mobile acceptance: external-managed admin session unavailable; Vercel must deploy controls and have LOVABLE_API_KEY for new SDK intake scoring. Capture already applies to future existing-client profile saves. No automated job or catalog seeding added.
 
 ## Current — opening interview parity
 
