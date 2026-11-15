@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — opening interview parity
+
+- [ ] Trace web/REST opener-era selection and initial presentation for True, Roxanne and Little Red Corvette.
+- [ ] Restore a visible web preparation stage without adding model calls or artificial waits; document confirmed differences and validate the opening flow.
+
 ## Current — staged legacy Archetype retirement
 
 - [x] Label residual rankings, winner heatmap and ranking-derived admin diagnostics as legacy-only; remove misleading V2/profile-validation conclusions. No computation, API, routing, flags or historical changes.
