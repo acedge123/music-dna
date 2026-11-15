@@ -31,6 +31,6 @@ describe("visible session boundary", () => {
     await expect(
       nextPairingImpl({ from } as never, { sessionId: "foreign-or-missing" }),
     ).rejects.toThrow(SessionUnavailableError);
-    expect(from.mock.calls.map(([table]) => table)).toEqual(["choices", "sessions", "sessions"]);
+    expect(from.mock.calls.map(([table]) => table)).toEqual(["choices", "sessions"]);
   });
 });

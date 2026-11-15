@@ -20,6 +20,7 @@ import { acknowledgeExposure } from "@/musicdna/adapters/exposure";
 import { measuredCritic, recordServedOffer } from "@/musicdna/adapters/critic-quality";
 import type { CallMeasurement } from "@/musicdna/engine/critic-quality";
 import { requireVisibleSession } from "@/musicdna/adapters/session-access";
+import { loadOpenerAnalysis, saveOpeningProfile } from "@/musicdna/adapters/opener-profile";
 import { withPairingArtwork } from "@/musicdna/adapters/song-artwork";
 import { persistenceRpc, PersistenceError } from "@/musicdna/adapters/persistence";
 import { loadChatPage } from "@/musicdna/adapters/chat-history";
@@ -841,7 +842,7 @@ export async function nextPairingImpl(
   supabase: AuthedSupabase,
   data: { sessionId: string; steer?: "not_quite" | "harder" },
 ) {
-  const [usedRes, sessionRes, profileRes] = await Promise.all([
+  const [usedRes, sessionRes] = await Promise.all([
     supabase.from("choices").select("pairing_id").eq("session_id", data.sessionId),
     supabase
       .from("sessions")
@@ -850,11 +851,6 @@ export async function nextPairingImpl(
       )
       .eq("id", data.sessionId)
       .single(),
-    supabase
-      .from("sessions")
-      .select("user_id, profiles!inner(opening_analysis_json)")
-      .eq("id", data.sessionId)
-      .maybeSingle(),
   ]);
   const session = requireVisibleSession(sessionRes);
   const sessionLane = (session?.lane as Lane | null) ?? "general";
@@ -874,9 +870,7 @@ export async function nextPairingImpl(
   // the bootstrap phase to keep probe pairings inside the user's stated
   // taste territory (rock/pop/alt if that's what they named) instead of
   // reaching for R&B or country cold. Empty = fall back to any bootstrap.
-  const openingAnalysis = (
-    profileRes.data as { profiles?: { opening_analysis_json?: unknown } } | null
-  )?.profiles?.opening_analysis_json as
+  const openingAnalysis = (await loadOpenerAnalysis(supabase, session.user_id)) as
     | {
         per_song?: Array<{ lane?: string | null; canon_id?: string | null }>;
         secondary_lanes?: string[] | null;
@@ -3442,16 +3436,13 @@ export async function commitOpeningThreeImpl(
     }
   }
 
-  await supabase
-    .from("profiles")
-    .update({
-      opening_songs: allThree,
-      opening_hypothesis: llm.hypothesis,
-      opening_lane: llm.lane,
-      opening_lane_confidence: llm.confidence,
-      opening_analysis_json: JSON.parse(JSON.stringify(llm)),
-    })
-    .eq("user_id", userId);
+  await saveOpeningProfile(supabase, userId, {
+    opening_songs: allThree,
+    opening_hypothesis: llm.hypothesis,
+    opening_lane: llm.lane,
+    opening_lane_confidence: llm.confidence,
+    opening_analysis_json: JSON.parse(JSON.stringify(llm)),
+  });
 
   return llm;
 }
