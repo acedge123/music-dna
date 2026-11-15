@@ -2530,6 +2530,127 @@ export type Database = {
         }
         Relationships: []
       }
+      staged_opener_songs: {
+        Row: {
+          ai_draft: Json | null
+          cleaned_artist: string
+          cleaned_title: string
+          created_at: string
+          id: string
+          identity_key: string
+          matched_song_id: string | null
+          reviewed_at: string | null
+          reviewed_by: string | null
+          scoring_model: string | null
+          scoring_version: string | null
+          status: string
+          submission_count: number
+          updated_at: string
+        }
+        Insert: {
+          ai_draft?: Json | null
+          cleaned_artist?: string
+          cleaned_title: string
+          created_at?: string
+          id?: string
+          identity_key: string
+          matched_song_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          scoring_model?: string | null
+          scoring_version?: string | null
+          status?: string
+          submission_count?: number
+          updated_at?: string
+        }
+        Update: {
+          ai_draft?: Json | null
+          cleaned_artist?: string
+          cleaned_title?: string
+          created_at?: string
+          id?: string
+          identity_key?: string
+          matched_song_id?: string | null
+          reviewed_at?: string | null
+          reviewed_by?: string | null
+          scoring_model?: string | null
+          scoring_version?: string | null
+          status?: string
+          submission_count?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staged_opener_songs_matched_song_id_fkey"
+            columns: ["matched_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "staged_opener_songs_matched_song_id_fkey"
+            columns: ["matched_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "staged_opener_songs_matched_song_id_fkey"
+            columns: ["matched_song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      staged_opener_submissions: {
+        Row: {
+          batch_key: string
+          created_at: string
+          id: string
+          position: number
+          raw_input: string
+          song_intake_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          batch_key: string
+          created_at?: string
+          id?: string
+          position: number
+          raw_input: string
+          song_intake_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          batch_key?: string
+          created_at?: string
+          id?: string
+          position?: number
+          raw_input?: string
+          song_intake_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "staged_opener_submissions_song_intake_id_fkey"
+            columns: ["song_intake_id"]
+            isOneToOne: false
+            referencedRelation: "staged_opener_songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "staged_opener_submissions_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["user_id"]
+          },
+        ]
+      }
       subcultures: {
         Row: {
           created_at: string
@@ -2950,6 +3071,10 @@ export type Database = {
           p_session_id: string
         }
         Returns: Json
+      }
+      promote_musicdna_opener_song: {
+        Args: { p_expected_draft: Json; p_id: string }
+        Returns: string
       }
       publish_saved_read: {
         Args: { p_publish: boolean; p_session_id: string; p_version?: number }
