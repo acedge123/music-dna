@@ -1,11 +1,34 @@
 # AB-57 current status — 2026-11-10
 
-Hosted delivery/retry/retention and automatic draft requests are active for the one explicitly consenting owner. Railway uses only two narrow API caller keys; no Supabase backend or ingest key was read or exported to Railway. Source delivery runs inside Music DNA’s Supabase Edge Function. Global app-signal LLMs and automatic app changes remain off. $5/day is a combined ceiling; existing stricter source limits remain.
+**AB-57 capture/delivery/completed-draft acceptance is complete.** The signed-in,
+consented owner's version-1 Mixed rating was saved at **10:45:21 AM Pacific**,
+delivered to Echelon, reviewed by hosted EdgeBot with Agent Brain guidance and an
+OpenAI call, and persisted as a completed draft at **10:46:59 AM Pacific**.
 
-Both implementation PRs are merged: Music DNA35 and Echelon26. The first hosted execution finished2026-11-10 15:15 UTC: source completed/idle, receiver idle, attention=false, delivery0 and model calls0. This is an empty-window operational receipt, not positive evidence of a completed draft. At last count, four saved versions across three sessions were enrolled, with no exportable accuracy feedback. The owner clarified that CGPT submitted these QA walkthroughs on their behalf; their choices are not verified personal preferences or independent listener evidence. The owner chose to provide their own rating later.
+See [the successful real-QA trace](ab57-real-feedback-proof.md) and its
+[linked metadata receipt](ab57-real-feedback-receipt.json). Source observation,
+receiver receipt and payload digest match; one source delivery attempt and one
+review exist. Review job `3b41b47e-ba61-446f-9c00-f497fbf18f10` is completed; model
+usage was 383 tokens, estimated **$0.000113**. The draft decision is **hold** for
+human evaluation. No policy/application change or Agent Brain training followed.
 
-**AB-57 remains In Progress** until an actual owner rating produces an Echelon receipt and completed saved draft with usage/cost/trace evidence. No rating is fabricated, pre-consent history backfilled or live synthetic test substituted. Downstream promotion/approval and perceived-accuracy comparison remain AB-30/53 and AB-52.
+Hosted hourly delivery/retry/retention and automatic draft requests remain active
+for the explicitly consenting owner. Railway holds only two narrow API caller
+keys; backend/ingest credentials stay inside Supabase. The combined $5/day ceiling,
+stricter source limits, global signal LLM setting and schedules were unchanged.
+An existing approved tick was invoked once to verify the new rating immediately.
 
-Detailed provider IDs, SQL hashes, key-denial checks and honest inventory limits are in `ab57-activation-receipt.json`; runbook and metadata-only SQL are in `ab57-automation.md` and `ab57-diagnostics.sql`. Source migrations were applied once and renamed to match verified native history, leaving one executable copy each. Echelon’s applied SQL failed the byte-exact requirement by one extra leading space on line70; Codex independently verified that single difference, and no history was rewritten or migration rerun.
+The earlier anonymous guest rating was saved but not enrolled/exported. Using the
+consented signed-in account produced the successful trace. QA choices may be
+agent-assisted and are not verified personal preference or an independent listener
+cohort. No synthetic demo, old-reading backfill, new rating by Codex or expired
+staging-scope reopening was used to produce this result.
 
-Railway’s legacy config file was ignored for the new service. Incorrect disabled web builds were superseded/stopped, and explicit service API settings now select the small Docker image, hourly UTC cron and NEVER restart policy. Existing services were not reconfigured. The next cadence and runtime status must be checked in provider metadata; cron start times are not guaranteed minute-exact.
+[Activation receipts](ab57-activation-receipt.json) retain the original deployment,
+SQL/hash, credential-boundary and empty-window evidence; the new trace supersedes
+their outstanding feedback item. Existing AB-50/AB-53 provider inventory,
+backup/log retention and non-admin HTTP coverage limits remain documented.
+
+Next: AB-52's baseline/candidate comparison and AB-30's authorized exact-version
+human decision/release, followed by AB-53's actual changed-policy outcome proof.
+Readiness of the collection/review path is not evidence of product improvement.

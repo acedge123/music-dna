@@ -1,0 +1,110 @@
+{
+  "schema": "musicdna-real-qa-completed-review.v1",
+  "ticket": "AB-57",
+  "acceptance": "passed_capture_delivery_completed_draft",
+  "verified_at_utc": "2026-11-10T18:50:29.714Z",
+  "owner_authorized_qa": true,
+  "source": {
+    "feedback_id": "b48c2c97-55c0-47dc-871f-e9c39549fe81",
+    "accuracy": "mixed",
+    "result_version": 1,
+    "feedback_saved_at": "2026-11-10 18:45:21.818239+00",
+    "data_class": "consented_qa",
+    "observation_id": "7fcfde3c-6f18-43a0-b095-c5ff15974bd2",
+    "payload_fingerprint": "3a613a961d46be442aeada23346e9ba2370b1d3c9246a4917fc4f2340e4f34f5",
+    "dispatch_state": "delivered",
+    "receipt_id": "dd12c807-fcb1-4e7b-9dc2-dceb41fea275",
+    "attempts": 1,
+    "claims": 1,
+    "last_failure": null,
+    "delivery_completed_at": "2026-11-10 18:46:52.810942+00"
+  },
+  "receiver_and_review": {
+    "actual_cost_micro": 113,
+    "brain_trace_id": "155a5f9c-3b08-4d78-9e2d-a98bc6c7dc3d",
+    "completed_at": "2026-11-10 18:46:59.113825+00",
+    "decision": "hold",
+    "draft_persisted": true,
+    "event_id": "dd12c807-fcb1-4e7b-9dc2-dceb41fea275",
+    "hosted_job_status": "done",
+    "hypothesis_chars": 286,
+    "job_id": "3b41b47e-ba61-446f-9c00-f497fbf18f10",
+    "limitations_chars": 393,
+    "model_id": "gpt-4o-mini-2024-07-18",
+    "next_step": "ab52_human_review",
+    "observation_id": "7fcfde3c-6f18-43a0-b095-c5ff15974bd2",
+    "payload_fingerprint": "3a613a961d46be442aeada23346e9ba2370b1d3c9246a4917fc4f2340e4f34f5",
+    "privacy_policy_version": "real-qa.v1",
+    "provider_request_id": "chatcmpl-Eil9t1yG2bAVzbvj03maqKKCXJNcj",
+    "received_at": "2026-11-10 18:46:52.566777+00",
+    "result_hash": "47299950ee0ca00dd9879701b1b91fe14ac7806392854cf657b02083c2714eb7",
+    "result_schema": "musicdna-learning-model-draft.v1",
+    "review_includes_exact_receipt": true,
+    "review_policy_version": "real-qa-review.v1",
+    "reviews_for_receipt": 1,
+    "schema_version": "learning-observation.v2",
+    "state": "review_completed",
+    "usage": {
+      "completion_tokens": 122,
+      "latency_ms": 3293,
+      "prompt_tokens": 261,
+      "total_tokens": 383
+    },
+    "worker_id": "railway-echelon-worker"
+  },
+  "estimated_cost_usd": 0.000113,
+  "operator_tick": {
+    "checked_at": "2026-11-10T18:46:54.282Z",
+    "exit_code": 0,
+    "results": [
+      {
+        "event": "musicdna_hourly",
+        "delivery_receipts": 1,
+        "delivery_state": "idle",
+        "review_queue_state": "queued",
+        "attention_required": false
+      }
+    ],
+    "stderr_present": false
+  },
+  "public_serving_version": {
+    "checked_at": "2026-11-10T18:50:29.714Z",
+    "http_status": 200,
+    "serving_sha": "ff9421c4b11e7ceeb6243bc3de10d843a004a014",
+    "persistence_v2": true
+  },
+  "proof_basis": {
+    "source_receiver_observation_match": true,
+    "source_receiver_receipt_match": true,
+    "source_receiver_payload_digest_match": true,
+    "review_includes_exact_receipt": true,
+    "single_delivery_attempt": true,
+    "single_review_for_receipt": true,
+    "brain_response": "Hosted worker validates Agent Brain v1 response and trace correlation before the model request; persisted trace is linked above. No raw Brain request/response or reading prose exported.",
+    "openai_response": "Hosted worker validates model/provider request/usage and persists them with the completed review.",
+    "readback": "Metadata-only READ ONLY SQL with local10s; a new authenticated reviewer HTTP read was not requested."
+  },
+  "interpretation": {
+    "evidence_class": "Consented owner QA, including agent-assisted choices; not an independent listener cohort or verified personal music preference.",
+    "earlier_guest_rating": "Separate saved anonymous QA feedback was not enrolled, exported, reassigned or backfilled. This proof uses the later signed-in owner rating only.",
+    "draft_is_human_review_only": true,
+    "product_improvement_established": false,
+    "automatic_policy_change": false,
+    "brain_training": false
+  },
+  "changes": {
+    "existing_approved_delivery_review_tick": true,
+    "new_accuracy_vote_by_codex": false,
+    "new_scope_or_key": false,
+    "backend_credentials_exported": false,
+    "deployments_or_migrations": false,
+    "flags_or_schedules_changed": false,
+    "runtime_code_changed": false
+  },
+  "preserved_limits": [
+    "AB-50/AB-53 provider inventory, backup/log retention and non-admin HTTP coverage limits remain explicitly recorded.",
+    "AB-52 owns baseline/candidate evidence; AB-30 owns exact-version human proposal/decision and reviewed release; AB-53 owns actual changed-policy outcomes.",
+    "Estimated model cost is not a provider billing receipt.",
+    "The first local CLI invocation exited before its guarded entry point and sent no work; the resolved-path invocation produced the one verified delivery/review above."
+  ]
+}
