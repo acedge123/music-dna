@@ -4,6 +4,7 @@
 
 - [x] Check owner-visible saved v1 before generation and after rejection/error; automatically retry an explicitly rejected unsaved draft once without restarting wait presentation. Unknown in-flight errors only check saved state; second rejection retains manual Retry.
 - [x] 43 focused regressions and touched-file lint pass; preview build OK. Real existing guest saved v1 opens through updated flow on desktop/phone. Retry, concurrent-save and timeout branches verified with deterministic tests; a new naturally rejected live generation was not forced. Flutter recovery guidance updated; deployed production/Flutter adoption remains separate.
+- [x] Desktop/phone UI fault-injection hides initial saved lookups and changes the first replay response to explicit rejection: the actual completed-reading flow automatically requests once more, displays real saved v1 without manual Retry, and opens all six matchups with zero page errors. No stored reading or provider response was modified; injection affects only the test browser.
 
 ## Current — report recovery and complete pick-six quips
 
