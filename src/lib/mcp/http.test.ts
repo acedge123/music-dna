@@ -11,16 +11,16 @@ describe("MCP HTTP boundary", () => {
     const metadata = await createTanStackOAuthProtectedResourceMetadataHandler(
       mcp,
       options,
-    )({ request: new Request("https://musicdna.fm/.well-known/oauth-protected-resource") });
+    )({ request: new Request("https://www.musicdna.fm/.well-known/oauth-protected-resource") });
     expect(await metadata.json()).toMatchObject({
-      resource: "https://musicdna.fm/mcp",
+      resource: "https://www.musicdna.fm/mcp",
       authorization_servers: ["https://udycgnhvaanemhrchbuj.supabase.co/auth/v1"],
     });
     const response = await createTanStackMcpHandler(
       mcp,
       options,
     )({
-      request: new Request("https://musicdna.fm/mcp", {
+      request: new Request("https://www.musicdna.fm/mcp", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -37,23 +37,23 @@ describe("MCP HTTP boundary", () => {
     expect(
       (
         (await boundedMcpRequest(
-          new Request("https://musicdna.fm/mcp", {
+          new Request("https://www.musicdna.fm/mcp", {
             headers: { Origin: "https://evil.example" },
           }),
         )) as Response
       ).status,
     ).toBe(403);
-    const request = new Request("https://musicdna.fm/mcp", {
+    const request = new Request("https://www.musicdna.fm/mcp", {
       method: "POST",
       body: "x".repeat(66000),
     });
     expect(((await boundedMcpRequest(request)) as Response).status).toBe(413);
     const small = await boundedMcpRequest(
-      new Request("https://musicdna.fm/mcp", { method: "POST", body: "{}" }),
+      new Request("https://www.musicdna.fm/mcp", { method: "POST", body: "{}" }),
     );
     expect(small).toBeInstanceOf(Request);
     expect(await (small as Request).text()).toBe("{}");
-    const source = new Request("https://musicdna.fm/mcp", { method: "POST", body: '{"id":1}' });
+    const source = new Request("https://www.musicdna.fm/mcp", { method: "POST", body: '{"id":1}' });
     const wrapped = {
       url: source.url,
       method: source.method,

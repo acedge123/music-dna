@@ -31,9 +31,9 @@ Diagnostics used explicit READ ONLY transactions with local 10-second statement 
 - Anonymous GET `/mcp` displays `unauthorized`; local POST denial/metadata tests pass. Hosted authenticated tool invocation is not established by this denial.
 - Alan configured Supabase OAuth himself: enabled, site URL `https://www.musicdna.fm`, authorization path `/oauth/consent`, dynamic registration on. Public authorization-server discovery now returns authorization/token/registration endpoints and S256 support. No OAuth settings or clients were changed by Codex.
 
-## Requested apex MCP URL
+## Canonical MCP URL
 
-Alan requested `https://musicdna.fm/mcp`. At verification time Vercel's apex domain redirected this to www. This follow-up changes only the canonical MCP resource and adds an apex-host redirect rule that exempts `/mcp` and protected-resource metadata while preserving the website/API/consent redirect to www. The Vercel apex domain must be connected to Production instead of configured as a domain-level redirect, after the new rule deploys. This is pending a valid Vercel operator sign-in and the feature-branch merge; the old www endpoint remains available until then.
+Use `https://www.musicdna.fm/mcp`, matching the existing www host pattern used by Mom Walk. The deployed resource metadata already advertises this exact URL. Alan's clarification keeps this working configuration. No canonical-resource change, apex routing exception or Vercel operator sign-in is needed. The existing apex-to-www website redirect is left in place.
 
 ## Advisor findings and remaining acceptance
 
@@ -47,4 +47,4 @@ Still pending: actual ChatGPT OAuth consent/tool round trip, complete hosted app
 
 ## Follow-up validation
 
-36 focused MCP tests, TypeScript and Vercel preset build passed after timestamp reconciliation and apex-resource changes. Both SQL hashes remain unchanged. Redirect expressions were checked for homepage/onboarding/API/consent redirects and MCP/metadata exemptions. Hosted Vercel rule/domain verification remains pending. Existing main learning-contract and routing-pin drift is unchanged; no stale pin was silently accepted.
+36 focused MCP tests, TypeScript and Vercel preset build passed after timestamp reconciliation. Both SQL hashes remain unchanged. Canonical MCP resource, generated manifest, HTTP tests and Vercel configuration remain identical to deployed revision `829556b`. Existing main learning-contract and routing-pin drift is unchanged; no stale pin was silently accepted.
