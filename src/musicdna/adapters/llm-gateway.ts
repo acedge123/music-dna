@@ -140,6 +140,9 @@ export async function callLovableAi(
     stage?: "choice" | "read" | "reveal" | "chat";
     /** Strict structured output; the provider enforces the schema. */
     jsonSchema?: { name: string; schema: Record<string, unknown> };
+    /** Explicit operator review bounds only; existing Critic callers remain unchanged. */
+    signal?: AbortSignal;
+    maxOutputTokens?: number;
   } = {},
 ): Promise<string> {
   const doFetch = opts.fetchImpl ?? fetch;
@@ -154,6 +157,7 @@ export async function callLovableAi(
   // Do not send unsupported sampling parameters or silently retry another model.
   const reasoningModel = /^gpt-6(?:[.-]|$)/.test(selectedModel);
   const res = await doFetch(provider.url, {
+    signal: opts.signal,
     method: "POST",
     headers: {
       Authorization: `Bearer ${provider.apiKey}`,
@@ -162,6 +166,11 @@ export async function callLovableAi(
     body: JSON.stringify({
       model: selectedModel,
       messages,
+      ...(opts.maxOutputTokens !== undefined
+        ? provider.url === OPENAI_URL
+          ? { max_completion_tokens: opts.maxOutputTokens }
+          : { max_tokens: opts.maxOutputTokens }
+        : {}),
       ...(provider.url === OPENAI_URL && opts.role && reasoningModel
         ? {
             reasoning_effort:

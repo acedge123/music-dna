@@ -1,7 +1,8 @@
 import type { Actor } from "./access";
-import { assertDb, McpError } from "./access";
+import { assertDb, McpError, rpc } from "./access";
 import { hasMoreRows, boundedRows, nextCursor, pageCursor, safeSearch } from "./pagination";
 export type WhyFilters = {
+  lane?: string;
   song_id?: string;
   artist?: string;
   genre?: string;
@@ -28,7 +29,9 @@ export async function listWhys(
   if (state.last) query = query.gt("id", state.last);
   if (filters.song_id) query = query.eq("song_id", filters.song_id);
   if (filters.artist) query = query.ilike("artist", `%${safeSearch(filters.artist)}%`);
-  if (filters.genre) query = query.eq("genre", filters.genre);
+  if (filters.lane && filters.genre && filters.lane !== filters.genre)
+    throw new McpError("INVALID_INPUT");
+  if (filters.lane ?? filters.genre) query = query.eq("genre", filters.lane ?? filters.genre);
   if (filters.decade !== undefined)
     query = query.gte("year", filters.decade).lt("year", filters.decade + 10);
   if (filters.axis) query = query.eq("axis", filters.axis);
@@ -58,14 +61,7 @@ export async function listWhys(
   };
 }
 export async function getWhy(actor: Actor, id: string) {
-  const { data, error } = await actor.db
-    .from("musicdna_mcp_whys")
-    .select("record")
-    .eq("id", id)
-    .maybeSingle();
-  assertDb(error);
-  if (!data) throw new McpError("NOT_FOUND");
-  return data.record as WhyRecord;
+  return rpc<WhyRecord>(actor.db, "musicdna_mcp_why_review_context", { p_id: id });
 }
 export type WhyRecord = {
   explanation: {
@@ -81,7 +77,8 @@ export type WhyRecord = {
     [key: string]: unknown;
   };
   version: string;
-  song: { id: string; title: string; artist: string; year: number | null };
+  review_context_version?: string;
+  song: { id: string; title: string; artist: string; year: number | null; genre?: string };
   attribute: {
     key: string | null;
     current_score: number | null;

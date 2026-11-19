@@ -140,3 +140,7 @@ No production deployment, migration, grants, OAuth setting, key, source or model
 ## Scoped QA add-on
 
 The separately reviewed AB-89/AB-90 add-on is documented in `admin-mcp-qa.md`; the cumulative service inventory is 41 tools at version 0.2.0. Phase 1 remains the initial catalog/Why deliverable. Neither source review nor an empty/unavailable diagnostic constitutes hosted acceptance. The new evidence for the supplied final-report failure is in `admin-mcp-regression-2026-11-18.md` and tracked as AB-91.
+
+## Saved-explanation AI re-review extension (AB-92)
+
+See [implementation and deployment requirements](admin-mcp-saved-why-reviews.md). This feature adds three tools (44 total after extraction); it is not live merely because the local manifest exists. Paid acceptance is limited to the two explicitly selected explanations in that document. Migration must precede app promotion. Existing rule-based audits remain separate.

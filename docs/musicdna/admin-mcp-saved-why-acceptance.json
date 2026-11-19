@@ -1,0 +1,41 @@
+{
+  "ticket": "AB-92",
+  "status": "authorized_pending_merge_migration_and_deployment",
+  "paid_calls_executed": 0,
+  "max_paid_calls": 2,
+  "output_token_cap_per_call": 2000,
+  "timeout_ms": 20000,
+  "automatic_retries": false,
+  "selection": [
+    {
+      "title": "Ask",
+      "artist": "The Smiths",
+      "year": 1986,
+      "axis": "texture",
+      "explanation_id": "001e68ad-de4d-4643-9aef-ca2451b5c5e1",
+      "expected_version": "why-v1:7f4612e619dd30b1c33fbb21f32912a35b284e0e6425669962e2ec7b3d66f46a",
+      "score_at_write": 88,
+      "request_id": null,
+      "result": null,
+      "lane": "general"
+    },
+    {
+      "title": "Glue Song",
+      "artist": "beabadoobee",
+      "year": 2023,
+      "axis": "perspective",
+      "explanation_id": "004a00ee-908b-47a4-aad2-bf9688025835",
+      "expected_version": "why-v1:8d718b670cb8e54bcc2c10a6b9f7f4089c37d62c4ccc08c9dc54ea9e04afcf69",
+      "score_at_write": 15,
+      "request_id": null,
+      "result": null,
+      "lane": "alternative"
+    }
+  ],
+  "requirements": [
+    "Refresh exact source and context after deployment; changed selection requires a new human decision",
+    "Reuse each mutation ID after lost responses; no model retry",
+    "Record actual configured/returned reviewer, measurements, freshness, original approval/history/catalog unchanged",
+    "No full-catalog backfill or automatic score correction"
+  ]
+}

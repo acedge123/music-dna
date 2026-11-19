@@ -304,17 +304,20 @@
             "type": "string",
             "maxLength": 5000
           },
+          "lane": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
           "song_id": {
             "type": "string",
             "format": "uuid"
           },
           "artist": {
-            "type": "string",
-            "minLength": 1,
-            "maxLength": 200
+            "$ref": "#/properties/lane"
           },
           "genre": {
-            "$ref": "#/properties/artist"
+            "$ref": "#/properties/lane"
           },
           "decade": {
             "type": "integer",
@@ -345,7 +348,7 @@
             ]
           },
           "confidence": {
-            "$ref": "#/properties/artist"
+            "$ref": "#/properties/lane"
           },
           "created_after": {
             "type": "string",
@@ -366,7 +369,7 @@
     {
       "name": "song_whys_get",
       "title": "song whys get",
-      "description": "Use this when inspect a complete explanation at its current version fingerprint, with Hear/Means/review note and exact score/definition.",
+      "description": "Use this when inspect a complete saved explanation and review_context_version before a paid re-review. Includes original/current score, authoritative definition, catalog recording identity and honest uncertainty.",
       "annotations": {
         "readOnlyHint": true,
         "destructiveHint": false,
@@ -384,6 +387,136 @@
         "required": [
           "explanation_id"
         ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "song_whys_request_ai_review",
+      "title": "song whys request ai review",
+      "description": "Use this when explicitly re-review ONE selected saved explanation (approved included) with the configured stronger reviewer. PAID: obtain explicit human confirmation for this exact version/context before confirm_paid_review=true. Use song_whys_get first. One 20-second / 2,000-output-token attempt, no writer, no automatic retry. Reuse mutation_id after any lost response. Historical review, text, scores and approvals remain unchanged. Read-only access does not authorize this tool.",
+      "annotations": {
+        "readOnlyHint": false,
+        "destructiveHint": false,
+        "idempotentHint": true,
+        "openWorldHint": true
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "explanation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "expected_version": {
+            "type": "string",
+            "pattern": "^why-v1:[a-f0-9]{64}$"
+          },
+          "expected_context_version": {
+            "type": "string",
+            "pattern": "^why-v1:[a-f0-9]{64}$"
+          },
+          "mutation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "confirm_paid_review": {
+            "type": "boolean",
+            "const": true
+          }
+        },
+        "required": [
+          "explanation_id",
+          "expected_version",
+          "expected_context_version",
+          "mutation_id",
+          "confirm_paid_review"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "song_whys_get_ai_review",
+      "title": "song whys get ai review",
+      "description": "Use this when read one saved advisory AI-review request/result with original text and score, immutable version/context, new findings, nullable suggested score, measurements and separate stale flags. Does not start model work.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "request_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "request_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "song_whys_list_ai_reviews",
+      "title": "song whys list ai reviews",
+      "description": "Use this when page saved AI-review results, score disputes and unavailable/uncertain score suggestions. Findings are new audit records, never retroactive historical verdicts. Does not run an AI review; rule-based song_whys_run_audit is separate.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "explanation_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "lane": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+          },
+          "score_disputed": {
+            "type": "boolean"
+          },
+          "suggestion_unavailable": {
+            "type": "boolean"
+          },
+          "stale": {
+            "type": "boolean"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "requested",
+              "running",
+              "completed",
+              "failed",
+              "ambiguous",
+              "expired_or_ambiguous"
+            ]
+          }
+        },
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },

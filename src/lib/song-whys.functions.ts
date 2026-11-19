@@ -10,7 +10,6 @@ import {
   SONG_WHY_REVIEW_INSTRUCTIONS,
   parseSongWhyReview,
   reviewStorageFields,
-  requiresIndividualReview,
 } from "@/musicdna/engine/song-why-review";
 
 type Ctx = { supabase: SupabaseClient<Database>; userId: string };
@@ -274,46 +273,10 @@ export const approveAllSongWhys = createServerFn({ method: "POST" })
   .inputValidator((d: unknown) => z.object({ lane: z.string().max(60).nullable() }).parse(d))
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const { data: rows, error } = await context.supabase
-      .from("song_trait_explanations")
-      .select(
-        `id,axis,score_at_write,score_disputed,model_review_verdict,songs(primary_lane,${DIMS.join(",")})`,
-      )
-      .eq("status", "pending_review")
-      .limit(5000);
-    if (error) throw new Error(error.message);
-    let stale = 0,
-      challenged = 0;
-    const ids: string[] = [];
-    for (const r of (rows ?? []) as unknown as WhyWithSong[]) {
-      if (data.lane && r.songs?.primary_lane !== data.lane) continue;
-      if (requiresIndividualReview(r)) {
-        challenged++;
-        continue;
-      }
-      if (
-        !r.songs ||
-        !explanationIsCurrent(r, Number((r.songs as unknown as Record<string, unknown>)[r.axis]))
-      ) {
-        stale++;
-        continue;
-      }
-      ids.push(r.id);
-    }
-    for (let i = 0; i < ids.length; i += 200) {
-      const { error: e } = await context.supabase
-        .from("song_trait_explanations")
-        .update({
-          status: "approved",
-          confidence: "reviewed",
-          reviewed_by: context.userId,
-          reviewed_at: new Date().toISOString(),
-        } as never)
-        .in("id", ids.slice(i, i + 200))
-        .eq("status", "pending_review")
-        .eq("score_disputed", false)
-        .or("model_review_verdict.is.null,model_review_verdict.eq.pass");
-      if (e) throw new Error(e.message);
-    }
-    return { approved: ids.length, skipped_stale: stale, skipped_challenged: challenged };
+    const { rpc } = await import("./mcp/access");
+    return rpc<{ approved: number; skipped_stale: number; skipped_challenged: number }>(
+      context.supabase,
+      "musicdna_mcp_bulk_approve_whys",
+      { p_lane: data.lane },
+    );
   });
