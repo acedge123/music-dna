@@ -1,0 +1,32 @@
+{
+  "checks": [
+    "HTTP preload error and retry",
+    "separate square readiness",
+    "share cancellation without download",
+    "share failure download fallback and inline retry",
+    "download failure inline retry",
+    "token change disables stale file",
+    "SVG decode failure and retry",
+    "all conversion URLs released",
+    "four SVGs actual text bounds"
+  ],
+  "bounds": [
+    {
+      "i": 0,
+      "violations": []
+    },
+    {
+      "i": 1,
+      "violations": []
+    },
+    {
+      "i": 2,
+      "violations": []
+    },
+    {
+      "i": 3,
+      "violations": []
+    }
+  ],
+  "pageErrors": []
+}
