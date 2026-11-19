@@ -4,8 +4,8 @@
 
 - [x] Apply agreed category order after picks 1–6 in both saved flows, preserve 2.5-second beats and complete person pairs; use Overtime only during pick-six final writing.
 - [x] Add the twelve approved Overtime lines to shared copy/API/admin library and update Flutter handoff with acceptance checks; existing API fields, flags and saved flow stay unchanged.
-- [x] 44 focused regressions and touched-file lint pass; preview build OK. Real guest three-song save → first pick → neutral-only wait → next matchup passes. Isolated browser verifies delayed reaction-first save, complete pick-two pair, late hunch/final Overtime and 390px fit without page errors.
-- [ ] Production/full-six/checkpoint and Flutter acceptance: requires deployment and the separate Flutter presentation change. V1 endpoint remains correctly disabled; no flags changed.
+- [x] 44 focused regressions and touched-file lint pass; preview build OK. Real guest six-pick run displays every agreed category pattern, with ordered pick-two pair and final Overtime. All six isolated waits fit 1280px/390px; all twelve Overtime lines rotate in order and hold without repeats or page errors. Product has one dark theme.
+- [ ] Completed-report/production/checkpoint and Flutter acceptance: real six-pick preview reaches the existing unsaved-report Retry screen, so successful final delivery remains unverified. Requires separate report recovery verification, deployment and Flutter presentation change. V1 endpoint remains correctly disabled; no flags changed.
 
 ## Planned — fix three: decade staples pack
 
