@@ -48,6 +48,7 @@ import { Route as ApiV1SessionIdFeedbackRouteImport } from './routes/api/v1/sess
 import { Route as ApiV1SessionIdNextRouteImport } from './routes/api/v1/session.$id.next'
 import { Route as ApiV1SessionIdPrepareRouteImport } from './routes/api/v1/session.$id.prepare'
 import { Route as ApiV1SessionIdPushbackRouteImport } from './routes/api/v1/session.$id.pushback'
+import { Route as ApiV1SessionIdQaQuipsRouteImport } from './routes/api/v1/session.$id.qa-quips'
 import { Route as ApiV1SessionIdReactRouteImport } from './routes/api/v1/session.$id.react'
 import { Route as ApiV1SessionIdReadRouteImport } from './routes/api/v1/session.$id.read'
 import { Route as ApiV1SessionIdRefineRouteImport } from './routes/api/v1/session.$id.refine'
@@ -253,6 +254,11 @@ const ApiV1SessionIdPushbackRoute = ApiV1SessionIdPushbackRouteImport.update({
   path: '/pushback',
   getParentRoute: () => ApiV1SessionIdRoute,
 } as any)
+const ApiV1SessionIdQaQuipsRoute = ApiV1SessionIdQaQuipsRouteImport.update({
+  id: '/qa-quips',
+  path: '/qa-quips',
+  getParentRoute: () => ApiV1SessionIdRoute,
+} as any)
 const ApiV1SessionIdReactRoute = ApiV1SessionIdReactRouteImport.update({
   id: '/react',
   path: '/react',
@@ -333,6 +339,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/prepare': typeof ApiV1SessionIdPrepareRoute
   '/api/v1/session/$id/pushback': typeof ApiV1SessionIdPushbackRoute
+  '/api/v1/session/$id/qa-quips': typeof ApiV1SessionIdQaQuipsRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
   '/api/v1/session/$id/read': typeof ApiV1SessionIdReadRoute
   '/api/v1/session/$id/refine': typeof ApiV1SessionIdRefineRoute
@@ -381,6 +388,7 @@ export interface FileRoutesByTo {
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/prepare': typeof ApiV1SessionIdPrepareRoute
   '/api/v1/session/$id/pushback': typeof ApiV1SessionIdPushbackRoute
+  '/api/v1/session/$id/qa-quips': typeof ApiV1SessionIdQaQuipsRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
   '/api/v1/session/$id/read': typeof ApiV1SessionIdReadRoute
   '/api/v1/session/$id/refine': typeof ApiV1SessionIdRefineRoute
@@ -431,6 +439,7 @@ export interface FileRoutesById {
   '/api/v1/session/$id/next': typeof ApiV1SessionIdNextRoute
   '/api/v1/session/$id/prepare': typeof ApiV1SessionIdPrepareRoute
   '/api/v1/session/$id/pushback': typeof ApiV1SessionIdPushbackRoute
+  '/api/v1/session/$id/qa-quips': typeof ApiV1SessionIdQaQuipsRoute
   '/api/v1/session/$id/react': typeof ApiV1SessionIdReactRoute
   '/api/v1/session/$id/read': typeof ApiV1SessionIdReadRoute
   '/api/v1/session/$id/refine': typeof ApiV1SessionIdRefineRoute
@@ -481,6 +490,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/prepare'
     | '/api/v1/session/$id/pushback'
+    | '/api/v1/session/$id/qa-quips'
     | '/api/v1/session/$id/react'
     | '/api/v1/session/$id/read'
     | '/api/v1/session/$id/refine'
@@ -529,6 +539,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/prepare'
     | '/api/v1/session/$id/pushback'
+    | '/api/v1/session/$id/qa-quips'
     | '/api/v1/session/$id/react'
     | '/api/v1/session/$id/read'
     | '/api/v1/session/$id/refine'
@@ -578,6 +589,7 @@ export interface FileRouteTypes {
     | '/api/v1/session/$id/next'
     | '/api/v1/session/$id/prepare'
     | '/api/v1/session/$id/pushback'
+    | '/api/v1/session/$id/qa-quips'
     | '/api/v1/session/$id/react'
     | '/api/v1/session/$id/read'
     | '/api/v1/session/$id/refine'
@@ -892,6 +904,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiV1SessionIdPushbackRouteImport
       parentRoute: typeof ApiV1SessionIdRoute
     }
+    '/api/v1/session/$id/qa-quips': {
+      id: '/api/v1/session/$id/qa-quips'
+      path: '/qa-quips'
+      fullPath: '/api/v1/session/$id/qa-quips'
+      preLoaderRoute: typeof ApiV1SessionIdQaQuipsRouteImport
+      parentRoute: typeof ApiV1SessionIdRoute
+    }
     '/api/v1/session/$id/react': {
       id: '/api/v1/session/$id/react'
       path: '/react'
@@ -976,6 +995,7 @@ interface ApiV1SessionIdRouteChildren {
   ApiV1SessionIdNextRoute: typeof ApiV1SessionIdNextRoute
   ApiV1SessionIdPrepareRoute: typeof ApiV1SessionIdPrepareRoute
   ApiV1SessionIdPushbackRoute: typeof ApiV1SessionIdPushbackRoute
+  ApiV1SessionIdQaQuipsRoute: typeof ApiV1SessionIdQaQuipsRoute
   ApiV1SessionIdReactRoute: typeof ApiV1SessionIdReactRoute
   ApiV1SessionIdReadRoute: typeof ApiV1SessionIdReadRoute
   ApiV1SessionIdRefineRoute: typeof ApiV1SessionIdRefineRoute
@@ -995,6 +1015,7 @@ const ApiV1SessionIdRouteChildren: ApiV1SessionIdRouteChildren = {
   ApiV1SessionIdNextRoute: ApiV1SessionIdNextRoute,
   ApiV1SessionIdPrepareRoute: ApiV1SessionIdPrepareRoute,
   ApiV1SessionIdPushbackRoute: ApiV1SessionIdPushbackRoute,
+  ApiV1SessionIdQaQuipsRoute: ApiV1SessionIdQaQuipsRoute,
   ApiV1SessionIdReactRoute: ApiV1SessionIdReactRoute,
   ApiV1SessionIdReadRoute: ApiV1SessionIdReadRoute,
   ApiV1SessionIdRefineRoute: ApiV1SessionIdRefineRoute,

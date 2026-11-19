@@ -21,7 +21,7 @@ The source entry is `src/lib/mcp/index.ts`. `.lovable/mcp/manifest.json` is the 
 
 ## Tools
 
-All success responses have `musicdna-admin.v1` structured output plus JSON text, except standard `search`/`fetch`, which use the standard one-text-content JSON shapes. Schemas and defaults are in the generated manifest.
+Custom tools have versioned structured output (`musicdna-admin.v1`, or `musicdna-admin-export.v1` for export artifacts) plus JSON text, except standard `search`/`fetch`, which use the standard one-text-content JSON shapes. Schemas and defaults are in the generated manifest.
 
 | Tools                                                      | Access                                | Behavior                                                                                                                                            |
 | ---------------------------------------------------------- | ------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -134,3 +134,7 @@ No production deployment, migration, grants, OAuth setting, key, source or model
 - [OpenAI app authentication](https://developers.openai.com/plugins/build/auth)
 - [Supabase MCP OAuth authentication](https://supabase.com/docs/guides/auth/oauth-server/mcp-authentication)
 - Installed `@lovable.dev/mcp-js` 0.22.2 README and Mom Walk's existing operator MCP implementation.
+
+## Scoped QA add-on
+
+The separately reviewed AB-89/AB-90 add-on is documented in `admin-mcp-qa.md`; the cumulative service inventory is 41 tools at version 0.2.0. Phase 1 remains the initial catalog/Why deliverable. Neither source review nor an empty/unavailable diagnostic constitutes hosted acceptance. The new evidence for the supplied final-report failure is in `admin-mcp-regression-2026-11-18.md` and tracked as AB-91.

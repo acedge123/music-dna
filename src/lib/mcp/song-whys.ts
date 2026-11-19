@@ -1,6 +1,6 @@
 import type { Actor } from "./access";
 import { assertDb, McpError } from "./access";
-import { boundedRows, nextCursor, pageCursor, safeSearch } from "./pagination";
+import { hasMoreRows, boundedRows, nextCursor, pageCursor, safeSearch } from "./pagination";
 export type WhyFilters = {
   song_id?: string;
   artist?: string;
@@ -48,10 +48,9 @@ export async function listWhys(
     snapshot: state.snapshot,
     sort: "id ascending",
     count_scope: "total at first page; mutable records are not a cross-page snapshot",
-    next_cursor:
-      (data?.length ?? 0) > rows.length
-        ? nextCursor(actor.userId, { ...state, total: state.total ?? count }, rows.at(-1)!.id)
-        : null,
+    next_cursor: hasMoreRows(count, rows.length)
+      ? nextCursor(actor.userId, { ...state, total: state.total ?? count }, rows.at(-1)!.id)
+      : null,
     availability: {
       reviewer_model_filter: "not_recorded",
       numeric_reviewer_confidence: "not_recorded",
@@ -120,10 +119,9 @@ export async function whyHistory(
     unavailable:
       "Original drafts, model rejections and edits before the baseline were not recorded; no reconstruction is attempted.",
     snapshot: state.snapshot,
-    next_cursor:
-      (data?.length ?? 0) > rows.length
-        ? nextCursor(actor.userId, { ...state, total: state.total ?? count }, rows.at(-1)!.id)
-        : null,
+    next_cursor: hasMoreRows(count, rows.length)
+      ? nextCursor(actor.userId, { ...state, total: state.total ?? count }, rows.at(-1)!.id)
+      : null,
   };
 }
 export function screenWhy(record: WhyRecord) {

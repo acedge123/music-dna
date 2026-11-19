@@ -13,7 +13,7 @@ import {
 } from "./access";
 import { catalogSummary, getSong, listSongs, ontology, searchSongs } from "./catalog";
 import { getWhy, listWhys, screenWhy, whyHistory } from "./song-whys";
-import { boundedRows, pageSchema, pageCursor, nextCursor } from "./pagination";
+import { hasMoreRows, boundedRows, pageSchema, pageCursor, nextCursor } from "./pagination";
 
 export function tool<S extends z.ZodRawShape>(
   name: string,
@@ -353,10 +353,9 @@ export const catalogTools = [
         findings: rows,
         total_count: state.total ?? count,
         returned_count: rows.length,
-        next_cursor:
-          (data?.length ?? 0) > rows.length
-            ? nextCursor(a.userId, { ...state, total: state.total ?? count }, rows.at(-1)!.id)
-            : null,
+        next_cursor: hasMoreRows(count, rows.length)
+          ? nextCursor(a.userId, { ...state, total: state.total ?? count }, rows.at(-1)!.id)
+          : null,
       };
     },
   ),

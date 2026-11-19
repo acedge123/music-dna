@@ -1,3 +1,5 @@
+import { qaTools } from "./qa-tools";
+import { modelTools } from "./model-tools";
 import { describe, it, expect, vi } from "vitest";
 import { randomUUID } from "node:crypto";
 import { boundedRows, pageCursor, nextCursor, safeSearch } from "./pagination";
@@ -87,7 +89,7 @@ describe("MCP contract boundaries", () => {
   });
   it("commits the same tool inventory and permits no assistant approval/delete/rescore tools", () => {
     expect(manifest.mcp.tools.map((t) => t.name).sort()).toEqual(
-      [...discoveryTools, ...catalogTools].map((t) => t.name).sort(),
+      [...discoveryTools, ...catalogTools, ...qaTools, ...modelTools].map((t) => t.name).sort(),
     );
     expect(catalogTools.some((t) => /approve|delete|rescore/.test(t.name))).toBe(false);
     expect(manifest.auth).toMatchObject({
