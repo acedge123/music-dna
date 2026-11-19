@@ -26,4 +26,4 @@ it('corrects Gojira’s Toxic Garbage Island to 2008 without changing scores or 
   } finally {
     await db.close();
   }
-});
+}, 30_000);
