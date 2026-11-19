@@ -2902,13 +2902,17 @@ export type Database = {
           drafted_by: string
           id: string
           interpretation: string
+          model_review_verdict: string | null
           review_note: string | null
           reviewed_at: string | null
           reviewed_by: string | null
           score_at_write: number
+          score_dispute_reason: string | null
+          score_disputed: boolean
           scoring_version: string | null
           song_id: string
           status: string
+          suggested_score: number | null
           updated_at: string
         }
         Insert: {
@@ -2919,13 +2923,17 @@ export type Database = {
           drafted_by?: string
           id?: string
           interpretation: string
+          model_review_verdict?: string | null
           review_note?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           score_at_write: number
+          score_dispute_reason?: string | null
+          score_disputed?: boolean
           scoring_version?: string | null
           song_id: string
           status?: string
+          suggested_score?: number | null
           updated_at?: string
         }
         Update: {
@@ -2936,13 +2944,17 @@ export type Database = {
           drafted_by?: string
           id?: string
           interpretation?: string
+          model_review_verdict?: string | null
           review_note?: string | null
           reviewed_at?: string | null
           reviewed_by?: string | null
           score_at_write?: number
+          score_dispute_reason?: string | null
+          score_disputed?: boolean
           scoring_version?: string | null
           song_id?: string
           status?: string
+          suggested_score?: number | null
           updated_at?: string
         }
         Relationships: [

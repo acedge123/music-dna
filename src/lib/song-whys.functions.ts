@@ -1,12 +1,27 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import type { Database } from "@/integrations/supabase/types";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { DIMS, DIM_LABEL } from "@/musicdna/engine/axes";
 import { distinctiveTraits, explanationIsCurrent } from "@/musicdna/engine/song-whys";
+import {
+  SONG_WHY_REVIEW_SCHEMA,
+  SONG_WHY_REVIEW_INSTRUCTIONS,
+  parseSongWhyReview,
+  reviewStorageFields,
+  requiresIndividualReview,
+} from "@/musicdna/engine/song-why-review";
 
-type Ctx = { supabase: any; userId: string };
+type Ctx = { supabase: SupabaseClient<Database>; userId: string };
+type Song = Database["public"]["Tables"]["songs"]["Row"];
+type Why = Database["public"]["Tables"]["song_trait_explanations"]["Row"];
+type WhyWithSong = Why & { songs: Song | null };
 async function assertAdmin(context: Ctx) {
-  const { data } = await context.supabase.rpc("has_role", { _user_id: context.userId, _role: "admin" });
+  const { data } = await context.supabase.rpc("has_role", {
+    _user_id: context.userId,
+    _role: "admin",
+  });
   if (!data) throw new Error("Forbidden: admin only");
 }
 
@@ -14,21 +29,28 @@ export const WHY_BATCH = 10;
 const SONG_COLS = `id,title,artist,year,primary_lane,scoring_version,${DIMS.join(",")}`;
 
 /** Active songs ordered by how often listeners picked them, still missing explanations. */
-async function nextSongs(db: any, limit: number) {
+async function nextSongs(db: SupabaseClient<Database>, limit: number) {
   const [{ data: songs }, { data: picks }, { data: done }] = await Promise.all([
     db.from("songs").select(SONG_COLS).eq("active", true).limit(5000),
     db.from("choices").select("chosen_song_id,rejected_song_id").limit(20000),
     db.from("song_trait_explanations").select("song_id,axis,score_at_write,status").limit(20000),
   ]);
+  const catalog = songs as unknown as Song[] | null;
   const count = new Map<string, number>();
-  for (const c of picks ?? []) for (const id of [c.chosen_song_id, c.rejected_song_id]) if (id) count.set(id, (count.get(id) ?? 0) + 1);
-  const covered = new Set(
-    (done ?? []).filter((d: any) => d.status !== "rejected").map((d: any) => `${d.song_id}|${d.axis}|${d.score_at_write}`),
-  );
-  return (songs ?? [])
-    .map((s: any) => ({ s, traits: distinctiveTraits(s).filter((t) => !covered.has(`${s.id}|${t.axis}|${t.score}`)) }))
-    .filter((x: any) => x.traits.length)
-    .sort((a: any, b: any) => (count.get(b.s.id) ?? 0) - (count.get(a.s.id) ?? 0) || a.s.title.localeCompare(b.s.title))
+  for (const c of picks ?? [])
+    for (const id of [c.chosen_song_id, c.rejected_song_id])
+      if (id) count.set(id, (count.get(id) ?? 0) + 1);
+  const covered = new Set((done ?? []).map((d) => `${d.song_id}|${d.axis}|${d.score_at_write}`));
+  return (catalog ?? [])
+    .map((s) => ({
+      s,
+      traits: distinctiveTraits(s).filter((t) => !covered.has(`${s.id}|${t.axis}|${t.score}`)),
+    }))
+    .filter((x) => x.traits.length)
+    .sort(
+      (a, b) =>
+        (count.get(b.s.id) ?? 0) - (count.get(a.s.id) ?? 0) || a.s.title.localeCompare(b.s.title),
+    )
     .slice(0, limit);
 }
 
@@ -37,13 +59,16 @@ export const songWhysOverview = createServerFn({ method: "GET" })
   .handler(async ({ context }) => {
     await assertAdmin(context);
     const remaining = await nextSongs(context.supabase, 100000);
-    const { data } = await context.supabase.from("song_trait_explanations").select("status").limit(20000);
+    const { data } = await context.supabase
+      .from("song_trait_explanations")
+      .select("status")
+      .limit(20000);
     const totals: Record<string, number> = {};
     for (const r of data ?? []) totals[r.status] = (totals[r.status] ?? 0) + 1;
     return {
       totals,
       songs_remaining: remaining.length,
-      next_batch: remaining.slice(0, WHY_BATCH).map((x: any) => `${x.s.title} — ${x.s.artist}`),
+      next_batch: remaining.slice(0, WHY_BATCH).map((x) => `${x.s.title} — ${x.s.artist}`),
       // Writer + reviewer per song.
       next_batch_calls: Math.min(WHY_BATCH, remaining.length) * 2,
     };
@@ -69,26 +94,6 @@ const WRITER_SCHEMA = {
     },
   },
 };
-const REVIEW_SCHEMA = {
-  type: "object",
-  additionalProperties: false,
-  required: ["items"],
-  properties: {
-    items: {
-      type: "array",
-      items: {
-        type: "object",
-        additionalProperties: false,
-        required: ["axis", "verdict", "note"],
-        properties: {
-          axis: { type: "string" },
-          verdict: { type: "string", enum: ["pass", "fail"] },
-          note: { type: "string" },
-        },
-      },
-    },
-  },
-};
 
 export const draftSongWhys = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -96,11 +101,14 @@ export const draftSongWhys = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { callLovableAi } = await import("@/musicdna/adapters/llm-gateway");
     const batch = await nextSongs(context.supabase, WHY_BATCH);
-    let drafted = 0, rejected = 0, failed = 0;
+    let drafted = 0,
+      rejected = 0,
+      disputed = 0,
+      failed = 0;
     await Promise.all(
-      batch.map(async ({ s, traits }: any) => {
+      batch.map(async ({ s, traits }) => {
         const traitLines = traits
-          .map((t: any) => {
+          .map((t) => {
             const l = DIM_LABEL[t.axis];
             return `- ${t.axis}: ${t.score}/100 (100 = ${l.hi}, 0 = ${l.lo}; this song leans ${t.score > 50 ? l.hi : l.lo})`;
           })
@@ -118,33 +126,41 @@ For each trait: audible_evidence = what a listener can actually hear (production
 No chart facts, dates, personnel or trivia. If you are not confident about the recording, write audible_evidence "UNSURE". Use the trait keys exactly.`,
                 },
               ],
-              { role: "writer", stage: "chat", jsonSchema: { name: "song_whys", schema: WRITER_SCHEMA } },
+              {
+                role: "writer",
+                stage: "chat",
+                jsonSchema: { name: "song_whys", schema: WRITER_SCHEMA },
+              },
             ),
           ) as { items: { axis: string; audible_evidence: string; interpretation: string }[] };
           const items = written.items.filter(
-            (i) => traits.some((t: any) => t.axis === i.axis) && !/UNSURE/i.test(i.audible_evidence),
+            (i) => traits.some((t) => t.axis === i.axis) && !/UNSURE/i.test(i.audible_evidence),
           );
           if (!items.length) return;
-          const review = JSON.parse(
-            await callLovableAi(
-              [
-                {
-                  role: "user",
-                  content: `Independent music reviewer. Check each explanation for ${song} against what this recording actually sounds like.
-Fail it if it describes a sound the recording does not have, is generic enough to fit most songs, includes invented facts (personnel, chart, dates), or doesn't support the score direction.
+          const review = parseSongWhyReview(
+            JSON.parse(
+              await callLovableAi(
+                [
+                  {
+                    role: "user",
+                    content: `${SONG_WHY_REVIEW_INSTRUCTIONS}\nRecording: ${song}
 Scores:\n${traitLines}\nExplanations:\n${JSON.stringify(items)}`,
+                  },
+                ],
+                {
+                  role: "reviewer",
+                  stage: "chat",
+                  jsonSchema: { name: "song_whys_review", schema: SONG_WHY_REVIEW_SCHEMA },
                 },
-              ],
-              { role: "reviewer", stage: "chat", jsonSchema: { name: "song_whys_review", schema: REVIEW_SCHEMA } },
+              ),
             ),
-          ) as { items: { axis: string; verdict: string; note: string }[] };
+            items.map((i) => i.axis),
+          );
           for (const i of items) {
-            const v = review.items.find((r) => r.axis === i.axis);
-            if (v?.verdict !== "pass") {
-              rejected++;
-              continue;
-            }
-            const t = traits.find((x: any) => x.axis === i.axis);
+            const v = review.find((r) => r.axis === i.axis);
+            if (!v) throw new Error("Missing attribute review");
+            const t = traits.find((x) => x.axis === i.axis);
+            if (!t) throw new Error("Unknown reviewed attribute");
             const { error } = await context.supabase.from("song_trait_explanations").insert({
               song_id: s.id,
               axis: i.axis,
@@ -153,43 +169,68 @@ Scores:\n${traitLines}\nExplanations:\n${JSON.stringify(items)}`,
               interpretation: i.interpretation.trim().slice(0, 300),
               scoring_version: s.scoring_version,
               drafted_by: "sol",
-              review_note: v.note.slice(0, 300),
+              ...reviewStorageFields(v),
             });
             if (error) failed++;
-            else drafted++;
+            else {
+              drafted++;
+              if (v.verdict === "fail") rejected++;
+              if (v.score_disputed) disputed++;
+            }
           }
         } catch {
           failed++;
         }
       }),
     );
-    return { songs: batch.length, drafted, rejected, failed };
+    return { songs: batch.length, drafted, rejected, disputed, failed };
   });
 
 export const listSongWhys = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((d: unknown) =>
-    z.object({ status: z.enum(["pending_review", "approved", "rejected"]), page: z.number().int().min(0) }).parse(d),
+    z
+      .object({
+        status: z.enum(["pending_review", "approved", "rejected"]),
+        page: z.number().int().min(0),
+      })
+      .parse(d),
   )
   .handler(async ({ data, context }) => {
     await assertAdmin(context);
-    const { data: rows, error, count } = await context.supabase
+    const {
+      data: rows,
+      error,
+      count,
+    } = await context.supabase
       .from("song_trait_explanations")
-      .select(`id,axis,score_at_write,audible_evidence,interpretation,status,review_note,songs(title,artist,year,primary_lane,${DIMS.join(",")})`, { count: "exact" })
+      .select(
+        `id,axis,score_at_write,audible_evidence,interpretation,status,review_note,score_disputed,suggested_score,score_dispute_reason,model_review_verdict,songs(title,artist,year,primary_lane,${DIMS.join(",")})`,
+        { count: "exact" },
+      )
       .eq("status", data.status)
       .order("created_at", { ascending: false })
       .range(data.page * 50, data.page * 50 + 49);
     if (error) throw new Error(error.message);
     return {
       count: count ?? 0,
-      rows: (rows ?? []).map((r: any) => ({
+      rows: ((rows ?? []) as unknown as WhyWithSong[]).map((r) => ({
         id: r.id as string,
         axis: r.axis as string,
         score: r.score_at_write as number,
-        stale: r.songs ? !explanationIsCurrent(r, Number(r.songs[r.axis])) : false,
+        stale: r.songs
+          ? !explanationIsCurrent(
+              r,
+              Number((r.songs as unknown as Record<string, unknown>)[r.axis]),
+            )
+          : false,
         audible_evidence: r.audible_evidence as string,
         interpretation: r.interpretation as string,
         review_note: r.review_note as string | null,
+        score_disputed: r.score_disputed as boolean,
+        suggested_score: r.suggested_score as number | null,
+        score_dispute_reason: r.score_dispute_reason as string | null,
+        model_review_verdict: r.model_review_verdict as string | null,
         song: r.songs ? `${r.songs.title} — ${r.songs.artist}` : "",
         lane: r.songs?.primary_lane ?? "",
         year: r.songs?.year ?? null,
@@ -219,7 +260,10 @@ export const reviewSongWhy = createServerFn({ method: "POST" })
     };
     if (data.audible_evidence) patch.audible_evidence = data.audible_evidence;
     if (data.interpretation) patch.interpretation = data.interpretation;
-    const { error } = await context.supabase.from("song_trait_explanations").update(patch as never).eq("id", data.id);
+    const { error } = await context.supabase
+      .from("song_trait_explanations")
+      .update(patch as never)
+      .eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -232,24 +276,44 @@ export const approveAllSongWhys = createServerFn({ method: "POST" })
     await assertAdmin(context);
     const { data: rows, error } = await context.supabase
       .from("song_trait_explanations")
-      .select(`id,axis,score_at_write,songs(primary_lane,${DIMS.join(",")})`)
+      .select(
+        `id,axis,score_at_write,score_disputed,model_review_verdict,songs(primary_lane,${DIMS.join(",")})`,
+      )
       .eq("status", "pending_review")
       .limit(5000);
     if (error) throw new Error(error.message);
-    let stale = 0;
+    let stale = 0,
+      challenged = 0;
     const ids: string[] = [];
-    for (const r of (rows ?? []) as any[]) {
+    for (const r of (rows ?? []) as unknown as WhyWithSong[]) {
       if (data.lane && r.songs?.primary_lane !== data.lane) continue;
-      if (!r.songs || !explanationIsCurrent(r, Number(r.songs[r.axis]))) { stale++; continue; }
+      if (requiresIndividualReview(r)) {
+        challenged++;
+        continue;
+      }
+      if (
+        !r.songs ||
+        !explanationIsCurrent(r, Number((r.songs as unknown as Record<string, unknown>)[r.axis]))
+      ) {
+        stale++;
+        continue;
+      }
       ids.push(r.id);
     }
     for (let i = 0; i < ids.length; i += 200) {
       const { error: e } = await context.supabase
         .from("song_trait_explanations")
-        .update({ status: "approved", confidence: "reviewed", reviewed_by: context.userId, reviewed_at: new Date().toISOString() } as never)
+        .update({
+          status: "approved",
+          confidence: "reviewed",
+          reviewed_by: context.userId,
+          reviewed_at: new Date().toISOString(),
+        } as never)
         .in("id", ids.slice(i, i + 200))
-        .eq("status", "pending_review");
+        .eq("status", "pending_review")
+        .eq("score_disputed", false)
+        .or("model_review_verdict.is.null,model_review_verdict.eq.pass");
       if (e) throw new Error(e.message);
     }
-    return { approved: ids.length, skipped_stale: stale };
+    return { approved: ids.length, skipped_stale: stale, skipped_challenged: challenged };
   });

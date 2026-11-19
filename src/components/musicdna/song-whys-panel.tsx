@@ -5,7 +5,13 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { poleScoreLabel } from "@/musicdna/engine/axes";
-import { approveAllSongWhys, draftSongWhys, listSongWhys, reviewSongWhy, songWhysOverview } from "@/lib/song-whys.functions";
+import {
+  approveAllSongWhys,
+  draftSongWhys,
+  listSongWhys,
+  reviewSongWhy,
+  songWhysOverview,
+} from "@/lib/song-whys.functions";
 
 const FILTERS = [
   ["pending_review", "Ready to review"],
@@ -18,19 +24,26 @@ export function SongWhysPanel() {
   const [lane, setLane] = useState("all");
   const [busy, setBusy] = useState(false);
   const [edit, setEdit] = useState<{ id: string; ev: string; it: string } | null>(null);
-  const overview = useServerFn(songWhysOverview), draft = useServerFn(draftSongWhys);
-  const list = useServerFn(listSongWhys), review = useServerFn(reviewSongWhy);
+  const overview = useServerFn(songWhysOverview),
+    draft = useServerFn(draftSongWhys);
+  const list = useServerFn(listSongWhys),
+    review = useServerFn(reviewSongWhy);
   const approveAll = useServerFn(approveAllSongWhys);
   const qc = useQueryClient();
   const ov = useQuery({ queryKey: ["admin", "whys", "overview"], queryFn: () => overview() });
-  const q = useQuery({ queryKey: ["admin", "whys", status], queryFn: () => list({ data: { status, page: 0 } }) });
+  const q = useQuery({
+    queryKey: ["admin", "whys", status],
+    queryFn: () => list({ data: { status, page: 0 } }),
+  });
   const refresh = () => void qc.invalidateQueries({ queryKey: ["admin", "whys"] });
 
   async function runBatch() {
     setBusy(true);
     try {
       const r = await draft();
-      toast.success(`${r.drafted} drafted, ${r.rejected} failed review, ${r.failed} errors (${r.songs} songs)`);
+      toast.success(
+        `${r.drafted} saved for review, ${r.rejected} explanation challenges, ${r.disputed} score disputes, ${r.failed} errors (${r.songs} songs)`,
+      );
       refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Drafting failed");
@@ -40,11 +53,18 @@ export function SongWhysPanel() {
   }
   async function runApproveAll() {
     const scope = lane === "all" ? "all lanes" : lane;
-    if (!window.confirm(`Approve every waiting explanation (${scope})? Stale ones are skipped.`)) return;
+    if (
+      !window.confirm(
+        `Approve waiting explanations (${scope})? Stale, failed-review and score-disputed drafts are skipped.`,
+      )
+    )
+      return;
     setBusy(true);
     try {
       const r = await approveAll({ data: { lane: lane === "all" ? null : lane } });
-      toast.success(`${r.approved} approved${r.skipped_stale ? `, ${r.skipped_stale} stale skipped` : ""}`);
+      toast.success(
+        `${r.approved} approved, ${r.skipped_stale} stale skipped, ${r.skipped_challenged} challenges skipped`,
+      );
       refresh();
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Approve all failed");
@@ -53,8 +73,23 @@ export function SongWhysPanel() {
     }
   }
   async function act(id: string, s: "approved" | "rejected", text?: { ev: string; it: string }) {
+    const row = q.data?.rows.find((r) => r.id === id);
+    if (
+      s === "approved" &&
+      (row?.score_disputed || row?.model_review_verdict === "fail") &&
+      !window.confirm(
+        "Approve this explanation despite the reviewer’s challenge? The catalog score will not change.",
+      )
+    )
+      return;
     try {
-      await review({ data: { id, status: s, ...(text ? { audible_evidence: text.ev, interpretation: text.it } : {}) } });
+      await review({
+        data: {
+          id,
+          status: s,
+          ...(text ? { audible_evidence: text.ev, interpretation: text.it } : {}),
+        },
+      });
       setEdit(null);
       refresh();
     } catch (e) {
@@ -78,18 +113,26 @@ export function SongWhysPanel() {
             Next batch ({ov.data.next_batch_calls} AI calls): {ov.data.next_batch.join(" · ")}
           </p>
         )}
-        <Button size="sm" disabled={busy || !ov.data?.songs_remaining} onClick={() => void runBatch()}>
+        <Button
+          size="sm"
+          disabled={busy || !ov.data?.songs_remaining}
+          onClick={() => void runBatch()}
+        >
           {busy ? "Drafting…" : "Draft next batch"}
         </Button>
         <p className="text-xs text-muted-foreground">
-          Sol drafts, an independent reviewer checks musical accuracy; only passes land here. Only
-          approved explanations are ever used.
+          {ov.data?.totals.pending_review ?? 0} awaiting your decision.
         </p>
       </section>
 
       <div className="flex flex-wrap gap-2">
         {FILTERS.map(([k, label]) => (
-          <Button key={k} size="sm" variant={status === k ? "default" : "outline"} onClick={() => setStatus(k)}>
+          <Button
+            key={k}
+            size="sm"
+            variant={status === k ? "default" : "outline"}
+            onClick={() => setStatus(k)}
+          >
             {label}
           </Button>
         ))}
@@ -101,7 +144,9 @@ export function SongWhysPanel() {
         >
           <option value="all">All lanes</option>
           {lanes.map((l) => (
-            <option key={l} value={l}>{l}</option>
+            <option key={l} value={l}>
+              {l}
+            </option>
           ))}
         </select>
         {status === "pending_review" && (ov.data?.totals.pending_review ?? 0) > 0 && (
@@ -123,29 +168,77 @@ export function SongWhysPanel() {
                 <div className="flex flex-wrap items-baseline justify-between gap-2">
                   <p className="font-medium">{r.song}</p>
                   <p className="font-mono text-xs text-muted-foreground">
-                    {r.lane}{r.year ? ` · ${r.year}` : ""} · {poleScoreLabel(r.axis, r.score)} <span className="opacity-60">({r.axis} {r.score})</span>
+                    {r.lane}
+                    {r.year ? ` · ${r.year}` : ""} · {poleScoreLabel(r.axis, r.score)}{" "}
+                    <span className="opacity-60">
+                      ({r.axis} {r.score})
+                    </span>
                     {r.stale ? " · stale: song rescored" : ""}
                   </p>
                 </div>
                 {edit?.id === r.id ? (
                   <div className="space-y-2">
-                    <textarea aria-label="What you can hear" className="w-full rounded-sm border hairline bg-background p-2 text-sm" value={edit.ev} onChange={(e) => setEdit({ ...edit, ev: e.target.value })} />
-                    <textarea aria-label="What it means" className="w-full rounded-sm border hairline bg-background p-2 text-sm" value={edit.it} onChange={(e) => setEdit({ ...edit, it: e.target.value })} />
+                    <textarea
+                      aria-label="What you can hear"
+                      className="w-full rounded-sm border hairline bg-background p-2 text-sm"
+                      value={edit.ev}
+                      onChange={(e) => setEdit({ ...edit, ev: e.target.value })}
+                    />
+                    <textarea
+                      aria-label="What it means"
+                      className="w-full rounded-sm border hairline bg-background p-2 text-sm"
+                      value={edit.it}
+                      onChange={(e) => setEdit({ ...edit, it: e.target.value })}
+                    />
                   </div>
                 ) : (
                   <>
-                    <p className="text-sm"><span className="text-muted-foreground">Hear: </span>{r.audible_evidence}</p>
-                    <p className="text-sm"><span className="text-muted-foreground">Means: </span>{r.interpretation}</p>
+                    <p className="text-sm">
+                      <span className="text-muted-foreground">Hear: </span>
+                      {r.audible_evidence}
+                    </p>
+                    <p className="text-sm">
+                      <span className="text-muted-foreground">Means: </span>
+                      {r.interpretation}
+                    </p>
                   </>
                 )}
-                {r.review_note && <p className="text-xs text-muted-foreground">Reviewer: {r.review_note}</p>}
+                {r.review_note && (
+                  <p className="text-xs text-muted-foreground">Reviewer: {r.review_note}</p>
+                )}
+                {r.model_review_verdict === "fail" && (
+                  <p className="text-sm font-medium">Explanation challenged</p>
+                )}
+                {r.score_disputed && (
+                  <div className="border-l-2 border-border-strong pl-3 space-y-1">
+                    <p className="text-sm font-medium">
+                      Score disputed · current {r.score}/100 ·{" "}
+                      {r.suggested_score === null
+                        ? "no replacement proposed"
+                        : `suggested ${r.suggested_score}/100`}
+                    </p>
+                    <p className="text-sm">{r.score_dispute_reason}</p>
+                    <p className="text-xs text-muted-foreground">Catalog score unchanged</p>
+                  </div>
+                )}
                 {status !== "approved" || edit?.id === r.id ? (
-                  <div className="flex gap-2">
-                    <Button size="sm" onClick={() => void act(r.id, "approved", edit?.id === r.id ? edit : undefined)}>
+                  <div className="flex flex-wrap gap-2">
+                    <Button
+                      size="sm"
+                      onClick={() =>
+                        void act(r.id, "approved", edit?.id === r.id ? edit : undefined)
+                      }
+                    >
                       {edit?.id === r.id ? "Save & approve" : "Approve"}
                     </Button>
                     {edit?.id !== r.id && (
-                      <Button size="sm" variant="outline" onClick={() => setEdit({ id: r.id, ev: r.audible_evidence, it: r.interpretation })}>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() =>
+                          setEdit({ id: r.id, ev: r.audible_evidence, it: r.interpretation })
+                        }
+                      >
                         Edit
                       </Button>
                     )}
@@ -154,7 +247,13 @@ export function SongWhysPanel() {
                     </Button>
                   </div>
                 ) : (
-                  <Button size="sm" variant="outline" onClick={() => setEdit({ id: r.id, ev: r.audible_evidence, it: r.interpretation })}>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() =>
+                      setEdit({ id: r.id, ev: r.audible_evidence, it: r.interpretation })
+                    }
+                  >
                     Edit
                   </Button>
                 )}

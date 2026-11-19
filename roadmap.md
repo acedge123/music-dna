@@ -2,8 +2,9 @@
 
 ## Current — Song Whys score challenges
 
-- [ ] Strengthen musical accuracy, score magnitude and axis-confusion review; retain failed/disputed drafts with advisory scores and reasons, without rescoring.
-- [ ] Display challenges in admin, exclude them from bulk approval, test storage/approval rules and verify available UI. Authenticated production review requires externally managed admin access.
+- [x] Strengthen musical accuracy, score magnitude and axis-confusion review; retain failed/disputed drafts with advisory scores and reasons, without rescoring. Additive review columns applied; no access/model/routing changes.
+- [x] Display challenges in admin and exclude them from bulk approval; isolated desktop/phone examples show both numerical and uncertain suggestions, no overflow/errors, and individual override confirmation. Focused rule/storage tests and lint verify safeguards.
+- [ ] Authenticated live drafting→saved review→approval acceptance: requires externally managed admin access and Vercel deployment; isolated fixtures are not authenticated acceptance. No catalog rescoring or historical review backfill performed.
 
 ## Current — automatic rejected-report recovery
 
