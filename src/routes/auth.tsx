@@ -6,8 +6,15 @@ import { useAuth } from "@/hooks/use-auth";
 import { friendlyAuthError } from "@/lib/auth-errors";
 
 export const Route = createFileRoute("/auth")({
-  validateSearch: (search: Record<string, unknown>): { mode?: "forgot" } => ({
+  validateSearch: (
+    search: Record<string, unknown>,
+  ): { mode?: "forgot"; authorization_id?: string } => ({
     mode: search.mode === "forgot" ? "forgot" : undefined,
+    authorization_id:
+      typeof search.authorization_id === "string" &&
+      /^[A-Za-z0-9_-]{1,200}$/.test(search.authorization_id)
+        ? search.authorization_id
+        : undefined,
   }),
   head: () => ({
     meta: [
@@ -30,7 +37,7 @@ export const Route = createFileRoute("/auth")({
 
 function AuthPage() {
   const navigate = useNavigate();
-  const { mode: requestedMode } = Route.useSearch();
+  const { mode: requestedMode, authorization_id } = Route.useSearch();
   const { user, loading } = useAuth();
   const signedIn = !!user && !user.is_anonymous;
   const [mode, setMode] = useState<"sign-in" | "sign-up" | "forgot">(requestedMode ?? "sign-in");
@@ -40,8 +47,12 @@ function AuthPage() {
 
   useEffect(() => {
     if (!loading && signedIn && mode !== "forgot")
-      void navigate({ to: "/onboarding", replace: true });
-  }, [navigate, loading, signedIn, mode]);
+      void navigate(
+        authorization_id
+          ? { to: "/oauth/consent", search: { authorization_id }, replace: true }
+          : { to: "/onboarding", replace: true },
+      );
+  }, [navigate, loading, signedIn, mode, authorization_id]);
 
   useEffect(() => {
     if (requestedMode === "forgot") setMode("forgot");

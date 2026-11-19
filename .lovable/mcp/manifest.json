@@ -1,0 +1,833 @@
+{
+  "version": 1,
+  "sdk_version": "0.22.2",
+  "path": "/mcp",
+  "auth": {
+    "type": "oauth",
+    "issuer": "https://udycgnhvaanemhrchbuj.supabase.co/auth/v1",
+    "resource": "https://www.musicdna.fm/mcp",
+    "require_oauth_client_claim": true,
+    "accept_resource_claim": false,
+    "accepted_audiences": [
+      "authenticated"
+    ],
+    "jwks_uri": "https://udycgnhvaanemhrchbuj.supabase.co/auth/v1/.well-known/jwks.json"
+  },
+  "mcp": {
+    "server": {
+      "name": "musicdna-admin-mcp",
+      "version": "0.1.0",
+      "title": "MusicDNA Catalog & QA"
+    },
+    "tools": [
+      {
+        "name": "search",
+        "title": "Search MusicDNA catalog",
+        "description": "Find catalog songs by title, artist or verified release title. Returns up to 20 identity matches; use catalog_search_songs for complete cursor pagination.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "fetch",
+        "title": "Fetch MusicDNA catalog song",
+        "description": "Read an exact song item returned by search, including canonical scores, associated explanations and provenance. This does not fetch private interview traces.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "id": {
+              "type": "string",
+              "pattern": "^song:[0-9a-f-]{36}$"
+            }
+          },
+          "required": [
+            "id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "get_profile",
+        "title": "get profile",
+        "description": "Use this when identify your own connected MusicDNA operator account and current permissions. Does not enumerate other users.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "catalog_get_summary",
+        "title": "catalog get summary",
+        "description": "Use this when audit authoritative catalog/Why counts and coverage. Unrecorded model rejection statistics are explicitly unavailable.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "catalog_list_songs",
+        "title": "catalog list songs",
+        "description": "Use this when page the catalog with stable IDs and owner/filter-bound cursors. Genre means catalog primary lane; ordering is stable by ID.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "cursor": {
+              "type": "string",
+              "maxLength": 5000
+            },
+            "artist": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "title": {
+              "$ref": "#/properties/artist"
+            },
+            "genre": {
+              "$ref": "#/properties/artist"
+            },
+            "year_min": {
+              "type": "integer",
+              "minimum": 1800,
+              "maximum": 2200
+            },
+            "year_max": {
+              "type": "integer",
+              "minimum": 1800,
+              "maximum": 2200
+            },
+            "active": {
+              "type": "boolean"
+            },
+            "query": {
+              "$ref": "#/properties/artist"
+            },
+            "updated_after": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "attribute_complete": {
+              "type": "boolean"
+            },
+            "why_status": {
+              "type": "string",
+              "enum": [
+                "approved",
+                "pending_review",
+                "rejected"
+              ]
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "catalog_get_song",
+        "title": "catalog get song",
+        "description": "Use this when read one complete authoritative song, scores, associated explanations and catalog pairings. Missing provenance is not inferred.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "song_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "song_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "catalog_search_songs",
+        "title": "catalog search songs",
+        "description": "Use this when search titles/artists by normalized title/artist, punctuation/diacritics and partial/fuzzy trigram matching, with stable IDs and heuristic match confidence. Includes verified artwork-release titles; does not assert unique album/recording identity.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "query": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "cursor": {
+              "type": "string",
+              "maxLength": 5000
+            }
+          },
+          "required": [
+            "query"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "catalog_get_song_attributes",
+        "title": "catalog get song attributes",
+        "description": "Use this when inspect the existing ten dimension scores, poles, provenance and supporting explanations for one song. No new scoring engine or confidence is invented.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "song_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "song_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "catalog_get_attribute_ontology",
+        "title": "catalog get attribute ontology",
+        "description": "Use this when retrieve the live axes definitions/poles and shared numeric scale; unrecorded versions/thresholds remain unavailable.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_get_summary",
+        "title": "song whys get summary",
+        "description": "Use this when audit saved explanation status/attribute/genre/decade counts. Human approval/rejection is distinct from model reviewer outcomes.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "$schema": "http://json-schema.org/draft-07/schema#",
+          "type": "object",
+          "properties": {}
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_list",
+        "title": "song whys list",
+        "description": "Use this when retrieve complete saved Song Whys with exact score/ontology and honest provenance, one cursor page at a time; continue until next_cursor is null.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "cursor": {
+              "type": "string",
+              "maxLength": 5000
+            },
+            "song_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "artist": {
+              "type": "string",
+              "minLength": 1,
+              "maxLength": 200
+            },
+            "genre": {
+              "$ref": "#/properties/artist"
+            },
+            "decade": {
+              "type": "integer",
+              "minimum": 1900,
+              "maximum": 2100
+            },
+            "axis": {
+              "type": "string",
+              "enum": [
+                "movement",
+                "atmosphere",
+                "immersion",
+                "scale",
+                "community",
+                "perspective",
+                "confidence",
+                "tension",
+                "texture",
+                "transformation"
+              ]
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "approved",
+                "pending_review",
+                "rejected"
+              ]
+            },
+            "confidence": {
+              "$ref": "#/properties/artist"
+            },
+            "created_after": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "created_before": {
+              "$ref": "#/properties/created_after"
+            },
+            "stale": {
+              "type": "boolean"
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_get",
+        "title": "song whys get",
+        "description": "Use this when inspect a complete explanation at its current version fingerprint, with Hear/Means/review note and exact score/definition.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "explanation_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "explanation_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_export",
+        "title": "song whys export",
+        "description": "Use this when start or advance an asynchronous complete JSON/CSV export. Start requires a fresh idempotency key. Status advances the queued snapshot job. Ready links expire and require the SAME account and current catalog permission; no records are truncated inline.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "action": {
+              "type": "string",
+              "enum": [
+                "start",
+                "status"
+              ]
+            },
+            "mutation_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "job_id": {
+              "$ref": "#/properties/mutation_id"
+            },
+            "format": {
+              "type": "string",
+              "enum": [
+                "json",
+                "csv"
+              ],
+              "default": "json"
+            },
+            "filters": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string",
+                  "enum": [
+                    "approved",
+                    "pending_review",
+                    "rejected"
+                  ]
+                },
+                "created_after": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "created_before": {
+                  "$ref": "#/properties/filters/properties/created_after"
+                }
+              },
+              "additionalProperties": false,
+              "default": {}
+            }
+          },
+          "required": [
+            "action"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_get_review_history",
+        "title": "song whys get review history",
+        "description": "Use this when retrieve only recorded baseline/revisions/review snapshots. Never reconstruct absent older drafts or model reviews.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "explanation_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "cursor": {
+              "type": "string",
+              "maxLength": 5000
+            }
+          },
+          "required": [
+            "explanation_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_run_audit",
+        "title": "song whys run audit",
+        "description": "Use this when run independent rule-based text/catalog screening without changing content or calling an AI model. Hear claims always require listening; assistant must independently inspect returned evidence before suggesting wording.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "explanation_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1,
+              "maxItems": 20
+            }
+          },
+          "required": [
+            "explanation_ids"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_find_conflicts",
+        "title": "song whys find conflicts",
+        "description": "Use this when inspect complete explanations on the same song for potential opposing audible descriptions. Returns exact excerpts/IDs as hypotheses requiring listening, not proven contradictions.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "song_id": {
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "song_id"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_submit_revision",
+        "title": "song whys submit revision",
+        "description": "Use this when submit a version-bound draft to the existing human Admin Song Whys review queue. Requires explicit confirmation and an idempotency key. NEVER overwrites, approves or publishes the original.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "explanation_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "base_version": {
+              "type": "string",
+              "pattern": "^why-v1:[0-9a-f]{64}$"
+            },
+            "hear": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 300
+            },
+            "means": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 300
+            },
+            "reason": {
+              "type": "string",
+              "minLength": 10,
+              "maxLength": 2000
+            },
+            "supporting_evidence": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "kind": {
+                    "type": "string",
+                    "enum": [
+                      "catalog_fact",
+                      "text_inference",
+                      "requires_listening",
+                      "verified_recording_source"
+                    ]
+                  },
+                  "reference": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "note": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  }
+                },
+                "required": [
+                  "kind",
+                  "reference",
+                  "note"
+                ],
+                "additionalProperties": false
+              },
+              "maxItems": 20
+            },
+            "mutation_id": {
+              "$ref": "#/properties/explanation_id"
+            },
+            "confirm_submit": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "explanation_id",
+            "base_version",
+            "hear",
+            "means",
+            "reason",
+            "supporting_evidence",
+            "mutation_id",
+            "confirm_submit"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_record_audit_findings",
+        "title": "song whys record audit findings",
+        "description": "Use this when explicitly save evidence-bound audit findings without changing explanation approval. Repeated unresolved findings deduplicate; an idempotency key prevents duplicate writes.",
+        "annotations": {
+          "readOnlyHint": false,
+          "destructiveHint": false,
+          "idempotentHint": true,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "explanation_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "base_version": {
+              "type": "string",
+              "pattern": "^why-v1:[0-9a-f]{64}$"
+            },
+            "findings": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "severity": {
+                    "type": "string",
+                    "enum": [
+                      "info",
+                      "warning",
+                      "error"
+                    ]
+                  },
+                  "category": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 80
+                  },
+                  "excerpt": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 1000
+                  },
+                  "explanation": {
+                    "type": "string",
+                    "minLength": 10,
+                    "maxLength": 2000
+                  },
+                  "suggested_wording": {
+                    "type": "string",
+                    "maxLength": 1000
+                  },
+                  "verification_kind": {
+                    "type": "string",
+                    "enum": [
+                      "catalog_fact",
+                      "text_inference",
+                      "requires_listening"
+                    ]
+                  }
+                },
+                "required": [
+                  "severity",
+                  "category",
+                  "excerpt",
+                  "explanation",
+                  "verification_kind"
+                ],
+                "additionalProperties": false
+              },
+              "minItems": 1,
+              "maxItems": 25
+            },
+            "mutation_id": {
+              "$ref": "#/properties/explanation_id"
+            },
+            "confirm_submit": {
+              "type": "boolean",
+              "const": true
+            }
+          },
+          "required": [
+            "explanation_id",
+            "base_version",
+            "findings",
+            "mutation_id",
+            "confirm_submit"
+          ],
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_list_audit_findings",
+        "title": "song whys list audit findings",
+        "description": "Use this when page saved unresolved/resolved audit findings; no result does not establish that explanations passed an audit.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "limit": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 50,
+              "default": 20
+            },
+            "cursor": {
+              "type": "string",
+              "maxLength": 5000
+            },
+            "explanation_id": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "severity": {
+              "type": "string",
+              "enum": [
+                "info",
+                "warning",
+                "error"
+              ]
+            },
+            "song_id": {
+              "$ref": "#/properties/explanation_id"
+            },
+            "axis": {
+              "type": "string",
+              "enum": [
+                "movement",
+                "atmosphere",
+                "immersion",
+                "scale",
+                "community",
+                "perspective",
+                "confidence",
+                "tension",
+                "texture",
+                "transformation"
+              ]
+            },
+            "status": {
+              "type": "string",
+              "enum": [
+                "open",
+                "resolved",
+                "dismissed"
+              ],
+              "default": "open"
+            },
+            "auditor_id": {
+              "$ref": "#/properties/explanation_id"
+            },
+            "created_after": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      }
+    ]
+  }
+}

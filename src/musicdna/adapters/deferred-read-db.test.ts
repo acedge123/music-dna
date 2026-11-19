@@ -49,10 +49,11 @@ describe("atomic deferred read compare-and-save", () => {
   });
   it("cannot insert an older response after the next pick has committed", async () => {
     await db.exec("RESET ROLE");
-    await db.query("INSERT INTO public.choices(session_id,pairing_id) VALUES($1,$2)", [
-      sid,
-      second,
-    ]);
+    await db.query(
+      // PGlite can give separate inserts the same millisecond. This test needs two ordered picks.
+      "INSERT INTO public.choices(session_id,pairing_id,created_at) SELECT $1,$2,max(created_at)+interval '1 millisecond' FROM public.choices WHERE session_id=$1",
+      [sid, second],
+    );
     await db.exec("SET ROLE service_role");
     expect(await save()).toBeNull();
     expect((await db.query("SELECT id FROM public.event_log")).rows).toHaveLength(0);

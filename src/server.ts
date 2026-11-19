@@ -1,4 +1,5 @@
 import "./lib/error-capture";
+import { boundedMcpRequest } from "./lib/mcp/http";
 
 import { consumeLastCapturedError } from "./lib/error-capture";
 import { renderErrorPage } from "./lib/error-page";
@@ -53,6 +54,11 @@ function isV1Preflight(request: Request): boolean {
 export default {
   async fetch(request: Request, env: unknown, ctx: unknown) {
     try {
+      if (new URL(request.url).pathname === "/mcp") {
+        const bounded = await boundedMcpRequest(request);
+        if (bounded instanceof Response) return bounded;
+        request = bounded;
+      }
       if (isV1Preflight(request)) {
         return new Response(null, { status: 204, headers: V1_CORS_HEADERS });
       }

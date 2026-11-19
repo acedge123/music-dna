@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as McpRouteImport } from './routes/mcp'
 import { Route as MeRouteImport } from './routes/me'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as PrivacyRouteImport } from './routes/privacy'
@@ -19,10 +20,14 @@ import { Route as ReferenceRouteImport } from './routes/reference'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as SaveReadingRouteImport } from './routes/save-reading'
 import { Route as TermsRouteImport } from './routes/terms'
+import { Route as Char91DotwellKnownChar93OauthProtectedResourceRouteImport } from './routes/[.well-known]/oauth-protected-resource'
 import { Route as Authenticated1980RouteImport } from './routes/_authenticated/1980'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as OauthConsentRouteImport } from './routes/oauth.consent'
 import { Route as SSessionIdRouteImport } from './routes/s.$sessionId'
+import { Route as AdminMcpExportJobIdRouteImport } from './routes/admin-mcp.export.$jobId'
+import { Route as AdminMcpSongSongIdRouteImport } from './routes/admin-mcp.song.$songId'
 import { Route as ApiPublicVersionRouteImport } from './routes/api/public/version'
 import { Route as ApiV1AccountRouteImport } from './routes/api/v1/account'
 import { Route as ApiV1CriticFillersRouteImport } from './routes/api/v1/critic-fillers'
@@ -66,6 +71,11 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
+const McpRoute = McpRouteImport.update({
+  id: '/mcp',
+  path: '/mcp',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const MeRoute = MeRouteImport.update({
   id: '/me',
   path: '/me',
@@ -101,6 +111,12 @@ const TermsRoute = TermsRouteImport.update({
   path: '/terms',
   getParentRoute: () => rootRouteImport,
 } as any)
+const Char91DotwellKnownChar93OauthProtectedResourceRoute =
+  Char91DotwellKnownChar93OauthProtectedResourceRouteImport.update({
+    id: '/.well-known/oauth-protected-resource',
+    path: '/.well-known/oauth-protected-resource',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const Authenticated1980Route = Authenticated1980RouteImport.update({
   id: '/1980',
   path: '/1980',
@@ -116,9 +132,24 @@ const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
   path: '/profile',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const OauthConsentRoute = OauthConsentRouteImport.update({
+  id: '/oauth/consent',
+  path: '/oauth/consent',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SSessionIdRoute = SSessionIdRouteImport.update({
   id: '/s/$sessionId',
   path: '/s/$sessionId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMcpExportJobIdRoute = AdminMcpExportJobIdRouteImport.update({
+  id: '/admin-mcp/export/$jobId',
+  path: '/admin-mcp/export/$jobId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminMcpSongSongIdRoute = AdminMcpSongSongIdRouteImport.update({
+  id: '/admin-mcp/song/$songId',
+  path: '/admin-mcp/song/$songId',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicVersionRoute = ApiPublicVersionRouteImport.update({
@@ -266,6 +297,7 @@ const ApiV1ShareTokenCardRoute = ApiV1ShareTokenCardRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
@@ -273,10 +305,14 @@ export interface FileRoutesByFullPath {
   '/reset-password': typeof ResetPasswordRoute
   '/save-reading': typeof SaveReadingRoute
   '/terms': typeof TermsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/1980': typeof Authenticated1980Route
   '/admin': typeof AuthenticatedAdminRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/oauth/consent': typeof OauthConsentRoute
   '/s/$sessionId': typeof SSessionIdRoute
+  '/admin-mcp/export/$jobId': typeof AdminMcpExportJobIdRoute
+  '/admin-mcp/song/$songId': typeof AdminMcpSongSongIdRoute
   '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/critic-fillers': typeof ApiV1CriticFillersRoute
@@ -309,6 +345,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
@@ -316,10 +353,14 @@ export interface FileRoutesByTo {
   '/reset-password': typeof ResetPasswordRoute
   '/save-reading': typeof SaveReadingRoute
   '/terms': typeof TermsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/1980': typeof Authenticated1980Route
   '/admin': typeof AuthenticatedAdminRoute
   '/profile': typeof AuthenticatedProfileRoute
+  '/oauth/consent': typeof OauthConsentRoute
   '/s/$sessionId': typeof SSessionIdRoute
+  '/admin-mcp/export/$jobId': typeof AdminMcpExportJobIdRoute
+  '/admin-mcp/song/$songId': typeof AdminMcpSongSongIdRoute
   '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/critic-fillers': typeof ApiV1CriticFillersRoute
@@ -354,6 +395,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/mcp': typeof McpRoute
   '/me': typeof MeRoute
   '/onboarding': typeof OnboardingRoute
   '/privacy': typeof PrivacyRoute
@@ -361,10 +403,14 @@ export interface FileRoutesById {
   '/reset-password': typeof ResetPasswordRoute
   '/save-reading': typeof SaveReadingRoute
   '/terms': typeof TermsRoute
+  '/.well-known/oauth-protected-resource': typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
   '/_authenticated/1980': typeof Authenticated1980Route
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
+  '/oauth/consent': typeof OauthConsentRoute
   '/s/$sessionId': typeof SSessionIdRoute
+  '/admin-mcp/export/$jobId': typeof AdminMcpExportJobIdRoute
+  '/admin-mcp/song/$songId': typeof AdminMcpSongSongIdRoute
   '/api/public/version': typeof ApiPublicVersionRoute
   '/api/v1/account': typeof ApiV1AccountRoute
   '/api/v1/critic-fillers': typeof ApiV1CriticFillersRoute
@@ -399,6 +445,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/mcp'
     | '/me'
     | '/onboarding'
     | '/privacy'
@@ -406,10 +453,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/save-reading'
     | '/terms'
+    | '/.well-known/oauth-protected-resource'
     | '/1980'
     | '/admin'
     | '/profile'
+    | '/oauth/consent'
     | '/s/$sessionId'
+    | '/admin-mcp/export/$jobId'
+    | '/admin-mcp/song/$songId'
     | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/critic-fillers'
@@ -442,6 +493,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/mcp'
     | '/me'
     | '/onboarding'
     | '/privacy'
@@ -449,10 +501,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/save-reading'
     | '/terms'
+    | '/.well-known/oauth-protected-resource'
     | '/1980'
     | '/admin'
     | '/profile'
+    | '/oauth/consent'
     | '/s/$sessionId'
+    | '/admin-mcp/export/$jobId'
+    | '/admin-mcp/song/$songId'
     | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/critic-fillers'
@@ -486,6 +542,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/mcp'
     | '/me'
     | '/onboarding'
     | '/privacy'
@@ -493,10 +550,14 @@ export interface FileRouteTypes {
     | '/reset-password'
     | '/save-reading'
     | '/terms'
+    | '/.well-known/oauth-protected-resource'
     | '/_authenticated/1980'
     | '/_authenticated/admin'
     | '/_authenticated/profile'
+    | '/oauth/consent'
     | '/s/$sessionId'
+    | '/admin-mcp/export/$jobId'
+    | '/admin-mcp/song/$songId'
     | '/api/public/version'
     | '/api/v1/account'
     | '/api/v1/critic-fillers'
@@ -531,6 +592,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  McpRoute: typeof McpRoute
   MeRoute: typeof MeRoute
   OnboardingRoute: typeof OnboardingRoute
   PrivacyRoute: typeof PrivacyRoute
@@ -538,7 +600,11 @@ export interface RootRouteChildren {
   ResetPasswordRoute: typeof ResetPasswordRoute
   SaveReadingRoute: typeof SaveReadingRoute
   TermsRoute: typeof TermsRoute
+  Char91DotwellKnownChar93OauthProtectedResourceRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRoute
+  OauthConsentRoute: typeof OauthConsentRoute
   SSessionIdRoute: typeof SSessionIdRoute
+  AdminMcpExportJobIdRoute: typeof AdminMcpExportJobIdRoute
+  AdminMcpSongSongIdRoute: typeof AdminMcpSongSongIdRoute
   ApiPublicVersionRoute: typeof ApiPublicVersionRoute
   ApiV1AccountRoute: typeof ApiV1AccountRoute
   ApiV1CriticFillersRoute: typeof ApiV1CriticFillersRoute
@@ -572,6 +638,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mcp': {
+      id: '/mcp'
+      path: '/mcp'
+      fullPath: '/mcp'
+      preLoaderRoute: typeof McpRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/me': {
@@ -623,6 +696,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/.well-known/oauth-protected-resource': {
+      id: '/.well-known/oauth-protected-resource'
+      path: '/.well-known/oauth-protected-resource'
+      fullPath: '/.well-known/oauth-protected-resource'
+      preLoaderRoute: typeof Char91DotwellKnownChar93OauthProtectedResourceRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_authenticated/1980': {
       id: '/_authenticated/1980'
       path: '/1980'
@@ -644,11 +724,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedProfileRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/oauth/consent': {
+      id: '/oauth/consent'
+      path: '/oauth/consent'
+      fullPath: '/oauth/consent'
+      preLoaderRoute: typeof OauthConsentRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/s/$sessionId': {
       id: '/s/$sessionId'
       path: '/s/$sessionId'
       fullPath: '/s/$sessionId'
       preLoaderRoute: typeof SSessionIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-mcp/export/$jobId': {
+      id: '/admin-mcp/export/$jobId'
+      path: '/admin-mcp/export/$jobId'
+      fullPath: '/admin-mcp/export/$jobId'
+      preLoaderRoute: typeof AdminMcpExportJobIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/admin-mcp/song/$songId': {
+      id: '/admin-mcp/song/$songId'
+      path: '/admin-mcp/song/$songId'
+      fullPath: '/admin-mcp/song/$songId'
+      preLoaderRoute: typeof AdminMcpSongSongIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/version': {
@@ -935,6 +1036,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  McpRoute: McpRoute,
   MeRoute: MeRoute,
   OnboardingRoute: OnboardingRoute,
   PrivacyRoute: PrivacyRoute,
@@ -942,7 +1044,12 @@ const rootRouteChildren: RootRouteChildren = {
   ResetPasswordRoute: ResetPasswordRoute,
   SaveReadingRoute: SaveReadingRoute,
   TermsRoute: TermsRoute,
+  Char91DotwellKnownChar93OauthProtectedResourceRoute:
+    Char91DotwellKnownChar93OauthProtectedResourceRoute,
+  OauthConsentRoute: OauthConsentRoute,
   SSessionIdRoute: SSessionIdRoute,
+  AdminMcpExportJobIdRoute: AdminMcpExportJobIdRoute,
+  AdminMcpSongSongIdRoute: AdminMcpSongSongIdRoute,
   ApiPublicVersionRoute: ApiPublicVersionRoute,
   ApiV1AccountRoute: ApiV1AccountRoute,
   ApiV1CriticFillersRoute: ApiV1CriticFillersRoute,
