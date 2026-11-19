@@ -5,7 +5,7 @@
   "auth": {
     "type": "oauth",
     "issuer": "https://udycgnhvaanemhrchbuj.supabase.co/auth/v1",
-    "resource": "https://www.musicdna.fm/mcp",
+    "resource": "https://musicdna.fm/mcp",
     "require_oauth_client_claim": true,
     "accept_resource_claim": false,
     "accepted_audiences": [
