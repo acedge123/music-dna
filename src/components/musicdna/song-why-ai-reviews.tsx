@@ -89,16 +89,31 @@ export function WhyAiReviewCard({ review: r }: { review: WhyAiReview }) {
 export function SongWhyAiReviews() {
   const [loaded, setLoaded] = useState(false),
     [cursor, setCursor] = useState<string>();
+  const [policy, setPolicy] = useState<"saved-song-why-review-v1" | "saved-song-why-review-v2">(
+    "saved-song-why-review-v2",
+  );
   const list = useServerFn(listSavedWhyAiReviews);
   const q = useQuery({
-    queryKey: ["admin", "whys", "ai-reviews", cursor],
-    queryFn: () => list({ data: { cursor } }),
+    queryKey: ["admin", "whys", "ai-reviews", policy, cursor],
+    queryFn: () => list({ data: { cursor, policy_version: policy } }),
     enabled: loaded,
     retry: false,
   });
   return (
     <section className="space-y-3">
       <h3 className="text-base font-medium">Saved AI re-reviews</h3>
+      <select
+        aria-label="Review policy"
+        className="border hairline bg-background p-2 text-sm"
+        value={policy}
+        onChange={(e) => {
+          setPolicy(e.target.value as typeof policy);
+          setCursor(undefined);
+        }}
+      >
+        <option value="saved-song-why-review-v2">Current · Pass / Fail / Uncertain</option>
+        <option value="saved-song-why-review-v1">Original · Pass / Fail</option>
+      </select>
       <p className="text-sm text-muted-foreground">
         Separate from the rule-based audit and historical reviewer. Loading results makes no AI
         call.
@@ -120,6 +135,27 @@ export function SongWhyAiReviews() {
       )}
       {q.data && (
         <>
+          <div className="space-y-1 text-sm">
+            <p>
+              Fail: {q.data.rates.fail}/{q.data.rates.completed} ·{" "}
+              {q.data.rates.failure_rate === null
+                ? "not available"
+                : `${(q.data.rates.failure_rate * 100).toFixed(1)}%`}
+            </p>
+            <p>
+              Uncertain: {q.data.rates.uncertain}/{q.data.rates.completed} ·{" "}
+              {q.data.rates.uncertainty_rate === null
+                ? "not available"
+                : `${(q.data.rates.uncertainty_rate * 100).toFixed(1)}%`}
+            </p>
+            <p>
+              Pass: {q.data.rates.pass} · unavailable attempts: {q.data.rates.unavailable}
+            </p>
+            <p className="text-xs text-muted-foreground">
+              Latest attempt per explanation in this policy · completed reviews only · all saved
+              contexts
+            </p>
+          </div>
           {q.data.reviews.length === 0 && (
             <p className="text-sm">No saved AI reviews on this page.</p>
           )}
@@ -133,7 +169,11 @@ export function SongWhyAiReviews() {
               </Button>
             )}
             {q.data.next_cursor && (
-              <Button size="sm" variant="outline" onClick={() => setCursor(q.data.next_cursor!)}>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setCursor(q.data?.next_cursor ?? undefined)}
+              >
                 Next page
               </Button>
             )}

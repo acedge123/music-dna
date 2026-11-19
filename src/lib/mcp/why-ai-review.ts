@@ -51,7 +51,7 @@ export type WhyAiReview = {
   stale_explanation: boolean;
   result: {
     axis: string;
-    verdict: "pass" | "fail";
+    verdict: "pass" | "fail" | "uncertain";
     note: string;
     score_disputed: boolean;
     suggested_score: number | null;
@@ -83,6 +83,7 @@ export type WhyAiFilters = {
   suggestion_unavailable?: boolean;
   stale?: boolean;
   state?: string;
+  policy_version?: string;
 };
 export async function listWhyAiReviews(
   actor: Actor,
@@ -105,6 +106,7 @@ export async function listWhyAiReviews(
     query = query.eq("suggestion_unavailable", filters.suggestion_unavailable);
   if (filters.stale !== undefined) query = query.eq("stale_result", filters.stale);
   if (filters.state) query = query.eq("display_state", filters.state);
+  if (filters.policy_version) query = query.eq("policy_version", filters.policy_version);
   const { data, error, count } = await query;
   assertDb(error);
   const rows = boundedRows((data ?? []) as unknown as WhyAiReview[], limit);
@@ -125,7 +127,7 @@ export async function requestWhyAiReview(actor: Actor, raw: WhyAiRequest) {
   if (!actor.capabilities.catalog_review) throw new McpError("FORBIDDEN");
   const reservation = await rpc<{ request_id: string; replayed: boolean }>(
     actor.db,
-    "musicdna_mcp_request_why_ai_review",
+    "musicdna_mcp_request_why_ai_review_v2",
     {
       p_id: input.explanation_id,
       p_version: input.expected_version,
@@ -146,4 +148,24 @@ export async function requestWhyAiReview(actor: Actor, raw: WhyAiRequest) {
     next_step:
       "Human review in Admin → Song Whys. No score, explanation, approval or saved reading changed.",
   };
+}
+
+export type WhyReviewRates = {
+  policy_version: string;
+  requested: number;
+  completed: number;
+  pass: number;
+  fail: number;
+  uncertain: number;
+  unavailable: number;
+  failure_rate: number | null;
+  uncertainty_rate: number | null;
+  scope: string;
+  denominator: string;
+};
+export function whyReviewRates(actor: Actor, policy: string, ids?: string[]) {
+  return rpc<WhyReviewRates>(actor.db, "musicdna_mcp_why_ai_review_rates", {
+    p_policy: policy,
+    p_ids: ids ?? null,
+  });
 }

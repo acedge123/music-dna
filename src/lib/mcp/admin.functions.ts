@@ -140,20 +140,27 @@ export const listSavedWhyAiReviews = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .inputValidator((raw: unknown) =>
     z
-      .object({ cursor: z.string().max(5000).optional() })
+      .object({
+        cursor: z.string().max(5000).optional(),
+        policy_version: z
+          .enum(["saved-song-why-review-v1", "saved-song-why-review-v2"])
+          .default("saved-song-why-review-v2"),
+      })
       .strict()
       .parse(raw),
   )
   .handler(async ({ data, context }) => {
     const db = context.supabase as SupabaseClient;
     await authorized(db, "catalog_read");
-    const { listWhyAiReviews } = await import("./why-ai-review");
-    return listWhyAiReviews(
-      {
-        db,
-        userId: context.userId,
-        capabilities: accessSchema.parse(await rpc(db, "musicdna_mcp_access")),
-      },
-      { limit: 10, ...data },
-    );
+    const { listWhyAiReviews, whyReviewRates } = await import("./why-ai-review");
+    const actor = {
+      db,
+      userId: context.userId,
+      capabilities: accessSchema.parse(await rpc(db, "musicdna_mcp_access")),
+    };
+    const [page, rates] = await Promise.all([
+      listWhyAiReviews(actor, { limit: 10, ...data }),
+      whyReviewRates(actor, data.policy_version),
+    ]);
+    return { ...page, rates };
   });

@@ -15,6 +15,29 @@ const dispute = {
 };
 
 describe("advisory score review", () => {
+  it("retains uncertainty separately without disputing an unverifiable sound's score", () => {
+    const [review] = parseSongWhyReview(
+      {
+        items: [
+          {
+            ...dispute,
+            verdict: "uncertain",
+            score_disputed: false,
+            suggested_score: null,
+            reason: "The microphone claim requires verification.",
+          },
+        ],
+      },
+      ["confidence"],
+    );
+    if (!review) throw new Error("Missing review");
+    expect(reviewStorageFields(review)).toMatchObject({
+      model_review_verdict: "uncertain",
+      score_disputed: false,
+      suggested_score: null,
+    });
+    expect(requiresIndividualReview({ model_review_verdict: "uncertain" })).toBe(true);
+  });
   it("retains the 25 Confidence proposal without writing a replacement catalog score", () => {
     const [review] = parseSongWhyReview({ items: [dispute] }, ["confidence"]);
     if (!review) throw new Error("Missing review");

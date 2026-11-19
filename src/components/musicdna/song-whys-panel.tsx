@@ -43,7 +43,7 @@ export function SongWhysPanel() {
     try {
       const r = await draft();
       toast.success(
-        `${r.drafted} saved for review, ${r.rejected} explanation challenges, ${r.disputed} score disputes, ${r.failed} errors (${r.songs} songs)`,
+        `${r.drafted} saved for review, ${r.rejected} failed, ${r.uncertain} uncertain, ${r.disputed} score disputes, ${r.failed} errors (${r.songs} songs)`,
       );
       refresh();
     } catch (e) {
@@ -56,7 +56,7 @@ export function SongWhysPanel() {
     const scope = lane === "all" ? "all lanes" : lane;
     if (
       !window.confirm(
-        `Approve waiting explanations (${scope})? Stale, failed-review and score-disputed drafts are skipped.`,
+        `Approve waiting explanations (${scope})? Stale, failed, uncertain and score-disputed drafts are skipped.`,
       )
     )
       return;
@@ -77,7 +77,9 @@ export function SongWhysPanel() {
     const row = q.data?.rows.find((r) => r.id === id);
     if (
       s === "approved" &&
-      (row?.score_disputed || row?.model_review_verdict === "fail") &&
+      (row?.score_disputed ||
+        row?.model_review_verdict === "fail" ||
+        row?.model_review_verdict === "uncertain") &&
       !window.confirm(
         "Approve this explanation despite the reviewer’s challenge? The catalog score will not change.",
       )
@@ -210,6 +212,11 @@ export function SongWhysPanel() {
                 )}
                 {r.model_review_verdict === "fail" && (
                   <p className="text-sm font-medium">Explanation challenged</p>
+                )}
+                {r.model_review_verdict === "uncertain" && (
+                  <p className="text-sm font-medium">
+                    Uncertain · recording detail needs verification
+                  </p>
                 )}
                 {r.score_disputed && (
                   <div className="border-l-2 border-border-strong pl-3 space-y-1">

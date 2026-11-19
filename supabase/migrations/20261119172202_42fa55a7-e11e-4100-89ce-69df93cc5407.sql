@@ -1,0 +1,4 @@
+ALTER FUNCTION public.musicdna_mcp_request_why_ai_review_v2(uuid,text,text,uuid,boolean) SET SCHEMA musicdna_admin_mcp;
+CREATE FUNCTION public.musicdna_mcp_request_why_ai_review_v2(p_id uuid,p_version text,p_context text,p_mutation uuid,p_confirm_paid boolean) RETURNS jsonb LANGUAGE sql SECURITY INVOKER SET search_path=pg_catalog,public AS $$ SELECT musicdna_admin_mcp.musicdna_mcp_request_why_ai_review_v2(p_id,p_version,p_context,p_mutation,p_confirm_paid); $$;
+REVOKE ALL ON FUNCTION public.musicdna_mcp_request_why_ai_review_v2(uuid,text,text,uuid,boolean) FROM PUBLIC,anon;
+GRANT EXECUTE ON FUNCTION public.musicdna_mcp_request_why_ai_review_v2(uuid,text,text,uuid,boolean) TO authenticated;

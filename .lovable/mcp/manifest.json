@@ -533,8 +533,49 @@
                 "ambiguous",
                 "expired_or_ambiguous"
               ]
+            },
+            "policy_version": {
+              "$ref": "#/properties/lane"
             }
           },
+          "additionalProperties": false,
+          "$schema": "http://json-schema.org/draft-07/schema#"
+        },
+        "outputSchema": null
+      },
+      {
+        "name": "song_whys_get_ai_review_rates",
+        "title": "song whys get ai review rates",
+        "description": "Use this when read separate failure and uncertainty rates for one review policy and optionally a selected cohort. Counts latest attempt per explanation, completed reviews only in rate denominators; unavailable attempts and older policies remain separate. No paid calls.",
+        "annotations": {
+          "readOnlyHint": true,
+          "destructiveHint": false,
+          "idempotentHint": false,
+          "openWorldHint": false
+        },
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "policy_version": {
+              "type": "string",
+              "enum": [
+                "saved-song-why-review-v1",
+                "saved-song-why-review-v2"
+              ]
+            },
+            "explanation_ids": {
+              "type": "array",
+              "items": {
+                "type": "string",
+                "format": "uuid"
+              },
+              "minItems": 1,
+              "maxItems": 50
+            }
+          },
+          "required": [
+            "policy_version"
+          ],
           "additionalProperties": false,
           "$schema": "http://json-schema.org/draft-07/schema#"
         },

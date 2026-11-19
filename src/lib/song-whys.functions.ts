@@ -103,6 +103,7 @@ export const draftSongWhys = createServerFn({ method: "POST" })
     let drafted = 0,
       rejected = 0,
       disputed = 0,
+      uncertain = 0,
       failed = 0;
     await Promise.all(
       batch.map(async ({ s, traits }) => {
@@ -174,6 +175,7 @@ Scores:\n${traitLines}\nExplanations:\n${JSON.stringify(items)}`,
             else {
               drafted++;
               if (v.verdict === "fail") rejected++;
+              if (v.verdict === "uncertain") uncertain++;
               if (v.score_disputed) disputed++;
             }
           }
@@ -182,7 +184,7 @@ Scores:\n${traitLines}\nExplanations:\n${JSON.stringify(items)}`,
         }
       }),
     );
-    return { songs: batch.length, drafted, rejected, disputed, failed };
+    return { songs: batch.length, drafted, rejected, uncertain, disputed, failed };
   });
 
 export const listSongWhys = createServerFn({ method: "GET" })

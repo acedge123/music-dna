@@ -36,7 +36,7 @@ const routing = () => ({
   critic_reviewer: "existing-reviewer",
   scope: "configured defaults",
 });
-function db(claim: unknown = { snapshot, policy_version: "saved-song-why-review-v1" }) {
+function db(claim: unknown = { snapshot, policy_version: "saved-song-why-review-v2" }) {
   const fn = vi.fn(async (name: string) => ({
     data: name.includes("claim") ? claim : null,
     error: null,

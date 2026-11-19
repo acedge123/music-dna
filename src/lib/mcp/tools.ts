@@ -17,6 +17,7 @@ import {
   readWhyAiReview,
   listWhyAiReviews,
   whyAiRequestSchema,
+  whyReviewRates,
 } from "./why-ai-review";
 import { getWhy, listWhys, screenWhy, whyHistory } from "./song-whys";
 import { hasMoreRows, boundedRows, pageSchema, pageCursor, nextCursor } from "./pagination";
@@ -194,8 +195,18 @@ export const catalogTools = [
       state: z
         .enum(["requested", "running", "completed", "failed", "ambiguous", "expired_or_ambiguous"])
         .optional(),
+      policy_version: short.optional(),
     },
     async (i, a) => listWhyAiReviews(a, i),
+  ),
+  tool(
+    "song_whys_get_ai_review_rates",
+    "read separate failure and uncertainty rates for one review policy and optionally a selected cohort. Counts latest attempt per explanation, completed reviews only in rate denominators; unavailable attempts and older policies remain separate. No paid calls.",
+    {
+      policy_version: z.enum(["saved-song-why-review-v1", "saved-song-why-review-v2"]),
+      explanation_ids: z.array(id).min(1).max(50).optional(),
+    },
+    async (i, a) => ({ rates: await whyReviewRates(a, i.policy_version, i.explanation_ids) }),
   ),
   tool(
     "song_whys_export",

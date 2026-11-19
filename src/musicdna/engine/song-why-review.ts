@@ -3,7 +3,7 @@ import { z } from "zod";
 export const songWhyReviewItem = z
   .object({
     axis: z.string(),
-    verdict: z.enum(["pass", "fail"]),
+    verdict: z.enum(["pass", "fail", "uncertain"]),
     note: z.string().trim().min(1).max(2000),
     score_disputed: z.boolean(),
     suggested_score: z.number().int().min(0).max(100).nullable(),
@@ -31,7 +31,7 @@ export const SONG_WHY_REVIEW_SCHEMA = {
         required: ["axis", "verdict", "note", "score_disputed", "suggested_score", "reason"],
         properties: {
           axis: { type: "string" },
-          verdict: { type: "string", enum: ["pass", "fail"] },
+          verdict: { type: "string", enum: ["pass", "fail", "uncertain"] },
           note: { type: "string" },
           score_disputed: { type: "boolean" },
           suggested_score: { type: ["integer", "null"], minimum: 0, maximum: 100 },
@@ -43,11 +43,15 @@ export const SONG_WHY_REVIEW_SCHEMA = {
 };
 
 export const SONG_WHY_REVIEW_INSTRUCTIONS = `Independent music reviewer. Challenge the supplied score rather than rationalizing it. Evaluate each attribute within the recording's stated lane.
-1. Musical accuracy: verify concrete audible specifics for THIS recording. Flag questionable specifics or uncertainty; do not invent listening access or facts.
+1. Musical accuracy: assess concrete audible specifics for THIS recording. No audio is supplied; do not invent listening access. An inability to verify a recording-specific claim is uncertainty, not proof of an error.
 2. Score alignment: does the audible evidence justify both the named pole AND the numerical magnitude? A correct direction alone does not justify an extreme score.
 3. Axis confusion: identify when another attribute is doing the explanatory work. Restraint, intensity, distortion, loudness or artist reputation do not automatically establish Confidence (command versus vulnerability).
 For example, Something in the Way at 95 Confidence warrants a challenge if vocal restraint is mistaken for defiance; 25 is only an illustrative suggestion, not a mandatory answer.
-Fail explanations with absent sounds, generic descriptions, invented facts, unsupported scores or axis confusion. Independently set score_disputed when the score is questionable. suggested_score is an advisory integer 0–100 only when justified, otherwise null; it MUST be null when score_disputed=false. reason explains the score decision and uncertainty. Never rescore or claim a proposed score is verified.`;
+Verdict criteria:
+FAIL: identify a clear contradiction, unsupported interpretation, axis confusion, or meaningful score mismatch. Explain the substantive problem. Unsupported interpretation means the stated evidence does not justify this attribute, NOT that you cannot verify the sound. Do not fail merely for generic wording, missing audio, or inability to verify instrumentation/production.
+UNCERTAIN: a recording-specific claim cannot be independently verified and no identifiable substantive problem warrants failure. Specify what needs listening or an authoritative source.
+PASS: explanation and score are coherent with no identifiable substantive problem; this is not verified listening.
+If both uncertainty and a demonstrable substantive problem exist, use fail and explain both. Keep score disputes independent: missing audio/unverifiable detail alone must not dispute a score. Set score_disputed only for an identified score mismatch or attribute confusion; suggested_score is an advisory integer 0–100 only when justified, otherwise null and MUST be null when score_disputed=false. Never rescore or claim a proposed score is verified.`;
 
 export function parseSongWhyReview(value: unknown, axes: string[]) {
   const result = z.object({ items: z.array(songWhyReviewItem) }).parse(value);
@@ -76,5 +80,9 @@ export function requiresIndividualReview(row: {
   score_disputed?: boolean;
   model_review_verdict?: string | null;
 }) {
-  return row.score_disputed === true || row.model_review_verdict === "fail";
+  return (
+    row.score_disputed === true ||
+    row.model_review_verdict === "fail" ||
+    row.model_review_verdict === "uncertain"
+  );
 }

@@ -77,6 +77,18 @@ beforeAll(async () => {
   await db.exec(
     readFileSync("supabase/migrations/20261119052334_musicdna_saved_why_ai_reviews.sql", "utf8"),
   );
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/20261119172021_f065d4ec-cb39-4444-8bcf-cb38340b332b.sql",
+      "utf8",
+    ),
+  );
+  await db.exec(
+    readFileSync(
+      "supabase/migrations/20261119172202_42fa55a7-e11e-4100-89ce-69df93cc5407.sql",
+      "utf8",
+    ),
+  );
 }, 30000);
 afterAll(async () => {
   await db?.close();
@@ -153,6 +165,95 @@ beforeEach(async () => {
   );
 });
 describe("saved Why AI-review authorization and immutable audit boundary", () => {
+  it("keeps the original fail while a v2 review records uncertainty and separates policy rates", async () => {
+    const original = await request();
+    await claim(original.request_id);
+    await finish(original.request_id);
+    const c = await context();
+    const next = (
+      await actor("reviewer", "SELECT musicdna_mcp_request_why_ai_review_v2($1,$2,$3,$4,true) r", [
+        why,
+        c.version,
+        c.review_context_version,
+        uuid(2),
+      ])
+    )[0].r as { request_id: string };
+    await claim(next.request_id);
+    await finish(next.request_id, { ...result, verdict: "uncertain", score_disputed: false });
+    expect(await review(original.request_id)).toMatchObject({
+      policy_version: "saved-song-why-review-v1",
+      result: { verdict: "fail" },
+    });
+    expect(await review(next.request_id)).toMatchObject({
+      policy_version: "saved-song-why-review-v2",
+      result: { verdict: "uncertain", score_disputed: false },
+    });
+    const oldRates = (
+      await actor("reader", "SELECT musicdna_mcp_why_ai_review_rates('saved-song-why-review-v1') r")
+    )[0].r;
+    const newRates = (
+      await actor("reader", "SELECT musicdna_mcp_why_ai_review_rates('saved-song-why-review-v2') r")
+    )[0].r;
+    expect(oldRates).toMatchObject({
+      completed: 1,
+      fail: 1,
+      uncertain: 0,
+      failure_rate: 1,
+      uncertainty_rate: 0,
+    });
+    expect(newRates).toMatchObject({
+      completed: 1,
+      fail: 0,
+      uncertain: 1,
+      failure_rate: 0,
+      uncertainty_rate: 1,
+    });
+    expect((await db.query("SELECT status FROM song_trait_explanations")).rows[0]).toEqual({
+      status: "approved",
+    });
+  });
+  it("counts each explanation once and excludes unavailable work from verdict-rate denominators", async () => {
+    const c = await context();
+    const next = (
+      await actor("reviewer", "SELECT musicdna_mcp_request_why_ai_review_v2($1,$2,$3,$4,true) r", [
+        why,
+        c.version,
+        c.review_context_version,
+        uuid(1),
+      ])
+    )[0].r as { request_id: string };
+    await claim(next.request_id);
+    await finish(next.request_id, { ...result, verdict: "pass", score_disputed: false });
+    await actor("reviewer", "SELECT musicdna_mcp_request_why_ai_review_v2($1,$2,$3,$4,true) r", [
+      why,
+      c.version,
+      c.review_context_version,
+      uuid(2),
+    ]);
+    const rates = (
+      await actor("reader", "SELECT musicdna_mcp_why_ai_review_rates('saved-song-why-review-v2') r")
+    )[0].r;
+    expect(rates).toMatchObject({
+      requested: 1,
+      completed: 0,
+      unavailable: 1,
+      failure_rate: null,
+      uncertainty_rate: null,
+    });
+    expect(
+      (
+        await actor("user", "SELECT musicdna_mcp_why_ai_review_rates('saved-song-why-review-v2') r")
+      )[0].r,
+    ).toMatchObject({ requested: 0, completed: 0 });
+  });
+  it("blocks bulk approval of uncertainty without relabeling it as failure", async () => {
+    await db.exec(
+      "UPDATE song_trait_explanations SET status='pending_review',model_review_verdict='uncertain'",
+    );
+    expect(
+      (await actor("admin", "SELECT musicdna_mcp_bulk_approve_whys(NULL) r"))[0].r,
+    ).toMatchObject({ approved: 0, skipped_challenged: 1 });
+  });
   it("separates reader/editor/user/guest access from paid requests, and denies fabricated completion", async () => {
     for (const who of ["reader", "editor", "user", "guest"] as const)
       await expect(request(1, who)).rejects.toThrow("MCP_FORBIDDEN");

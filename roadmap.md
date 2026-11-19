@@ -2,9 +2,9 @@
 
 ## Current — uncertainty-aware reviewer and ten-item retest
 
-- [ ] Add Pass/Fail/Uncertain with independent score disputes and policy-separated failure/uncertainty rates; preserve all original reviews and approvals.
-- [ ] Update storage, MCP and admin presentation; test three-verdict validation, history preservation and rates.
-- [ ] Retest the exact ten saved v1 explanation IDs only after the new policy is deployed and an authorized caller can submit; no remaining-catalog paid review.
+- [x] Add Pass/Fail/Uncertain with independent score disputes and policy-separated failure/uncertainty rates; preserve all original reviews and approvals. V1 caller compatibility retained through distinct v2 request.
+- [x] Update storage, MCP and admin presentation; 37 focused tests pass, lint clean and preview build OK. All three verdicts, rates, policy comparison and provenance verified with isolated desktop/phone fixtures; MCP manifest extracted with 45 tools.
+- [ ] Retest the exact ten saved v1 explanation IDs only after the new policy is deployed and an authorized caller can submit; no remaining-catalog paid review. Cohort pinned in docs/musicdna/reviewer-v2-ten-item-retest.md. Original ten remain 9 Fail/1 Pass; no paid rerun performed. External-managed admin auth and deployed v2 are required.
 
 ## Current — Song Whys score challenges
 
