@@ -1,6 +1,6 @@
 import type { Actor } from "./access";
 import { assertDb, McpError, rpc } from "./access";
-import { boundedRows, nextCursor, pageCursor, safeSearch } from "./pagination";
+import { hasMoreRows, boundedRows, nextCursor, pageCursor, safeSearch } from "./pagination";
 import { approvedArtwork } from "../../musicdna/adapters/song-artwork";
 import { DIMS } from "../../musicdna/engine/axes";
 export type CatalogFilters = {
@@ -84,10 +84,9 @@ export async function listSongs(
     snapshot: state.snapshot,
     count_scope:
       "matching rows at or after this cursor; total is the initial matching count; not a frozen cross-page snapshot",
-    next_cursor:
-      (data?.length ?? 0) > rows.length
-        ? nextCursor(actor.userId, { ...state, total: state.total ?? count }, rows.at(-1)!.id)
-        : null,
+    next_cursor: hasMoreRows(count, rows.length)
+      ? nextCursor(actor.userId, { ...state, total: state.total ?? count }, rows.at(-1)!.id)
+      : null,
     unavailable_filters: {
       album: "Album exists only on optional release artwork, not a song identity field",
       popularity:

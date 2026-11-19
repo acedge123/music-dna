@@ -38,5 +38,81 @@
       },
       "expected": "A pending draft only; stale illustrative IDs/versions must be rejected."
     }
+  ],
+  "illustrative_response_shapes": [
+    {
+      "tool": "song_whys_list",
+      "not_a_live_receipt": true,
+      "structuredContent": {
+        "ok": true,
+        "schema_version": "musicdna-admin.v1",
+        "records": [
+          {
+            "explanation": {
+              "id": "22222222-2222-4222-8222-222222222222",
+              "song_id": "44444444-4444-4444-8444-444444444444",
+              "axis": "texture",
+              "score_at_write": 80,
+              "audible_evidence": "[Fixture evidence; not a verified recording claim.]",
+              "interpretation": "[Fixture interpretation; not an approved catalog entry.]",
+              "review_note": null,
+              "status": "pending_review",
+              "scoring_version": "fixture-v1"
+            },
+            "version": "why-v1:0000000000000000000000000000000000000000000000000000000000000000",
+            "song": {
+              "id": "44444444-4444-4444-8444-444444444444",
+              "title": "Fixture Song",
+              "artist": "Fixture Artist",
+              "year": 2000
+            },
+            "attribute": {
+              "key": "texture",
+              "min": 0,
+              "max": 100,
+              "current_score": 80,
+              "score_at_write": 80,
+              "low_pole": "rawness",
+              "high_pole": "refinement"
+            },
+            "availability": {
+              "writer_model_id": "not_recorded",
+              "reviewer_model_id": "not_recorded",
+              "audio_verification": "requires_listening"
+            }
+          }
+        ],
+        "total_count": 1,
+        "returned_count": 1,
+        "next_cursor": null
+      }
+    },
+    {
+      "tool": "catalog_get_summary",
+      "not_a_live_receipt": true,
+      "structuredContent": {
+        "ok": false,
+        "schema_version": "musicdna-admin.v1",
+        "error": {
+          "code": "FORBIDDEN",
+          "retryable": false
+        }
+      }
+    },
+    {
+      "tool": "qa_analyze_quip_pacing",
+      "not_a_live_receipt": true,
+      "structuredContent": {
+        "ok": true,
+        "schema_version": "musicdna-admin.v1",
+        "availability": "unavailable_no_display_receipts",
+        "observed_segments": 0,
+        "unique_painted_lines": 0,
+        "average_quips_per_observed_wait": null,
+        "average_time_to_first_observed_quip_ms": null,
+        "average_within_wait_display_gap_ms": null,
+        "coverage": "No complete historical display coverage is implied."
+      }
+    }
   ]
 }

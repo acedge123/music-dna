@@ -20,7 +20,9 @@
             "maxLength": 200
           }
         },
-        "required": ["query"],
+        "required": [
+          "query"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -43,7 +45,9 @@
             "pattern": "^song:[0-9a-f-]{36}$"
           }
         },
-        "required": ["id"],
+        "required": [
+          "id"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -142,7 +146,11 @@
           },
           "why_status": {
             "type": "string",
-            "enum": ["approved", "pending_review", "rejected"]
+            "enum": [
+              "approved",
+              "pending_review",
+              "rejected"
+            ]
           }
         },
         "additionalProperties": false,
@@ -168,7 +176,9 @@
             "format": "uuid"
           }
         },
-        "required": ["song_id"],
+        "required": [
+          "song_id"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -203,7 +213,9 @@
             "maxLength": 5000
           }
         },
-        "required": ["query"],
+        "required": [
+          "query"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -227,7 +239,9 @@
             "format": "uuid"
           }
         },
-        "required": ["song_id"],
+        "required": [
+          "song_id"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -324,7 +338,11 @@
           },
           "status": {
             "type": "string",
-            "enum": ["approved", "pending_review", "rejected"]
+            "enum": [
+              "approved",
+              "pending_review",
+              "rejected"
+            ]
           },
           "confidence": {
             "$ref": "#/properties/artist"
@@ -363,7 +381,9 @@
             "format": "uuid"
           }
         },
-        "required": ["explanation_id"],
+        "required": [
+          "explanation_id"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -384,7 +404,10 @@
         "properties": {
           "action": {
             "type": "string",
-            "enum": ["start", "status"]
+            "enum": [
+              "start",
+              "status"
+            ]
           },
           "mutation_id": {
             "type": "string",
@@ -395,7 +418,10 @@
           },
           "format": {
             "type": "string",
-            "enum": ["json", "csv"],
+            "enum": [
+              "json",
+              "csv"
+            ],
             "default": "json"
           },
           "filters": {
@@ -403,7 +429,11 @@
             "properties": {
               "status": {
                 "type": "string",
-                "enum": ["approved", "pending_review", "rejected"]
+                "enum": [
+                  "approved",
+                  "pending_review",
+                  "rejected"
+                ]
               },
               "created_after": {
                 "type": "string",
@@ -417,7 +447,9 @@
             "default": {}
           }
         },
-        "required": ["action"],
+        "required": [
+          "action"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -451,7 +483,9 @@
             "maxLength": 5000
           }
         },
-        "required": ["explanation_id"],
+        "required": [
+          "explanation_id"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -480,7 +514,9 @@
             "maxItems": 20
           }
         },
-        "required": ["explanation_ids"],
+        "required": [
+          "explanation_ids"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -504,7 +540,9 @@
             "format": "uuid"
           }
         },
-        "required": ["song_id"],
+        "required": [
+          "song_id"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -571,7 +609,11 @@
                   "maxLength": 1000
                 }
               },
-              "required": ["kind", "reference", "note"],
+              "required": [
+                "kind",
+                "reference",
+                "note"
+              ],
               "additionalProperties": false
             },
             "maxItems": 20
@@ -627,7 +669,11 @@
               "properties": {
                 "severity": {
                   "type": "string",
-                  "enum": ["info", "warning", "error"]
+                  "enum": [
+                    "info",
+                    "warning",
+                    "error"
+                  ]
                 },
                 "category": {
                   "type": "string",
@@ -650,10 +696,20 @@
                 },
                 "verification_kind": {
                   "type": "string",
-                  "enum": ["catalog_fact", "text_inference", "requires_listening"]
+                  "enum": [
+                    "catalog_fact",
+                    "text_inference",
+                    "requires_listening"
+                  ]
                 }
               },
-              "required": ["severity", "category", "excerpt", "explanation", "verification_kind"],
+              "required": [
+                "severity",
+                "category",
+                "excerpt",
+                "explanation",
+                "verification_kind"
+              ],
               "additionalProperties": false
             },
             "minItems": 1,
@@ -667,7 +723,13 @@
             "const": true
           }
         },
-        "required": ["explanation_id", "base_version", "findings", "mutation_id", "confirm_submit"],
+        "required": [
+          "explanation_id",
+          "base_version",
+          "findings",
+          "mutation_id",
+          "confirm_submit"
+        ],
         "additionalProperties": false,
         "$schema": "http://json-schema.org/draft-07/schema#"
       },
@@ -702,7 +764,11 @@
           },
           "severity": {
             "type": "string",
-            "enum": ["info", "warning", "error"]
+            "enum": [
+              "info",
+              "warning",
+              "error"
+            ]
           },
           "song_id": {
             "$ref": "#/properties/explanation_id"
@@ -724,13 +790,915 @@
           },
           "status": {
             "type": "string",
-            "enum": ["open", "resolved", "dismissed"],
+            "enum": [
+              "open",
+              "resolved",
+              "dismissed"
+            ],
             "default": "open"
           },
           "auditor_id": {
             "$ref": "#/properties/explanation_id"
           },
           "created_after": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "pairings_list",
+      "title": "pairings list",
+      "description": "Use this when browse canonical pairings and exact current song scores/years with deterministic cursor pagination.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "active": {
+            "type": "boolean"
+          },
+          "lane": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "song_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "pairings_get_summary",
+      "title": "pairings get summary",
+      "description": "Use this when measure catalog pairing coverage, validation gaps and year differences. No private exposure/skip denominator is inferred.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "pairings_get",
+      "title": "pairings get",
+      "description": "Use this when read one exact catalog pairing with current songs, declared tests and shared activation diagnostics; historical choices remain frozen separately.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "pairing_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "pairing_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "pairings_validate_decade_proximity",
+      "title": "pairings validate decade proximity",
+      "description": "Use this when check exact nearest-opening-year distances against a configurable diagnostic window. The real selector uses a soft broader era preference, not this strict rule; this tool changes no production matching.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "opening_song_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 1,
+            "maxItems": 3
+          },
+          "opening_years": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1800,
+              "maximum": 2200
+            },
+            "minItems": 1,
+            "maxItems": 3
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "max_year_distance": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          },
+          "require_both": {
+            "type": "boolean",
+            "default": true
+          },
+          "pairing_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "#/properties/opening_song_ids/items"
+            },
+            "maxItems": 100
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "pairings_find_for_song",
+      "title": "pairings find for song",
+      "description": "Use this when find diagnostic candidate matchups near one catalog opening song. Eligibility is a read-only year/integrity check, not a promise that live routing selects it.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "song_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "max_year_distance": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 100,
+            "default": 10
+          }
+        },
+        "required": [
+          "song_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "pairings_simulate_interview",
+      "title": "pairings simulate interview",
+      "description": "Use this when run six deterministic offline picks using shared selectPairing/applyChoice/preferEra functions and supplied context. No database writes or model calls. Not full production bootstrap/router/LLM parity.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "opening_song_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 1,
+            "maxItems": 3
+          },
+          "opening_years": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1800,
+              "maximum": 2200
+            },
+            "minItems": 1,
+            "maxItems": 3
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295,
+            "default": 1
+          },
+          "lane": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "default": "general"
+          },
+          "vector": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "minimum": -1000,
+              "maximum": 1000
+            },
+            "propertyNames": {
+              "enum": [
+                "movement",
+                "atmosphere",
+                "immersion",
+                "scale",
+                "community",
+                "perspective",
+                "confidence",
+                "tension",
+                "texture",
+                "transformation"
+              ]
+            }
+          },
+          "votes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "a",
+                "b"
+              ]
+            },
+            "minItems": 6,
+            "maxItems": 6,
+            "default": [
+              "a",
+              "a",
+              "a",
+              "a",
+              "a",
+              "a"
+            ]
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "pairings_analyze_quality",
+      "title": "pairings analyze quality",
+      "description": "Use this when analyze complete current catalog coverage, diagnostic integrity and year gaps without claiming unmeasured live skip/mismatch rates.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_list_interviews",
+      "title": "qa list interviews",
+      "description": "Use this when page ONLY authorized interview metadata. owner_qa is an operator tag, never proof of independent synthetic evidence.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "created_after": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_before": {
+            "$ref": "#/properties/created_after"
+          },
+          "is_guest": {
+            "type": "boolean"
+          },
+          "owner_qa": {
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_get_interview_trace",
+      "title": "qa get interview trace",
+      "description": "Use this when read an authorized session and one cursor page of its frozen choices or trusted metadata events. No private chat, profiles, prompts or local-only raw critic traces.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "section": {
+            "type": "string",
+            "enum": [
+              "choices",
+              "events",
+              "attempts",
+              "readings",
+              "calls"
+            ],
+            "default": "events"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_get_critic_response",
+      "title": "qa get critic response",
+      "description": "Use this when inspect exact attempt metadata and any linked immutable accepted saved reading. Local-only raw writer/reviewer prose, rejected drafts and private messages are never exported.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "attempt_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "attempt_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_get_reviewer_results",
+      "title": "qa get reviewer results",
+      "description": "Use this when page exact human rubric reviews for authorized sessions. Do not equate these with model review acceptance or independent randomized results.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "created_after": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_before": {
+            "$ref": "#/properties/created_after"
+          },
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "rubric_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "stage": {
+            "$ref": "#/properties/rubric_version"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_get_reading",
+      "title": "qa get reading",
+      "description": "Use this when replay an exact saved reading (or latest) with deterministic ledger annotations from frozen choices only. Never regenerates, changes an archetype or exposes self-report/chat text.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_validate_reading",
+      "title": "qa validate reading",
+      "description": "Use this when independently recompute existing ledger/claim-policy evidence from frozen choices for a saved result. Prose accuracy still needs the assistant/listener; no model verification is fabricated.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "version": {
+            "type": "integer",
+            "exclusiveMinimum": 0
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_get_processing_timeline",
+      "title": "qa get processing timeline",
+      "description": "Use this when page measured model-attempt durations for an authorized session. Call duration sums are not wall-clock latency; missing phase timestamps/context/save timings remain unavailable.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_get_quip_timeline",
+      "title": "qa get quip timeline",
+      "description": "Use this when inspect stored client-reported display metadata only. No display events means unavailable, not zero quips; static pools/server-generated lines are never reconstructed as actual display history.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_analyze_quip_pacing",
+      "title": "qa analyze quip pacing",
+      "description": "Use this when analyze only recorded authorized quip display events, never source-code timers. Current historical telemetry may be absent; return unavailable metrics rather than inventing a timeline.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "required": [
+          "session_id"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_get_errors",
+      "title": "qa get errors",
+      "description": "Use this when page sanitized attempt status/reason codes for authorized sessions; raw provider errors/prompts are withheld and a failed diagnostic read is never a healthy empty check.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "created_after": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_before": {
+            "$ref": "#/properties/created_after"
+          },
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "qa_run_synthetic_interview",
+      "title": "qa run synthetic interview",
+      "description": "Use this when run an OFFLINE shared-engine synthetic diagnostic with six supplied choices, no persisted sessions/votes, no learning and no model spend. Full model quality/latency tests need a separately approved isolated provider harness.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "opening_song_ids": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "minItems": 1,
+            "maxItems": 3
+          },
+          "opening_years": {
+            "type": "array",
+            "items": {
+              "type": "integer",
+              "minimum": 1800,
+              "maximum": 2200
+            },
+            "minItems": 1,
+            "maxItems": 3
+          },
+          "seed": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4294967295,
+            "default": 1
+          },
+          "lane": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120,
+            "default": "general"
+          },
+          "vector": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "number",
+              "minimum": -1000,
+              "maximum": 1000
+            },
+            "propertyNames": {
+              "enum": [
+                "movement",
+                "atmosphere",
+                "immersion",
+                "scale",
+                "community",
+                "perspective",
+                "confidence",
+                "tension",
+                "texture",
+                "transformation"
+              ]
+            }
+          },
+          "votes": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "a",
+                "b"
+              ]
+            },
+            "minItems": 6,
+            "maxItems": 6,
+            "default": [
+              "a",
+              "a",
+              "a",
+              "a",
+              "a",
+              "a"
+            ]
+          },
+          "mode": {
+            "type": "string",
+            "const": "offline",
+            "default": "offline"
+          }
+        },
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "models_get_routing_summary",
+      "title": "models get routing summary",
+      "description": "Use this when inspect actual configured provider/role defaults and existing policy versions without credentials or a model call. Saved per-call measurements override assumptions about effective routing.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "type": "object",
+        "properties": {}
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "models_get_quality_metrics",
+      "title": "models get quality metrics",
+      "description": "Use this when compute measured engineering counters for an explicit UTC window over authorized attempts. Missing tokens/cost/phase timings stay unavailable; denominators and sampling scope are explicit.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "created_after": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_before": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "created_after",
+          "created_before"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "models_compare_versions",
+      "title": "models compare versions",
+      "description": "Use this when compare two stored writer configurations in one explicit UTC window, with sample sizes and no invented statistical significance or causality.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "created_after": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_before": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "baseline_writer_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "baseline_model": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "candidate_writer_version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          },
+          "candidate_model": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 120
+          }
+        },
+        "required": [
+          "created_after",
+          "created_before"
+        ],
+        "additionalProperties": false,
+        "$schema": "http://json-schema.org/draft-07/schema#"
+      },
+      "outputSchema": null
+    },
+    {
+      "name": "models_get_learning_signals",
+      "title": "models get learning signals",
+      "description": "Use this when page minimal local learning outbox/delivery receipts for authorized sessions. Dispatch/receipt acknowledgement is not EdgeBot model completion, Agent Brain learning or Echelon approval/application.",
+      "annotations": {
+        "readOnlyHint": true,
+        "destructiveHint": false,
+        "idempotentHint": false,
+        "openWorldHint": false
+      },
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "limit": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 50,
+            "default": 20
+          },
+          "cursor": {
+            "type": "string",
+            "maxLength": 5000
+          },
+          "session_id": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "created_after": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_before": {
             "type": "string",
             "format": "date-time"
           }

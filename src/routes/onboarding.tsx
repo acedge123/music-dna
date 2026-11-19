@@ -24,7 +24,14 @@ export const Route = createFileRoute("/onboarding")({
   ssr: false,
   validateSearch: (search) =>
     z
-      .object({ session: z.string().uuid().optional(), fresh: z.string().max(80).optional() })
+      .object({
+        session: z.string().uuid().optional(),
+        fresh: z.string().max(80).optional(),
+        qa: z.preprocess(
+          (v) => (v === 1 || v === "1" ? "1" : undefined),
+          z.literal("1").optional(),
+        ),
+      })
       .parse(search),
   head: () => ({
     meta: [
@@ -70,7 +77,7 @@ function HomeLogo() {
 }
 
 function Onboarding() {
-  const { session, fresh } = Route.useSearch();
+  const { session, fresh, qa } = Route.useSearch();
   const navigate = useNavigate();
   const usedQuips = useRef(new Set<string>());
   const [pairDeadline, setPairDeadline] = useState(0);
@@ -454,6 +461,8 @@ function Onboarding() {
         {/* Current pairing */}
         {stage === "wait" && (
           <CriticStage
+            sessionId={sessionId}
+            qaTelemetry={qa === "1"}
             wait={
               finalWriting && !pairing
                 ? entries.length
