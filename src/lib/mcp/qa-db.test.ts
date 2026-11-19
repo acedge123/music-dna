@@ -47,14 +47,14 @@ beforeAll(async () => {
  `);
   // Apply BOTH real new migrations; QA authorization uses the Phase 1 grants/function, not a stub.
   await db.exec(
-    readFileSync("supabase/migrations/20261119011822_musicdna_admin_mcp_catalog.sql", "utf8"),
+    readFileSync("supabase/migrations/20261119040256_musicdna_admin_mcp_catalog.sql", "utf8"),
   );
   await db.query(
     "INSERT INTO musicdna_mcp_grants(user_id,role,granted_by) VALUES($1,'qa_auditor',$1),($2,'catalog_reader',$1)",
     [a, b],
   );
   await db.exec(
-    readFileSync("supabase/migrations/20261119020120_musicdna_admin_mcp_qa.sql", "utf8"),
+    readFileSync("supabase/migrations/20261119040307_musicdna_admin_mcp_qa.sql", "utf8"),
   );
 });
 afterAll(() => db.close());

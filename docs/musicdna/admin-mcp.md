@@ -1,6 +1,8 @@
 # MusicDNA Admin MCP — Phase 1 (AB-87 / AB-88)
 
-Status: **source implementation for review; not deployed or connected to ChatGPT.**
+Status: **source deployed at revision `829556b`; both database migrations applied. ChatGPT signed-in acceptance remains pending.**
+
+See `admin-mcp-deployment-receipt-2026-11-19.md`. The requested apex MCP URL alignment is a separately reviewed update; the live deployment initially advertises the www resource.
 
 The original assignment is preserved in `admin-mcp-spec.md`. Phase 1 deliberately ships before pairing/interview diagnostics (AB-89) and model/learning monitoring (AB-90). AB-84's Flutter pacing work remains a separate branch/PR.
 
@@ -8,7 +10,7 @@ The original assignment is preserved in `admin-mcp-spec.md`. Phase 1 deliberatel
 
 This is an authenticated, tool-only operator integration in the existing **acedge123/music-dna web repo**, hosted by the existing TanStack/Vercel application. It is not part of Flutter and does not require an Apple release. The starting pattern is the existing Mom Walk Lovable MCP SDK integration, adapted to MusicDNA's TanStack server and normal caller JWT/RLS. There is no MCP widget or second catalog/scoring engine.
 
-- MCP: `https://www.musicdna.fm/mcp` (Streamable HTTP).
+- MCP: `https://musicdna.fm/mcp` (Streamable HTTP).
 - Resource metadata: `/.well-known/oauth-protected-resource`.
 - OAuth consent: `/oauth/consent`.
 - Operator citation record: `/admin-mcp/song/:songId`.
@@ -103,7 +105,7 @@ npm run dev -- --host 127.0.0.1 --port 5197
 
 Check local `/.well-known/oauth-protected-resource` returns the configured issuer/resource; unauthenticated `POST /mcp` must return 401 with a metadata challenge. Native tests use PGlite, never production. An authenticated host test additionally requires the reviewed migration and an enabled/configured OAuth server; a successful anonymous 401 does not establish authenticated acceptance.
 
-For ChatGPT development testing, expose the local server with an HTTPS tunnel, then create an app in ChatGPT Developer Mode using `<https-tunnel>/mcp`. The resource is intentionally pinned to production, so use a separate explicitly configured development resource/client for a tunnel; do not repurpose production OAuth credentials. For the eventual private production app, use `https://www.musicdna.fm/mcp`. Refresh descriptors after tool changes. Claude can use the same remote Streamable HTTP URL and OAuth connection; client configuration/registration must be verified for that host. Do not paste account tokens into either assistant.
+For ChatGPT development testing, expose the local server with an HTTPS tunnel, then create an app in ChatGPT Developer Mode using `<https-tunnel>/mcp`. The resource is intentionally pinned to production, so use a separate explicitly configured development resource/client for a tunnel; do not repurpose production OAuth credentials. For the eventual private production app, use `https://musicdna.fm/mcp`. Refresh descriptors after tool changes. Claude can use the same remote Streamable HTTP URL and OAuth connection; client configuration/registration must be verified for that host. Do not paste account tokens into either assistant.
 
 This is a private operator app; no public app-directory submission or Flutter build is involved.
 
@@ -117,7 +119,7 @@ Read-only checks on 2026-11-19 UTC found:
 
 After source review/merge authorization:
 
-1. Apply only `supabase/migrations/20261119011822_musicdna_admin_mcp_catalog.sql` through the approved native migration workflow; return exact hash/history/access receipts. Do not replay unrelated migrations. Test full project replay separately: focused fixtures are not proof that every historical migration replays cleanly.
+1. Apply only `supabase/migrations/20261119040256_musicdna_admin_mcp_catalog.sql` through the approved native migration workflow; return exact hash/history/access receipts. Do not replay unrelated migrations. Test full project replay separately: focused fixtures are not proof that every historical migration replays cleanly.
 2. Deploy the merged web commit to the existing Vercel project, confirming Node/Vercel `/mcp` and metadata responses.
 3. With explicit authorization, enable Supabase OAuth server; set authorization/consent UI to `https://www.musicdna.fm/oauth/consent`. Register the specific ChatGPT/Claude callback URLs from those hosts, with PKCE S256. Prefer reviewed static clients; enabling dynamic client registration is a separate decision, not implicit authorization.
 4. Configure host request limits for `/mcp` (shared proxy/IP behavior considered); no pretend per-instance in-memory rate limiter is claimed. Verify logging excludes authorization headers and raw payloads. Leave metrics telemetry disabled.

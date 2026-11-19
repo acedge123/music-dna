@@ -72,7 +72,7 @@ beforeAll(async () => {
     await db.query("INSERT INTO auth.users(id,is_anonymous) VALUES($1,$2)", [id, who === "guest"]);
   await db.query("INSERT INTO user_roles VALUES($1,'admin')", [ids.admin]);
   await db.exec(
-    readFileSync("supabase/migrations/20261119011822_musicdna_admin_mcp_catalog.sql", "utf8"),
+    readFileSync("supabase/migrations/20261119040256_musicdna_admin_mcp_catalog.sql", "utf8"),
   );
   for (const [who, role] of [
     ["reader", "catalog_reader"],

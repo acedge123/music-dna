@@ -1,12 +1,12 @@
 # AB-88 production handoff — requires Alan's separate approval
 
-This is prepared deployment text, not permission to execute it. No agent message has been sent.
+The migration steps below were authorized and completed on 2026-11-19 UTC. See `admin-mcp-deployment-receipt-2026-11-19.md`; do not reapply either migration. No agent message was sent. Remaining hosted acceptance and host/retention controls are still pending.
 
 Apply/deploy only after Alan approves the specific merged source and production step. Full catalog/QA spec is in `admin-mcp-spec.md`; Phase 1 limits and acceptance are in `admin-mcp.md`.
 
 ## Native migration request
 
-Inspect MusicDNA project `udycgnhvaanemhrchbuj` and its native migration history first. If not yet applied, apply **only** `supabase/migrations/20261119011822_musicdna_admin_mcp_catalog.sql` from the reviewed merged source, unchanged.
+Inspect MusicDNA project `udycgnhvaanemhrchbuj` and its native migration history first. If not yet applied, apply **only** `supabase/migrations/20261119040256_musicdna_admin_mcp_catalog.sql` from the reviewed merged source, unchanged.
 
 Candidate SQL SHA-256: `40817d1e2c36c34fc6b56474e45659a72e9963c9823e2ee9a9f6bfac26ae2a6b`.
 
@@ -26,7 +26,7 @@ Then run the signed-in acceptance checklist in `admin-mcp.md`: complete approved
 
 ## Separately reviewed QA add-on (AB-89 / AB-90)
 
-After the Phase 1 migration and separate source/production approval, the QA add-on applies only `supabase/migrations/20261119020120_musicdna_admin_mcp_qa.sql`. Candidate SHA-256: `5759dc7210df0249c04362f516836b474561e16bebb77546b03e4f247d6c8572`. Return the same exact native history/hash/access receipts; never replay either migration. Native fixtures apply both new migrations together against representative base tables using the real Phase 1 grants/capability function. This is not full historical project-chain replay or hosted PostgREST acceptance.
+After the Phase 1 migration and separate source/production approval, the QA add-on applies only `supabase/migrations/20261119040307_musicdna_admin_mcp_qa.sql`. Candidate SHA-256: `5759dc7210df0249c04362f516836b474561e16bebb77546b03e4f247d6c8572`. Return the same exact native history/hash/access receipts; never replay either migration. Native fixtures apply both new migrations together against representative base tables using the real Phase 1 grants/capability function. This is not full historical project-chain replay or hosted PostgREST acceptance.
 
 Verify the new QA scope table and paint-receipt table have RLS and no direct authenticated writes; all diagnostic views enforce current QA permission plus ownership/approved scope. Create no scope grants, QA users, sessions or model tests as part of migration. Preserve raw local-only critic trace restrictions. No service key, learning/model flag, catalog score, paid model call or schedule changes. Ordinary/guest callers must not gain private diagnostics or receipt-write access.
 

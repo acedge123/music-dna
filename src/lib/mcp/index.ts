@@ -13,7 +13,7 @@ export default defineMcp({
     issuer: "https://udycgnhvaanemhrchbuj.supabase.co/auth/v1",
     jwksUri: "https://udycgnhvaanemhrchbuj.supabase.co/auth/v1/.well-known/jwks.json",
     acceptedAudiences: "authenticated",
-    resource: "https://www.musicdna.fm/mcp",
+    resource: "https://musicdna.fm/mcp",
     requireOAuthClientClaim: true,
     acceptResourceClaim: false,
   }),
