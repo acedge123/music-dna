@@ -181,6 +181,13 @@ export type Database = {
             foreignKeyName: "chat_messages_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "chat_messages_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -224,6 +231,13 @@ export type Database = {
           user_message_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "chat_turns_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "chat_turns_session_id_fkey"
             columns: ["session_id"]
@@ -341,6 +355,13 @@ export type Database = {
             foreignKeyName: "choices_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "choices_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -395,6 +416,20 @@ export type Database = {
             columns: ["source_attempt_id"]
             isOneToOne: false
             referencedRelation: "critic_quality_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_exemplars_source_attempt_id_fkey"
+            columns: ["source_attempt_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_exemplars_source_session_id_fkey"
+            columns: ["source_session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
             referencedColumns: ["id"]
           },
           {
@@ -511,6 +546,13 @@ export type Database = {
             foreignKeyName: "critic_quality_attempts_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_quality_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -567,6 +609,13 @@ export type Database = {
             referencedRelation: "critic_quality_attempts"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "critic_quality_reviews_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_attempts"
+            referencedColumns: ["id"]
+          },
         ]
       }
       critic_reaction_exposures: {
@@ -594,6 +643,13 @@ export type Database = {
             columns: ["pool_id"]
             isOneToOne: false
             referencedRelation: "critic_reaction_pool"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_reaction_exposures_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
             referencedColumns: ["id"]
           },
           {
@@ -732,6 +788,13 @@ export type Database = {
             foreignKeyName: "critic_session_verdicts_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_session_verdicts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -819,6 +882,13 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "event_log_choice_id_fkey"
+            columns: ["choice_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_choices"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "event_log_pairing_id_fkey"
             columns: ["pairing_id"]
             isOneToOne: false
@@ -837,6 +907,13 @@ export type Database = {
             columns: ["pairing_id"]
             isOneToOne: false
             referencedRelation: "pairings_with_songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
             referencedColumns: ["id"]
           },
           {
@@ -902,6 +979,13 @@ export type Database = {
             foreignKeyName: "interview_qa_sessions_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: true
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "interview_qa_sessions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -961,10 +1045,53 @@ export type Database = {
             foreignKeyName: "llm_calls_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "llm_calls_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
         ]
+      }
+      musicdna_catalog_audit_events: {
+        Row: {
+          action: string
+          actor_id: string | null
+          after_version: string | null
+          before_version: string | null
+          created_at: string
+          id: string
+          mutation_id: string
+          object_id: string
+          request_hash: string | null
+        }
+        Insert: {
+          action: string
+          actor_id?: string | null
+          after_version?: string | null
+          before_version?: string | null
+          created_at?: string
+          id?: string
+          mutation_id: string
+          object_id: string
+          request_hash?: string | null
+        }
+        Update: {
+          action?: string
+          actor_id?: string | null
+          after_version?: string | null
+          before_version?: string | null
+          created_at?: string
+          id?: string
+          mutation_id?: string
+          object_id?: string
+          request_hash?: string | null
+        }
+        Relationships: []
       }
       musicdna_export_scopes: {
         Row: {
@@ -1247,7 +1374,21 @@ export type Database = {
             foreignKeyName: "musicdna_learning_enrollments_result_id_fkey"
             columns: ["result_id"]
             isOneToOne: true
+            referencedRelation: "musicdna_mcp_qa_readings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_learning_enrollments_result_id_fkey"
+            columns: ["result_id"]
+            isOneToOne: true
             referencedRelation: "session_results"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_learning_enrollments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
             referencedColumns: ["id"]
           },
           {
@@ -1418,6 +1559,189 @@ export type Database = {
           },
         ]
       }
+      musicdna_mcp_exports: {
+        Row: {
+          created_at: string
+          error_code: string | null
+          expires_at: string
+          filters: Json
+          format: string
+          generated_at: string | null
+          id: string
+          mutation_id: string
+          request_hash: string
+          snapshot: Json | null
+          state: string
+          total_count: number | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          error_code?: string | null
+          expires_at?: string
+          filters: Json
+          format: string
+          generated_at?: string | null
+          id?: string
+          mutation_id: string
+          request_hash: string
+          snapshot?: Json | null
+          state?: string
+          total_count?: number | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          error_code?: string | null
+          expires_at?: string
+          filters?: Json
+          format?: string
+          generated_at?: string | null
+          id?: string
+          mutation_id?: string
+          request_hash?: string
+          snapshot?: Json | null
+          state?: string
+          total_count?: number | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      musicdna_mcp_grants: {
+        Row: {
+          granted_at: string
+          granted_by: string | null
+          revoked_at: string | null
+          role: string
+          user_id: string
+        }
+        Insert: {
+          granted_at?: string
+          granted_by?: string | null
+          revoked_at?: string | null
+          role: string
+          user_id: string
+        }
+        Update: {
+          granted_at?: string
+          granted_by?: string | null
+          revoked_at?: string | null
+          role?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      musicdna_mcp_qa_scopes: {
+        Row: {
+          approved_at: string
+          approved_by: string | null
+          expires_at: string
+          revoked_at: string | null
+          session_id: string
+          user_id: string
+        }
+        Insert: {
+          approved_at?: string
+          approved_by?: string | null
+          expires_at: string
+          revoked_at?: string | null
+          session_id: string
+          user_id: string
+        }
+        Update: {
+          approved_at?: string
+          approved_by?: string | null
+          expires_at?: string
+          revoked_at?: string | null
+          session_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_mcp_qa_scopes_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_mcp_qa_scopes_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_qa_quip_observations: {
+        Row: {
+          answered: number
+          created_at: string
+          duration_ms: number
+          ended_reason: string
+          id: string
+          line_hash: string
+          owner_id: string
+          pacing_version: string
+          phase: string
+          request_hash: string
+          sequence: number
+          session_id: string
+          shown_at: string
+          since_wait_ms: number
+          wait_id: string
+        }
+        Insert: {
+          answered: number
+          created_at?: string
+          duration_ms: number
+          ended_reason: string
+          id: string
+          line_hash: string
+          owner_id: string
+          pacing_version: string
+          phase: string
+          request_hash: string
+          sequence: number
+          session_id: string
+          shown_at: string
+          since_wait_ms: number
+          wait_id: string
+        }
+        Update: {
+          answered?: number
+          created_at?: string
+          duration_ms?: number
+          ended_reason?: string
+          id?: string
+          line_hash?: string
+          owner_id?: string
+          pacing_version?: string
+          phase?: string
+          request_hash?: string
+          sequence?: number
+          session_id?: string
+          shown_at?: string
+          since_wait_ms?: number
+          wait_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_qa_quip_observations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_qa_quip_observations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       musicdna_real_qa_consents: {
         Row: {
           approved_by: string
@@ -1462,6 +1786,195 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "musicdna_export_scopes"
             referencedColumns: ["source_key", "environment"]
+          },
+        ]
+      }
+      musicdna_song_why_audit_findings: {
+        Row: {
+          auditor_id: string | null
+          base_version: string
+          category: string
+          created_at: string
+          excerpt: string
+          explanation: string
+          explanation_id: string
+          finding_key: string
+          id: string
+          last_seen_at: string
+          mutation_id: string
+          severity: string
+          status: string
+          suggested_wording: string | null
+          verification_kind: string
+        }
+        Insert: {
+          auditor_id?: string | null
+          base_version: string
+          category: string
+          created_at?: string
+          excerpt: string
+          explanation: string
+          explanation_id: string
+          finding_key: string
+          id?: string
+          last_seen_at?: string
+          mutation_id: string
+          severity: string
+          status?: string
+          suggested_wording?: string | null
+          verification_kind: string
+        }
+        Update: {
+          auditor_id?: string | null
+          base_version?: string
+          category?: string
+          created_at?: string
+          excerpt?: string
+          explanation?: string
+          explanation_id?: string
+          finding_key?: string
+          id?: string
+          last_seen_at?: string
+          mutation_id?: string
+          severity?: string
+          status?: string
+          suggested_wording?: string | null
+          verification_kind?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_song_why_audit_findings_explanation_id_fkey"
+            columns: ["explanation_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_whys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_song_why_audit_findings_explanation_id_fkey"
+            columns: ["explanation_id"]
+            isOneToOne: false
+            referencedRelation: "song_trait_explanations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_song_why_history: {
+        Row: {
+          explanation_id: string
+          id: string
+          recorded_at: string
+          recording_kind: string
+          snapshot: Json
+          version: string
+        }
+        Insert: {
+          explanation_id: string
+          id?: string
+          recorded_at?: string
+          recording_kind: string
+          snapshot: Json
+          version: string
+        }
+        Update: {
+          explanation_id?: string
+          id?: string
+          recorded_at?: string
+          recording_kind?: string
+          snapshot?: Json
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_song_why_history_explanation_id_fkey"
+            columns: ["explanation_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_whys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_song_why_history_explanation_id_fkey"
+            columns: ["explanation_id"]
+            isOneToOne: false
+            referencedRelation: "song_trait_explanations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_song_why_proposals: {
+        Row: {
+          audible_evidence: string
+          author_id: string | null
+          base_snapshot: Json
+          base_version: string
+          created_at: string
+          decision_hash: string | null
+          decision_id: string | null
+          explanation_id: string
+          id: string
+          interpretation: string
+          mutation_id: string
+          reason: string
+          request_hash: string
+          reviewed_at: string | null
+          reviewer_id: string | null
+          status: string
+          supporting_evidence: Json
+          version: number
+        }
+        Insert: {
+          audible_evidence: string
+          author_id?: string | null
+          base_snapshot: Json
+          base_version: string
+          created_at?: string
+          decision_hash?: string | null
+          decision_id?: string | null
+          explanation_id: string
+          id?: string
+          interpretation: string
+          mutation_id: string
+          reason: string
+          request_hash: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          status?: string
+          supporting_evidence: Json
+          version?: number
+        }
+        Update: {
+          audible_evidence?: string
+          author_id?: string | null
+          base_snapshot?: Json
+          base_version?: string
+          created_at?: string
+          decision_hash?: string | null
+          decision_id?: string | null
+          explanation_id?: string
+          id?: string
+          interpretation?: string
+          mutation_id?: string
+          reason?: string
+          request_hash?: string
+          reviewed_at?: string | null
+          reviewer_id?: string | null
+          status?: string
+          supporting_evidence?: Json
+          version?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_song_why_proposals_explanation_id_fkey"
+            columns: ["explanation_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_whys"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_song_why_proposals_explanation_id_fkey"
+            columns: ["explanation_id"]
+            isOneToOne: false
+            referencedRelation: "song_trait_explanations"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -1573,6 +2086,13 @@ export type Database = {
             columns: ["pairing_id"]
             isOneToOne: false
             referencedRelation: "pairings_with_songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "pairing_exposures_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
             referencedColumns: ["id"]
           },
           {
@@ -1735,6 +2255,13 @@ export type Database = {
             foreignKeyName: "prepared_reads_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prepared_reads_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -1827,6 +2354,13 @@ export type Database = {
             foreignKeyName: "result_feedback_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "result_feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -1889,6 +2423,13 @@ export type Database = {
             foreignKeyName: "session_reactions_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_reactions_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -1938,6 +2479,13 @@ export type Database = {
           user_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "session_reasoning_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: true
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "session_reasoning_session_id_fkey"
             columns: ["session_id"]
@@ -1997,6 +2545,13 @@ export type Database = {
           version?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "session_results_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "session_results_session_id_fkey"
             columns: ["session_id"]
@@ -2100,6 +2655,13 @@ export type Database = {
             columns: ["archetype_id"]
             isOneToOne: false
             referencedRelation: "archetypes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_parent_session_id_fkey"
+            columns: ["parent_session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
             referencedColumns: ["id"]
           },
           {
@@ -2749,6 +3311,633 @@ export type Database = {
       }
     }
     Views: {
+      musicdna_mcp_learning_receipts: {
+        Row: {
+          attempts: number | null
+          completed_at: string | null
+          created_at: string | null
+          data_class: string | null
+          dispatch_state: string | null
+          environment: string | null
+          id: string | null
+          receipt_id: string | null
+          replay_count: number | null
+          result_id: string | null
+          session_id: string | null
+          state: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_learning_enrollments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_learning_enrollments_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_learning_outbox_result_id_fkey"
+            columns: ["result_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_learning_enrollments"
+            referencedColumns: ["result_id"]
+          },
+        ]
+      }
+      musicdna_mcp_qa_attempts: {
+        Row: {
+          calls: Json | null
+          created_at: string | null
+          evidence_references: Json | null
+          id: string | null
+          numeric_review_checks: Json | null
+          output_fingerprint: string | null
+          reason_code: string | null
+          result_version: number | null
+          reviewer_version: string | null
+          session_id: string | null
+          stage: string | null
+          status: string | null
+          writer_version: string | null
+        }
+        Insert: {
+          calls?: never
+          created_at?: string | null
+          evidence_references?: never
+          id?: string | null
+          numeric_review_checks?: never
+          output_fingerprint?: string | null
+          reason_code?: never
+          result_version?: number | null
+          reviewer_version?: string | null
+          session_id?: string | null
+          stage?: string | null
+          status?: string | null
+          writer_version?: string | null
+        }
+        Update: {
+          calls?: never
+          created_at?: string | null
+          evidence_references?: never
+          id?: string | null
+          numeric_review_checks?: never
+          output_fingerprint?: string | null
+          reason_code?: never
+          result_version?: number | null
+          reviewer_version?: string | null
+          session_id?: string | null
+          stage?: string | null
+          status?: string | null
+          writer_version?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critic_quality_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_quality_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_mcp_qa_calls: {
+        Row: {
+          created_at: string | null
+          id: string | null
+          latency_ms: number | null
+          model: string | null
+          prompt_version: string | null
+          role: string | null
+          session_id: string | null
+          status: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string | null
+          latency_ms?: number | null
+          model?: string | null
+          prompt_version?: string | null
+          role?: string | null
+          session_id?: string | null
+          status?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          id?: string | null
+          latency_ms?: number | null
+          model?: string | null
+          prompt_version?: string | null
+          role?: string | null
+          session_id?: string | null
+          status?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "llm_calls_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "llm_calls_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_mcp_qa_choices: {
+        Row: {
+          chosen_song_id: string | null
+          created_at: string | null
+          evidence: Json | null
+          id: string | null
+          ms_to_decide: number | null
+          pairing_id: string | null
+          rejected_song_id: string | null
+          session_id: string | null
+        }
+        Insert: {
+          chosen_song_id?: string | null
+          created_at?: string | null
+          evidence?: Json | null
+          id?: string | null
+          ms_to_decide?: number | null
+          pairing_id?: string | null
+          rejected_song_id?: string | null
+          session_id?: string | null
+        }
+        Update: {
+          chosen_song_id?: string | null
+          created_at?: string | null
+          evidence?: Json | null
+          id?: string | null
+          ms_to_decide?: number | null
+          pairing_id?: string | null
+          rejected_song_id?: string | null
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "choices_chosen_song_id_fkey"
+            columns: ["chosen_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "choices_chosen_song_id_fkey"
+            columns: ["chosen_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "choices_chosen_song_id_fkey"
+            columns: ["chosen_song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "choices_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["pairing_id"]
+          },
+          {
+            foreignKeyName: "choices_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "choices_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings_with_songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "choices_rejected_song_id_fkey"
+            columns: ["rejected_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "choices_rejected_song_id_fkey"
+            columns: ["rejected_song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "choices_rejected_song_id_fkey"
+            columns: ["rejected_song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "choices_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "choices_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_mcp_qa_events: {
+        Row: {
+          approved_read: string | null
+          approved_read_hash: string | null
+          choice_id: string | null
+          client: string | null
+          created_at: string | null
+          diagnostics: Json | null
+          event_type: string | null
+          id: string | null
+          pairing_id: string | null
+          response_time_ms: number | null
+          session_id: string | null
+        }
+        Insert: {
+          approved_read?: never
+          approved_read_hash?: never
+          choice_id?: string | null
+          client?: string | null
+          created_at?: string | null
+          diagnostics?: never
+          event_type?: string | null
+          id?: string | null
+          pairing_id?: string | null
+          response_time_ms?: number | null
+          session_id?: string | null
+        }
+        Update: {
+          approved_read?: never
+          approved_read_hash?: never
+          choice_id?: string | null
+          client?: string | null
+          created_at?: string | null
+          diagnostics?: never
+          event_type?: string | null
+          id?: string | null
+          pairing_id?: string | null
+          response_time_ms?: number | null
+          session_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_log_choice_id_fkey"
+            columns: ["choice_id"]
+            isOneToOne: false
+            referencedRelation: "choices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_log_choice_id_fkey"
+            columns: ["choice_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_choices"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_log_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["pairing_id"]
+          },
+          {
+            foreignKeyName: "event_log_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_log_pairing_id_fkey"
+            columns: ["pairing_id"]
+            isOneToOne: false
+            referencedRelation: "pairings_with_songs"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_mcp_qa_quips: {
+        Row: {
+          answered: number | null
+          created_at: string | null
+          duration_ms: number | null
+          ended_reason: string | null
+          id: string | null
+          line_hash: string | null
+          pacing_version: string | null
+          phase: string | null
+          sequence: number | null
+          session_id: string | null
+          shown_at: string | null
+          since_wait_ms: number | null
+          wait_id: string | null
+        }
+        Insert: {
+          answered?: number | null
+          created_at?: string | null
+          duration_ms?: number | null
+          ended_reason?: string | null
+          id?: string | null
+          line_hash?: string | null
+          pacing_version?: string | null
+          phase?: string | null
+          sequence?: number | null
+          session_id?: string | null
+          shown_at?: string | null
+          since_wait_ms?: number | null
+          wait_id?: string | null
+        }
+        Update: {
+          answered?: number | null
+          created_at?: string | null
+          duration_ms?: number | null
+          ended_reason?: string | null
+          id?: string | null
+          line_hash?: string | null
+          pacing_version?: string | null
+          phase?: string | null
+          sequence?: number | null
+          session_id?: string | null
+          shown_at?: string | null
+          since_wait_ms?: number | null
+          wait_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "musicdna_qa_quip_observations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "musicdna_qa_quip_observations_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_mcp_qa_readings: {
+        Row: {
+          base_version: number | null
+          created_at: string | null
+          engine_version: string | null
+          frozen_content: Json | null
+          id: string | null
+          ledger_version: string | null
+          policy_version: string | null
+          session_id: string | null
+          source: string | null
+          version: number | null
+        }
+        Insert: {
+          base_version?: number | null
+          created_at?: string | null
+          engine_version?: string | null
+          frozen_content?: never
+          id?: string | null
+          ledger_version?: string | null
+          policy_version?: string | null
+          session_id?: string | null
+          source?: string | null
+          version?: number | null
+        }
+        Update: {
+          base_version?: number | null
+          created_at?: string | null
+          engine_version?: string | null
+          frozen_content?: never
+          id?: string | null
+          ledger_version?: string | null
+          policy_version?: string | null
+          session_id?: string | null
+          source?: string | null
+          version?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "session_results_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "session_results_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_mcp_qa_reviews: {
+        Row: {
+          attempt_id: string | null
+          conversational_relevance: number | null
+          created_at: string | null
+          entertainment: number | null
+          evaluator_type: string | null
+          id: string | null
+          inference_accuracy: number | null
+          musical_specificity: number | null
+          prose_originality: number | null
+          reviewer_version: string | null
+          rubric_version: string | null
+          session_id: string | null
+          stage: string | null
+          status: string | null
+          writer_version: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "critic_quality_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_quality_attempts_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_quality_reviews_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "critic_quality_attempts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "critic_quality_reviews_attempt_id_fkey"
+            columns: ["attempt_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_attempts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_mcp_qa_sessions: {
+        Row: {
+          choices: number | null
+          completed_at: string | null
+          created_at: string | null
+          decade: number | null
+          id: string | null
+          is_guest: boolean | null
+          lane: string | null
+          measured_attempts: number | null
+          mode: string | null
+          owner_qa: boolean | null
+          parent_session_id: string | null
+          saved_versions: number | null
+          skips: number | null
+          started_at: string | null
+        }
+        Insert: {
+          choices?: never
+          completed_at?: string | null
+          created_at?: string | null
+          decade?: number | null
+          id?: string | null
+          is_guest?: never
+          lane?: string | null
+          measured_attempts?: never
+          mode?: string | null
+          owner_qa?: never
+          parent_session_id?: string | null
+          saved_versions?: never
+          skips?: never
+          started_at?: string | null
+        }
+        Update: {
+          choices?: never
+          completed_at?: string | null
+          created_at?: string | null
+          decade?: number | null
+          id?: string | null
+          is_guest?: never
+          lane?: string | null
+          measured_attempts?: never
+          mode?: string | null
+          owner_qa?: never
+          parent_session_id?: string | null
+          saved_versions?: never
+          skips?: never
+          started_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sessions_parent_session_id_fkey"
+            columns: ["parent_session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "sessions_parent_session_id_fkey"
+            columns: ["parent_session_id"]
+            isOneToOne: false
+            referencedRelation: "sessions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      musicdna_mcp_whys: {
+        Row: {
+          artist: string | null
+          axis: string | null
+          confidence: string | null
+          created_at: string | null
+          current_score: number | null
+          genre: string | null
+          id: string | null
+          record: Json | null
+          song_id: string | null
+          source_version: string | null
+          stale: boolean | null
+          status: string | null
+          title: string | null
+          updated_at: string | null
+          year: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "song_trait_explanations_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_a_id"]
+          },
+          {
+            foreignKeyName: "song_trait_explanations_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "pairing_recognition"
+            referencedColumns: ["song_b_id"]
+          },
+          {
+            foreignKeyName: "song_trait_explanations_song_id_fkey"
+            columns: ["song_id"]
+            isOneToOne: false
+            referencedRelation: "songs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       pairing_recognition: {
         Row: {
           active: boolean | null
@@ -2857,6 +4046,13 @@ export type Database = {
             foreignKeyName: "event_log_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -2870,6 +4066,13 @@ export type Database = {
           winner_archetype_id: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "event_log_session_id_fkey"
             columns: ["session_id"]
@@ -2894,6 +4097,13 @@ export type Database = {
             foreignKeyName: "result_feedback_session_id_fkey"
             columns: ["session_id"]
             isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "result_feedback_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
             referencedRelation: "sessions"
             referencedColumns: ["id"]
           },
@@ -2908,6 +4118,13 @@ export type Database = {
           winner_fit: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "event_log_session_id_fkey"
             columns: ["session_id"]
@@ -2928,6 +4145,13 @@ export type Database = {
           winner_fit: number | null
         }
         Relationships: [
+          {
+            foreignKeyName: "event_log_session_id_fkey"
+            columns: ["session_id"]
+            isOneToOne: false
+            referencedRelation: "musicdna_mcp_qa_sessions"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "event_log_session_id_fkey"
             columns: ["session_id"]
@@ -3063,6 +4287,80 @@ export type Database = {
           p_subject_ref: string
         }
         Returns: boolean
+      }
+      musicdna_mcp_access: { Args: never; Returns: Json }
+      musicdna_mcp_catalog_summary: { Args: never; Returns: Json }
+      musicdna_mcp_export: {
+        Args: {
+          p_action: string
+          p_filters?: Json
+          p_format?: string
+          p_id?: string
+          p_limit?: number
+          p_mutation?: string
+          p_offset?: number
+        }
+        Returns: Json
+      }
+      musicdna_mcp_quip_telemetry_allowed: {
+        Args: { p_session: string }
+        Returns: boolean
+      }
+      musicdna_mcp_record_quip: {
+        Args: {
+          p_answered: number
+          p_duration_ms: number
+          p_ended_reason: string
+          p_line_hash: string
+          p_observation: string
+          p_pacing_version: string
+          p_phase: string
+          p_sequence: number
+          p_session: string
+          p_shown_at: string
+          p_since_wait_ms: number
+          p_wait: string
+        }
+        Returns: Json
+      }
+      musicdna_mcp_record_why_findings: {
+        Args: {
+          p_base_version: string
+          p_findings: Json
+          p_id: string
+          p_mutation: string
+        }
+        Returns: Json
+      }
+      musicdna_mcp_review_why_revision: {
+        Args: {
+          p_decision: string
+          p_id: string
+          p_mutation: string
+          p_version: number
+        }
+        Returns: Json
+      }
+      musicdna_mcp_search_songs: {
+        Args: {
+          p_after?: string
+          p_limit?: number
+          p_query: string
+          p_snapshot?: string
+        }
+        Returns: Json
+      }
+      musicdna_mcp_submit_why_revision: {
+        Args: {
+          p_base_version: string
+          p_evidence: Json
+          p_hear: string
+          p_id: string
+          p_means: string
+          p_mutation: string
+          p_reason: string
+        }
+        Returns: Json
       }
       prepare_musicdna_pilot_session: {
         Args: {
