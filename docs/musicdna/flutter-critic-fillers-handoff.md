@@ -22,9 +22,9 @@ Refresh once per app launch and keep a bundled fallback. Existing clients can ig
 | 3 | Reaction | 1 |
 | 4 | Neutral → Reaction → Person | 3–4 |
 | 5 | Neutral | 1 |
-| 6 | Neutral → Reaction → Person → Overtime **only while final writing** | 3–4 + 12 |
+| 6 | Neutral → Reaction → Person setup → Person punchline → Overtime **only while final writing** | 4 + 12 |
 
-Person is one complete group: either a standalone or setup → punchline. Never flatten/shuffle the person library. Current indexed choices give three beats after pick 2 and three after picks 4/6; counts above accommodate other compatible groups. Do not insert decade lines or replace Person with era decoration. Decade fields remain available for older clients.
+Person is one complete group: either a standalone or setup → punchline for picks 2/4; pick six MUST select an unused compatible two-line pair, giving four primary beats. Never flatten/shuffle the person library. If the indexed group was used, select another unused compatible group rather than dropping the category. Do not insert decade lines or replace Person with era decoration. Decade fields remain available for older clients.
 
 Use answered choices, never served rounds or skip counts. Opening (`wait = 0`) stays one neutral beat. Capture the pending pick number on tap (`answered + 1`), title and exposed-line set once, so saving the vote cannot increment/restart the wait. If final writing starts after saved entries update, keep that same pending pick number; restore/retry uses the actual saved answered count. Four-choice early finishes and skip/exhaustion finishes before six never use Overtime.
 
@@ -41,13 +41,15 @@ Use answered choices, never served rounds or skip counts. Opening (`wait = 0`) s
 
 - Each beat gets **2500 ms from actual display**. Late/doubled timers cannot cause catch-up bursts. Choice-save → read → final transitions never restart the opener.
 - Category lists are ceilings, not mandatory delays. A ready read/report or next pairing normally replaces the wait immediately. **Exception: a started person setup must receive its punchline, and that punchline completes its 2500 ms beat before the ready screen replaces it.** Do not wait for any unstarted person group or Overtime line.
-- Pick-six Overtime begins only after the primary Neutral → Reaction → Person sequence, and only when the final report is still pending. Play the twelve lines in source order, once each, at 2500 ms. Never recycle unrelated person, era or neutral pools to extend the final wait.
+- Pick-six Overtime begins only after all FOUR primary beats: Neutral → Reaction → Person setup → Person punchline, and only when the final report is still pending. Before the saved hunch arrives, hold Neutral and do not enqueue Overtime. Play the twelve lines in source order, once each, at 2500 ms. Never recycle unrelated person, era or neutral pools to extend the final wait.
 - Keep “Writing your full reading…” and an activity indicator active. After the finite Overtime pool, hold the last line with that indicator; never repeat or invent copy. These are jokes about waiting/the critic, not claims of extra analysis or unusual listener evidence.
 - Existing retryable failures end the wait and show the saved-choice notice/Retry. No empty completed report, chat or sharing before a saved result exists. No new LLM calls, timeouts, scoring, routing, consent or result changes.
 
 ## Read delivery and saved flow (unchanged)
 
-`per_pick`: request the current read and next offer as before; expose the read with the next pairing automatically, no extra “Next matchup” tap. Discard stale `answered`/`after_pairing_id` responses. Existing ~20-second read failure handling stays unchanged.
+`per_pick`: request the current read and next offer for picks 1–5; expose the read with the next pairing automatically, no extra “Next matchup” tap. Pick six goes directly to finalization/final reading without an extra interim Critic request. Discard stale `answered`/`after_pairing_id` responses. Existing ~20-second interim read failure handling stays unchanged.
+
+Rejected final drafts (`narration_status: invalid_generation`, no result version) are NOT still-running reports: show an evidence-check failure and explicit Retry. Provider failure is separate from client timeout. Never save or share an unapproved draft. The writer keeps the existing one guided retry and independent review; no extra automatic model retries are added.
 
 `checkpoints`: requests remain only at answered 2/4 plus final six. Picks 1/3/5 use their table category for the existing short between-checkpoint hold, then automatically expose the next offer. Checkpoint read and controls are exclusive; the next offer remains hidden until Continue. Optional four-choice finish remains server-owned.
 

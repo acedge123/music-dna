@@ -219,6 +219,30 @@ describe("critic-expression-v2 boundary", () => {
 });
 
 describe("critic-expression-v2.3 output contract", () => {
+  it("sends the same final-writing bounds the local validator enforces", () => {
+    const schema = criticBeatSchema(ledger([40, 40, 40]), "reveal");
+    expect(schema.properties.body.maxLength).toBe(1000);
+    expect(schema.properties.headline.maxLength).toBe(160);
+    expect(schema.properties.claims.maxItems).toBe(2);
+    expect(schema.properties.signature?.properties.hook.maxLength).toBe(160);
+    expect(schema.properties.signature?.properties.name.maxLength).toBe(40);
+  });
+  it("gives a length-specific repair instead of falsely blaming valid citations", async () => {
+    const valid = {
+      ...beat,
+      signature: { name: "Private Fire", hook: "An emerging lean toward intimacy." },
+    };
+    const generate = vi
+      .fn()
+      .mockResolvedValueOnce(JSON.stringify({ ...valid, body: "x".repeat(1001) }))
+      .mockResolvedValueOnce(JSON.stringify(valid))
+      .mockResolvedValueOnce(JSON.stringify(review));
+    const result = await authorCritic(ledger([40, 40, 40]), labels, generate, { stage: "reveal" });
+    expect(result.status).toBe("ok");
+    expect(generate.mock.calls[1][0]).toContain('"path":"body"');
+    expect(generate.mock.calls[1][0]).toContain("1000");
+    expect(generate).toHaveBeenCalledTimes(3);
+  });
   it("restricts claim axes and IDs to the eligible allowlist", () => {
     const schema = criticBeatSchema(ledger([40, 40, 40, -40]));
     expect(schema.properties.claims.items.properties?.axis.enum).toEqual(["scale"]);
@@ -261,12 +285,16 @@ describe("critic-expression-v2.3 output contract", () => {
 import { signatureAllowed } from "./critic-editorial";
 describe("reveal signature", () => {
   it("accepts a short figurative name", () => {
-    expect(signatureAllowed({ name: "Polish With Teeth", hook: "Craft first, until raw hits harder." })).toBe(true);
+    expect(
+      signatureAllowed({ name: "Polish With Teeth", hook: "Craft first, until raw hits harder." }),
+    ).toBe(true);
   });
   it("rejects numbers, archetype claims and long names", () => {
     expect(signatureAllowed({ name: "3-for-4 Refiner", hook: "x x" })).toBe(false);
     expect(signatureAllowed({ name: "The Archetype", hook: "Your archetype is set." })).toBe(false);
-    expect(signatureAllowed({ name: "one two three four five six", hook: "fine hook" })).toBe(false);
+    expect(signatureAllowed({ name: "one two three four five six", hook: "fine hook" })).toBe(
+      false,
+    );
   });
   it("only the reveal schema asks for a signature", () => {
     expect(criticBeatSchema(ledger([40]), "reveal").required).toContain("signature");

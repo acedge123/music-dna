@@ -52,6 +52,7 @@ describe("six-pick wait pacing", () => {
         "neutral",
         "reaction",
         "person",
+        "person",
       ]);
     });
   }
@@ -59,6 +60,7 @@ describe("six-pick wait pacing", () => {
     expect(waitQuips(6, "early", null, Infinity, new Set(), true).map(category)).toEqual([
       "neutral",
       "reaction",
+      "person",
       "person",
       ...Array(12).fill("overtime"),
     ]);
@@ -73,6 +75,22 @@ describe("six-pick wait pacing", () => {
   it("reaction-first waits do not invent a reaction before the saved hunch", () => {
     expect(waitQuips(2, null, null, 3, new Set())).toEqual([]);
     expect(waitQuips(3, null, null, 1, new Set())).toEqual([]);
+  });
+  it("holds pick-six Neutral until the saved hunch before all four primary beats and Overtime", () => {
+    expect(waitQuips(6, null, null, Infinity, new Set(), true).map(category)).toEqual(["neutral"]);
+    expect(
+      waitQuips(6, "early", null, Infinity, new Set(), true).slice(0, 5).map(category),
+    ).toEqual(["neutral", "reaction", "person", "person", "overtime"]);
+  });
+  it("finds an unused complete person pair on pick six instead of skipping straight to Overtime", () => {
+    const used = new Set(PERSON_QUIP_GROUPS[0].lines);
+    expect(waitQuips(6, "early", null, Infinity, used, true).slice(0, 5).map(category)).toEqual([
+      "neutral",
+      "reaction",
+      "person",
+      "person",
+      "overtime",
+    ]);
   });
   it("never reuses any earlier displayed line in a six-pick interview", () => {
     const used = new Set<string>();

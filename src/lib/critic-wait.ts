@@ -35,7 +35,11 @@ export function waitQuips(
   used: ReadonlySet<string>,
   finalReading = false,
 ): string[] {
-  const neutral = NEUTRAL_QUIP_GROUPS[wait % NEUTRAL_QUIP_GROUPS.length];
+  const unused = (group: QuipGroup) => group.lines.every((line) => !used.has(line));
+  const neutral =
+    [...NEUTRAL_QUIP_GROUPS.slice(wait % NEUTRAL_QUIP_GROUPS.length), ...NEUTRAL_QUIP_GROUPS].find(
+      unused,
+    ) ?? NEUTRAL_QUIP_GROUPS[wait % NEUTRAL_QUIP_GROUPS.length];
   // Avoid a confident prediction followed by a contradictory surprise claim (or vice versa).
   // The used set contains only quips actually displayed earlier in this interview.
   const priorWith = FILLER_REACTION.with.some((line) => used.has(line));
@@ -44,10 +48,21 @@ export function waitQuips(
     (hunch === "with" && priorAgainst) || (hunch === "against" && priorWith) ? "early" : hunch;
   // The surprise punchline should not follow a confident "called it" moment.
   const personIndex = wait % PERSON_QUIP_GROUPS.length;
-  const person =
+  const preferredPerson =
     PERSON_QUIP_GROUPS[
       (priorWith || reactionHunch === "with") && personIndex === 3 ? 4 : personIndex
     ];
+  // Pick six always gets setup + punchline: four primary beats, never a standalone.
+  const person =
+    [preferredPerson, ...PERSON_QUIP_GROUPS].find(
+      (group) =>
+        unused(group) &&
+        (wait !== 6 || group.lines.length === 2) &&
+        !((priorWith || reactionHunch === "with") && group.id === "person-3"),
+    ) ?? preferredPerson;
+  const reaction = reactionQuipGroup(reactionHunch ?? "early", wait);
+  const pool = FILLER_REACTION[reactionHunch ?? "early"];
+  const reactionLine = [...pool.slice(wait % pool.length), ...pool].find((line) => !used.has(line));
   // Era copy remains available for legacy clients; it no longer replaces the agreed person slot.
   void decade;
   const pattern = PICK_QUIP_PATTERN[wait as keyof typeof PICK_QUIP_PATTERN] ?? ["neutral"];
@@ -58,8 +73,9 @@ export function waitQuips(
       ? neutral
       : category === "person"
         ? person
-        : reactionQuipGroup(reactionHunch ?? "early", wait),
+        : { ...reaction, lines: reactionLine ? [reactionLine] : [] },
   );
-  if (wait === 6 && finalReading) groups.push(...OVERTIME_QUIP_GROUPS);
+  // A slow vote must hold Neutral, not bypass the as-yet-unknown reaction/person slots.
+  if (wait === 6 && finalReading && hunch !== null) groups.push(...OVERTIME_QUIP_GROUPS);
   return selectQuipGroups(groups, budget, used);
 }

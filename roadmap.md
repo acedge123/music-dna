@@ -1,5 +1,12 @@
 # Roadmap
 
+## Current — report recovery and complete pick-six quips
+
+- [x] Reported session c6160a69: HTTP 200 returned invalid_generation with no saved version; chosen final pre-draft failed semantic ceiling review, live attempt failed references/schema. Calls completed in seconds, not a 45-second timeout. Owner retry later saved accepted v1 at 04:36:19 UTC. Raw rejected listener drafts were not retained, so the precise invalid field is unavailable.
+- [x] Gate Overtime on saved hunch; pick six selects an unused compatible two-line Person pair (four primary beats). Add writer schema limits matching local validation and field-specific repair feedback; remove redundant pick-six interim generation and distinguish rejected drafts from running requests. Evidence/reviewer gates, models, flags and frozen history unchanged; Flutter handoff updated.
+- [x] 85 focused tests and touched-code lint pass; preview build OK. Fresh real guest f81e8d3e: Neutral at 0s, Reaction 2.56s, setup 5.12s, punchline 7.51s, Overtime 10.06s; accepted saved v1 delivered around 15s, exact report restored on reload with no page errors. Phone-sized saved-report readback has no horizontal overflow.
+- [ ] Production/checkpoint/Flutter acceptance remains separate: requires deployed revision and client implementation; registered owner session is externally managed. This repairs diagnosed sequencing/output-contract defects, not a guarantee every model draft will pass review.
+
 ## Current — six-pick pacing and Overtime
 
 - [x] Apply agreed category order after picks 1–6 in both saved flows, preserve 2.5-second beats and complete person pairs; use Overtime only during pick-six final writing.

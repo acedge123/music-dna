@@ -103,16 +103,20 @@ export function criticBeatSchema(ledger: Ledger, stage?: CriticStage) {
               type: "object",
               additionalProperties: false,
               required: ["name", "hook"],
-              properties: { name: { type: "string" }, hook: { type: "string" } },
+              properties: {
+                name: { type: "string", minLength: 2, maxLength: 40 },
+                hook: { type: "string", minLength: 4, maxLength: 160 },
+              },
             },
           }
         : {}),
-      headline: { type: "string" },
-      body: { type: "string" },
+      headline: { type: "string", minLength: 1, maxLength: 160 },
+      body: { type: "string", maxLength: 1000 },
       choice_ids: { type: "array", maxItems: 6, items: idSchema },
       claims: axes.length
         ? {
             type: "array",
+            maxItems: 2,
             items: {
               type: "object",
               additionalProperties: false,
@@ -480,6 +484,7 @@ Read-stage total: one sentence may be enough; at most 65 words. Never display ID
 With no eligible axes, write ONLY a concrete past-choice observation or a clearly framed possibility, never a listener tendency. Do not say "you reward",
 "you trust", "you want", "you're hunting", or infer a listener tendency from one or two choices.
 Stage reveal: arresting opening, earned interpretation, exceptions woven in. Also write "signature": {"name","hook"}.
+OUTPUT LIMITS for every stage: headline 1–160 characters; body at most 1000 characters; at most TWO claims. Signature name 2–40 characters; hook 4–160 characters. Keep the reveal concise enough to fit these limits. Do not treat the conversational examples as the reveal's output schema.
 signature.name = a 1-5 word, memorable, figurative identity line for this listener's EMERGING music DNA (e.g. "Polish With Teeth", "The Long-Fuse Romantic") — no numbers, never call it an archetype.
 Build the name from the strongest leans (eligible or early), plus any real tension, NEVER from the uncertainty itself: names like "The Unfinished Map", "Work in Progress", "Still Deciding" are forbidden. Evocative and specific beats safe: e.g. vulnerability + intimacy + one dance-floor exception -> "The Private Fire".
 signature.hook = one sentence in your voice explaining it, built from eligible claims and naming the real exception when one exists ("...but you'll sacrifice the shine when something raw hits hard enough"). With no eligible axes, frame the hook as a first impression. Stage chat: acknowledge the actual correction first,
@@ -535,12 +540,21 @@ CANDIDATE: ${JSON.stringify(beat)}`;
         feedback = "\nPREVIOUS ATTEMPT was not valid JSON. Return one JSON object only.";
         continue;
       }
-      const beat = validateCriticBeat(decoded.value, ledger, labels);
+      const shape = Beat.safeParse(normalizeCriticBeat(decoded.value));
+      const beat = shape.success ? validateCriticBeat(shape.data, ledger, labels) : null;
       if (!beat) {
         lastReason = "invalid_references_or_schema";
-        attempts.push({ reason: lastReason, repaired_json: decoded.repaired });
-        feedback =
-          "\nPREVIOUS ATTEMPT cited axes or IDs outside the supplied eligible set, or a claim the evidence does not support. Use only supplied IDs/eligible axes, or claims: [].";
+        const issues = shape.success
+          ? []
+          : shape.error.issues.map((issue) => ({
+              path: issue.path.join("."),
+              code: issue.code,
+              message: issue.message,
+            }));
+        attempts.push({ reason: lastReason, failed: issues, repaired_json: decoded.repaired });
+        feedback = issues.length
+          ? `\nPREVIOUS ATTEMPT violated the output contract. Fix these fields exactly: ${JSON.stringify(issues)}. Keep the evidence and meaning grounded; shorten prose rather than adding claims.`
+          : "\nPREVIOUS ATTEMPT cited axes or IDs outside the supplied eligible set, or a claim the evidence does not support. Use only supplied IDs/eligible axes, or claims: [].";
         continue;
       }
       if (options.stage === "chat" && options.selfReport?.trim()) {

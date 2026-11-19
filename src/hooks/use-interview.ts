@@ -28,6 +28,7 @@ import type { Phase, Refined, Pairing, Entry } from "@/lib/interview-model";
 import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
 import { shouldResumeInterview } from "@/musicdna/engine/reading-support";
 import { withRequestDeadline } from "@/lib/request-deadline";
+import { finalReadingError, needsInterimRead } from "@/lib/final-reading-state";
 import { getInterviewFlow } from "@/lib/interview-flow.functions";
 import { checkpointIndex, type InterviewFlow } from "@/musicdna/engine/checkpoints";
 
@@ -542,7 +543,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
       let direction: Entry["direction"] = "forming";
       let question = "";
       let revision: CurrentReadResult["revision"] = null;
-      if (writeRead && !(cpFlow && answeredNow >= 6))
+      if (needsInterimRead(flowRef.current, answeredNow, cpIndex))
         try {
           const r = await Promise.race([
             readFn({ data: { sessionId } }),
@@ -681,7 +682,7 @@ export function useInterview(requestedSession?: string, fresh?: string) {
         setSynthesis(r.synthesis);
         setKept(r.kept_choosing ?? []);
         setCounters((r.counter_reads ?? []).map((c) => ({ claim: c.claim, notes: c.notes })));
-        setResultError("The Critic is still finishing your full reading — retry in a moment.");
+        setResultError(finalReadingError(r.narration_status));
         return;
       }
       if (generation !== bootGeneration.current) return;
