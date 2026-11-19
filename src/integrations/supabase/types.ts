@@ -4446,6 +4446,16 @@ export type Database = {
         }
         Returns: Json
       }
+      musicdna_mcp_request_why_ai_review_v2: {
+        Args: {
+          p_confirm_paid: boolean
+          p_context: string
+          p_id: string
+          p_mutation: string
+          p_version: string
+        }
+        Returns: Json
+      }
       musicdna_mcp_review_why_revision: {
         Args: {
           p_decision: string
@@ -4474,6 +4484,10 @@ export type Database = {
           p_mutation: string
           p_reason: string
         }
+        Returns: Json
+      }
+      musicdna_mcp_why_ai_review_rates: {
+        Args: { p_ids?: string[]; p_policy: string }
         Returns: Json
       }
       musicdna_mcp_why_review_context: { Args: { p_id: string }; Returns: Json }
