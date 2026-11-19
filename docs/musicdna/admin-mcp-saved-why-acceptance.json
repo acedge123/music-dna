@@ -1,6 +1,6 @@
 {
   "ticket": "AB-92",
-  "status": "authorized_pending_merge_migration_and_deployment",
+  "status": "deployed_awaiting_connector_tool_refresh",
   "paid_calls_executed": 0,
   "max_paid_calls": 2,
   "output_token_cap_per_call": 2000,
@@ -37,5 +37,6 @@
     "Reuse each mutation ID after lost responses; no model retry",
     "Record actual configured/returned reviewer, measurements, freshness, original approval/history/catalog unchanged",
     "No full-catalog backfill or automatic score correction"
-  ]
+  ],
+  "deployment_receipt": "admin-mcp-saved-why-deployment.json"
 }
