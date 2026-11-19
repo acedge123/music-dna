@@ -252,7 +252,7 @@ retry after an uncertain outcome. A narration failure does not undo the vote or
 block the remaining choices. Existing saved history/readback still works.
 
 The model runs outside any database lock. The one new migration,
-`20261112183759_musicdna_deferred_read_cursor.sql`, adds the backend-only
+`20261112192158_b34486e3-76fd-4d86-90fe-2550382ec0ea.sql`, adds the backend-only
 `save_musicdna_deferred_read` compare-and-save RPC. It locks the existing session
 row, checks owner/latest pairing/count/completion, replays the first saved result
 for that position, or discards the obsolete draft. Only service_role may execute;

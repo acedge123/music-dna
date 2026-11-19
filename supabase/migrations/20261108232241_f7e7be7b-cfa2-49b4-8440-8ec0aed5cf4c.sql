@@ -1,4 +1,12 @@
-BEGIN;
+-- Replay-safe catalog import: these songs were operator-loaded outside migrations.
+-- Apply the whole reviewed batch only when its exact parent IDs exist. No placeholders.
+DO $ab75_catalog$
+BEGIN
+ IF EXISTS(SELECT 1 FROM (VALUES ('27e409ce-9501-4cd8-bf39-41ba46d9ad8e'::uuid),('2cd7b61c-8cb9-4b9a-a143-90311df00fb0'::uuid),('39932a59-0dd6-429e-8e8e-98b08797d304'::uuid),('3cc52e73-9a04-4f60-822f-4cf374c8f24c'::uuid),('76455d50-d7c0-473c-a2f6-13cf1ee84571'::uuid),('87a37692-f37c-4dcf-b7c6-a2b22dbb6150'::uuid),('8829382f-0302-4966-a1de-2ded703aa875'::uuid),('a167efca-d8d2-4974-83d3-96427543b9d6'::uuid),('aa361939-5d76-44f8-91f2-a8b630719a6e'::uuid),('b5826de9-9d80-48d6-8dac-3086ccdb2edc'::uuid),('d57cbd47-5706-4649-9f63-24bdda5c0a66'::uuid),('dc7aefa0-fc0a-4dac-80e3-f22a5ea34131'::uuid),('e6472f72-e6ca-4b3b-ad5a-fb58351c0806'::uuid),('f2184157-5d61-471e-b1c8-eb38a1f1cfc0'::uuid),('f579b420-8aa9-41f6-b58e-474da4fdd92d'::uuid),('f8ce0f65-eb36-40dc-8a22-eebcffa98c74'::uuid)) AS required(id)
+   WHERE NOT EXISTS(SELECT 1 FROM public.songs s WHERE s.id=required.id)) THEN
+   RAISE NOTICE 'Historical zero-pair Pop batch skipped: prerequisite catalog is absent';
+   RETURN;
+ END IF;
 INSERT INTO public.pairings (id,song_a_id,song_b_id,tests,hypothesis,why_good,diagnostic_weight,active,lane,user_facing_tradeoff,expected_split,difficulty,is_bootstrap) VALUES
 ('938701c9-dabe-5185-ab64-afb9d0f2a708'::uuid,'27e409ce-9501-4cd8-bf39-41ba46d9ad8e'::uuid,'e6472f72-e6ca-4b3b-ad5a-fb58351c0806'::uuid,ARRAY['movement','community']::text[],'Communal dance-floor release versus unhurried private warmth','Whitney turns romantic longing into a shared dance-floor invitation; Musgraves settles into a warm, unhurried glow. Editorial contrast only; no measured listener split or predictive validation.',60,true,'pop','Join the dance floor, or stay in that golden hush?','Unmeasured; listener validation pending',2,false),
 ('811c9504-ab3f-50f3-8ff2-044be38fbd4f'::uuid,'aa361939-5d76-44f8-91f2-a8b630719a6e'::uuid,'3cc52e73-9a04-4f60-822f-4cf374c8f24c'::uuid,ARRAY['community']::text[],'Public dance-floor invitation versus wistful private connection','Madonna explicitly invites a partner onto the dance floor; Ditto frames connection through restrained, wistful intimacy. Editorial contrast only; no measured listener split or predictive validation.',60,true,'pop','The whole room moving, or a connection held close?','Unmeasured; listener validation pending',2,false),
@@ -9,4 +17,5 @@ INSERT INTO public.pairings (id,song_a_id,song_b_id,tests,hypothesis,why_good,di
 ('56d27295-955e-5704-8c6b-e0216fb4e5b0'::uuid,'d57cbd47-5706-4649-9f63-24bdda5c0a66'::uuid,'2cd7b61c-8cb9-4b9a-a143-90311df00fb0'::uuid,ARRAY['perspective']::text[],'Self-observing irony versus direct emotional reframing','Anti-Hero turns the self into an ironic object of scrutiny; Thank U, Next directly addresses gratitude and a new stance toward past relationships. Editorial contrast only; no measured listener split or predictive validation.',60,true,'pop','Watch yourself from the outside, or say it straight?','Unmeasured; listener validation pending',2,false),
 ('66200228-f272-5f0c-a962-66efca98da9e'::uuid,'a167efca-d8d2-4974-83d3-96427543b9d6'::uuid,'f579b420-8aa9-41f6-b58e-474da4fdd92d'::uuid,ARRAY['scale']::text[],'Expansive neon anthem versus close vocal intimacy','Blinding Lights projects a widescreen synth-pop surge; Ocean Eyes keeps its floating vocal comparatively close and small-scale. Editorial contrast only; no measured listener split or predictive validation.',60,true,'pop','Fill the skyline, or bring the voice close?','Unmeasured; listener validation pending',2,false)
 ON CONFLICT (id) DO NOTHING;
-COMMIT;
+END;
+$ab75_catalog$;

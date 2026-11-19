@@ -15,6 +15,9 @@ on:
       - 'src/musicdna/adapters/learning-*.ts'
       - 'contracts/**'
       - 'scripts/check-musicdna*'
+      - 'scripts/test-musicdna-migration-replay.mjs'
+      - 'docs/musicdna/ab75-*'
+      - 'docs/musicdna/ab75-applied-originals/**'
       - 'scripts/require-learning-outbox-db.*'
       - 'scripts/learning-worker.ts'
       - 'scripts/learning-hourly*'
@@ -45,6 +48,9 @@ on:
       - 'src/musicdna/adapters/learning-*.ts'
       - 'contracts/**'
       - 'scripts/check-musicdna*'
+      - 'scripts/test-musicdna-migration-replay.mjs'
+      - 'docs/musicdna/ab75-*'
+      - 'docs/musicdna/ab75-applied-originals/**'
       - 'scripts/require-learning-outbox-db.*'
       - 'scripts/learning-worker.ts'
       - 'scripts/learning-hourly*'
@@ -89,6 +95,9 @@ jobs:
           node-version: 22
       - run: npm ci --no-audit --no-fund
       - run: npm test
+      - run: npm run test:migration-replay
+        env:
+          AB45_TEST_DATABASE_URL: postgres://postgres:ab45-local-test@127.0.0.1:5432/ab45_test
       - run: npm run test:learning-outbox
         env:
           AB45_TEST_DATABASE_URL: postgres://postgres:ab45-local-test@127.0.0.1:5432/ab45_test

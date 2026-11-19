@@ -41,3 +41,6 @@ monitoring/tests/__pycache__/
 
 # Operator worker build
 dist-learning-worker/
+
+# Local Supabase CLI version/link scratch; never commit operator state.
+supabase/.temp/

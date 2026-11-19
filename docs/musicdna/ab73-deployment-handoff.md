@@ -3,10 +3,14 @@
 The Flutter branch targets production www.musicdna.fm and requests the opt-in
 asynchronous Critic path. This PR does not deploy or apply SQL.
 
-After Alan reviews the backend PR, apply only
-`supabase/migrations/20261112183759_musicdna_deferred_read_cursor.sql` once through
-the normal native migration workflow. Check existing migration history and
-function first; if already applied, verify matching SQL and do not rerun it.
+AB-75 reconciliation (19 November): production already records this SQL once as
+`20261112192158_b34486e3-76fd-4d86-90fe-2550382ec0ea.sql`. Its live history hash
+matches the retained source. The unapplied proposal timestamp `20261112183759`
+was removed from executable migrations. **Do not apply it again to production.**
+New environments use the canonical migration through normal history replay.
+See `ab75-migration-receipts.json` for the read-only verification receipt.
+
+For any separately approved deployment verification, check history/function first.
 Return the actual applied version/name/hash, SQL identity, service-only EXECUTE,
 SECURITY INVOKER and empty search_path / bounded lock wait. No table, RLS, key,
 flag, source, schedule or earlier migration is to be changed. Test identity and

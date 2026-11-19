@@ -6,3 +6,7 @@ pnpm-lock.yaml
 package-lock.json
 bun.lock
 routeTree.gen.ts
+# Portable contracts are byte-pinned across four repos. Change only with reviewed manifests/fixtures.
+src/musicdna/contracts/learning-observation-v1.ts
+src/musicdna/contracts/learning-observation-v2.ts
+src/musicdna/contracts/learning-deletion-v1.ts
