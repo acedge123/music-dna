@@ -144,3 +144,7 @@ The separately reviewed AB-89/AB-90 add-on is documented in `admin-mcp-qa.md`; t
 ## Saved-explanation AI re-review extension (AB-92)
 
 See [implementation and deployment requirements](admin-mcp-saved-why-reviews.md). This feature adds three tools (44 total after extraction); it is not live merely because the local manifest exists. Paid acceptance is limited to the two explicitly selected explanations in that document. Migration must precede app promotion. Existing rule-based audits remain separate.
+
+## Three-verdict reviewer alignment
+
+[MCP reviewer v2](admin-mcp-reviewer-v2.md) documents contract 0.4.0: explicit current-policy metadata, Pass / Fail / Uncertain filtering and validated separate policy/cohort outcome rates. Prior reviews remain untouched. Upgrading or refreshing tools does not authorize the planned ten-item paid retest.
