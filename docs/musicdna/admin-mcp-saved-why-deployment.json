@@ -1,0 +1,175 @@
+{
+  "ticket": "AB-92",
+  "merged_pr": "https://github.com/acedge123/music-dna/pull/57",
+  "merged_commit": "ff99ade869a861731797c00d19fdf2ef61923f55",
+  "project_id": "udycgnhvaanemhrchbuj",
+  "migration": {
+    "name": "musicdna_saved_why_ai_reviews",
+    "version": "20261119054831",
+    "sql_sha256": "c07c89a93fc5f79fd00b49156d4ce5115fbabf79e6e078b44c55ece294d15b04",
+    "statements": 1
+  },
+  "permissions": {
+    "table_rls": true,
+    "grants": [
+      {
+        "role": "postgres",
+        "privilege": "INSERT"
+      },
+      {
+        "role": "postgres",
+        "privilege": "SELECT"
+      },
+      {
+        "role": "postgres",
+        "privilege": "UPDATE"
+      },
+      {
+        "role": "postgres",
+        "privilege": "DELETE"
+      },
+      {
+        "role": "postgres",
+        "privilege": "TRUNCATE"
+      },
+      {
+        "role": "postgres",
+        "privilege": "REFERENCES"
+      },
+      {
+        "role": "postgres",
+        "privilege": "TRIGGER"
+      },
+      {
+        "role": "authenticated",
+        "privilege": "SELECT"
+      }
+    ],
+    "functions": [
+      {
+        "anon": false,
+        "name": "musicdna_mcp_bulk_approve_whys",
+        "service": true,
+        "settings": [
+          "search_path=pg_catalog, public",
+          "statement_timeout=10s"
+        ],
+        "authenticated": true
+      },
+      {
+        "anon": false,
+        "name": "musicdna_mcp_request_why_ai_review",
+        "service": true,
+        "settings": [
+          "search_path=pg_catalog, public",
+          "statement_timeout=10s"
+        ],
+        "authenticated": true
+      },
+      {
+        "anon": false,
+        "name": "musicdna_mcp_why_review_context",
+        "service": true,
+        "settings": [
+          "search_path=pg_catalog, public",
+          "statement_timeout=10s"
+        ],
+        "authenticated": true
+      },
+      {
+        "anon": false,
+        "name": "musicdna_server_claim_why_ai_review",
+        "service": true,
+        "settings": [
+          "search_path=pg_catalog, public",
+          "statement_timeout=10s"
+        ],
+        "authenticated": false
+      },
+      {
+        "anon": false,
+        "name": "musicdna_server_finish_why_ai_review",
+        "service": true,
+        "settings": [
+          "search_path=pg_catalog, public",
+          "statement_timeout=10s"
+        ],
+        "authenticated": false
+      }
+    ]
+  },
+  "zero_review_rows_after_migration": true,
+  "unchanged_data": {
+    "catalog_sha": {
+      "before": "090a9ce10bcab56e19c6a1af96a146c86b0df38d0c4333a8a56ff8402d27d31c",
+      "after": "090a9ce10bcab56e19c6a1af96a146c86b0df38d0c4333a8a56ff8402d27d31c",
+      "unchanged": true
+    },
+    "explanations_sha": {
+      "before": "43b1f0cb4af51a637e835a80a92e406ced5aea69562aaed16681ddb31184df9b",
+      "after": "43b1f0cb4af51a637e835a80a92e406ced5aea69562aaed16681ddb31184df9b",
+      "unchanged": true
+    },
+    "history_sha": {
+      "before": "5bc0fb0740833dbb7dd153045eef1d15fd3b1613b9b55d719f12f2126b59b87c",
+      "after": "5bc0fb0740833dbb7dd153045eef1d15fd3b1613b9b55d719f12f2126b59b87c",
+      "unchanged": true
+    },
+    "choice_count": {
+      "before": 671,
+      "after": 671,
+      "unchanged": true
+    },
+    "reading_count": {
+      "before": 90,
+      "after": 90,
+      "unchanged": true
+    }
+  },
+  "acceptance_status": "awaiting_connector_tool_refresh",
+  "paid_calls": 0,
+  "production": {
+    "url": "https://www.musicdna.fm/mcp",
+    "serving_sha": "ff99ade869a861731797c00d19fdf2ef61923f55",
+    "vercel_status": "success",
+    "deployment_url": "https://vercel.com/alan-edgetts-projects/idea-builder/77mLh4UBwL4ArGJFYoi5No6iVZe7"
+  },
+  "anonymous_denials": [
+    {
+      "name": "context RPC",
+      "http": 401
+    },
+    {
+      "name": "paid request RPC",
+      "http": 401
+    },
+    {
+      "name": "server claim RPC",
+      "http": 401
+    },
+    {
+      "name": "server completion RPC",
+      "http": 401
+    },
+    {
+      "name": "audit table",
+      "http": 401
+    },
+    {
+      "name": "audit view",
+      "http": 401
+    },
+    {
+      "name": "MCP unsigned tools/list",
+      "http": 401
+    }
+  ],
+  "advisor_delta": {
+    "security_definer_view": 1,
+    "authenticated_security_definer_function_executable": 3,
+    "anon_security_definer_function_executable": 0,
+    "note": "Reviewed capability-gated operator surfaces; pre-existing advisories remain. Not a clean-advisor claim."
+  },
+  "original_migration_file": "20261119052334_musicdna_saved_why_ai_reviews.sql",
+  "retained_migration_file": "20261119054831_musicdna_saved_why_ai_reviews.sql"
+}

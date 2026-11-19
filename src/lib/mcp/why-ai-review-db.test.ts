@@ -75,7 +75,7 @@ beforeAll(async () => {
     ),
   );
   await db.exec(
-    readFileSync("supabase/migrations/20261119052334_musicdna_saved_why_ai_reviews.sql", "utf8"),
+    readFileSync("supabase/migrations/20261119054831_musicdna_saved_why_ai_reviews.sql", "utf8"),
   );
 }, 30000);
 afterAll(async () => {

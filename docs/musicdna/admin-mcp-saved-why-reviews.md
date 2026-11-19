@@ -1,6 +1,6 @@
 # Saved Song Why AI re-review (AB-92)
 
-Status: implemented on a feature branch; NOT deployed and no paid acceptance calls run. This extends the existing OAuth MCP at `https://www.musicdna.fm/mcp`, with the current SDK and provider configuration. It introduces no widget, worker, cron, credentials, writer call or catalog backfill.
+Status: deployed to production from merged PR #57 (`ff99ade`) on 2026-11-19 UTC. The exact reviewed migration is applied once. Paid acceptance remains pending this chat’s MCP tool refresh; no paid calls have run. This extends the existing OAuth MCP at `https://www.musicdna.fm/mcp`, with the current SDK and provider configuration. It introduces no widget, worker, cron, credentials, writer call or catalog backfill.
 
 ## Tools and human permission
 
@@ -47,9 +47,9 @@ Admin → Song Whys → **Saved AI re-reviews → Load saved reviews** loads onl
 
 The existing bulk-approval button now calls an atomic admin-only RPC. It skips stale drafts, existing failed/disputed drafts and unresolved/failed/disputed new reviews bound to the current explanation version. It does not revoke already approved explanations. An individual human approval/edit remains an explicit action in the existing queue, rather than automatic acceptance of a model suggestion.
 
-## Deployment sequence (not executed)
+## Deployment order and receipt
 
-1. Alan reviews the feature PR. Before promoting its app code, separately approve/apply **only** `supabase/migrations/20261119052334_musicdna_saved_why_ai_reviews.sql` to MusicDNA project `udycgnhvaanemhrchbuj`. Do not rerun earlier MCP or Song Why migrations. Prerequisites: the existing MCP catalog migration and advisory score columns (`20261119050947_3adcdaba-b292-4647-98ae-c258095cd09f.sql`) are already present. Confirm the applied history/SQL receipt before applying again.
+1. Alan reviews the feature PR. Before promoting its app code, separately approve/apply **only** `supabase/migrations/20261119054831_musicdna_saved_why_ai_reviews.sql` to MusicDNA project `udycgnhvaanemhrchbuj`. Do not rerun earlier MCP or Song Why migrations. Prerequisites: the existing MCP catalog migration and advisory score columns (`20261119050947_3adcdaba-b292-4647-98ae-c258095cd09f.sql`) are already present. Confirm the applied history/SQL receipt before applying again.
 2. Verify table RLS, read-only caller grants, server-only claim/completion grants, fresh capability gates and zero new review rows/model calls after migration. Existing server secret remains only in the backend; no OAuth settings or new secret are needed.
 3. Merge/promote the reviewed app code and verify Vercel deployment. The code expects the new context/bulk-approval RPCs: **migration before app promotion**. No feature flag is added or enabled. The new tool remains protected by reviewer permission and explicit paid confirmation.
 4. Refresh the ChatGPT connector's tool inventory. Generated files do not make tools live. Local extraction contains 44 tools, three new review tools, and the unchanged OAuth issuer/audience/resource/client-claim requirements.
@@ -75,3 +75,17 @@ Local native Postgres/PGlite tests exercise actual migrations/roles/RLS/RPCs; mo
 The generated `.lovable/mcp/manifest.json` and `admin-mcp-tools.schema.json` are inspected for OAuth and annotations. Architecture remains the existing protected data-only operator server; no widget scaffold is necessary. Tool semantics follow the official [tool definition guidance](https://developers.openai.com/plugins/plan/tools), [MCP server guidance](https://developers.openai.com/plugins/build/mcp-server) and [reference](https://developers.openai.com/plugins/reference).
 
 Local validation receipt (2026-11-19 UTC, base `3754e5a`): `npx vitest run` **818 passed, 109 skipped**; `npx tsc --noEmit`, targeted ESLint and `VERCEL=1 npm run build` passed. The new tests include 17 native database cases plus runtime/MCP/rendering cases. `npm test` separately stops at the pre-existing learning-contract hash mismatch (actual `2fb2ce35…`, pinned `1744309a…`, tracked separately in AB-75); this PR does not repin that unrelated contract. Provider acceptance, hosted role denials and live admin visual QA remain pending deployment.
+
+## Applied deployment receipt — 2026-11-19 UTC
+
+Alan authorized deployment after merging PR #57. Production `/api/public/version` returned serving SHA `ff99ade869a861731797c00d19fdf2ef61923f55`; the matching Vercel production deployment succeeded. Normal OAuth `get_profile` and both selected `song_whys_get` calls succeeded with the new review context, and both original explanation fingerprints/scores remain exactly as approved for the acceptance batch.
+
+Supabase recorded **one** `musicdna_saved_why_ai_reviews` history entry, version **20261119054831**, with a single SQL statement and SHA-256 **c07c89a93fc5f79fd00b49156d4ce5115fbabf79e6e078b44c55ece294d15b04**. The provider assigns its actual application timestamp, which differs from the reviewed file’s `20261119052334` timestamp. The executable file is renamed to match applied history, byte-identically; no second executable copy remains. Test fixtures now read the retained path. **This reconciliation does not apply or rerun SQL.** Earlier migrations were not rerun.
+
+Verified RLS and authenticated SELECT-only table grants; anonymous callers have no table/view/RPC access. Claim/completion RPCs deny authenticated execution and permit only server-role execution. The audit view is deliberately owner-executed with a fresh `catalog_read` capability predicate and security barrier. Seven actual unsigned/public-key HTTP checks returned 401: context, request, claim, completion, table, view and MCP tools/list. No test identities, grants, credentials, flags or schedules were created/changed. Zero review rows and zero paid calls were present after deployment checks.
+
+Before/after hashes for the full catalog, saved explanations and existing explanation history match exactly. Choice count remained 671 and saved-result count 90. These count checks do not independently prove the contents of every private listener record; the review code/migration never update those tables.
+
+Advisor comparison adds the expected one definer-view warning and three authenticated definer-function warnings for the reviewed capability-gated interfaces; no new anonymous definer warning. Pre-existing findings remain, so advisors are not claimed clean. See the [Supabase definer-view diagnostic](https://supabase.com/docs/guides/database/database-linter?lint=0010_security_definer_view). Full numeric/hash/permission receipt is in `admin-mcp-saved-why-deployment.json`.
+
+The connected integration in this chat still exposes its old 41-tool inventory, so the three new tools cannot yet be invoked here through OAuth. Refresh/reconnect the integration; then execute only the already-approved two-record batch. No impersonated SQL model call, service-token substitution or new processing path was used. Live catalog-reader-only behavioral tests and a browser walkthrough of the admin audit cards remain unverified; native role tests and hosted privilege checks passed. AB-92 is not closed on the strength of deployment alone.
