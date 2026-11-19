@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — uncertainty-aware reviewer and ten-item retest
+
+- [ ] Add Pass/Fail/Uncertain with independent score disputes and policy-separated failure/uncertainty rates; preserve all original reviews and approvals.
+- [ ] Update storage, MCP and admin presentation; test three-verdict validation, history preservation and rates.
+- [ ] Retest the exact ten saved v1 explanation IDs only after the new policy is deployed and an authorized caller can submit; no remaining-catalog paid review.
+
 ## Current — Song Whys score challenges
 
 - [x] Strengthen musical accuracy, score magnitude and axis-confusion review; retain failed/disputed drafts with advisory scores and reasons, without rescoring. Additive review columns applied; no access/model/routing changes.
