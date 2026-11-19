@@ -1789,6 +1789,66 @@ export type Database = {
           },
         ]
       }
+      musicdna_song_why_ai_reviews: {
+        Row: {
+          completed_at: string | null
+          configured_routing: Json | null
+          context_version: string
+          created_at: string
+          error_code: string | null
+          explanation_id: string
+          explanation_version: string
+          id: string
+          measurement: Json | null
+          mutation_id: string
+          policy_version: string
+          requested_by: string
+          result: Json | null
+          snapshot: Json
+          stale_at_completion: boolean
+          started_at: string | null
+          state: string
+        }
+        Insert: {
+          completed_at?: string | null
+          configured_routing?: Json | null
+          context_version: string
+          created_at?: string
+          error_code?: string | null
+          explanation_id: string
+          explanation_version: string
+          id?: string
+          measurement?: Json | null
+          mutation_id: string
+          policy_version?: string
+          requested_by: string
+          result?: Json | null
+          snapshot: Json
+          stale_at_completion?: boolean
+          started_at?: string | null
+          state?: string
+        }
+        Update: {
+          completed_at?: string | null
+          configured_routing?: Json | null
+          context_version?: string
+          created_at?: string
+          error_code?: string | null
+          explanation_id?: string
+          explanation_version?: string
+          id?: string
+          measurement?: Json | null
+          mutation_id?: string
+          policy_version?: string
+          requested_by?: string
+          result?: Json | null
+          snapshot?: Json
+          stale_at_completion?: boolean
+          started_at?: string | null
+          state?: string
+        }
+        Relationships: []
+      }
       musicdna_song_why_audit_findings: {
         Row: {
           auditor_id: string | null
@@ -3908,6 +3968,34 @@ export type Database = {
           },
         ]
       }
+      musicdna_mcp_why_ai_reviews: {
+        Row: {
+          completed_at: string | null
+          configured_routing: Json | null
+          context_version: string | null
+          created_at: string | null
+          display_state: string | null
+          error_code: string | null
+          explanation_id: string | null
+          explanation_version: string | null
+          id: string | null
+          lane: string | null
+          measurement: Json | null
+          mutation_id: string | null
+          policy_version: string | null
+          requested_by: string | null
+          result: Json | null
+          score_disputed: boolean | null
+          snapshot: Json | null
+          stale_at_completion: boolean | null
+          stale_explanation: boolean | null
+          stale_result: boolean | null
+          started_at: string | null
+          state: string | null
+          suggestion_unavailable: boolean | null
+        }
+        Relationships: []
+      }
       musicdna_mcp_whys: {
         Row: {
           artist: string | null
@@ -4301,6 +4389,10 @@ export type Database = {
         Returns: boolean
       }
       musicdna_mcp_access: { Args: never; Returns: Json }
+      musicdna_mcp_bulk_approve_whys: {
+        Args: { p_lane: string }
+        Returns: Json
+      }
       musicdna_mcp_catalog_summary: { Args: never; Returns: Json }
       musicdna_mcp_export: {
         Args: {
@@ -4344,6 +4436,16 @@ export type Database = {
         }
         Returns: Json
       }
+      musicdna_mcp_request_why_ai_review: {
+        Args: {
+          p_confirm_paid: boolean
+          p_context: string
+          p_id: string
+          p_mutation: string
+          p_version: string
+        }
+        Returns: Json
+      }
       musicdna_mcp_review_why_revision: {
         Args: {
           p_decision: string
@@ -4373,6 +4475,21 @@ export type Database = {
           p_reason: string
         }
         Returns: Json
+      }
+      musicdna_mcp_why_review_context: { Args: { p_id: string }; Returns: Json }
+      musicdna_server_claim_why_ai_review: {
+        Args: { p_actor: string; p_request: string; p_routing: Json }
+        Returns: Json
+      }
+      musicdna_server_finish_why_ai_review: {
+        Args: {
+          p_error: string
+          p_measurement: Json
+          p_request: string
+          p_result: Json
+          p_state: string
+        }
+        Returns: undefined
       }
       prepare_musicdna_pilot_session: {
         Args: {
