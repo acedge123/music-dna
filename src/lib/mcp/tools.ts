@@ -19,6 +19,7 @@ import {
   whyAiRequestSchema,
   whyReviewRates,
 } from "./why-ai-review";
+import { whyAiReviewPolicy, WHY_AI_POLICY_VERSIONS, WHY_AI_VERDICTS } from "./why-ai-review-policy";
 import { getWhy, listWhys, screenWhy, whyHistory } from "./song-whys";
 import { hasMoreRows, boundedRows, pageSchema, pageCursor, nextCursor } from "./pagination";
 
@@ -162,13 +163,16 @@ export const catalogTools = [
   ),
   tool(
     "song_whys_get",
-    "inspect a complete saved explanation and review_context_version before a paid re-review. Includes original/current score, authoritative definition, catalog recording identity and honest uncertainty.",
+    "inspect a complete saved explanation and review_context_version before a paid re-review. Includes original/current score, authoritative definition, catalog recording identity and honest uncertainty; review_policy describes current v2 Pass / Fail / Uncertain criteria without a model call.",
     { explanation_id: id },
-    async (i, a) => ({ record: await getWhy(a, i.explanation_id) }),
+    async (i, a) => ({
+      record: await getWhy(a, i.explanation_id),
+      review_policy: whyAiReviewPolicy,
+    }),
   ),
   tool(
     "song_whys_request_ai_review",
-    "explicitly re-review ONE selected saved explanation (approved included) with the configured stronger reviewer. PAID: obtain explicit human confirmation for this exact version/context before confirm_paid_review=true. Use song_whys_get first. One 20-second / 2,000-output-token attempt, no writer, no automatic retry. Reuse mutation_id after any lost response. Historical review, text, scores and approvals remain unchanged. Read-only access does not authorize this tool.",
+    "explicitly re-review ONE selected saved explanation (approved included) with the configured reviewer under saved-song-why-review-v2: Pass / Fail / Uncertain. Missing audio alone is uncertainty, not failure or a score dispute. PAID: obtain explicit human confirmation for this exact version/context before confirm_paid_review=true. Use song_whys_get first. One 20-second / 2,000-output-token attempt, no writer, no automatic retry. Reuse mutation_id after any lost response; the existing ten-new-requests-per-caller-per-rolling-hour cap still applies. Historical v1 reviews, text, scores and approvals remain unchanged. Read-only access does not authorize this tool.",
     whyAiRequestSchema.shape,
     async (i, a) => requestWhyAiReview(a, i),
     "catalog_review",
@@ -184,7 +188,7 @@ export const catalogTools = [
   ),
   tool(
     "song_whys_list_ai_reviews",
-    "page saved AI-review results, score disputes and unavailable/uncertain score suggestions. Findings are new audit records, never retroactive historical verdicts. Does not run an AI review; rule-based song_whys_run_audit is separate.",
+    "page saved AI-review results by policy and pass/fail/uncertain verdict, separately from operational state and nullable score suggestions. Findings are new audit records, never retroactive historical verdicts. Does not run an AI review; rule-based song_whys_run_audit is separate.",
     {
       ...pageSchema,
       explanation_id: id.optional(),
@@ -195,15 +199,16 @@ export const catalogTools = [
       state: z
         .enum(["requested", "running", "completed", "failed", "ambiguous", "expired_or_ambiguous"])
         .optional(),
-      policy_version: short.optional(),
+      policy_version: z.enum(WHY_AI_POLICY_VERSIONS).optional(),
+      verdict: z.enum(WHY_AI_VERDICTS).optional(),
     },
     async (i, a) => listWhyAiReviews(a, i),
   ),
   tool(
     "song_whys_get_ai_review_rates",
-    "read separate failure and uncertainty rates for one review policy and optionally a selected cohort. Counts latest attempt per explanation, completed reviews only in rate denominators; unavailable attempts and older policies remain separate. No paid calls.",
+    "read separate failure and uncertainty rates for one review policy and optionally a selected cohort. Counts latest attempt per explanation, completed reviews only in rate denominators; unavailable attempts and older policies remain separate. A 90% v1 failure outcome is not a verified 90% catalog-error rate. Empty denominators return null. No paid calls.",
     {
-      policy_version: z.enum(["saved-song-why-review-v1", "saved-song-why-review-v2"]),
+      policy_version: z.enum(WHY_AI_POLICY_VERSIONS),
       explanation_ids: z.array(id).min(1).max(50).optional(),
     },
     async (i, a) => ({ rates: await whyReviewRates(a, i.policy_version, i.explanation_ids) }),
