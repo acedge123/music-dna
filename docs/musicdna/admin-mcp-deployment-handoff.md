@@ -31,3 +31,7 @@ After the Phase 1 migration and separate source/production approval, the QA add-
 Verify the new QA scope table and paint-receipt table have RLS and no direct authenticated writes; all diagnostic views enforce current QA permission plus ownership/approved scope. Create no scope grants, QA users, sessions or model tests as part of migration. Preserve raw local-only critic trace restrictions. No service key, learning/model flag, catalog score, paid model call or schedule changes. Ordinary/guest callers must not gain private diagnostics or receipt-write access.
 
 The web owner-QA path adds optional paint receipts only after explicit Admin → New QA interview and fresh server eligibility. Normal interview flow is unchanged. The Flutter API is additive, with no mobile build/instrumentation in this add-on. Hosted OAuth, real paint behavior, role/scope expiry and receipt replay need separate acceptance after deployment. See `admin-mcp-qa.md`; AB-91 tracks the discovered final-report validation failure, which this MCP PR does not fix.
+
+## Saved-explanation AI re-review extension (AB-92)
+
+See [implementation and deployment requirements](admin-mcp-saved-why-reviews.md). This feature adds three tools (44 total after extraction); it is not live merely because the local manifest exists. Paid acceptance is limited to the two explicitly selected explanations in that document. Migration must precede app promotion. Existing rule-based audits remain separate.

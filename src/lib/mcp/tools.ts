@@ -12,6 +12,12 @@ import {
   McpError,
 } from "./access";
 import { catalogSummary, getSong, listSongs, ontology, searchSongs } from "./catalog";
+import {
+  requestWhyAiReview,
+  readWhyAiReview,
+  listWhyAiReviews,
+  whyAiRequestSchema,
+} from "./why-ai-review";
 import { getWhy, listWhys, screenWhy, whyHistory } from "./song-whys";
 import { hasMoreRows, boundedRows, pageSchema, pageCursor, nextCursor } from "./pagination";
 
@@ -23,6 +29,7 @@ export function tool<S extends z.ZodRawShape>(
   capability: Capability = "catalog_read",
   mutates = false,
   actorLoader = loadActor,
+  openWorld = false,
 ) {
   const definition = {
     name,
@@ -33,7 +40,7 @@ export function tool<S extends z.ZodRawShape>(
       readOnlyHint: !mutates,
       destructiveHint: false,
       idempotentHint: mutates,
-      openWorldHint: false,
+      openWorldHint: openWorld,
     },
     handler: async (raw: unknown, ctx: ToolContext) => {
       try {
@@ -53,6 +60,7 @@ const short = z.string().trim().min(1).max(200);
 const date = z.string().datetime();
 const status = z.enum(["approved", "pending_review", "rejected"]);
 const whyFilters = {
+  lane: short.optional(),
   song_id: id.optional(),
   artist: short.optional(),
   genre: short.optional(),
@@ -153,9 +161,41 @@ export const catalogTools = [
   ),
   tool(
     "song_whys_get",
-    "inspect a complete explanation at its current version fingerprint, with Hear/Means/review note and exact score/definition.",
+    "inspect a complete saved explanation and review_context_version before a paid re-review. Includes original/current score, authoritative definition, catalog recording identity and honest uncertainty.",
     { explanation_id: id },
     async (i, a) => ({ record: await getWhy(a, i.explanation_id) }),
+  ),
+  tool(
+    "song_whys_request_ai_review",
+    "explicitly re-review ONE selected saved explanation (approved included) with the configured stronger reviewer. PAID: obtain explicit human confirmation for this exact version/context before confirm_paid_review=true. Use song_whys_get first. One 20-second / 2,000-output-token attempt, no writer, no automatic retry. Reuse mutation_id after any lost response. Historical review, text, scores and approvals remain unchanged. Read-only access does not authorize this tool.",
+    whyAiRequestSchema.shape,
+    async (i, a) => requestWhyAiReview(a, i),
+    "catalog_review",
+    true,
+    loadActor,
+    true,
+  ),
+  tool(
+    "song_whys_get_ai_review",
+    "read one saved advisory AI-review request/result with original text and score, immutable version/context, new findings, nullable suggested score, measurements and separate stale flags. Does not start model work.",
+    { request_id: id },
+    async (i, a) => ({ review: await readWhyAiReview(a, i.request_id) }),
+  ),
+  tool(
+    "song_whys_list_ai_reviews",
+    "page saved AI-review results, score disputes and unavailable/uncertain score suggestions. Findings are new audit records, never retroactive historical verdicts. Does not run an AI review; rule-based song_whys_run_audit is separate.",
+    {
+      ...pageSchema,
+      explanation_id: id.optional(),
+      lane: short.optional(),
+      score_disputed: z.boolean().optional(),
+      suggestion_unavailable: z.boolean().optional(),
+      stale: z.boolean().optional(),
+      state: z
+        .enum(["requested", "running", "completed", "failed", "ambiguous", "expired_or_ambiguous"])
+        .optional(),
+    },
+    async (i, a) => listWhyAiReviews(a, i),
   ),
   tool(
     "song_whys_export",

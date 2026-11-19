@@ -134,3 +134,26 @@ export const readCatalogSong = createServerFn({ method: "GET" })
       ),
     };
   });
+
+/** Explicitly loaded, read-only advisory audits; no model execution in this UI query. */
+export const listSavedWhyAiReviews = createServerFn({ method: "GET" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((raw: unknown) =>
+    z
+      .object({ cursor: z.string().max(5000).optional() })
+      .strict()
+      .parse(raw),
+  )
+  .handler(async ({ data, context }) => {
+    const db = context.supabase as SupabaseClient;
+    await authorized(db, "catalog_read");
+    const { listWhyAiReviews } = await import("./why-ai-review");
+    return listWhyAiReviews(
+      {
+        db,
+        userId: context.userId,
+        capabilities: accessSchema.parse(await rpc(db, "musicdna_mcp_access")),
+      },
+      { limit: 10, ...data },
+    );
+  });

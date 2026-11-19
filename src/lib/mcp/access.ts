@@ -62,6 +62,8 @@ export function assertDb(error: { message?: string; code?: string } | null) {
     "EVIDENCE_MISMATCH",
     "EXPORT_EXPIRED",
     "EXPORT_NOT_READY",
+    "REVIEW_CONTEXT_UNAVAILABLE",
+    "REVIEW_RATE_LIMIT",
   ];
   const code = known.find((c) => error.message?.includes(`MCP_${c}`));
   throw new McpError(
