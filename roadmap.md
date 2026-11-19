@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — automatic rejected-report recovery
+
+- [x] Check owner-visible saved v1 before generation and after rejection/error; automatically retry an explicitly rejected unsaved draft once without restarting wait presentation. Unknown in-flight errors only check saved state; second rejection retains manual Retry.
+- [x] 43 focused regressions and touched-file lint pass; preview build OK. Real existing guest saved v1 opens through updated flow on desktop/phone. Retry, concurrent-save and timeout branches verified with deterministic tests; a new naturally rejected live generation was not forced. Flutter recovery guidance updated; deployed production/Flutter adoption remains separate.
+
 ## Current — report recovery and complete pick-six quips
 
 - [x] Reported session c6160a69: HTTP 200 returned invalid_generation with no saved version; chosen final pre-draft failed semantic ceiling review, live attempt failed references/schema. Calls completed in seconds, not a 45-second timeout. Owner retry later saved accepted v1 at 04:36:19 UTC. Raw rejected listener drafts were not retained, so the precise invalid field is unavailable.

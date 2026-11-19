@@ -28,7 +28,12 @@ import type { Phase, Refined, Pairing, Entry } from "@/lib/interview-model";
 import { usePrefersReducedMotion } from "./use-prefers-reduced-motion";
 import { shouldResumeInterview } from "@/musicdna/engine/reading-support";
 import { withRequestDeadline } from "@/lib/request-deadline";
-import { finalReadingError, needsInterimRead } from "@/lib/final-reading-state";
+import {
+  finalReadingError,
+  needsInterimRead,
+  recoverFinalReading,
+} from "@/lib/final-reading-state";
+import { supabase } from "@/integrations/supabase/client";
 import { getInterviewFlow } from "@/lib/interview-flow.functions";
 import { checkpointIndex, type InterviewFlow } from "@/musicdna/engine/checkpoints";
 
@@ -652,12 +657,40 @@ export function useInterview(requestedSession?: string, fresh?: string) {
     try {
       // Bounded wait: the server keeps writing and saves the reading, so a
       // timeout only offers a retry that replays the saved result.
-      const r = (await withRequestDeadline(
-        (async () => {
-          await finalizeFn({ data: { sessionId: sid, finishEarly } });
-          return synthFn({ data: { sessionId: sid } });
-        })(),
-        "Reading still being written",
+      const request = () =>
+        withRequestDeadline(
+          (async () => {
+            await finalizeFn({ data: { sessionId: sid, finishEarly } });
+            return synthFn({ data: { sessionId: sid } });
+          })(),
+          "Reading still being written",
+        );
+      const r = (await recoverFinalReading(
+        async () => {
+          const { data: saved, error } = await supabase
+            .from("session_results")
+            .select("version,content")
+            .eq("session_id", sid)
+            .eq("source", "pairings")
+            .eq("version", 1)
+            .maybeSingle();
+          if (error) throw new Error("Could not check saved reading");
+          const content = saved?.content;
+          if (
+            !content ||
+            typeof content !== "object" ||
+            Array.isArray(content) ||
+            !content.synthesis
+          )
+            return null;
+          // Existing synthesis call now replays the immutable row and adds frozen receipts.
+          return withRequestDeadline(
+            synthFn({ data: { sessionId: sid } }),
+            "Loading saved reading",
+          );
+        },
+        request,
+        () => generation === bootGeneration.current,
       )) as {
         result_version?: number | null;
         reveal?: { answered: number; twist: string | null; challenge: string };
