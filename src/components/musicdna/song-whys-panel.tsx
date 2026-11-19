@@ -1,3 +1,4 @@
+import { SongWhyProposals } from "./song-why-proposals";
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useServerFn } from "@tanstack/react-start";
@@ -65,6 +66,7 @@ export function SongWhysPanel() {
 
   return (
     <div className="space-y-6">
+      <SongWhyProposals />
       <section className="space-y-3 border hairline rounded-sm p-4">
         <p className="text-sm">
           Why-this-score explanations: {ov.data?.totals.approved ?? 0} approved,{" "}
