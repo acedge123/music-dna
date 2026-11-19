@@ -1,5 +1,10 @@
 # Roadmap
 
+## Current — Song Whys score challenges
+
+- [ ] Strengthen musical accuracy, score magnitude and axis-confusion review; retain failed/disputed drafts with advisory scores and reasons, without rescoring.
+- [ ] Display challenges in admin, exclude them from bulk approval, test storage/approval rules and verify available UI. Authenticated production review requires externally managed admin access.
+
 ## Current — automatic rejected-report recovery
 
 - [x] Check owner-visible saved v1 before generation and after rejection/error; automatically retry an explicitly rejected unsaved draft once without restarting wait presentation. Unknown in-flight errors only check saved state; second rejection retains manual Retry.
