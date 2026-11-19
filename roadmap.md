@@ -1,5 +1,12 @@
 # Roadmap
 
+## Current — six-pick pacing and Overtime
+
+- [x] Apply agreed category order after picks 1–6 in both saved flows, preserve 2.5-second beats and complete person pairs; use Overtime only during pick-six final writing.
+- [x] Add the twelve approved Overtime lines to shared copy/API/admin library and update Flutter handoff with acceptance checks; existing API fields, flags and saved flow stay unchanged.
+- [x] 44 focused regressions and touched-file lint pass; preview build OK. Real guest three-song save → first pick → neutral-only wait → next matchup passes. Isolated browser verifies delayed reaction-first save, complete pick-two pair, late hunch/final Overtime and 390px fit without page errors.
+- [ ] Production/full-six/checkpoint and Flutter acceptance: requires deployment and the separate Flutter presentation change. V1 endpoint remains correctly disabled; no flags changed.
+
 ## Planned — fix three: decade staples pack
 
 - [x] Plan approved; prepared 160 sourced review candidates and a read-only 886-song catalog identity/pair-count baseline in docs/musicdna/staples-pack-2026-11-15. Initial audit: 43 active, 2 inactive, 9 identity holds, 106 without exact identity; no scoring or writes.

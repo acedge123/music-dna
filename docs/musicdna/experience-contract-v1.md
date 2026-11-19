@@ -273,12 +273,10 @@ scoring, model, prompt, consent, public gate or learning activation is introduce
 After a pick, clients show a Critic-only screen ("You picked · {title}") until the read arrives, then show the read and
 next pairing together automatically (no extra tap). Stall lines live in `src/musicdna/engine/critic-fillers.ts`:
 
-1. While the vote saves: one `FILLER_NEUTRAL[wait]` line.
-2. When the vote returns: the vote response now includes `hunch` (`against` | `with` | `early`; absent on old replays →
-   treat as `early`). Show `FILLER_REACTION[hunch][wait % pool.length]`, then each line of the nested `FILLER_PERSON[wait % FILLER_PERSON.length]` group in order every ~2.5s,
-   holding on the last line. `fillerLines(wait, hunch)` returns this list. `wait` = 0 opening, 1–6 after each pick, so no
-   line repeats in an interview.
-3. After a skip: one `skipLine(skipIndex, artist)` line, where artist is from one song in the skipped matchup.
+1. Waiting presentation uses additive `/critic-fillers` pacing metadata: `pacing_version: "six-pick-overtime-v1"`, `interval_ms: 2500`, `pick_patterns`, `overtime[12]`. Existing `contract: 1` / `version: "fillers-v1"` and all existing pools remain compatible.
+2. After answered picks: **1 Neutral; 2 Reaction → Person; 3 Reaction; 4 Neutral → Reaction → Person; 5 Neutral; 6 Neutral → Reaction → Person**, then final-only Overtime if still writing. Person means the entire ordered pair or standalone. No era substitution. Reaction-first screens use activity until the saved hunch arrives, not an extra neutral. Successful old replays without hunch use `early`.
+3. Hold each displayed beat 2500 ms; ready content interrupts except a started person pair must finish its punchline beat. Overtime is twelve ordered standalone jokes, only after the pick-six primary sequence during final writing; stop for a ready result, hold after exhaustion, never repeat. Shorter final runs do not get Overtime.
+4. Skips retain one apology and never advance answered picks. Capture the pending answered index once per wait; final saved-count updates cannot restart it. Detailed Flutter selection, compatibility, timer and acceptance rules: `flutter-critic-fillers-handoff.md`.
 
 `hunch` comes from `pickHunch` inside the existing vote save (zero added latency): `against` only when the pick moved the
 top trait opposite a prior lean of at least 15; first picks and weak leans are `early`. Lines never name traits or hint at
@@ -297,7 +295,7 @@ Status: implemented on web + server, unit-tested; not deployed/enabled; Flutter 
 - `GET /api/v1/interview-flow` without `session` (no auth) previews what a new interview would get for the headers sent (`saved: false`). Use it for display only; the source of truth is the `flow` returned by `POST /session`.
 
 When `flow = "checkpoints"` (counts are **answered** choices; skips never count):
-1. Answered 1, 3, 5: `POST /choice` as today, show a static quip (≥2.5 s, `/critic-fillers`), then `GET /next` and show the pair automatically. Do **not** call `/read` or `/prepare` (server returns `prepared: 0, skipped: "checkpoint_flow"`).
+1. Answered 1, 3, 5: `POST /choice` as today, show the prescribed category (1 Neutral, 3 Reaction, 5 Neutral) for the existing short 2.5 s hold (`/critic-fillers`), then `GET /next` and show the pair automatically. Do **not** call `/read` or `/prepare` (server returns `prepared: 0, skipped: "checkpoint_flow"`).
 2. Answered 2 (checkpoint 1) and 4 (checkpoint 2): `POST /choice`, waiting quips, `POST /read` with `{ after_pairing_id, answered }` (one Critic write covering every saved choice; there is no GET handler), then `GET /next` in the background. Show the read alone, with optional pushback (`POST /pushback`). Keep the next pair hidden.
    - Checkpoint 1: button **Next pairing**.
    - Checkpoint 2: **Get my reading now** → `POST /reveal` with `finish_early: true` (four-choice reading), or **Keep going (final pair)** → show held pair.

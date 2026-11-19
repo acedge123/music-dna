@@ -1,52 +1,69 @@
-# Flutter handoff: pick → Critic → next matchup (fillers-v1)
+# Flutter handoff: six-pick pacing + Overtime
 
-Web reference: `src/routes/onboarding.tsx` (`CriticStage`), copy in `src/musicdna/engine/critic-fillers.ts`.
-All endpoints need `X-MusicDNA-Experience: 1`.
+Updated 19 November 2026. Web reference: `src/components/musicdna/critic-stage.tsx`, `src/lib/critic-wait.ts`, `src/lib/quip-sequences.ts`; shared copy: `src/musicdna/engine/critic-fillers.ts`.
 
-## 1. Load the lines once per app launch
-`GET /api/v1/critic-fillers` (no auth, no user data) →
-`{ contract, version, neutral[12], reaction: { against[12], with[8], early[8] }, person[8][1–2 lines], decade: { "1970s": [10 lines], "1980s"–"2020s": [9 lines each] }, skip[8], skip_young, skip_old }`.
-Cache it, and keep a bundled copy as an offline fallback. Never edit the lines in Dart.
-The final owner-approved list is from **Music_DNA_Quips.docx (12 November 2026)**; blank numbered entries and copied editorial instructions are not quips. Use each pool's actual length, never a hard-coded eight. Refresh the cached list on app launch; the contract and sequencing are unchanged.
+## Load and cache the shared copy
 
-## 2. `wait` index
-`wait = 0` while the first matchup loads, then `wait = answeredPicks` (1–6) after each pick. Because each wait uses its own index, no line repeats in an interview.
+`GET /api/v1/critic-fillers` with `X-MusicDNA-Experience: 1` returns the existing `contract: 1`, `version: "fillers-v1"`, neutral, reaction, nested person, decade and skip fields unchanged, plus:
 
-## 3. After a pick
-1. Tap → hide the matchup and show the Critic screen: "YOU PICKED · {title}" + `neutral[wait % neutral.length]`.
-2. `POST /api/v1/session/:id/choice` with `defer_read: true`. The response now includes
-   `hunch`: `"against" | "with" | "early"` (computed inside the save, so no added latency; treat a missing value as `"early"`).
-3. Rotate every ~2.5s and hold on the last line:
-   `reaction[hunch][wait % reaction[hunch].length]` → each line of `person[wait % person.length]` in order (an entry is a setup → punchline pair or one stand-alone line; never shuffle or split them). If both songs share a decade (`floor(year/10)*10`+"s", e.g. "1970s") also show `decade[key][wait % decade[key].length]` after the reaction; with a reaction, the decade line replaces the person lines. Hold each line ~2.5 s, show each once, last line stays until the read arrives.
-4. In parallel: `POST /read` `{ after_pairing_id, answered }` and fetch the next pairing. Keep the pairing hidden.
-5. When the read arrives, show it with the next matchup below it **automatically, without a tap**.
-   Discard a read whose `answered`/`after_pairing_id` isn't current (a 409 also means discard).
-6. If the read hasn't arrived after 20s or fails (503), show "I'll come back to that one." and the next matchup. The pick is already saved.
+- `pacing_version: "six-pick-overtime-v1"`
+- `interval_ms: 2500`
+- `pick_patterns`: keys `"1"` through `"6"`, category arrays from the table below
+- `overtime`: twelve ordered standalone lines (the two initial examples plus ten approved follow-ups)
 
-## 4. After a skip
-Show one line per skip (increase `skipCount` each time). If both skipped songs are from before 2000, use `skip_young`. If both are from 2020 or later, use `skip_old`. Otherwise use `skip[skipCount % 8]`. Replace `{artist}` with the artist of `songs[skipCount % 2]`.
-`skip_old` remains for compatibility but now contains a neutral apology, never an age label. Retire bundled/cached “OK boomer” and “Music is in your blood” copy. A skip screen never shows “YOU PICKED” or a previous song. Skips do not increment answered-choice numbers: derive “after choice” and history labels from answered picks, not served matchup rounds. Preserve server round keys for feedback/reaction requests.
+Refresh once per app launch and keep a bundled fallback. Existing clients can ignore additive fields; they will keep their old pacing until their presentation is updated. This is not a new interview flow and does not enable any server flags. Flutter implementation is a separate client change, not included in this web repository.
 
-## 5. Rules
-- Never write new filler lines on the client and never pick a reaction yourself. Use the server's `hunch` only, so "not what I expected" appears only when the pick really went against the listener's strongest earlier lean.
-- Halftime (pick 3) doesn't interrupt. Pushback is an optional link on that read (`POST /pushback`).
-- No automatic pick-4 early-exit prompt interrupts the interview. The pick-6 reveal and server completion are unchanged.
+## Exact category order (both saved interview flows)
 
-## Acceptance
-- Six picks: no repeated filler lines, and no "Next matchup" button.
-- The old matchup is never visible under a new read.
-- The first pick always shows an `early` reaction.
+| Answered pick | Category order | Maximum primary beats |
+| --- | --- | --- |
+| 1 | Neutral | 1 |
+| 2 | Reaction → Person | 2–3 |
+| 3 | Reaction | 1 |
+| 4 | Neutral → Reaction → Person | 3–4 |
+| 5 | Neutral | 1 |
+| 6 | Neutral → Reaction → Person → Overtime **only while final writing** | 3–4 + 12 |
 
-## Checkpoint flow (behind flag)
-See "Critic checkpoints" in experience-contract-v1.md. Quips still play between every pick; in checkpoint flow, picks 1/3/5 hold a quip ~2.5 s, then show the next pair automatically.
+Person is one complete group: either a standalone or setup → punchline. Never flatten/shuffle the person library. Current indexed choices give three beats after pick 2 and three after picks 4/6; counts above accommodate other compatible groups. Do not insert decade lines or replace Person with era decoration. Decade fields remain available for older clients.
 
-### Checkpoint pacing update (14 November 2026)
-- Flag-on screens are exclusive: pairing → quip wait → Critic checkpoint after answers 2/4 → Next pairing / Keep going → pairing. Never carry the prior checkpoint, reaction buttons or opening hypothesis onto the next pairing. Flag-off retains its existing combined read/pairing display.
-- Final writing (including retries) replaces every other stage. On retryable final failure, stop the quip stage and show the saved-choice notice and retry action, not a completed or empty report. No sharing/chat is offered until a saved result version exists.
-- Editorial relationship reference: `src/lib/quip-sequences.ts` identifies ordered groups, tone, required hunch and incompatible groups. Select complete groups only; never orphan a punchline, stack incompatible prediction/praise bits, or run unrelated praise groups back-to-back. Existing fillers API shape is unchanged; use these constraints with its cached copy.
-- Capture the wait identity, neutral opener, picked title and era once on tap. Keep the same screen and timer through choice-save → read → next/final requests. Never restart the opener animation on hunch arrival or answered-count updates.
-- Flag-on budgets: one line after answers 1/3/5; **up to three after 2**, **up to four after 4**. These are ceilings, not mandatory delays: show a ready checkpoint immediately. A three-line slot may be neutral → complete setup/punchline, without a reaction diluting it.
-- After answer 6, continue rotating unused approved groups every 2.5 seconds until the reading arrives; do not stop after four lines. Use the primary wait lines, then unused person groups, same-era lines and neutral lines. Keep setup/punchline pairs adjacent; skip a group if either line was already shown. Track only actually displayed lines for this interview. Do not add extra conditional reactions as long-wait entertainment.
-- Show an ongoing activity indicator with “Writing your full reading…” during the final wait. If the finite approved pool is exhausted, keep the indicator active rather than repeating quips. Stop immediately when the reading or existing retryable failure arrives. This changes presentation, not model latency, timeouts or saved results.
+Use answered choices, never served rounds or skip counts. Opening (`wait = 0`) stays one neutral beat. Capture the pending pick number on tap (`answered + 1`), title and exposed-line set once, so saving the vote cannot increment/restart the wait. If final writing starts after saved entries update, keep that same pending pick number; restore/retry uses the actual saved answered count. Four-choice early finishes and skip/exhaustion finishes before six never use Overtime.
 
-**Flow is fixed per interview.** Send `X-MusicDNA-Interview-Flow: checkpoints-v1` on `POST /api/v1/session` once this build supports checkpoints, and use the `flow` in its response. On resume/reload call `GET /api/v1/interview-flow?session=<id>` with the bearer; on `503` retry, never fall back to the current setting. Checkpoint reads are `POST /read` with `{ after_pairing_id, answered }`.
+## Saving and selecting reactions
+
+1. Hide the old matchup on tap. Show “You picked · {title}” and the first allowed category.
+2. Save with `POST /api/v1/session/:id/choice` and `defer_read: true`. Keep the existing mutation/replay behavior.
+3. Only the saved response supplies `hunch`: `against`, `with`, or `early`. A missing field on a successful old replay means `early`. Before that response, reaction-first picks **2/3 show an activity indicator, not an extra neutral line or an invented reaction**. Neutral-first picks can show their neutral while saving.
+4. Index each pool by `wait % pool.length`, where `wait` is the captured answered pick number. Use actual lengths.
+5. Preserve contradiction guards from `quip-sequences.ts`: if an earlier displayed reaction was `with`, downgrade a later `against` to `early` (and vice versa). “Taste. Actual taste.” / its surprise punchline cannot follow a confident `with` reaction. Otherwise Reaction → Person is allowed; do not suppress all person groups after confident reactions.
+6. Track only actually displayed lines across the interview. Skip a complete group if either line was already displayed. Do not add a second reaction if the saved hunch arrives after a neutral has been visible; replace only the unseen tail.
+
+## Timing and final waiting
+
+- Each beat gets **2500 ms from actual display**. Late/doubled timers cannot cause catch-up bursts. Choice-save → read → final transitions never restart the opener.
+- Category lists are ceilings, not mandatory delays. A ready read/report or next pairing normally replaces the wait immediately. **Exception: a started person setup must receive its punchline, and that punchline completes its 2500 ms beat before the ready screen replaces it.** Do not wait for any unstarted person group or Overtime line.
+- Pick-six Overtime begins only after the primary Neutral → Reaction → Person sequence, and only when the final report is still pending. Play the twelve lines in source order, once each, at 2500 ms. Never recycle unrelated person, era or neutral pools to extend the final wait.
+- Keep “Writing your full reading…” and an activity indicator active. After the finite Overtime pool, hold the last line with that indicator; never repeat or invent copy. These are jokes about waiting/the critic, not claims of extra analysis or unusual listener evidence.
+- Existing retryable failures end the wait and show the saved-choice notice/Retry. No empty completed report, chat or sharing before a saved result exists. No new LLM calls, timeouts, scoring, routing, consent or result changes.
+
+## Read delivery and saved flow (unchanged)
+
+`per_pick`: request the current read and next offer as before; expose the read with the next pairing automatically, no extra “Next matchup” tap. Discard stale `answered`/`after_pairing_id` responses. Existing ~20-second read failure handling stays unchanged.
+
+`checkpoints`: requests remain only at answered 2/4 plus final six. Picks 1/3/5 use their table category for the existing short between-checkpoint hold, then automatically expose the next offer. Checkpoint read and controls are exclusive; the next offer remains hidden until Continue. Optional four-choice finish remains server-owned.
+
+Send `X-MusicDNA-Interview-Flow: checkpoints-v1` at creation only when the client supports checkpoints; trust the returned saved `flow`. On resume use owner-scoped `GET /api/v1/interview-flow?session=<id>`; retry failures, never substitute the current server setting. This pacing update does not change that opt-in or flag.
+
+## Skips (unchanged)
+
+One apology only; no Person, Reaction or Overtime. Both songs before 2000 → `skip_young`; both 2020 onward → `skip_old`; otherwise indexed `skip` with the shown artist substituted. No inferred age, retired “OK boomer” or “Music is in your blood.” Hide picked-song labels and don't increment answered picks.
+
+## Acceptance checklist for Codex / Flutter
+
+- [ ] Fresh six-choice run and resumed run use the table exactly, in both supported saved flows; no repeated displayed line.
+- [ ] Delay `/choice` on picks 2/3: activity only until a saved hunch; no neutral flash and correct first reaction.
+- [ ] Late hunch on 4/6: stable neutral, exactly one reaction, ordered person group; no clock reset.
+- [ ] Ready result during a setup: punchline appears next and completes one beat; ready result during Neutral/Reaction/Overtime replaces it immediately.
+- [ ] Delay pick-six final report: all twelve Overtime lines appear in order after the primary sequence, then hold with activity; no era/person recycling.
+- [ ] Four-choice early finish, earlier exhaustion and skips never enter Overtime; retries do not restart already displayed copy in the same wait.
+- [ ] Phone/desktop: fixed-height waiting area, no overlap with old matchup/checkpoint/report, no page errors.
+- [ ] Confirm the deployed API includes `pacing_version`, `pick_patterns`, `interval_ms`, `overtime`; refresh bundled offline copy. Server API deployment alone does not update Flutter's sequence.

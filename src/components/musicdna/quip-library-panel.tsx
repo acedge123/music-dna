@@ -11,6 +11,7 @@ import {
 import {
   NEUTRAL_QUIP_GROUPS,
   PERSON_QUIP_GROUPS,
+  OVERTIME_QUIP_GROUPS,
   eraQuipGroups,
   type QuipGroup,
 } from "@/lib/quip-sequences";
@@ -19,6 +20,11 @@ type LibraryGroup = QuipGroup & { category: string; condition?: string };
 const groups: LibraryGroup[] = [
   ...NEUTRAL_QUIP_GROUPS.map((g) => ({ ...g, category: "Neutral" })),
   ...PERSON_QUIP_GROUPS.map((g) => ({ ...g, category: "Personality" })),
+  ...OVERTIME_QUIP_GROUPS.map((g) => ({
+    ...g,
+    category: "Overtime",
+    condition: "Pick six only; final report still pending after Neutral → Reaction → Person",
+  })),
   ...Object.entries(FILLER_REACTION).flatMap(([hunch, lines]) =>
     lines.map((line, index) => ({
       id: `reaction-${hunch}-${index}`,
@@ -71,6 +77,7 @@ const categories = [
   "Personality",
   "Neutral",
   "Reaction",
+  "Overtime",
   "Skip",
   ...Object.keys(FILLER_DECADE),
 ];
@@ -80,6 +87,7 @@ const tones: Record<QuipGroup["tone"], string> = {
   "dry-authority": "Dry authority",
   era: "Era humour",
   reaction: "Conditional reaction",
+  overtime: "Final-wait sarcasm",
 };
 
 export function QuipLibraryPanel() {

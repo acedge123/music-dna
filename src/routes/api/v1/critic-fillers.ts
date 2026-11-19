@@ -3,6 +3,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   FILLER_NEUTRAL,
   FILLER_PERSON,
+  FILLER_OVERTIME,
   FILLER_REACTION,
   FILLER_DECADE,
   FILLER_SKIP,
@@ -10,6 +11,7 @@ import {
   SKIP_YOUNG,
 } from "@/musicdna/engine/critic-fillers";
 import { jsonResponse, preflightResponse } from "./_cors";
+import { PICK_QUIP_PATTERN, QUIP_INTERVAL_MS } from "@/lib/critic-wait";
 
 export const Route = createFileRoute("/api/v1/critic-fillers")({
   server: {
@@ -19,6 +21,10 @@ export const Route = createFileRoute("/api/v1/critic-fillers")({
         jsonResponse({
           contract: 1,
           version: "fillers-v1",
+          pacing_version: "six-pick-overtime-v1",
+          interval_ms: QUIP_INTERVAL_MS,
+          pick_patterns: PICK_QUIP_PATTERN,
+          overtime: FILLER_OVERTIME,
           neutral: FILLER_NEUTRAL,
           reaction: FILLER_REACTION,
           person: FILLER_PERSON,

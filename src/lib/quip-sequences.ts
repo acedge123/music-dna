@@ -2,13 +2,14 @@ import {
   FILLER_DECADE,
   FILLER_NEUTRAL,
   FILLER_PERSON,
+  FILLER_OVERTIME,
   FILLER_REACTION,
   type Hunch,
 } from "@/musicdna/engine/critic-fillers";
 
 export type QuipGroup = {
   id: string;
-  tone: "neutral" | "praise" | "dry-authority" | "era" | "reaction";
+  tone: "neutral" | "praise" | "dry-authority" | "era" | "reaction" | "overtime";
   /** Ordered lines are an indivisible editorial unit when selecting a queue. */
   lines: readonly string[];
   requiresHunch?: Hunch;
@@ -19,7 +20,13 @@ export const PERSON_QUIP_GROUPS: QuipGroup[] = FILLER_PERSON.map((lines, index) 
   id: `person-${index}`,
   tone: index === 1 || index === 4 ? "dry-authority" : "praise",
   lines,
-  incompatibleWith: ["reaction-with", "reaction-against"],
+  incompatibleWith: index === 3 ? ["reaction-with"] : [],
+}));
+export const OVERTIME_QUIP_GROUPS: QuipGroup[] = FILLER_OVERTIME.map((line, index) => ({
+  id: `overtime-${index}`,
+  tone: "overtime",
+  lines: [line],
+  incompatibleWith: [],
 }));
 export const NEUTRAL_QUIP_GROUPS: QuipGroup[] = FILLER_NEUTRAL.map((line, index) => ({
   id: `neutral-${index}`,
@@ -45,7 +52,9 @@ export function reactionQuipGroup(hunch: Hunch, wait: number): QuipGroup {
     incompatibleWith:
       hunch === "early"
         ? []
-        : ["reaction-with", "reaction-against", ...PERSON_QUIP_GROUPS.map((g) => g.id)],
+        : hunch === "with"
+          ? ["reaction-against", "person-3"]
+          : ["reaction-with"],
   };
 }
 

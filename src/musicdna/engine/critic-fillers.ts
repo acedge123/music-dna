@@ -69,6 +69,22 @@ export const FILLER_PERSON: ReadonlyArray<readonly string[]> = [
   ["Okay, you're good at this.", "Suspiciously good, actually."],
 ];
 
+/** Owner-approved final-pick Overtime: jokes about the wait, not listener evidence. */
+export const FILLER_OVERTIME = [
+  "The verdict is taking longer than the band's breakup statement.",
+  "Six picks. Somehow this became a double album.",
+  "Apparently the verdict needs a producer's cut.",
+  "The critic has requested one more cigarette. Request denied.",
+  "Even the dramatic pause has hired a manager.",
+  "We're approaching 'experimental B-side' territory.",
+  "The verdict is backstage pretending it can't hear us.",
+  "Someone gave the drum solo a legal team.",
+  "This is why we don't let critics book studio time.",
+  "The liner notes are threatening to become a memoir.",
+  "At this point, the silence deserves a songwriting credit.",
+  "No encore yet. We're still arguing about the setlist.",
+] as const;
+
 /** After a skip: the Critic owns the miss. {artist} is a song shown in the skipped matchup. */
 export const FILLER_SKIP = [
   "Ah, my bad. Let me try a new angle.",

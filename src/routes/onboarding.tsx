@@ -14,7 +14,7 @@ import { ArchetypeFit } from "@/components/musicdna/archetype-fit";
 import { DnaEvidence, DnaIdentity, DnaInvitation } from "@/components/musicdna/dna-summary";
 import { AccountControl } from "@/components/musicdna/account-control";
 import { HalftimePushback } from "@/components/musicdna/halftime-pushback";
-import { useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { matchupDecade, skipLine } from "@/musicdna/engine/critic-fillers";
 import { CriticStage } from "@/components/musicdna/critic-stage";
 import { interviewStage } from "@/lib/interview-stage";
@@ -73,6 +73,17 @@ function Onboarding() {
   const { session, fresh } = Route.useSearch();
   const navigate = useNavigate();
   const usedQuips = useRef(new Set<string>());
+  const [pairDeadline, setPairDeadline] = useState(0);
+  const [holdingPair, setHoldingPair] = useState(false);
+  const finishPersonPair = useCallback((until: number) => {
+    setPairDeadline(until);
+    setHoldingPair(true);
+  }, []);
+  useEffect(() => {
+    if (!holdingPair) return;
+    const timer = setTimeout(() => setHoldingPair(false), Math.max(0, pairDeadline - Date.now()));
+    return () => clearTimeout(timer);
+  }, [holdingPair, pairDeadline]);
   const {
     phase,
     songs,
@@ -253,15 +264,17 @@ function Onboarding() {
 
   const waitingOnCritic = phase === "playing" && busy && pendingSongId !== null;
   const criticStage = waitingOnCritic;
-  const stage = interviewStage({
-    phase,
-    busy,
-    pairing: !!pairing,
-    pendingPick: pendingSongId !== null,
-    pendingSkip: pendingSkip !== null,
-    checkpoint: !!checkpoint,
-    finalWriting,
-  });
+  const stage = holdingPair
+    ? "wait"
+    : interviewStage({
+        phase,
+        busy,
+        pairing: !!pairing,
+        pendingPick: pendingSongId !== null,
+        pendingSkip: pendingSkip !== null,
+        checkpoint: !!checkpoint,
+        finalWriting,
+      });
   const stageTitle = waitingOnCritic
     ? ([pairing?.song_a, pairing?.song_b].find((song) => song?.id === pendingSongId)?.title ?? "")
     : "";
@@ -441,10 +454,17 @@ function Onboarding() {
         {/* Current pairing */}
         {stage === "wait" && (
           <CriticStage
-            wait={criticStage || entries.length > 0 || pendingSkip ? entries.length + 1 : 0}
+            wait={
+              finalWriting && !pairing
+                ? entries.length
+                : criticStage || entries.length > 0 || pendingSkip
+                  ? entries.length + 1
+                  : 0
+            }
             flow={flow}
             finalReading={finalWriting}
             used={usedQuips.current}
+            onPairDeadline={finishPersonPair}
             decade={pairing ? matchupDecade([pairing.song_a, pairing.song_b]) : null}
             skip={!criticStage && skipNote ? skipLine(skipNote.index, skipNote.songs) : null}
             hunch={stageHunch}
