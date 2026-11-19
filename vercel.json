@@ -1,18 +1,5 @@
 {
   "framework": "tanstack-start",
   "installCommand": "npm ci",
-  "buildCommand": "npm run build",
-  "redirects": [
-    {
-      "source": "/:path((?!mcp(?:/|$)|\\.well-known/oauth-protected-resource(?:/|$)).*)",
-      "has": [
-        {
-          "type": "host",
-          "value": "musicdna.fm"
-        }
-      ],
-      "destination": "https://www.musicdna.fm/:path",
-      "permanent": true
-    }
-  ]
+  "buildCommand": "npm run build"
 }
