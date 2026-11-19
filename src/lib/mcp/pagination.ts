@@ -83,3 +83,10 @@ export function boundedRows<T>(rows: T[], limit: number, budget = 18000): T[] {
   }
   return page;
 }
+
+/** Exact remaining counts avoid silently trusting a configurable Data API row cap. */
+export function hasMoreRows(count: number | null, returned: number) {
+  if (count === null || count < returned || (count > 0 && returned === 0))
+    throw new McpError("PAGINATION_UNAVAILABLE", true);
+  return count > returned;
+}

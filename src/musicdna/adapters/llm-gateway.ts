@@ -240,3 +240,35 @@ export async function scoreIntakeRecording(
   if (!text) throw new Error("Song scoring returned no draft.");
   return text;
 }
+
+/** Operator metadata only: reuse the real resolver; never return URL/key-bearing provider objects. */
+export function describeConfiguredModelRouting() {
+  const provider = resolveProvider();
+  const safe = (value: string | undefined) =>
+    value && !/^(sk-|eyJ)/.test(value) && /^[\w./:-]{1,120}$/.test(value) ? value : null;
+  return {
+    configured: provider !== null,
+    provider: provider ? (provider.url === OPENAI_URL ? "openai" : "lovable") : null,
+    general_model: safe(provider?.defaultModel),
+    critic_writer: provider
+      ? safe(
+          resolveModel(
+            provider,
+            undefined,
+            provider.url === OPENAI_URL ? criticOpenAiModel("writer") : undefined,
+          ),
+        )
+      : null,
+    critic_reviewer: provider
+      ? safe(
+          resolveModel(
+            provider,
+            undefined,
+            provider.url === OPENAI_URL ? criticOpenAiModel("reviewer") : undefined,
+          ),
+        )
+      : null,
+    scope:
+      "Configured process defaults only; per-call explicit model overrides, pilot assignments and actual provider-returned model IDs must be inspected in stored measurements.",
+  };
+}

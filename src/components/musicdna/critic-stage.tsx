@@ -1,3 +1,4 @@
+import { useQaQuipObservation } from "@/hooks/use-qa-quip-observation";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { LoaderCircle } from "lucide-react";
 import type { Hunch } from "@/musicdna/engine/critic-fillers";
@@ -7,6 +8,8 @@ import { PERSON_QUIP_GROUPS } from "@/lib/quip-sequences";
 
 export function CriticStage({
   wait,
+  sessionId,
+  qaTelemetry = false,
   decade,
   hunch,
   skip,
@@ -17,6 +20,8 @@ export function CriticStage({
   onPairDeadline,
 }: {
   wait: number;
+  sessionId?: string | null;
+  qaTelemetry?: boolean;
   decade: string | null;
   hunch: Hunch | null;
   skip: string | null;
@@ -67,6 +72,7 @@ export function CriticStage({
     if (chosenTitle) setTitle(chosenTitle);
   }, [chosenTitle]);
   const line = queue[index];
+  useQaQuipObservation(sessionId, line, index, context.wait, finalReading, qaTelemetry);
   useEffect(() => {
     if (line) used.add(line);
     const pair = PERSON_QUIP_GROUPS.find(

@@ -173,7 +173,10 @@ function AdminPage() {
               setQaBusy(true);
               try {
                 const result = await newQa();
-                await navigate({ to: "/onboarding", search: { session: result.sessionId } });
+                await navigate({
+                  to: "/onboarding",
+                  search: { session: result.sessionId, qa: "1" },
+                });
               } catch (error) {
                 toast.error(error instanceof Error ? error.message : "Could not start QA.");
               } finally {
