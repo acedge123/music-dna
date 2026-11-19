@@ -29,7 +29,10 @@ beforeAll(async () => {
     GRANT SELECT ON public.choices TO service_role;
     GRANT SELECT,INSERT ON public.event_log TO service_role;`);
   await db.exec(
-    await readFile("supabase/migrations/20261112183759_musicdna_deferred_read_cursor.sql", "utf8"),
+    await readFile(
+      "supabase/migrations/20261112192158_b34486e3-76fd-4d86-90fe-2550382ec0ea.sql",
+      "utf8",
+    ),
   );
 });
 afterAll(async () => {

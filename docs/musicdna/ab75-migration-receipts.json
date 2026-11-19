@@ -1,0 +1,58 @@
+{
+  "project_ref": "udycgnhvaanemhrchbuj",
+  "history_read_at": "2026-11-19",
+  "verification": "Production history metadata only; explicit READ ONLY transaction and local 10-second statement timeout. No hosted mutation.",
+  "baseline": "8795ddcc8ad6177c17d8e5c6df2f0ee7f93ec724",
+  "recovered": {
+    "history_version": "20261020040000",
+    "history_name": "backend_parity_acceptance",
+    "migration_path": "supabase/migrations/20261020040000_backend_parity_acceptance.sql",
+    "statement_count": 20,
+    "reconstructed_sql_sha256": "46597f373377e4f99a142221dd94dc17780a98506435aad085cc8eeb4c7b0127",
+    "reconstruction": "Exact stored statement array joined by semicolon+newline, followed by semicolon+newline; no function/body/grant edits."
+  },
+  "retained": [
+    {
+      "history_version": "20261112192158",
+      "migration_path": "supabase/migrations/20261112192158_b34486e3-76fd-4d86-90fe-2550382ec0ea.sql",
+      "applied_sql_sha256": "4e7f2f1425e311da399f95ebe288c082a85719a25f8bc5e785f3808f0b879f13",
+      "removed_duplicate": "supabase/migrations/20261112183759_musicdna_deferred_read_cursor.sql"
+    },
+    {
+      "history_version": "20261119054831",
+      "migration_path": "supabase/migrations/20261119054831_musicdna_saved_why_ai_reviews.sql",
+      "applied_sql_sha256": "c07c89a93fc5f79fd00b49156d4ce5115fbabf79e6e078b44c55ece294d15b04",
+      "renamed_from": "supabase/migrations/20261119052334_musicdna_saved_why_ai_reviews.sql"
+    }
+  ],
+  "catalog_replay_guards": [
+    {
+      "history_version": "20261108232241",
+      "migration_path": "supabase/migrations/20261108232241_f7e7be7b-cfa2-49b4-8440-8ec0aed5cf4c.sql",
+      "original_path": "docs/musicdna/ab75-applied-originals/20261108232241_f7e7be7b-cfa2-49b4-8440-8ec0aed5cf4c.sql",
+      "applied_sql_sha256": "c56241574bd38331f8aaa45004bdb424a0360c6bfc8de7e8ec509a5850dfe89d",
+      "replay_source_sha256": "fc81638e321a37dc8b0b9030c5323245f03c21a13da75f4e4897412b046cb441"
+    },
+    {
+      "history_version": "20261109161511",
+      "migration_path": "supabase/migrations/20261109161511_06b8743b-82ae-46a2-8354-4864eb0af9c7.sql",
+      "original_path": "docs/musicdna/ab75-applied-originals/20261109161511_06b8743b-82ae-46a2-8354-4864eb0af9c7.sql",
+      "applied_sql_sha256": "4b12ca892170a7b0ecdb378a689d9c1b3f06cffd585474a6628180667657b146",
+      "replay_source_sha256": "3640f5645be58696b35ca72f385f45a115a4af8f90551c4c3a5dece2aa6cfe31"
+    },
+    {
+      "history_version": "20261111062106",
+      "migration_path": "supabase/migrations/20261111062106_34e3b69c-da94-4680-a454-cb69f505a4f9.sql",
+      "original_path": "docs/musicdna/ab75-applied-originals/20261111062106_34e3b69c-da94-4680-a454-cb69f505a4f9.sql",
+      "applied_sql_sha256": "39c5ca18215e261bd9161471ea5f5be401e88ddd1f3e0318f59760f4e93827e1",
+      "replay_source_sha256": "490bdd6e94f00a9a4fc907397c2f5c47ec1c6a64be8eba2e8f136399934bda78"
+    }
+  ],
+  "production_changes": "None. Do not rerun applied SQL, reset production or repair history. Guarded replay copies intentionally differ from their archived applied originals.",
+  "version_set_verification": {
+    "local_versions": 111,
+    "live_history_versions": 111,
+    "only_local": [],
+    "only_live": []
+  }
+}
