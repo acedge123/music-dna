@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — broader recognition catalog
+
+- [ ] Import all approved 1,477 ’80s sample records into a separate unscored recognition table; preserve provenance and leave scored songs/pairings untouched.
+- [ ] Build a ’90s review sample from ListenBrainz-ranked artists, with fewer recordings per artist and no catalog-artist seed list.
+- [ ] Verify recognition storage/search and document Flutter behavior and sample limitations.
+
 ## Current — PR 62 selector experiment planning
 
 - [x] Add the approved offline-first test plan to docs/musicdna/pairing-selector-baseline.md so Chat can read it; emphasize soft, opener-derived lane/era familiarity with gradual earlier/later falloff and multiple supported lanes/eras. Documentation only; no code, experiments or activation authorized.
