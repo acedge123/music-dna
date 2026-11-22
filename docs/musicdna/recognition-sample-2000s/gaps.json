@@ -1,0 +1,802 @@
+[
+  {
+    "artist": "The Beatles",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Kendrick Lamar",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Pink Floyd",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Gorillaz",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "The Weeknd",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Nirvana",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Queen",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Metallica",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Tame Impala",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Drake",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Tyler, The Creator",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Billie Eilish",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Charli xcx",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Lana Del Rey",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Imagine Dragons",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "BTS",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Ariana Grande",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Paramore",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Fleetwood Mac",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Dua Lipa",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Rammstein",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Travis Scott",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Frank Ocean",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Ed Sheeran",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The Smiths",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Black Sabbath",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "blink\u2010182",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Post Malone",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Arcade Fire",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Bob Dylan",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Childish Gambino",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "A$AP Rocky",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Pixies",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Future",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "R.E.M.",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Lorde",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "SZA",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "J. Cole",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Florence + the Machine",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Halsey",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Bruno Mars",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "David Guetta",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "The Doors",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Nicki Minaj",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Talking Heads",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Justin Bieber",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Joji",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Skrillex",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "The Beach Boys",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Doja Cat",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Grimes",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Playboi Carti",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Portishead",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Olivia Rodrigo",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "ABBA",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Pharrell Williams",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Dire Straits",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Mitski",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Toby Fox",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Creedence Clearwater Revival",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Death Cab for Cutie",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Mac DeMarco",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Mac Miller",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Joy Division",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Avicii",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Ellie Goulding",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Juice WRLD",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "King Gizzard & the Lizard Wizard",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Death Grips",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "alt\u2010J",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Sabrina Carpenter",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "OutKast",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Lil Uzi Vert",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Bob Marley & The Wailers",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Frank Sinatra",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The National",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Megadeth",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Kali Uchis",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Carly Rae Jepsen",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Jimi Hendrix",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "JPEGMAFIA",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "XXXTENTACION",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Young Thug",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Stevie Wonder",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "The Police",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "21 Savage",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Dr. Dre",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Danny Brown",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The Cranberries",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Bad Bunny",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Soundgarden",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The Chainsmokers",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Simon & Garfunkel",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The Beatles",
+    "reason": "No artist MBID"
+  },
+  {
+    "artist": "Billy Joel",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Denzel Curry",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Hozier",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Elvis Presley",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Khalid",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Anderson .Paak",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Ghost",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Porter Robinson",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Glass Animals",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "A Tribe Called Quest",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Ty Dolla $ign",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Agust D",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Clairo",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Cocteau Twins",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "CHVRCHES",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The Neighbourhood",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Harry Styles",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Slowdive",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Foster the People",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Ozzy Osbourne",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Metro Boomin",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Two Door Cinema Club",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "My Bloody Valentine",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Vince Staples",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Selena Gomez",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Miles Davis",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Thundercat",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "BTS",
+    "reason": "No artist MBID"
+  },
+  {
+    "artist": "Kesha",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Run the Jewels",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Lil Nas X",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Phoebe Bridgers",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Gojira",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "PinkPantheress",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "James Blake",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Chappell Roan",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Neutral Milk Hotel",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Genesis",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "TWICE",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Van Halen",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Tove Lo",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Earl Sweatshirt",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "2Pac",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "ROSAL\u00cdA",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "BROCKHAMPTON",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Sam Smith",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "j\u2010hope",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Logic",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Marshmello",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "100 gecs",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Wilco",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "LE SSERAFIM",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The 1975",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Ramones",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Jack Harlow",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Jung Kook",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "KISS",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Steve Lacy",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Marvin Gaye",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The Kinks",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "BLACKPINK",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Zedd",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "ScHoolboy Q",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Phil Collins",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "MARINA",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Magdalena Bay",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "RM",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Flume",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Miguel",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Bastille",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Jin",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Pusha T",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Poppy",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Megan Thee Stallion",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "AURORA",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Jimin",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Alan Walker",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "The Notorious B.I.G.",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Leonard Cohen",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "BABYMETAL",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Nick Drake",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Don Toliver",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Scorpions",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "FKA twigs",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Car Seat Headrest",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "bbno$",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Faith No More",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "V",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "M.I.A.",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Lil Peep",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Chance the Rapper",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "$uicideboy$",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Portugal. The Man",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "JID",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "beabadoobee",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Disclosure",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  },
+  {
+    "artist": "Cigarettes After Sex",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Zara Larsson",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Men I Trust",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "TV Girl",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "DJ Snake",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Camila Cabello",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Troye Sivan",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Of Monsters and Men",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Shawn Mendes",
+    "reason": "No eligible decade original album/recording match in first 100 album groups"
+  },
+  {
+    "artist": "Garbage",
+    "reason": "RuntimeError: Provider unavailable after bounded retries"
+  }
+]
