@@ -1,5 +1,9 @@
 # Roadmap
 
+## Current — PR 62 selector experiment planning
+
+- [x] Add the approved offline-first test plan to docs/musicdna/pairing-selector-baseline.md so Chat can read it; emphasize soft, opener-derived lane/era familiarity with gradual earlier/later falloff and multiple supported lanes/eras. Documentation only; no code, experiments or activation authorized.
+
 ## Current — uncertainty-aware reviewer and ten-item retest
 
 - [x] Add Pass/Fail/Uncertain with independent score disputes and policy-separated failure/uncertainty rates; preserve all original reviews and approvals. V1 caller compatibility retained through distinct v2 request.

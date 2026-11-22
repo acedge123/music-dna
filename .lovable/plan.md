@@ -2,11 +2,19 @@
 
 ## Status and review
 
-Future-work proposal only. This review does not authorize implementation, paid model calls, enrollment, migrations, exports, flag changes or production rollout.
+**Design approved by Alan on November 22, 2026; implementation remains on hold.** Approval covers the future plan, not code changes, paid model calls, enrollment, migrations, exports, flag changes or production rollout. The shared review and approved plan live in `docs/musicdna/pairing-selector-baseline.md`.
 
 Reviewed merged PR **62** (`ccd3062`), which adds `docs/musicdna/pairing-selector-baseline.md`, against the existing MusicDNA experiment, reporting and learning documentation. Production settings and the current Agent Brain/Echelon deployments were not verified.
 
 **Assessment: the direction is sound.** Start with a pinned baseline, change one selector behavior at a time, compare identical decision contexts offline, and require real listener outcomes before calling a challenger better. Agent Brain should evaluate and recommend—not choose songs through a remote call during the interview or automatically release a policy.
+
+### Owner emphasis: soft lane-and-era familiarity
+
+The target is a **soft lane-and-era preference**, not a rigid decade fence or a personal recognition claim. Alan's hypothesis is that people exposed to music in a similar era tend to know similar songs, especially in their familiar lane or lanes, with familiarity generally declining for earlier and later recordings.
+
+Use the three openers as evidence of musical exposure—not as a way to infer age or upbringing. Estimate affinity to their supported era or eras and lane or lanes; proximity should fade gradually on both sides rather than end at a hard year boundary. A broad continuous span must not automatically assign equal familiarity to every year between distant openers. Multiple opener-supported eras can form multiple soft peaks.
+
+For the first challenger, apply this weighting only within the existing eligible lane/test pool. Multiple supported lanes can inform familiarity without authorizing cross-lane dimension comparisons or new lane-expansion behavior. Preserve catalog recognition as another imperfect signal, evaluate both songs, and retain baseline fallback for insufficient inputs. The exact decay curve, relative weights and any earlier/later asymmetry remain parameters to propose and pin during future offline work; no values are approved or implemented here. Experiment two's ±10-year neighborhoods remain a separate bounded comparator, not the ultimate familiarity rule.
 
 ### What the new document gets right
 
@@ -42,7 +50,7 @@ Source checks confirm that AB-52 currently maps control/treatment to shadow/live
 
 ### 2. Implement one offline challenger: familiarity on both sides
 
-- Estimate each song's familiarity from the openers using a versioned, explainable lane/era rule; do not compare preference-axis scores across lanes.
+- Estimate each song's familiarity from the openers using a versioned, explainable soft lane/era rule with gradual earlier/later falloff and support for multiple opener eras/lanes; do not compare preference-axis scores across lanes or change lane eligibility.
 - Favor the pair with the stronger minimum familiarity estimate while preserving the intended diagnostic contrast and all eligibility rules.
 - Pin the strength of that preference and the insufficient-input fallback before evaluation. Missing inputs use the baseline.
 - Replay baseline and challenger on the same contexts, catalog and ordinary-round seed. Separately audit effective controls so a setting that is overridden cannot masquerade as a treatment.
@@ -97,4 +105,4 @@ Run each against its pinned control, one challenger at a time—not a combined t
 
 Relevant references: `pairing-selector-baseline.md`, `ab52-pilot-plan.md`, `applied-outcomes.md`, `critic-quality-measurements.md`, `real-qa-learning.md`, `ab57-live-status.md`, and `ab57-automation.md`. Older integration-plan sections are historical design, not current release authority.
 
-**Next future approval:** authorize only the frozen baseline/replay harness and first offline familiarity challenger. Listener enrollment, production activation, migrations and cross-app export remain separate gates.
+**Next future work, only when separately authorized:** build the frozen baseline/replay harness and first offline soft-familiarity challenger. The plan is approved, but code changes remain on hold; listener enrollment, production activation, migrations and cross-app export remain separate gates.
