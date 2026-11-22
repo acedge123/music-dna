@@ -25,13 +25,16 @@ Reviewed merged PR **62** (`ccd3062`), which adds `docs/musicdna/pairing-selecto
 4. **The existing accuracy pilot is reusable infrastructure, not a ready-made skip experiment.** Its assignment, evaluator and proposal contracts need a separately versioned design for skip/recovery metrics. Do not overwrite the original AB-52 accuracy study or relabel its owner QA.
 5. **Existing history is not automatically replay-ready.** Pin the candidate catalog, opener inputs, decision state and effective settings. A reconstructed context using today's mutable catalog/profile is not an exact historical replay. Exclude or separately label incomplete histories; preserve saved choices and readings.
 6. **Real-QA export consent is not blanket consent for this study.** AB-57 supports bounded real-QA feedback export, but its current minimized payload does not carry all proposed selector inputs/outcomes. Keep detailed data inside MusicDNA and begin with local/offline reports. Any new cross-app payload or purpose needs separate contract, consent and lifecycle review.
+7. **Two smaller qualifications matter.** The current minimum-three era pool is checked before all diagnostic/artist/recognition filters, not after full eligibility. Also, the exposed skip endpoint lacks a reason field, although internal skip handling supports one; adding a listener question would still be separate work.
+
+Source checks confirm that AB-52 currently maps control/treatment to shadow/live regime routing, not arbitrary challengers (`src/musicdna/learning/pilot-routing.ts:12–31`). Current exposures can fail to save without blocking an offer, and skips do not carry exact exposure IDs (`src/musicdna/adapters/critic-quality.ts:212–244`; `src/lib/musicdna.functions.ts:1905–1953`). These are measurement prerequisites, not reasons to change ordinary listener behavior in this review.
 
 ## Proposed sequence
 
 ### 1. Establish the baseline and replay dataset
 
 - Verify the actually serving source revision, routing mode and effective selector controls—not just the merged SHA or requested mode.
-- Freeze a versioned catalog snapshot and baseline artifact. Capture the three ranked opener matches/unknowns, lane/confidence, vector, answered count, used/skipped pairs, steering and effective settings at each decision boundary.
+- Freeze a versioned catalog snapshot and baseline artifact, including the ordered candidate pool and recognition lookup. Capture the three ranked opener matches/unknowns, lane/confidence, vector, answered count, used/skipped pairs, steering, resolved defaults and effective settings at each decision boundary. Supplied knob overrides alone are not the fully resolved configuration.
 - Use synthetic fixtures first, including unknown opener years, distant years, sparse lanes, repeated artists, skips and exhausted pools. Only use real saved contexts with an authorized purpose and sufficient frozen inputs.
 - Keep bootstrap outside the ordinary-round comparison and identical between arms. Its existing unseeded draw must not create apparent challenger differences.
 
@@ -61,7 +64,7 @@ Reviewed merged PR **62** (`ccd3062`), which adds `docs/musicdna/pairing-selecto
 - First verify serving, exact assignment, resume/retry, fallback and rollback with owner QA; do not treat Alan or agent walkthroughs as independent randomized listeners.
 - Before inviting independent adults, approve the consent text, eligibility, smallest worthwhile improvement, acceptable guardrail losses, sample target, feedback window and stopping rule.
 - Persist a fixed assignment for the entire interview; never rebucket on resume. Preserve original assignment and actually served policy separately.
-- Join authoritative served offers and exact client display acknowledgements to choices/skips. Add explicit outcome handling for abandoned/unavailable offers and deduplicate reload/retry exposures.
+- Join authoritative served offers and exact client display acknowledgements to choices/skips. Add explicit outcome handling for abandoned/unavailable offers and deduplicate reload/retry exposures. Define an observation cutoff for unanswered offers; missing telemetry is unknown, never inferred abandonment or successful recovery. Validate durable measurement or exclude/report missing records rather than biasing the denominator.
 - Validate the same path on web and Flutter. Older clients' missing display acknowledgement remains unknown, not proof an offer was seen.
 
 **Primary metric:** skips per unique served ordinary offer, by answered-choice position, with participant-level uncertainty and served-versus-client-reported-shown coverage.
@@ -80,8 +83,8 @@ Report all assigned interviews, including those never reaching an eligible round
 
 | Candidate | Scope | Primary outcome | Additional design gate |
 |---|---|---|---|
-| Actual-opener-era windows | Ordinary offers before the third answered choice; known openers at least 25 years apart | Early skips per served eligible offer | Freeze ±10-year neighborhoods around actual opener years and a minimum eligible pool; preserve lane/test/bootstrap rules and baseline fallback |
-| One-off skip recovery | First ordinary skip, followed by one recognizable same-axis offer in the strongest opener lane | Next offer answered, skipped, abandoned or unavailable | Define strongest-lane ties and multiple tests; decide whether the original ordinary skip belonged to the study policy; return to baseline after the recovery offer |
+| Actual-opener-era windows | Ordinary offers before the third answered choice; known openers at least 25 years apart | Early skips per served eligible offer | Freeze ±10-year neighborhoods around actual opener years and the stage at which minimum pool size is checked; preserve lane/test/bootstrap rules and baseline fallback |
+| One-off skip recovery | First ordinary skip, followed by one recognizable same-axis offer in the strongest opener lane | Next offer answered, skipped, abandoned or unavailable | Define strongest-lane ties, multiple tests, known both-side recognition thresholds and retry-safe one-shot consumption; missing recognition is not high familiarity; never offer recovery after the normal stop policy completes the session |
 
 Run each against its pinned control, one challenger at a time—not a combined three-change experiment. Keep skip-reason questions out of the first study; they are a separate UI test or must appear identically in both arms.
 
