@@ -1,6 +1,6 @@
 # 1980s recognition sample (review only)
 
-Unscored "do we recognize what you typed?" list. Not loaded into any table; no scoring, catalog writes or activation.
+Unscored "do we recognize what you typed?" list. Owner approved all 1,477 rows for import into `song_recognition` on 2026-11-22. Scored catalog, pairings and saved readings are unchanged; no scoring or activation.
 
 - 1,477 songs, 1980–1989, from 146 artists (102 already in our catalog + 44 proposed mainstream additions).
 - Source: ListenBrainz artist popularity (most-played recordings, up to 12 per artist) + MusicBrainz release-group first release year.

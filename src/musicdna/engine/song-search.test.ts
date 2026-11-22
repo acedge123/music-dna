@@ -12,7 +12,12 @@ const rows = [
 describe("opener song search", () => {
   it("shows every distinct artist version of a generic title, exact titles first", () => {
     const r = rankSongs(rows, "Love");
-    expect(r.slice(0, 2).map((s) => s.artist).sort()).toEqual(["Kendrick Lamar", "Lana Del Rey"]);
+    expect(
+      r
+        .slice(0, 2)
+        .map((s) => s.artist)
+        .sort(),
+    ).toEqual(["Kendrick Lamar", "Lana Del Rey"]);
     expect(r.map((s) => s.id)).toContain("3");
     expect(r.filter((s) => s.artist === "Lana Del Rey")).toHaveLength(1);
   });
@@ -24,10 +29,31 @@ describe("opener song search", () => {
   });
   it("needs at least two characters and caps at five", () => {
     expect(rankSongs(rows, "l")).toEqual([]);
-    const many = Array.from({ length: 9 }, (_, i) => ({ id: `${i}`, title: `Love ${i}`, artist: `A${i}`, year: null }));
+    const many = Array.from({ length: 9 }, (_, i) => ({
+      id: `${i}`,
+      title: `Love ${i}`,
+      artist: `A${i}`,
+      year: null,
+    }));
     expect(rankSongs(many, "love")).toHaveLength(5);
   });
   it("fills the field in the existing opener format", () => {
-    expect(suggestionLabel(rows[3]!)).toBe("Ceremony — New Order");
+    const row = rows[3];
+    if (!row) throw new Error("Missing fixture");
+    expect(suggestionLabel(row)).toBe("Ceremony — New Order");
+  });
+  it("does not return unrelated titles just because title weighting exists", () => {
+    expect(rankSongs(rows, "purple rain")).toEqual([]);
+  });
+  it("recognizes unscored identities without replacing the scored duplicate", () => {
+    const combined = [
+      { id: "scored", title: "Purple Rain", artist: "Prince", year: 1984 },
+      { id: "recognition", title: "Purple Rain", artist: "Prince", year: 1984 },
+      { id: "recognition-only", title: "When Doves Cry", artist: "Prince", year: 1984 },
+    ];
+    expect(rankSongs(combined, "Purple Rain").map((row) => row.id)).toEqual(["scored"]);
+    expect(rankSongs(combined, "When Doves Cry").map((row) => row.id)).toEqual([
+      "recognition-only",
+    ]);
   });
 });

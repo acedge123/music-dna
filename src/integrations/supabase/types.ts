@@ -2953,6 +2953,54 @@ export type Database = {
           },
         ]
       }
+      song_recognition: {
+        Row: {
+          artist: string
+          artist_mbid: string
+          created_at: string
+          id: string
+          lane_hint: string | null
+          lane_hint_source: string | null
+          listen_count: number
+          release_title: string
+          source_batch: string
+          title: string
+          updated_at: string
+          year: number | null
+          year_basis: string
+        }
+        Insert: {
+          artist: string
+          artist_mbid: string
+          created_at?: string
+          id: string
+          lane_hint?: string | null
+          lane_hint_source?: string | null
+          listen_count?: number
+          release_title?: string
+          source_batch: string
+          title: string
+          updated_at?: string
+          year?: number | null
+          year_basis?: string
+        }
+        Update: {
+          artist?: string
+          artist_mbid?: string
+          created_at?: string
+          id?: string
+          lane_hint?: string | null
+          lane_hint_source?: string | null
+          listen_count?: number
+          release_title?: string
+          source_batch?: string
+          title?: string
+          updated_at?: string
+          year?: number | null
+          year_basis?: string
+        }
+        Relationships: []
+      }
       song_trait_explanations: {
         Row: {
           audible_evidence: string

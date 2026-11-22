@@ -9,6 +9,10 @@ spec.loader.exec_module(module)
 
 
 class RecognitionSampleTests(unittest.TestCase):
+    def test_missing_release_metadata_is_skipped_without_stopping_sample(self):
+        rows = module.select_recordings([{"recording_name": "Song", "release_name": None, "total_listen_count": None}], {"album": 1994}, 1990)
+        self.assertEqual(rows, [])
+
     def test_broader_sample_caps_each_artist_at_three(self):
         recordings = [{"recording_name": f"Song {i}", "artist_name": "Artist", "release_name": "Album", "recording_mbid": str(i), "total_listen_count": i} for i in range(12)]
         rows = module.select_recordings(recordings, {"album": 1994}, 1990)

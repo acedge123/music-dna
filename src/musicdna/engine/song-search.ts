@@ -1,4 +1,4 @@
-// Opener autocomplete ranking. Pure: callers supply active catalog rows.
+// Opener autocomplete ranking. Pure: active catalog first, then unscored recognition rows.
 // Suggestions are confirmation only — selecting one fills "Title — Artist";
 // it never changes lane/era classification, scoring or intake.
 
@@ -20,7 +20,11 @@ export function normalizeQuery(s: string): string {
 /** Split "Title — Artist" / "Title - Artist" / "Title by Artist" input. */
 export function splitQuery(raw: string): { title: string; artist: string | null } {
   const m = raw.split(/\s+[—–-]\s+|\s+by\s+/i);
-  if (m.length >= 2) return { title: normalizeQuery(m[0] ?? ""), artist: normalizeQuery(m.slice(1).join(" ")) || null };
+  if (m.length >= 2)
+    return {
+      title: normalizeQuery(m[0] ?? ""),
+      artist: normalizeQuery(m.slice(1).join(" ")) || null,
+    };
   return { title: normalizeQuery(raw), artist: null };
 }
 
@@ -33,7 +37,11 @@ function fieldScore(field: string, q: string): number {
   return 0;
 }
 
-export function rankSongs(rows: SongSuggestion[], raw: string, limit = SONG_SEARCH_LIMIT): SongSuggestion[] {
+export function rankSongs(
+  rows: SongSuggestion[],
+  raw: string,
+  limit = SONG_SEARCH_LIMIT,
+): SongSuggestion[] {
   const { title, artist } = splitQuery(raw);
   const whole = normalizeQuery(raw);
   if (whole.length < SONG_SEARCH_MIN_CHARS) return [];
@@ -47,7 +55,8 @@ export function rankSongs(rows: SongSuggestion[], raw: string, limit = SONG_SEAR
       const as = fieldScore(a, artist);
       score = ts && as ? ts + as : 0;
     } else {
-      score = Math.max(fieldScore(t, whole) + 5, fieldScore(a, whole));
+      const titleScore = fieldScore(t, whole);
+      score = Math.max(titleScore ? titleScore + 5 : 0, fieldScore(a, whole));
     }
     if (score > 0) scored.push({ row, score });
   }
