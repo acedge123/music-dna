@@ -1,0 +1,5013 @@
+{
+  "payload": {
+    "artists": [
+      {
+        "artist_mbid": "a74b1b7f-71a5-4011-9441-d0b5e4122711",
+        "artist_name": "Radiohead",
+        "listen_count": 3654336
+      },
+      {
+        "artist_mbid": "f59c5520-5f46-4d2c-b2c4-822eabf53419",
+        "artist_name": "Linkin Park",
+        "listen_count": 3115206
+      },
+      {
+        "artist_mbid": "056e4f3e-d505-4dad-8ec1-d04f521cbb56",
+        "artist_name": "Daft Punk",
+        "listen_count": 2990142
+      },
+      {
+        "artist_mbid": "b10bbbfc-cf9e-42e0-be17-e2c3e1d2600d",
+        "artist_name": "The Beatles",
+        "listen_count": 2964119
+      },
+      {
+        "artist_mbid": "381086ea-f511-4aba-bdf9-71c753dc5077",
+        "artist_name": "Kendrick Lamar",
+        "listen_count": 2882548
+      },
+      {
+        "artist_mbid": "164f0d73-1234-4e2c-8743-d77bf2191051",
+        "artist_name": "Ye",
+        "listen_count": 2861050
+      },
+      {
+        "artist_mbid": "83d91898-7763-47d7-b03b-b92132375c47",
+        "artist_name": "Pink Floyd",
+        "listen_count": 2649352
+      },
+      {
+        "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+        "artist_name": "Gorillaz",
+        "listen_count": 2525488
+      },
+      {
+        "artist_mbid": "b95ce3ff-3d05-4e87-9e01-c97b66af13d4",
+        "artist_name": "Eminem",
+        "listen_count": 2430743
+      },
+      {
+        "artist_mbid": "cc197bad-dc9c-440d-a5b5-d52ba2e14234",
+        "artist_name": "Coldplay",
+        "listen_count": 2429694
+      },
+      {
+        "artist_mbid": "c8b03190-306c-4120-bb0b-6f2ebfc06ea9",
+        "artist_name": "The Weeknd",
+        "listen_count": 2334815
+      },
+      {
+        "artist_mbid": "5b11f4ce-a62d-471e-81fc-a69a8278c7da",
+        "artist_name": "Nirvana",
+        "listen_count": 2323956
+      },
+      {
+        "artist_mbid": "0383dadf-2a4e-4d10-a46a-e9e041da8eb3",
+        "artist_name": "Queen",
+        "listen_count": 2322602
+      },
+      {
+        "artist_mbid": "20244d07-534f-4eff-b4d4-930878889970",
+        "artist_name": "Taylor Swift",
+        "listen_count": 2277581
+      },
+      {
+        "artist_mbid": "8bfac288-ccc5-448d-9573-c33ea2aa5c30",
+        "artist_name": "Red Hot Chili Peppers",
+        "listen_count": 2227337
+      },
+      {
+        "artist_mbid": "5441c29d-3602-4898-b1a1-b77fa23b8e50",
+        "artist_name": "David Bowie",
+        "listen_count": 2198426
+      },
+      {
+        "artist_mbid": "9c9f1380-2516-4fc9-a3e6-f9f61941d090",
+        "artist_name": "Muse",
+        "listen_count": 2152138
+      },
+      {
+        "artist_mbid": "ada7a83c-e3e1-40f1-93f9-3e73dbc9298a",
+        "artist_name": "Arctic Monkeys",
+        "listen_count": 2149860
+      },
+      {
+        "artist_mbid": "65f4f0c5-ef9e-490c-aee3-909e7ae6b2ab",
+        "artist_name": "Metallica",
+        "listen_count": 2123984
+      },
+      {
+        "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+        "artist_name": "System of a Down",
+        "listen_count": 2120338
+      },
+      {
+        "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+        "artist_name": "Green Day",
+        "listen_count": 2004260
+      },
+      {
+        "artist_mbid": "63aa26c3-d59b-4da4-84ac-716b54f1ef4d",
+        "artist_name": "Tame Impala",
+        "listen_count": 1946571
+      },
+      {
+        "artist_mbid": "9fff2f8a-21e6-47de-a2b8-7f449929d43f",
+        "artist_name": "Drake",
+        "listen_count": 1906313
+      },
+      {
+        "artist_mbid": "f6beac20-5dfe-4d1f-ae02-0b0a740aafd6",
+        "artist_name": "Tyler, The Creator",
+        "listen_count": 1881322
+      },
+      {
+        "artist_mbid": "f4abc0b5-3f7a-4eff-8f78-ac078dbce533",
+        "artist_name": "Billie Eilish",
+        "listen_count": 1827915
+      },
+      {
+        "artist_mbid": "678d88b2-87b0-403b-b63d-5da7465aecc3",
+        "artist_name": "Led Zeppelin",
+        "listen_count": 1724128
+      },
+      {
+        "artist_mbid": "650e7db6-b795-4eb5-a702-5ea2fc46c848",
+        "artist_name": "Lady Gaga",
+        "listen_count": 1715449
+      },
+      {
+        "artist_mbid": "260b6184-8828-48eb-945c-bc4cb6fc34ca",
+        "artist_name": "Charli xcx",
+        "listen_count": 1711483
+      },
+      {
+        "artist_mbid": "67f66c07-6e61-4026-ade5-7e782fad3a5d",
+        "artist_name": "Foo Fighters",
+        "listen_count": 1681375
+      },
+      {
+        "artist_mbid": "b7539c32-53e7-4908-bda3-81449c367da6",
+        "artist_name": "Lana Del Rey",
+        "listen_count": 1676772
+      },
+      {
+        "artist_mbid": "012151a8-0f9a-44c9-997f-ebd68b5389f9",
+        "artist_name": "Imagine Dragons",
+        "listen_count": 1629762
+      },
+      {
+        "artist_mbid": "69ee3720-a7cb-4402-b48d-a02c366f2bcf",
+        "artist_name": "The Cure",
+        "listen_count": 1627204
+      },
+      {
+        "artist_mbid": "0d79fe8e-ba27-4859-bb8c-2f255f346853",
+        "artist_name": "BTS",
+        "listen_count": 1621376
+      },
+      {
+        "artist_mbid": "f27ec8db-af05-4f36-916e-3d57f91ecf5e",
+        "artist_name": "Michael Jackson",
+        "listen_count": 1595247
+      },
+      {
+        "artist_mbid": "73e5e69d-3554-40d8-8516-00cb38737a1c",
+        "artist_name": "Rihanna",
+        "listen_count": 1582085
+      },
+      {
+        "artist_mbid": "b7ffd2af-418f-4be2-bdd1-22f8b48613da",
+        "artist_name": "Nine Inch Nails",
+        "listen_count": 1579391
+      },
+      {
+        "artist_mbid": "b071f9fa-14b0-4217-8e97-eb41da73f598",
+        "artist_name": "The Rolling Stones",
+        "listen_count": 1557723
+      },
+      {
+        "artist_mbid": "f181961b-20f7-459e-89de-920ef03c7ed0",
+        "artist_name": "The Strokes",
+        "listen_count": 1526280
+      },
+      {
+        "artist_mbid": "f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387",
+        "artist_name": "Ariana Grande",
+        "listen_count": 1524395
+      },
+      {
+        "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+        "artist_name": "Aphex Twin",
+        "listen_count": 1479559
+      },
+      {
+        "artist_mbid": "c07f0676-9143-4217-8a9f-4c26bd636f13",
+        "artist_name": "My Chemical Romance",
+        "listen_count": 1469473
+      },
+      {
+        "artist_mbid": "7527f6c2-d762-4b88-b5e2-9244f1e34c46",
+        "artist_name": "Deftones",
+        "listen_count": 1468359
+      },
+      {
+        "artist_mbid": "44cf61b8-5197-448a-b82b-cef6ee89fac5",
+        "artist_name": "Paramore",
+        "listen_count": 1462719
+      },
+      {
+        "artist_mbid": "a6c6897a-7415-4f8d-b5a5-3a5e05f3be67",
+        "artist_name": "twenty one pilots",
+        "listen_count": 1452238
+      },
+      {
+        "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+        "artist_name": "Weezer",
+        "listen_count": 1445099
+      },
+      {
+        "artist_mbid": "8538e728-ca0b-4321-b7e5-cff6565dd4c0",
+        "artist_name": "Depeche Mode",
+        "listen_count": 1410762
+      },
+      {
+        "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+        "artist_name": "The Killers",
+        "listen_count": 1407774
+      },
+      {
+        "artist_mbid": "bd13909f-1c29-4c27-a874-d4aaf27c5b1a",
+        "artist_name": "Fleetwood Mac",
+        "listen_count": 1398846
+      },
+      {
+        "artist_mbid": "6f1a58bf-9b1b-49cf-a44a-6cefad7ae04f",
+        "artist_name": "Dua Lipa",
+        "listen_count": 1397014
+      },
+      {
+        "artist_mbid": "b2d122f9-eadb-4930-a196-8f221eeb0c66",
+        "artist_name": "Rammstein",
+        "listen_count": 1393407
+      },
+      {
+        "artist_mbid": "ba0d6274-db14-4ef5-b28d-657ebde1a396",
+        "artist_name": "The Smashing Pumpkins",
+        "listen_count": 1386256
+      },
+      {
+        "artist_mbid": "e4a51f17-a57b-47b1-b37b-f552d0f8e9e6",
+        "artist_name": "Travis Scott",
+        "listen_count": 1381108
+      },
+      {
+        "artist_mbid": "516cef4d-0718-4007-9939-f9b38af3f784",
+        "artist_name": "Fall Out Boy",
+        "listen_count": 1378184
+      },
+      {
+        "artist_mbid": "e520459c-dff4-491d-a6e4-c97be35e0044",
+        "artist_name": "Frank Ocean",
+        "listen_count": 1377762
+      },
+      {
+        "artist_mbid": "7dc8f5bd-9d0b-4087-9f73-dc164950bbd8",
+        "artist_name": "Queens of the Stone Age",
+        "listen_count": 1374267
+      },
+      {
+        "artist_mbid": "66c662b6-6e2f-4930-8610-912e24c63ed1",
+        "artist_name": "AC/DC",
+        "listen_count": 1354812
+      },
+      {
+        "artist_mbid": "66fc5bf8-daa4-4241-b378-9bc9077939d2",
+        "artist_name": "Tool",
+        "listen_count": 1348931
+      },
+      {
+        "artist_mbid": "b8a7c51f-362c-4dcb-a259-bc6e0095f0a6",
+        "artist_name": "Ed Sheeran",
+        "listen_count": 1347199
+      },
+      {
+        "artist_mbid": "40f5d9e4-2de7-4f2d-ad41-e31a9a9fea27",
+        "artist_name": "The Smiths",
+        "listen_count": 1329040
+      },
+      {
+        "artist_mbid": "23a03e33-a603-404e-bcbf-2c00159d7067",
+        "artist_name": "The Offspring",
+        "listen_count": 1317631
+      },
+      {
+        "artist_mbid": "5182c1d9-c7d2-4dad-afa0-ccfeada921a8",
+        "artist_name": "Black Sabbath",
+        "listen_count": 1308969
+      },
+      {
+        "artist_mbid": "0743b15a-3c32-48c8-ad58-cb325350befa",
+        "artist_name": "blink‐182",
+        "listen_count": 1302999
+      },
+      {
+        "artist_mbid": "69158f97-4c07-4c4e-baf8-4e4ab1ed666e",
+        "artist_name": "Boards of Canada",
+        "listen_count": 1283802
+      },
+      {
+        "artist_mbid": "a466c2a2-6517-42fb-a160-1087c3bafd9f",
+        "artist_name": "Slipknot",
+        "listen_count": 1264738
+      },
+      {
+        "artist_mbid": "10adbe5e-a2c0-4bf3-8249-2b4cbf6e6ca8",
+        "artist_name": "Massive Attack",
+        "listen_count": 1257379
+      },
+      {
+        "artist_mbid": "b1e26560-60e5-4236-bbdb-9aa5a8d5ee19",
+        "artist_name": "Post Malone",
+        "listen_count": 1257171
+      },
+      {
+        "artist_mbid": "f82bcf78-5b69-4622-a5ef-73800768d9ac",
+        "artist_name": "JAŸ-Z",
+        "listen_count": 1242599
+      },
+      {
+        "artist_mbid": "074e3847-f67f-49f9-81f1-8c8cea147e8e",
+        "artist_name": "Bring Me the Horizon",
+        "listen_count": 1231489
+      },
+      {
+        "artist_mbid": "52074ba6-e495-4ef3-9bb4-0703888a9f68",
+        "artist_name": "Arcade Fire",
+        "listen_count": 1226214
+      },
+      {
+        "artist_mbid": "72c536dc-7137-4477-a521-567eeb840fa8",
+        "artist_name": "Bob Dylan",
+        "listen_count": 1216242
+      },
+      {
+        "artist_mbid": "7fb57fba-a6ef-44c2-abab-2fa3bdee607e",
+        "artist_name": "Childish Gambino",
+        "listen_count": 1210097
+      },
+      {
+        "artist_mbid": "87c5dedd-371d-4a53-9f7f-80522fb7f3cb",
+        "artist_name": "Björk",
+        "listen_count": 1205363
+      },
+      {
+        "artist_mbid": "c485632c-b784-4ee9-8ea1-c5fb365681fc",
+        "artist_name": "MGMT",
+        "listen_count": 1202924
+      },
+      {
+        "artist_mbid": "3798b104-01cb-484c-a3b0-56adc6399b80",
+        "artist_name": "Rage Against the Machine",
+        "listen_count": 1202699
+      },
+      {
+        "artist_mbid": "25b7b584-d952-4662-a8b9-dd8cdfbfeb64",
+        "artist_name": "A$AP Rocky",
+        "listen_count": 1199863
+      },
+      {
+        "artist_mbid": "b6b2bb8d-54a9-491f-9607-7b546023b433",
+        "artist_name": "Pixies",
+        "listen_count": 1183302
+      },
+      {
+        "artist_mbid": "ca891d65-d9b0-4258-89f7-e6ba29d83767",
+        "artist_name": "Iron Maiden",
+        "listen_count": 1180198
+      },
+      {
+        "artist_mbid": "11ae9fbb-f3d7-4a47-936f-4c0a04d3b3b5",
+        "artist_name": "The White Stripes",
+        "listen_count": 1174750
+      },
+      {
+        "artist_mbid": "83b9cbe7-9857-49e2-ab8e-b57b01038103",
+        "artist_name": "Pearl Jam",
+        "listen_count": 1172822
+      },
+      {
+        "artist_mbid": "48262e82-db9f-4a92-b650-dfef979b73ec",
+        "artist_name": "Future",
+        "listen_count": 1161531
+      },
+      {
+        "artist_mbid": "a3cb23fc-acd3-4ce0-8f36-1e5aa6a18432",
+        "artist_name": "U2",
+        "listen_count": 1158780
+      },
+      {
+        "artist_mbid": "2f548675-008d-4332-876c-108b0c7ab9c5",
+        "artist_name": "Sia",
+        "listen_count": 1155203
+      },
+      {
+        "artist_mbid": "ea4dfa26-f633-4da6-a52a-f49ea4897b58",
+        "artist_name": "R.E.M.",
+        "listen_count": 1145998
+      },
+      {
+        "artist_mbid": "ac9a487a-d9d2-4f27-bb23-0f4686488345",
+        "artist_name": "Lil Wayne",
+        "listen_count": 1144507
+      },
+      {
+        "artist_mbid": "b9472588-93f3-4922-a1a2-74082cdf9ce8",
+        "artist_name": "Panic! at the Disco",
+        "listen_count": 1134735
+      },
+      {
+        "artist_mbid": "d15721d8-56b4-453d-b506-fc915b14cba2",
+        "artist_name": "The Black Keys",
+        "listen_count": 1132687
+      },
+      {
+        "artist_mbid": "4a4ee089-93b1-4470-af9a-6ff575d32704",
+        "artist_name": "The Prodigy",
+        "listen_count": 1128834
+      },
+      {
+        "artist_mbid": "8e494408-8620-4c6a-82c2-c2ca4a1e4f12",
+        "artist_name": "Lorde",
+        "listen_count": 1127327
+      },
+      {
+        "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+        "artist_name": "Korn",
+        "listen_count": 1125337
+      },
+      {
+        "artist_mbid": "272989c8-5535-492d-a25c-9f58803e027f",
+        "artist_name": "SZA",
+        "listen_count": 1120604
+      },
+      {
+        "artist_mbid": "875203e1-8e58-4b86-8dcb-7190faf411c5",
+        "artist_name": "J. Cole",
+        "listen_count": 1115690
+      },
+      {
+        "artist_mbid": "5fee3020-513b-48c2-b1f7-4681b01db0c6",
+        "artist_name": "Florence + the Machine",
+        "listen_count": 1113504
+      },
+      {
+        "artist_mbid": "01d3c51b-9b98-418a-8d8e-37f6fab59d8c",
+        "artist_name": "Sufjan Stevens",
+        "listen_count": 1112453
+      },
+      {
+        "artist_mbid": "122d63fc-8671-43e4-9752-34e846d62a9c",
+        "artist_name": "Katy Perry",
+        "listen_count": 1111861
+      },
+      {
+        "artist_mbid": "3377f3bb-60fc-4403-aea9-7e800612e060",
+        "artist_name": "Halsey",
+        "listen_count": 1109384
+      },
+      {
+        "artist_mbid": "eeb1195b-f213-4ce1-b28c-8565211f8e43",
+        "artist_name": "Guns N’ Roses",
+        "listen_count": 1105926
+      },
+      {
+        "artist_mbid": "afb680f2-b6eb-4cd7-a70b-a63b25c763d5",
+        "artist_name": "Bruno Mars",
+        "listen_count": 1104331
+      },
+      {
+        "artist_mbid": "0ab49580-c84f-44d4-875f-d83760ea2cfe",
+        "artist_name": "Maroon 5",
+        "listen_count": 1099332
+      },
+      {
+        "artist_mbid": "859d0860-d480-4efd-970c-c05d5f1776b8",
+        "artist_name": "Beyoncé",
+        "listen_count": 1099182
+      },
+      {
+        "artist_mbid": "302bd7b9-d012-4360-897a-93b00c855680",
+        "artist_name": "David Guetta",
+        "listen_count": 1096550
+      },
+      {
+        "artist_mbid": "9efff43b-3b29-4082-824e-bc82f646f93d",
+        "artist_name": "The Doors",
+        "listen_count": 1086046
+      },
+      {
+        "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+        "artist_name": "Oasis",
+        "listen_count": 1084220
+      },
+      {
+        "artist_mbid": "b83bc61f-8451-4a5d-8b8e-7e9ed295e822",
+        "artist_name": "Elton John",
+        "listen_count": 1080945
+      },
+      {
+        "artist_mbid": "79239441-bfd5-4981-a70c-55c3f15c1287",
+        "artist_name": "Madonna",
+        "listen_count": 1073470
+      },
+      {
+        "artist_mbid": "309c62ba-7a22-4277-9f67-4a162526d18a",
+        "artist_name": "Beck",
+        "listen_count": 1072476
+      },
+      {
+        "artist_mbid": "8dd98bdc-80ec-4e93-8509-2f46bafc09a7",
+        "artist_name": "Calvin Harris",
+        "listen_count": 1068631
+      },
+      {
+        "artist_mbid": "e6de1f3b-6484-491c-88dd-6d619f142abc",
+        "artist_name": "Hans Zimmer",
+        "listen_count": 1043151
+      },
+      {
+        "artist_mbid": "f90e8b26-9e52-4669-a5c9-e28529c47894",
+        "artist_name": "Snoop Dogg",
+        "listen_count": 1025542
+      },
+      {
+        "artist_mbid": "1036b808-f58c-4a3e-b461-a2c4492ecf1b",
+        "artist_name": "Nicki Minaj",
+        "listen_count": 1025527
+      },
+      {
+        "artist_mbid": "6d7b7cd4-254b-4c25-83f6-dd20f98ceacd",
+        "artist_name": "M83",
+        "listen_count": 1022106
+      },
+      {
+        "artist_mbid": "a94a7155-c79d-4409-9fcf-220cb0e4dc3a",
+        "artist_name": "Talking Heads",
+        "listen_count": 1007277
+      },
+      {
+        "artist_mbid": "e0140a67-e4d1-4f13-8a01-364355bee46e",
+        "artist_name": "Justin Bieber",
+        "listen_count": 1004501
+      },
+      {
+        "artist_mbid": "437a0e49-c6ae-42f6-a6c1-84f25ed366bc",
+        "artist_name": "Bon Iver",
+        "listen_count": 1002211
+      },
+      {
+        "artist_mbid": "d43d12a1-2dc9-4257-a2fd-0a3bb1081b86",
+        "artist_name": "Johnny Cash",
+        "listen_count": 996413
+      },
+      {
+        "artist_mbid": "8264722b-df00-467a-858e-5c97cda169c9",
+        "artist_name": "Joji",
+        "listen_count": 989454
+      },
+      {
+        "artist_mbid": "cc2c9c3c-b7bc-4b8b-84d8-4fbd8779e493",
+        "artist_name": "Adele",
+        "listen_count": 987648
+      },
+      {
+        "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+        "artist_name": "Blur",
+        "listen_count": 974465
+      },
+      {
+        "artist_mbid": "ae002c5d-aac6-490b-a39a-30aa9e2edf2b",
+        "artist_name": "Skrillex",
+        "listen_count": 971916
+      },
+      {
+        "artist_mbid": "4bd95eea-b9f6-4d70-a36c-cfea77431553",
+        "artist_name": "Alice in Chains",
+        "listen_count": 969558
+      },
+      {
+        "artist_mbid": "8970d868-0723-483b-a75b-51088913d3d4",
+        "artist_name": "Moby",
+        "listen_count": 969285
+      },
+      {
+        "artist_mbid": "ebfc1398-8d96-47e3-82c3-f782abcdb13d",
+        "artist_name": "The Beach Boys",
+        "listen_count": 964594
+      },
+      {
+        "artist_mbid": "5df62a88-cac9-490a-b62c-c7c88f4020f4",
+        "artist_name": "Doja Cat",
+        "listen_count": 953910
+      },
+      {
+        "artist_mbid": "7e5a2a59-6d9f-4a17-b7c2-e1eedb7bd222",
+        "artist_name": "Grimes",
+        "listen_count": 953529
+      },
+      {
+        "artist_mbid": "2baf3276-ed6a-4349-8d2e-f4601e7b2167",
+        "artist_name": "Playboi Carti",
+        "listen_count": 952642
+      },
+      {
+        "artist_mbid": "8f6bd1e4-fbe1-4f50-aa9b-94c450ec0f11",
+        "artist_name": "Portishead",
+        "listen_count": 950121
+      },
+      {
+        "artist_mbid": "6925db17-f35e-42f3-a4eb-84ee6bf5d4b0",
+        "artist_name": "Olivia Rodrigo",
+        "listen_count": 948650
+      },
+      {
+        "artist_mbid": "45a663b5-b1cb-4a91-bff6-2bef7bbfdd76",
+        "artist_name": "Britney Spears",
+        "listen_count": 948102
+      },
+      {
+        "artist_mbid": "d87e52c5-bb8d-4da8-b941-9f4928627dc8",
+        "artist_name": "ABBA",
+        "listen_count": 947833
+      },
+      {
+        "artist_mbid": "149f91ef-1287-46da-9a8e-87fee02f1471",
+        "artist_name": "Pharrell Williams",
+        "listen_count": 947811
+      },
+      {
+        "artist_mbid": "9beb62b2-88db-4cea-801e-162cd344ee53",
+        "artist_name": "Beastie Boys",
+        "listen_count": 945199
+      },
+      {
+        "artist_mbid": "614e3804-7d34-41ba-857f-811bad7c2b7a",
+        "artist_name": "Dire Straits",
+        "listen_count": 944339
+      },
+      {
+        "artist_mbid": "fac55e3c-d459-45ed-9f9f-f5078d3b3423",
+        "artist_name": "C418",
+        "listen_count": 939743
+      },
+      {
+        "artist_mbid": "fa58cf24-0e44-421d-8519-8bf461dcfaa5",
+        "artist_name": "Mitski",
+        "listen_count": 927293
+      },
+      {
+        "artist_mbid": "a96ac800-bfcb-412a-8a63-0a98df600700",
+        "artist_name": "Modest Mouse",
+        "listen_count": 925466
+      },
+      {
+        "artist_mbid": "4bb4e4e4-5f66-4509-98af-62dbb90c45c5",
+        "artist_name": "Disturbed",
+        "listen_count": 913203
+      },
+      {
+        "artist_mbid": "c5c2ea1c-4bde-4f4d-bd0b-47b200bf99d6",
+        "artist_name": "The xx",
+        "listen_count": 912176
+      },
+      {
+        "artist_mbid": "d5cc67b8-1cc4-453b-96e8-44487acdebea",
+        "artist_name": "Beach House",
+        "listen_count": 909799
+      },
+      {
+        "artist_mbid": "1c26f82c-b35d-4c8e-a1f4-9c20747495c9",
+        "artist_name": "Toby Fox",
+        "listen_count": 909347
+      },
+      {
+        "artist_mbid": "109958eb-a335-4c5e-907e-597ff4c6af46",
+        "artist_name": "Creedence Clearwater Revival",
+        "listen_count": 907037
+      },
+      {
+        "artist_mbid": "0039c7ae-e1a7-4a7d-9b49-0cbc716821a6",
+        "artist_name": "Death Cab for Cutie",
+        "listen_count": 906597
+      },
+      {
+        "artist_mbid": "8f92558c-2baa-4758-8c38-615519e9deda",
+        "artist_name": "The Clash",
+        "listen_count": 903889
+      },
+      {
+        "artist_mbid": "f4a31f0a-51dd-4fa7-986d-3095c40c5ed9",
+        "artist_name": "Evanescence",
+        "listen_count": 898174
+      },
+      {
+        "artist_mbid": "aa7a2827-f74b-473c-bd79-03d065835cf7",
+        "artist_name": "Franz Ferdinand",
+        "listen_count": 892388
+      },
+      {
+        "artist_mbid": "f2492c31-54a8-4347-a1fc-f81f72873bbf",
+        "artist_name": "Mac DeMarco",
+        "listen_count": 892339
+      },
+      {
+        "artist_mbid": "a0e8a1b1-5f8f-475a-a253-17415c17d0ff",
+        "artist_name": "Mac Miller",
+        "listen_count": 890930
+      },
+      {
+        "artist_mbid": "9a58fda3-f4ed-4080-a3a5-f457aac9fcdd",
+        "artist_name": "Joy Division",
+        "listen_count": 884224
+      },
+      {
+        "artist_mbid": "e0e1db18-f7ba-4dee-95ff-7ae8cf545460",
+        "artist_name": "Kid Cudi",
+        "listen_count": 878809
+      },
+      {
+        "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+        "artist_name": "Avicii",
+        "listen_count": 874179
+      },
+      {
+        "artist_mbid": "606bf117-494f-4864-891f-09d63ff6aa4b",
+        "artist_name": "Rise Against",
+        "listen_count": 872534
+      },
+      {
+        "artist_mbid": "33ca19f4-18c8-4411-98df-ac23890ce9f5",
+        "artist_name": "Ellie Goulding",
+        "listen_count": 868418
+      },
+      {
+        "artist_mbid": "4e4ebde4-0c56-4dec-844b-6c73adcdd92d",
+        "artist_name": "Juice WRLD",
+        "listen_count": 865242
+      },
+      {
+        "artist_mbid": "f58384a4-2ad2-4f24-89c5-c7b74ae1cce7",
+        "artist_name": "King Gizzard & the Lizard Wizard",
+        "listen_count": 860807
+      },
+      {
+        "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+        "artist_name": "Marilyn Manson",
+        "listen_count": 859970
+      },
+      {
+        "artist_mbid": "f9133036-ab3d-4e97-bd11-7a2c98ad148a",
+        "artist_name": "Death Grips",
+        "listen_count": 859928
+      },
+      {
+        "artist_mbid": "fc7bbf00-fbaa-4736-986b-b3ac0266ca9b",
+        "artist_name": "alt‐J",
+        "listen_count": 857880
+      },
+      {
+        "artist_mbid": "847e8284-8582-4b0e-9c26-b042a4f49e57",
+        "artist_name": "Placebo",
+        "listen_count": 856306
+      },
+      {
+        "artist_mbid": "1882fe91-cdd9-49c9-9956-8e06a3810bd4",
+        "artist_name": "Sabrina Carpenter",
+        "listen_count": 855506
+      },
+      {
+        "artist_mbid": "73fdb566-a9b1-494c-9f32-51768ec9fd27",
+        "artist_name": "OutKast",
+        "listen_count": 855083
+      },
+      {
+        "artist_mbid": "af37c51c-0790-4a29-b995-456f98a6b8c9",
+        "artist_name": "Vampire Weekend",
+        "listen_count": 849591
+      },
+      {
+        "artist_mbid": "8f9d6bb2-dba4-4cca-9967-cc02b9f4820c",
+        "artist_name": "Limp Bizkit",
+        "listen_count": 847591
+      },
+      {
+        "artist_mbid": "c33c2065-b1c3-4406-b066-d33a9e2ea71a",
+        "artist_name": "OneRepublic",
+        "listen_count": 841958
+      },
+      {
+        "artist_mbid": "8837b875-3689-4646-b3fd-d8b53815c7a8",
+        "artist_name": "Lil Uzi Vert",
+        "listen_count": 841730
+      },
+      {
+        "artist_mbid": "860b2707-6153-4e3a-aa57-74d2b42c55b5",
+        "artist_name": "Justice",
+        "listen_count": 837229
+      },
+      {
+        "artist_mbid": "c296e10c-110a-4103-9e77-47bfebb7fb2e",
+        "artist_name": "Bob Marley & The Wailers",
+        "listen_count": 835076
+      },
+      {
+        "artist_mbid": "197450cd-0124-4164-b723-3c22dd16494d",
+        "artist_name": "Frank Sinatra",
+        "listen_count": 832989
+      },
+      {
+        "artist_mbid": "664c3e0e-42d8-48c1-b209-1efca19c0325",
+        "artist_name": "The National",
+        "listen_count": 830990
+      },
+      {
+        "artist_mbid": "188711ed-c99b-439c-844a-ca831f63a727",
+        "artist_name": "MF DOOM",
+        "listen_count": 829936
+      },
+      {
+        "artist_mbid": "70248960-cb53-4ea4-943a-edb18f7d336f",
+        "artist_name": "Bruce Springsteen",
+        "listen_count": 829415
+      },
+      {
+        "artist_mbid": "9a709693-b4f8-4da9-8cc1-038c911a61be",
+        "artist_name": "Bonobo",
+        "listen_count": 824896
+      },
+      {
+        "artist_mbid": "b23e8a63-8f47-4882-b55b-df2c92ef400e",
+        "artist_name": "Interpol",
+        "listen_count": 824889
+      },
+      {
+        "artist_mbid": "f1106b17-dcbb-45f6-b938-199ccfab50cc",
+        "artist_name": "New Order",
+        "listen_count": 821716
+      },
+      {
+        "artist_mbid": "a9044915-8be3-4c7e-b11f-9e2d2ea0a91e",
+        "artist_name": "Megadeth",
+        "listen_count": 821296
+      },
+      {
+        "artist_mbid": "9fdaa16b-a6c4-4831-b87c-bc9ca8ce7eaa",
+        "artist_name": "The Who",
+        "listen_count": 817695
+      },
+      {
+        "artist_mbid": "d0c7656d-8169-4f77-9dbe-b8f24e40105d",
+        "artist_name": "Kali Uchis",
+        "listen_count": 817183
+      },
+      {
+        "artist_mbid": "09887aa7-226e-4ecc-9a0c-02d2ae5777e1",
+        "artist_name": "Carly Rae Jepsen",
+        "listen_count": 815164
+      },
+      {
+        "artist_mbid": "06fb1c8b-566e-4cb2-985b-b467c90781d4",
+        "artist_name": "Jimi Hendrix",
+        "listen_count": 814058
+      },
+      {
+        "artist_mbid": "b1570544-93ab-4b2b-8398-131735394202",
+        "artist_name": "Crystal Castles",
+        "listen_count": 813471
+      },
+      {
+        "artist_mbid": "0103c1cc-4a09-4a5d-a344-56ad99a77193",
+        "artist_name": "Avril Lavigne",
+        "listen_count": 813079
+      },
+      {
+        "artist_mbid": "cb67438a-7f50-4f2b-a6f1-2bb2729fd538",
+        "artist_name": "Air",
+        "listen_count": 810411
+      },
+      {
+        "artist_mbid": "1946a82a-f927-40c2-8235-38d64f50d043",
+        "artist_name": "The Chemical Brothers",
+        "listen_count": 808909
+      },
+      {
+        "artist_mbid": "4a00ec9d-c635-463a-8cd4-eb61725f0c60",
+        "artist_name": "deadmau5",
+        "listen_count": 806620
+      },
+      {
+        "artist_mbid": "c42e60f4-4520-4954-b6e4-82bbdf532c11",
+        "artist_name": "JPEGMAFIA",
+        "listen_count": 802317
+      },
+      {
+        "artist_mbid": "6ffb8ea9-2370-44d8-b678-e9237bbd347b",
+        "artist_name": "Kings of Leon",
+        "listen_count": 802298
+      },
+      {
+        "artist_mbid": "61af87f4-16ee-4431-8504-cc06187079fb",
+        "artist_name": "XXXTENTACION",
+        "listen_count": 802011
+      },
+      {
+        "artist_mbid": "800760de-bdf8-43a2-8fe0-44a2401a5515",
+        "artist_name": "Young Thug",
+        "listen_count": 802001
+      },
+      {
+        "artist_mbid": "1ee18fb3-18a6-4c7f-8ba0-bc41cdd0462e",
+        "artist_name": "Stevie Wonder",
+        "listen_count": 801048
+      },
+      {
+        "artist_mbid": "9e0e2b01-41db-4008-bd8b-988977d6019a",
+        "artist_name": "The Police",
+        "listen_count": 796524
+      },
+      {
+        "artist_mbid": "00a9f935-ba93-4fc8-a33a-993abe9c936b",
+        "artist_name": "Nightwish",
+        "listen_count": 796291
+      },
+      {
+        "artist_mbid": "fabb37f8-eb2a-4cc1-a72a-b56935bbb72d",
+        "artist_name": "Three Days Grace",
+        "listen_count": 794822
+      },
+      {
+        "artist_mbid": "37b2cb82-ef79-4d46-a184-a549450aa231",
+        "artist_name": "21 Savage",
+        "listen_count": 791577
+      },
+      {
+        "artist_mbid": "3d2b98e5-556f-4451-a3ff-c50ea18d57cb",
+        "artist_name": "Aerosmith",
+        "listen_count": 789644
+      },
+      {
+        "artist_mbid": "5f6ab597-f57a-40da-be9e-adad48708203",
+        "artist_name": "Dr. Dre",
+        "listen_count": 789109
+      },
+      {
+        "artist_mbid": "24e1b53c-3085-4581-8472-0b0088d2508c",
+        "artist_name": "Avenged Sevenfold",
+        "listen_count": 788909
+      },
+      {
+        "artist_mbid": "960afc67-9c21-46dd-9c7f-ff2b509e3150",
+        "artist_name": "Danny Brown",
+        "listen_count": 787875
+      },
+      {
+        "artist_mbid": "f6f2326f-6b25-4170-b89d-e235b25508e8",
+        "artist_name": "Sigur Rós",
+        "listen_count": 786079
+      },
+      {
+        "artist_mbid": "c98d40fd-f6cf-4b26-883e-eaa515ee2851",
+        "artist_name": "The Cranberries",
+        "listen_count": 784346
+      },
+      {
+        "artist_mbid": "7e9bd05a-117f-4cce-87bc-e011527a8b18",
+        "artist_name": "MILEY",
+        "listen_count": 777528
+      },
+      {
+        "artist_mbid": "75167b8b-44e4-407b-9d35-effe87b223cf",
+        "artist_name": "Neil Young",
+        "listen_count": 777468
+      },
+      {
+        "artist_mbid": "b41b38d4-ef3e-4f37-8c75-cfe9af999696",
+        "artist_name": "Cage the Elephant",
+        "listen_count": 776903
+      },
+      {
+        "artist_mbid": "89aa5ecb-59ad-46f5-b3eb-2d424e941f19",
+        "artist_name": "Bad Bunny",
+        "listen_count": 773455
+      },
+      {
+        "artist_mbid": "153c9281-268f-4cf3-8938-f5a4593e5df4",
+        "artist_name": "Soundgarden",
+        "listen_count": 768862
+      },
+      {
+        "artist_mbid": "596ffa74-3d08-44ef-b113-765d43d12738",
+        "artist_name": "Justin Timberlake",
+        "listen_count": 768829
+      },
+      {
+        "artist_mbid": "cfbc0924-0035-4d6c-8197-f024653af823",
+        "artist_name": "Nas",
+        "listen_count": 767524
+      },
+      {
+        "artist_mbid": "91a81925-92f9-4fc9-b897-93cf01226282",
+        "artist_name": "The Chainsmokers",
+        "listen_count": 765165
+      },
+      {
+        "artist_mbid": "5d02f264-e225-41ff-83f7-d9b1f0b1874a",
+        "artist_name": "Simon & Garfunkel",
+        "listen_count": 765120
+      },
+      {
+        "artist_mbid": "f2eef649-a6d5-4114-afba-e50ab26254d2",
+        "artist_name": "Sum 41",
+        "listen_count": 763052
+      },
+      {
+        "artist_mbid": null,
+        "artist_name": "The Beatles",
+        "listen_count": 758747
+      },
+      {
+        "artist_mbid": "64b94289-9474-4d43-8c93-918ccc1920d1",
+        "artist_name": "Billy Joel",
+        "listen_count": 758094
+      },
+      {
+        "artist_mbid": "03ad1736-b7c9-412a-b442-82536d63a5c4",
+        "artist_name": "Elliott Smith",
+        "listen_count": 755601
+      },
+      {
+        "artist_mbid": "ff95eb47-41c4-4f7f-a104-cdc30f02e872",
+        "artist_name": "Brian Eno",
+        "listen_count": 755148
+      },
+      {
+        "artist_mbid": "070d193a-845c-479f-980e-bef15710653e",
+        "artist_name": "Prince",
+        "listen_count": 752656
+      },
+      {
+        "artist_mbid": "5f95440d-7737-4a36-9bcf-c05337f7129b",
+        "artist_name": "Denzel Curry",
+        "listen_count": 752065
+      },
+      {
+        "artist_mbid": "b4691384-50c3-4afd-9988-51d3ec5db65d",
+        "artist_name": "Hozier",
+        "listen_count": 749575
+      },
+      {
+        "artist_mbid": "01809552-4f87-45b0-afff-2c6f0730a3be",
+        "artist_name": "Elvis Presley",
+        "listen_count": 747299
+      },
+      {
+        "artist_mbid": "4b585938-f271-45e2-b19a-91c634b5e396",
+        "artist_name": "Kate Bush",
+        "listen_count": 739765
+      },
+      {
+        "artist_mbid": "28737730-ec70-4da5-89c5-77ac13c5c34d",
+        "artist_name": "Khalid",
+        "listen_count": 735467
+      },
+      {
+        "artist_mbid": "1c70a3fc-fa3c-4be1-8b55-c3192db8a884",
+        "artist_name": "Röyksopp",
+        "listen_count": 733382
+      },
+      {
+        "artist_mbid": "d02dd67e-f655-4600-bc47-f789f59e7367",
+        "artist_name": "Anderson .Paak",
+        "listen_count": 731371
+      },
+      {
+        "artist_mbid": "2bcf2e02-5bc3-4c76-bf76-41126cb11444",
+        "artist_name": "Ghost",
+        "listen_count": 730044
+      },
+      {
+        "artist_mbid": "4ae36ade-1798-48c4-b06b-cc68b7d3d83f",
+        "artist_name": "Porter Robinson",
+        "listen_count": 729359
+      },
+      {
+        "artist_mbid": "20395131-fbde-43ce-b141-b700cfdae99c",
+        "artist_name": "Glass Animals",
+        "listen_count": 725549
+      },
+      {
+        "artist_mbid": "5cbef01b-cc35-4f52-af7b-d0df0c4f61b9",
+        "artist_name": "Sonic Youth",
+        "listen_count": 723758
+      },
+      {
+        "artist_mbid": "9689aa5a-4471-4fb4-9721-07cecda0fa9f",
+        "artist_name": "A Tribe Called Quest",
+        "listen_count": 721701
+      },
+      {
+        "artist_mbid": "31745282-b1ea-4d62-939f-226b14d68e7c",
+        "artist_name": "In Flames",
+        "listen_count": 720729
+      },
+      {
+        "artist_mbid": "7bd66c18-cb33-49aa-9279-140acedbdb49",
+        "artist_name": "Ty Dolla $ign",
+        "listen_count": 720528
+      },
+      {
+        "artist_mbid": "f09d2950-e3c6-47b2-b21c-2bad2cd3f616",
+        "artist_name": "Agust D",
+        "listen_count": 718459
+      },
+      {
+        "artist_mbid": "0c502791-4ee9-4c5f-9696-0602b721ff3b",
+        "artist_name": "Electric Light Orchestra",
+        "listen_count": 717237
+      },
+      {
+        "artist_mbid": "beff21d3-88c7-4ee0-8b7a-40b6db22c6d7",
+        "artist_name": "Pendulum",
+        "listen_count": 716355
+      },
+      {
+        "artist_mbid": "5dcdb5eb-cb72-4e6e-9e63-b7bace604965",
+        "artist_name": "Bon Jovi",
+        "listen_count": 712122
+      },
+      {
+        "artist_mbid": "e3e0abcd-7671-4482-a9d8-462f5acc9be5",
+        "artist_name": "Incubus",
+        "listen_count": 711945
+      },
+      {
+        "artist_mbid": "2aaf7396-6ab8-40f3-9776-a41c42c8e26b",
+        "artist_name": "LCD Soundsystem",
+        "listen_count": 706484
+      },
+      {
+        "artist_mbid": "d786f59b-1836-4ddb-8393-ab753edbe984",
+        "artist_name": "Clairo",
+        "listen_count": 705523
+      },
+      {
+        "artist_mbid": "000fc734-b7e1-4a01-92d1-f544261b43f5",
+        "artist_name": "Cocteau Twins",
+        "listen_count": 703901
+      },
+      {
+        "artist_mbid": "6a93afbb-257f-4166-b389-9f2a1e5c5df8",
+        "artist_name": "CHVRCHES",
+        "listen_count": 703772
+      },
+      {
+        "artist_mbid": "078a9376-3c04-4280-b7d7-b20e158f345d",
+        "artist_name": "A Perfect Circle",
+        "listen_count": 698159
+      },
+      {
+        "artist_mbid": "97b8d224-5660-419c-8dff-4b3bf0c33983",
+        "artist_name": "The Neighbourhood",
+        "listen_count": 695703
+      },
+      {
+        "artist_mbid": "c14b4180-dc87-481e-b17a-64e4150f90f6",
+        "artist_name": "Opeth",
+        "listen_count": 695360
+      },
+      {
+        "artist_mbid": "7eb1ce54-a355-41f9-8d68-e018b096d427",
+        "artist_name": "Harry Styles",
+        "listen_count": 695348
+      },
+      {
+        "artist_mbid": "bdacc37b-8633-4bf8-9dd5-4662ee651aec",
+        "artist_name": "Slayer",
+        "listen_count": 691515
+      },
+      {
+        "artist_mbid": "94b0fb9d-a066-4823-b2ec-af1d324bcfcf",
+        "artist_name": "The Velvet Underground",
+        "listen_count": 691321
+      },
+      {
+        "artist_mbid": "a16371b9-7d36-497a-a9d4-42b0a0440c5e",
+        "artist_name": "Slowdive",
+        "listen_count": 687424
+      },
+      {
+        "artist_mbid": "e0e1a584-dd0a-4bd1-88d1-c4c62895039d",
+        "artist_name": "Foster the People",
+        "listen_count": 687219
+      },
+      {
+        "artist_mbid": "6b335658-22c8-485d-93de-0bc29a1d0349",
+        "artist_name": "Judas Priest",
+        "listen_count": 687058
+      },
+      {
+        "artist_mbid": "8aa5b65a-5b3c-4029-92bf-47a544356934",
+        "artist_name": "Ozzy Osbourne",
+        "listen_count": 684423
+      },
+      {
+        "artist_mbid": "59db3d82-86ea-451f-881f-dffc8ec387c9",
+        "artist_name": "Metro Boomin",
+        "listen_count": 683954
+      },
+      {
+        "artist_mbid": "c3aeb863-7b26-4388-94e8-5a240f2be21b",
+        "artist_name": "Tom Waits",
+        "listen_count": 681704
+      },
+      {
+        "artist_mbid": "d700b3f5-45af-4d02-95ed-57d301bda93e",
+        "artist_name": "Mogwai",
+        "listen_count": 680424
+      },
+      {
+        "artist_mbid": "534ee493-bfac-4575-a44a-0ae41e2c3fe4",
+        "artist_name": "Rush",
+        "listen_count": 679255
+      },
+      {
+        "artist_mbid": "6f1de078-6684-4792-820d-2ffad64c15ed",
+        "artist_name": "Two Door Cinema Club",
+        "listen_count": 679042
+      },
+      {
+        "artist_mbid": "8ca01f46-53ac-4af2-8516-55a909c0905e",
+        "artist_name": "My Bloody Valentine",
+        "listen_count": 678632
+      },
+      {
+        "artist_mbid": "c5eb9407-caeb-4303-b383-6929aa94021c",
+        "artist_name": "Papa Roach",
+        "listen_count": 678328
+      },
+      {
+        "artist_mbid": "d5be5333-4171-427e-8e12-732087c6b78e",
+        "artist_name": "Black Eyed Peas",
+        "listen_count": 674434
+      },
+      {
+        "artist_mbid": "78e854b8-9713-4ff2-9218-6b3784893bff",
+        "artist_name": "Vince Staples",
+        "listen_count": 671459
+      },
+      {
+        "artist_mbid": "e4bc69e2-a064-4f93-ada1-f7f209cc1cc3",
+        "artist_name": "Selena Gomez",
+        "listen_count": 670503
+      },
+      {
+        "artist_mbid": "28503ab7-8bf2-4666-a7bd-2644bfc7cb1d",
+        "artist_name": "Dream Theater",
+        "listen_count": 670302
+      },
+      {
+        "artist_mbid": "c44e9c22-ef82-4a77-9bcd-af6c958446d6",
+        "artist_name": "Mumford & Sons",
+        "listen_count": 668395
+      },
+      {
+        "artist_mbid": "561d854a-6a28-4aa7-8c99-323e6ce46c2a",
+        "artist_name": "Miles Davis",
+        "listen_count": 667996
+      },
+      {
+        "artist_mbid": "044fd265-79dd-43eb-afc4-8b20becf7e17",
+        "artist_name": "Thundercat",
+        "listen_count": 665130
+      },
+      {
+        "artist_mbid": null,
+        "artist_name": "BTS",
+        "listen_count": 659098
+      },
+      {
+        "artist_mbid": "fab34286-b8e1-4879-bce3-194e1358fbd2",
+        "artist_name": "Kesha",
+        "listen_count": 658899
+      },
+      {
+        "artist_mbid": "a80c5dc5-b12e-4667-9f5a-b568961f3839",
+        "artist_name": "Run the Jewels",
+        "listen_count": 656991
+      },
+      {
+        "artist_mbid": "4e024037-14b7-4aea-99ad-c6ace63b9620",
+        "artist_name": "Madvillain",
+        "listen_count": 656958
+      },
+      {
+        "artist_mbid": "0b30341b-b59d-4979-8130-b66c0e475321",
+        "artist_name": "Lil Nas X",
+        "listen_count": 654109
+      },
+      {
+        "artist_mbid": "f4857fb9-e255-4dc6-bd01-e4ca7cc68544",
+        "artist_name": "Jamiroquai",
+        "listen_count": 651416
+      },
+      {
+        "artist_mbid": "dfe9a7c4-8cf2-47f4-9dcb-d233c2b86ec3",
+        "artist_name": "Amy Winehouse",
+        "listen_count": 651159
+      },
+      {
+        "artist_mbid": "8c538f11-c141-4588-8ecb-931083524186",
+        "artist_name": "Bloc Party",
+        "listen_count": 650804
+      },
+      {
+        "artist_mbid": "96855c21-b832-4366-ba12-0d2330c36a86",
+        "artist_name": "Phoebe Bridgers",
+        "listen_count": 650299
+      },
+      {
+        "artist_mbid": "1c5efd53-d6b6-4d63-9d22-a15025cf5f07",
+        "artist_name": "Gojira",
+        "listen_count": 650196
+      },
+      {
+        "artist_mbid": "172e1f1a-504d-4488-b053-6344ba63e6d0",
+        "artist_name": "Nick Cave & the Bad Seeds",
+        "listen_count": 649937
+      },
+      {
+        "artist_mbid": "7441014f-f8f5-494f-81db-ff166fbc078d",
+        "artist_name": "PinkPantheress",
+        "listen_count": 648539
+      },
+      {
+        "artist_mbid": "8dc08b1f-e393-4f85-a5dd-300f7693a8b8",
+        "artist_name": "James Blake",
+        "listen_count": 647976
+      },
+      {
+        "artist_mbid": "7c7f9c94-dee8-4903-892b-6cf44652e2de",
+        "artist_name": "Tears for Fears",
+        "listen_count": 642668
+      },
+      {
+        "artist_mbid": "f4d5cc07-3bc9-4836-9b15-88a08359bc63",
+        "artist_name": "P!nk",
+        "listen_count": 642655
+      },
+      {
+        "artist_mbid": "56a55378-f155-48de-80a5-d80104221267",
+        "artist_name": "Chappell Roan",
+        "listen_count": 641373
+      },
+      {
+        "artist_mbid": "75be165a-ad83-4d12-bd28-f589a15c479f",
+        "artist_name": "Major Lazer",
+        "listen_count": 640566
+      },
+      {
+        "artist_mbid": "584c04d2-4acc-491b-8a0a-e63133f4bfc4",
+        "artist_name": "Yeah Yeah Yeahs",
+        "listen_count": 640552
+      },
+      {
+        "artist_mbid": "8d455809-96b3-4bb6-8829-ea4beb580d35",
+        "artist_name": "Phoenix",
+        "listen_count": 639277
+      },
+      {
+        "artist_mbid": "4449ccf6-c948-4d33-aa97-b6ad98ce4b5b",
+        "artist_name": "Metric",
+        "listen_count": 636704
+      },
+      {
+        "artist_mbid": "a506f761-2c22-4b2f-8a94-bd748c2c8f75",
+        "artist_name": "Neutral Milk Hotel",
+        "listen_count": 628370
+      },
+      {
+        "artist_mbid": "bc5e2ad6-0a4a-4d90-b911-e9a7e6861727",
+        "artist_name": "Mastodon",
+        "listen_count": 627044
+      },
+      {
+        "artist_mbid": "8e3fcd7d-bda1-4ca0-b987-b8528d2ee74e",
+        "artist_name": "Genesis",
+        "listen_count": 626431
+      },
+      {
+        "artist_mbid": "8da127cc-c432-418f-b356-ef36210d82ac",
+        "artist_name": "TWICE",
+        "listen_count": 626312
+      },
+      {
+        "artist_mbid": "1f43d76f-8edf-44f6-aaf1-b65f05ad9402",
+        "artist_name": "The Flaming Lips",
+        "listen_count": 626226
+      },
+      {
+        "artist_mbid": "efa2c11a-1a35-4b60-bc1b-66d37de88511",
+        "artist_name": "DJ Shadow",
+        "listen_count": 624881
+      },
+      {
+        "artist_mbid": "fa97dd36-1b82-43d7-a6e4-2adeafd59cef",
+        "artist_name": "Fleet Foxes",
+        "listen_count": 624797
+      },
+      {
+        "artist_mbid": "aabb1d9f-be12-45b3-a84d-a1fc3e8181fd",
+        "artist_name": "Tiësto",
+        "listen_count": 624684
+      },
+      {
+        "artist_mbid": "fc7376fe-1a6f-4414-b4a7-83f50ed59c92",
+        "artist_name": "Flying Lotus",
+        "listen_count": 623772
+      },
+      {
+        "artist_mbid": "b665b768-0d83-4363-950c-31ed39317c15",
+        "artist_name": "Van Halen",
+        "listen_count": 623269
+      },
+      {
+        "artist_mbid": "56756959-1e78-429c-b897-e1d056cb0225",
+        "artist_name": "Tove Lo",
+        "listen_count": 621314
+      },
+      {
+        "artist_mbid": "541f16f5-ad7a-428e-af89-9fa1b16d3c9c",
+        "artist_name": "Pantera",
+        "listen_count": 620537
+      },
+      {
+        "artist_mbid": "854a1807-025b-42a8-ba8c-2a39717f1d25",
+        "artist_name": "Breaking Benjamin",
+        "listen_count": 619793
+      },
+      {
+        "artist_mbid": "8b22acd6-20e6-4463-a75c-c14b5cfdb666",
+        "artist_name": "Earl Sweatshirt",
+        "listen_count": 619316
+      },
+      {
+        "artist_mbid": "f46bd570-5768-462e-b84c-c7c993bbf47e",
+        "artist_name": "Eagles",
+        "listen_count": 615275
+      },
+      {
+        "artist_mbid": "382f1005-e9ab-4684-afd4-0bdae4ee37f2",
+        "artist_name": "2Pac",
+        "listen_count": 614676
+      },
+      {
+        "artist_mbid": "79491354-3d83-40e3-9d8e-7592d58d790a",
+        "artist_name": "Deep Purple",
+        "listen_count": 614359
+      },
+      {
+        "artist_mbid": "25f3abd9-63b5-471a-bd25-feb9672dfa11",
+        "artist_name": "ROSALÍA",
+        "listen_count": 613606
+      },
+      {
+        "artist_mbid": "3ac96b4c-4f42-48c8-b793-84dbf54d7ac6",
+        "artist_name": "BROCKHAMPTON",
+        "listen_count": 612538
+      },
+      {
+        "artist_mbid": "5a85c140-dcf9-4dd2-b2c8-aff0471549f3",
+        "artist_name": "Sam Smith",
+        "listen_count": 611961
+      },
+      {
+        "artist_mbid": "b3977da4-f899-4328-921b-ecc599a5618a",
+        "artist_name": "j‐hope",
+        "listen_count": 611331
+      },
+      {
+        "artist_mbid": "713e751f-3ddb-4b77-b3b1-9e6f2e953ad5",
+        "artist_name": "Logic",
+        "listen_count": 609731
+      },
+      {
+        "artist_mbid": "bc710bcf-8815-42cf-bad2-3f1d12246aeb",
+        "artist_name": "Nickelback",
+        "listen_count": 609516
+      },
+      {
+        "artist_mbid": "301b45a4-b8b9-410e-8344-4b4eaf96691a",
+        "artist_name": "Marshmello",
+        "listen_count": 608817
+      },
+      {
+        "artist_mbid": "d6d45dda-2377-4faa-947b-e071efa085c0",
+        "artist_name": "100 gecs",
+        "listen_count": 607821
+      },
+      {
+        "artist_mbid": "bbc5b66b-d037-4f26-aecf-0b129e7f876a",
+        "artist_name": "Jimmy Eat World",
+        "listen_count": 606781
+      },
+      {
+        "artist_mbid": "e795e03d-b5d5-4a5f-834d-162cfb308a2c",
+        "artist_name": "PJ Harvey",
+        "listen_count": 606548
+      },
+      {
+        "artist_mbid": "9e53f84d-ef44-4c16-9677-5fd4d78cbd7d",
+        "artist_name": "Wilco",
+        "listen_count": 603403
+      },
+      {
+        "artist_mbid": "1ee37742-1e3d-4e61-84d2-bc85f4c1459a",
+        "artist_name": "LE SSERAFIM",
+        "listen_count": 603075
+      },
+      {
+        "artist_mbid": "169c4c28-858e-497b-81a4-8bc15e0026ea",
+        "artist_name": "Porcupine Tree",
+        "listen_count": 600415
+      },
+      {
+        "artist_mbid": "618b6900-0618-4f1e-b835-bccb17f84294",
+        "artist_name": "Eric Clapton",
+        "listen_count": 596884
+      },
+      {
+        "artist_mbid": "6c8b9855-ba8b-48f9-ac1d-42167f7f7b18",
+        "artist_name": "The Shins",
+        "listen_count": 596790
+      },
+      {
+        "artist_mbid": "5b6ebfe0-f72b-4902-bba9-74c8af0f1af0",
+        "artist_name": "The 1975",
+        "listen_count": 595643
+      },
+      {
+        "artist_mbid": "57961a97-3796-4bf7-9f02-a985a8979ae9",
+        "artist_name": "Motörhead",
+        "listen_count": 594735
+      },
+      {
+        "artist_mbid": "d6ed7887-a401-47a8-893c-34b967444d26",
+        "artist_name": "Ramones",
+        "listen_count": 593344
+      },
+      {
+        "artist_mbid": "134cb0bc-06fa-42f7-8078-b0c858349975",
+        "artist_name": "Jack Harlow",
+        "listen_count": 593154
+      },
+      {
+        "artist_mbid": "23c8056b-ee13-4cfc-a772-2f5292e35bb5",
+        "artist_name": "Jung Kook",
+        "listen_count": 592846
+      },
+      {
+        "artist_mbid": "e1f1e33e-2e4c-4d43-b91b-7064068d3283",
+        "artist_name": "KISS",
+        "listen_count": 592454
+      },
+      {
+        "artist_mbid": "020bfbb4-05c3-4c86-b372-17825c262094",
+        "artist_name": "Audioslave",
+        "listen_count": 591852
+      },
+      {
+        "artist_mbid": "bf24ca37-25f4-4e34-9aec-460b94364cfc",
+        "artist_name": "Shakira",
+        "listen_count": 591758
+      },
+      {
+        "artist_mbid": "b29020d6-5dbf-4c99-b16f-c009f8a712ff",
+        "artist_name": "Steve Lacy",
+        "listen_count": 590172
+      },
+      {
+        "artist_mbid": "afdb7919-059d-43c1-b668-ba1d265e7e42",
+        "artist_name": "Marvin Gaye",
+        "listen_count": 586331
+      },
+      {
+        "artist_mbid": "3bcff06f-675a-451f-9075-99e8657047e8",
+        "artist_name": "Four Tet",
+        "listen_count": 584095
+      },
+      {
+        "artist_mbid": "17b53d9f-5c63-4a09-a593-dde4608e0db9",
+        "artist_name": "The Kinks",
+        "listen_count": 580245
+      },
+      {
+        "artist_mbid": "48646387-1664-4c9a-9139-9bfd091b823c",
+        "artist_name": "BLACKPINK",
+        "listen_count": 577106
+      },
+      {
+        "artist_mbid": "56c4b861-0922-4c3a-a9b9-3bfcb00f8274",
+        "artist_name": "Zedd",
+        "listen_count": 575900
+      },
+      {
+        "artist_mbid": "bce6d667-cde8-485e-b078-c0a05adea36d",
+        "artist_name": "ScHoolboy Q",
+        "listen_count": 572489
+      },
+      {
+        "artist_mbid": "401c3991-b76b-499d-8082-9f2df958ef78",
+        "artist_name": "Phil Collins",
+        "listen_count": 571050
+      },
+      {
+        "artist_mbid": "f5dfa020-ad69-41cd-b3d4-fd7af0414e94",
+        "artist_name": "Wiz Khalifa",
+        "listen_count": 570233
+      },
+      {
+        "artist_mbid": "7f3d82ee-3817-4367-9eec-f33a312247a1",
+        "artist_name": "MARINA",
+        "listen_count": 570171
+      },
+      {
+        "artist_mbid": "b38225b8-8e5f-42aa-bcdc-7bae5b5bdab3",
+        "artist_name": "King Crimson",
+        "listen_count": 569377
+      },
+      {
+        "artist_mbid": "144ef525-85e9-40c3-8335-02c32d0861f3",
+        "artist_name": "John Mayer",
+        "listen_count": 569027
+      },
+      {
+        "artist_mbid": "68c261d5-48c8-4ea9-9466-9fc908dc79bb",
+        "artist_name": "Magdalena Bay",
+        "listen_count": 567808
+      },
+      {
+        "artist_mbid": "0c751690-c784-4a4f-b1e4-c1de27d47581",
+        "artist_name": "Animal Collective",
+        "listen_count": 567788
+      },
+      {
+        "artist_mbid": "9ddce51c-2b75-4b3e-ac8c-1db09e7c89c6",
+        "artist_name": "Burial",
+        "listen_count": 567597
+      },
+      {
+        "artist_mbid": "e5c7b94f-e264-473c-bb0f-37c85d4d5c70",
+        "artist_name": "Belle and Sebastian",
+        "listen_count": 567347
+      },
+      {
+        "artist_mbid": "58f1e354-ecbc-4fd3-aa25-97eb1d9bd8b9",
+        "artist_name": "RM",
+        "listen_count": 566426
+      },
+      {
+        "artist_mbid": "35fd8d42-b4a6-4414-9827-8766bd0daa3c",
+        "artist_name": "Flume",
+        "listen_count": 565971
+      },
+      {
+        "artist_mbid": "285e1285-aecc-478f-a8da-0c8cf69e1217",
+        "artist_name": "Miguel",
+        "listen_count": 565312
+      },
+      {
+        "artist_mbid": "7808accb-6395-4b25-858c-678bbb73896b",
+        "artist_name": "Bastille",
+        "listen_count": 564742
+      },
+      {
+        "artist_mbid": "2fddb92d-24b2-46a5-bf28-3aed46f4684c",
+        "artist_name": "Kylie Minogue",
+        "listen_count": 562680
+      },
+      {
+        "artist_mbid": "09720eec-3871-49d5-932d-eb7542768cd3",
+        "artist_name": "Jin",
+        "listen_count": 562471
+      },
+      {
+        "artist_mbid": "14ecd19f-7121-4192-8549-e5056241a42f",
+        "artist_name": "Pusha T",
+        "listen_count": 561898
+      },
+      {
+        "artist_mbid": "4ad8190b-d2fd-46f8-a3d9-c0f55c034976",
+        "artist_name": "Poppy",
+        "listen_count": 560797
+      },
+      {
+        "artist_mbid": "ee27b2d8-648c-4a9d-a68c-e55066959975",
+        "artist_name": "Megan Thee Stallion",
+        "listen_count": 560100
+      },
+      {
+        "artist_mbid": "484a4e90-6899-4e4b-a948-a2255d365340",
+        "artist_name": "AURORA",
+        "listen_count": 559955
+      },
+      {
+        "artist_mbid": "a6623d39-2d8e-4f70-8242-0a9553b91e50",
+        "artist_name": "The Avalanches",
+        "listen_count": 559760
+      },
+      {
+        "artist_mbid": "130d679a-9a92-4373-8348-0800b6b93a30",
+        "artist_name": "初音ミク",
+        "listen_count": 559329
+      },
+      {
+        "artist_mbid": "d2582c77-6b0f-4b2f-802f-8f3cad1a5fec",
+        "artist_name": "Jimin",
+        "listen_count": 559053
+      },
+      {
+        "artist_mbid": "39a31de6-763d-48b6-a45c-f7cfad58ffd8",
+        "artist_name": "Sabaton",
+        "listen_count": 557438
+      },
+      {
+        "artist_mbid": "b0e4bc50-3062-4d31-afad-def6a6b7a8e9",
+        "artist_name": "Alan Walker",
+        "listen_count": 557246
+      },
+      {
+        "artist_mbid": "d5d97b2b-b83b-4976-814a-056d9076c8c3",
+        "artist_name": "The Notorious B.I.G.",
+        "listen_count": 554040
+      },
+      {
+        "artist_mbid": "6a65d878-fcd0-42cf-aff9-ca1d636a8bcc",
+        "artist_name": "Foals",
+        "listen_count": 551134
+      },
+      {
+        "artist_mbid": "e01c3376-15fa-40d7-b747-5f219bdefdd7",
+        "artist_name": "Steely Dan",
+        "listen_count": 550841
+      },
+      {
+        "artist_mbid": "faf4cefb-036c-4c88-b93a-5b03dd0a0e6b",
+        "artist_name": "Demi Lovato",
+        "listen_count": 550204
+      },
+      {
+        "artist_mbid": "1a1cd7f3-e5df-4eca-bae2-2757c9e656b5",
+        "artist_name": "Duran Duran",
+        "listen_count": 549595
+      },
+      {
+        "artist_mbid": "5334edc0-5faf-4ca5-b1df-000de3e1f752",
+        "artist_name": "St. Vincent",
+        "listen_count": 549466
+      },
+      {
+        "artist_mbid": "65314b12-0e08-43fa-ba33-baaa7b874c15",
+        "artist_name": "Leonard Cohen",
+        "listen_count": 548142
+      },
+      {
+        "artist_mbid": "27e2997f-f7a1-4353-bcc4-57b9274fa9a4",
+        "artist_name": "BABYMETAL",
+        "listen_count": 546748
+      },
+      {
+        "artist_mbid": "1595addf-f76b-450a-a097-af852ff35f27",
+        "artist_name": "Nujabes",
+        "listen_count": 545392
+      },
+      {
+        "artist_mbid": "985c709c-7771-4de3-9024-7bda29ebe3f9",
+        "artist_name": "Norah Jones",
+        "listen_count": 545080
+      },
+      {
+        "artist_mbid": "d8354b38-e942-4c89-ba93-29323432abc3",
+        "artist_name": "Thirty Seconds to Mars",
+        "listen_count": 544858
+      },
+      {
+        "artist_mbid": "99ea432a-e3d8-42cb-9d5e-db316a6a8458",
+        "artist_name": "Nick Drake",
+        "listen_count": 543243
+      },
+      {
+        "artist_mbid": "a0723a3c-4135-438e-85c5-012712144ede",
+        "artist_name": "Don Toliver",
+        "listen_count": 542866
+      },
+      {
+        "artist_mbid": "c3cceeed-3332-4cf0-8c4c-bbde425147b6",
+        "artist_name": "Scorpions",
+        "listen_count": 541753
+      },
+      {
+        "artist_mbid": "1e4e9db7-5068-4a9c-bdd0-5777e47172c8",
+        "artist_name": "FKA twigs",
+        "listen_count": 541219
+      },
+      {
+        "artist_mbid": "0fabbc1d-8d94-4a61-bd1d-1099ad1e4559",
+        "artist_name": "Car Seat Headrest",
+        "listen_count": 541020
+      },
+      {
+        "artist_mbid": "ff6e677f-91dd-4986-a174-8db0474b1799",
+        "artist_name": "Jack Johnson",
+        "listen_count": 540649
+      },
+      {
+        "artist_mbid": "aab5c954-cabe-432e-899e-1c4f99757327",
+        "artist_name": "Toto",
+        "listen_count": 539655
+      },
+      {
+        "artist_mbid": "27638856-79a1-4495-b7da-1912899560c7",
+        "artist_name": "bbno$",
+        "listen_count": 539522
+      },
+      {
+        "artist_mbid": "b15ebd71-a252-417d-9e1c-3e6863da68f8",
+        "artist_name": "Faith No More",
+        "listen_count": 539333
+      },
+      {
+        "artist_mbid": "a9ee533f-8871-4f62-a6bb-91eb264abc90",
+        "artist_name": "Fiona Apple",
+        "listen_count": 538604
+      },
+      {
+        "artist_mbid": "c234fa42-e6a6-443e-937e-2f4b073538a3",
+        "artist_name": "Chris Brown",
+        "listen_count": 538282
+      },
+      {
+        "artist_mbid": "ba550d0e-adac-4864-b88b-407cab5e76af",
+        "artist_name": "Paul McCartney",
+        "listen_count": 537833
+      },
+      {
+        "artist_mbid": "83096042-3785-481e-8843-dee69f1aad12",
+        "artist_name": "V",
+        "listen_count": 535843
+      },
+      {
+        "artist_mbid": "fa7b9055-3703-473a-8a09-adf2fe031a24",
+        "artist_name": "CAKE",
+        "listen_count": 535190
+      },
+      {
+        "artist_mbid": "7cf0ea9d-86b9-4dad-ba9e-2355a64899ea",
+        "artist_name": "M.I.A.",
+        "listen_count": 533427
+      },
+      {
+        "artist_mbid": "92da4329-77a4-425c-8e92-4280110cace9",
+        "artist_name": "Lil Peep",
+        "listen_count": 532418
+      },
+      {
+        "artist_mbid": "8e68819d-71be-4e7d-b41d-f1df81b01d3f",
+        "artist_name": "50 Cent",
+        "listen_count": 530454
+      },
+      {
+        "artist_mbid": "373a4c98-a46b-48e4-86ec-f6ca65b4f438",
+        "artist_name": "Chance the Rapper",
+        "listen_count": 530118
+      },
+      {
+        "artist_mbid": "d530dbf9-69b1-404f-98f2-0431104f5a1e",
+        "artist_name": "Bullet for My Valentine",
+        "listen_count": 529207
+      },
+      {
+        "artist_mbid": "c1d4f2ba-cf39-460c-9528-6b827d3417a1",
+        "artist_name": "Yes",
+        "listen_count": 528579
+      },
+      {
+        "artist_mbid": "ef326b3d-61f0-4379-aca0-21237d696d63",
+        "artist_name": "$uicideboy$",
+        "listen_count": 526753
+      },
+      {
+        "artist_mbid": "509f20b2-5df3-4aec-9bbc-002131fb3f99",
+        "artist_name": "Max Richter",
+        "listen_count": 526178
+      },
+      {
+        "artist_mbid": "3599a39e-4e10-4cb5-90d4-c8a015ebc73b",
+        "artist_name": "Portugal. The Man",
+        "listen_count": 524431
+      },
+      {
+        "artist_mbid": "d616b606-cf6a-4b6e-ab0f-e253b8db6610",
+        "artist_name": "JID",
+        "listen_count": 523180
+      },
+      {
+        "artist_mbid": "149e6720-4e4a-41a4-afca-6d29083fc091",
+        "artist_name": "Bad Religion",
+        "listen_count": 522800
+      },
+      {
+        "artist_mbid": "88d17133-abbc-42db-9526-4e2c1db60336",
+        "artist_name": "beabadoobee",
+        "listen_count": 521032
+      },
+      {
+        "artist_mbid": "7e8571b1-7c5a-4739-bc51-73d422ee9d74",
+        "artist_name": "Five Finger Death Punch",
+        "listen_count": 520603
+      },
+      {
+        "artist_mbid": "ae65c507-d9a0-4d42-9a6c-2b1f82158b9f",
+        "artist_name": "Disclosure",
+        "listen_count": 519216
+      },
+      {
+        "artist_mbid": "34557d8f-ee4a-44ab-ae6e-49bb8ac604d0",
+        "artist_name": "Cigarettes After Sex",
+        "listen_count": 519017
+      },
+      {
+        "artist_mbid": "134e6410-6954-45d1-bd4a-0f2d2ad5471d",
+        "artist_name": "Zara Larsson",
+        "listen_count": 518360
+      },
+      {
+        "artist_mbid": "eace2373-31c8-4aba-9a5c-7bce22dd140a",
+        "artist_name": "Within Temptation",
+        "listen_count": 517217
+      },
+      {
+        "artist_mbid": "25ab7547-a4d2-480b-b028-c7f3497bc858",
+        "artist_name": "Men I Trust",
+        "listen_count": 514151
+      },
+      {
+        "artist_mbid": "38f0c7ac-46eb-49ca-b3ab-c785ccd05a60",
+        "artist_name": "TV Girl",
+        "listen_count": 513037
+      },
+      {
+        "artist_mbid": "31445b1e-96f3-4c7f-84ec-dd02e647e690",
+        "artist_name": "DJ Snake",
+        "listen_count": 512624
+      },
+      {
+        "artist_mbid": "01b8b5bf-06cb-45da-85fb-61ada72fcd69",
+        "artist_name": "Camila Cabello",
+        "listen_count": 512107
+      },
+      {
+        "artist_mbid": "e5712ceb-c37a-4c49-a11c-ccf4e21852d4",
+        "artist_name": "Troye Sivan",
+        "listen_count": 511176
+      },
+      {
+        "artist_mbid": "9e103f85-7af7-41d7-b83b-49ba8f0c5abf",
+        "artist_name": "Of Monsters and Men",
+        "listen_count": 510238
+      },
+      {
+        "artist_mbid": "f467181e-d5e0-4285-b47e-e853dcc89ee7",
+        "artist_name": "Ratatat",
+        "listen_count": 509153
+      },
+      {
+        "artist_mbid": "b7d92248-97e3-4450-8057-6fe06738f735",
+        "artist_name": "Shawn Mendes",
+        "listen_count": 508943
+      },
+      {
+        "artist_mbid": "f9ef7a22-4262-4596-a2a8-1d19345b8e50",
+        "artist_name": "Garbage",
+        "listen_count": 506333
+      },
+      {
+        "artist_mbid": "cd689e77-dfdd-4f81-b50c-5e5a3f5e38a4",
+        "artist_name": "Bladee",
+        "listen_count": 505470
+      },
+      {
+        "artist_mbid": "e20747e7-55a4-452e-8766-7b985585082d",
+        "artist_name": "Frank Zappa",
+        "listen_count": 504425
+      },
+      {
+        "artist_mbid": "8c32bb01-58a3-453b-8050-8c0620edb0e5",
+        "artist_name": "Stone Temple Pilots",
+        "listen_count": 504185
+      },
+      {
+        "artist_mbid": "4d2956d1-a3f7-44bb-9a41-67563e1a0c94",
+        "artist_name": "Blondie",
+        "listen_count": 503566
+      },
+      {
+        "artist_mbid": "494e8d09-f85b-4543-892f-a5096aed1cd4",
+        "artist_name": "Mariah Carey",
+        "listen_count": 503034
+      },
+      {
+        "artist_mbid": "fd429857-5ace-4609-ae54-1502c3bdac11",
+        "artist_name": "Billy Talent",
+        "listen_count": 500624
+      },
+      {
+        "artist_mbid": "cbef45a9-7acb-4325-94c9-70081ac8d1b8",
+        "artist_name": "Tycho",
+        "listen_count": 498989
+      },
+      {
+        "artist_mbid": "a668565b-41b8-44a8-9d5c-8e609dbf69fc",
+        "artist_name": "Lil Yachty",
+        "listen_count": 498138
+      },
+      {
+        "artist_mbid": "942a9807-9c1a-4a0e-a285-1fde2c5be9d1",
+        "artist_name": "Big Sean",
+        "listen_count": 495761
+      },
+      {
+        "artist_mbid": "36bfa85f-737b-41db-a8fc-b8825850ffc3",
+        "artist_name": "Pavement",
+        "listen_count": 494779
+      },
+      {
+        "artist_mbid": "db008806-16f6-48fc-8521-3d953709689d",
+        "artist_name": "A Day to Remember",
+        "listen_count": 494476
+      },
+      {
+        "artist_mbid": "eab76c9f-ff91-4431-b6dd-3b976c598020",
+        "artist_name": "Infected Mushroom",
+        "listen_count": 494018
+      },
+      {
+        "artist_mbid": "ba0e7638-0cd6-4ff4-8987-c3e224d22c23",
+        "artist_name": "Kygo",
+        "listen_count": 492949
+      },
+      {
+        "artist_mbid": "dff0d392-4cd5-4052-9fbb-f485df3891e5",
+        "artist_name": "2 Chainz",
+        "listen_count": 492700
+      },
+      {
+        "artist_mbid": "a66999a7-ae5c-460e-ba94-1a01143ae847",
+        "artist_name": "Snow Patrol",
+        "listen_count": 492414
+      },
+      {
+        "artist_mbid": "d262ea27-3ffe-40f7-b922-85c42d625e67",
+        "artist_name": "Pitbull",
+        "listen_count": 492031
+      },
+      {
+        "artist_mbid": "d2ff6b6b-fc30-48dc-8952-06f9d8fc64f8",
+        "artist_name": "Supertramp",
+        "listen_count": 491114
+      },
+      {
+        "artist_mbid": "34c63966-445c-4613-afe1-4f0e1e53ae9a",
+        "artist_name": "Fatboy Slim",
+        "listen_count": 490793
+      },
+      {
+        "artist_mbid": "c544ed4d-2390-4442-a83e-1ea2883b09c8",
+        "artist_name": "Lynyrd Skynyrd",
+        "listen_count": 490427
+      },
+      {
+        "artist_mbid": "775ad383-ac2d-479a-af9d-b561442cb749",
+        "artist_name": "Sleep Token",
+        "listen_count": 489703
+      },
+      {
+        "artist_mbid": "aea4c9b9-9f8d-49dc-b2ca-57d6f26e8634",
+        "artist_name": "Khruangbin",
+        "listen_count": 488563
+      },
+      {
+        "artist_mbid": "5700dcd4-c139-4f31-aa3e-6382b9af9032",
+        "artist_name": "Kraftwerk",
+        "listen_count": 487353
+      },
+      {
+        "artist_mbid": "6e0c7c0e-cba5-4c2c-a652-38f71ef5785d",
+        "artist_name": "Lily Allen",
+        "listen_count": 487276
+      },
+      {
+        "artist_mbid": "13bcb2bb-db37-4397-baf5-e0f085be2d64",
+        "artist_name": "Rick Ross",
+        "listen_count": 486015
+      },
+      {
+        "artist_mbid": "be540c02-7898-4b79-9acc-c8122c7d9e83",
+        "artist_name": "Pet Shop Boys",
+        "listen_count": 484712
+      },
+      {
+        "artist_mbid": "db8fad3a-e131-47a1-8782-c2ee93708cdd",
+        "artist_name": "Bebe Rexha",
+        "listen_count": 483852
+      },
+      {
+        "artist_mbid": "0febdcf7-4e1f-4661-9493-b40427de2c13",
+        "artist_name": "Wu‐Tang Clan",
+        "listen_count": 483815
+      },
+      {
+        "artist_mbid": "148ddea2-6839-4354-8e2c-5dfadf136b7f",
+        "artist_name": "Tenacious D",
+        "listen_count": 482979
+      },
+      {
+        "artist_mbid": "8e66ea2b-b57b-47d9-8df0-df4630aeb8e5",
+        "artist_name": "Peter Gabriel",
+        "listen_count": 482358
+      },
+      {
+        "artist_mbid": "100b8734-f4f0-4536-9960-47f7c59d1b4c",
+        "artist_name": "Gunna",
+        "listen_count": 481371
+      },
+      {
+        "artist_mbid": "abd506e1-6f2b-4d6f-b937-92c267f6f88b",
+        "artist_name": "Journey",
+        "listen_count": 480006
+      },
+      {
+        "artist_mbid": "72eabb1a-4d2c-4de6-90f2-671b2cada42b",
+        "artist_name": "Caravan Palace",
+        "listen_count": 479225
+      },
+      {
+        "artist_mbid": "add5f522-25df-41c4-815e-0ca9f60b83e4",
+        "artist_name": "Ava Max",
+        "listen_count": 477612
+      },
+      {
+        "artist_mbid": "debabff3-2559-46e5-862d-ef2a906d7010",
+        "artist_name": "Daryl Hall & John Oates",
+        "listen_count": 476267
+      },
+      {
+        "artist_mbid": "ee190f6b-7d98-43ec-b924-da5f8018eca0",
+        "artist_name": "Janelle Monáe",
+        "listen_count": 475867
+      },
+      {
+        "artist_mbid": "7944ed53-2a58-4035-9b93-140a71e41c34",
+        "artist_name": "Sting",
+        "listen_count": 475777
+      },
+      {
+        "artist_mbid": "69b39eab-6577-46a4-a9f5-817839092033",
+        "artist_name": "Kasabian",
+        "listen_count": 475589
+      },
+      {
+        "artist_mbid": "fbb375f9-48bb-4635-824e-4120273b3ba7",
+        "artist_name": "Regina Spektor",
+        "listen_count": 474819
+      },
+      {
+        "artist_mbid": "84eac621-1c5a-49a1-9500-555099c6e184",
+        "artist_name": "Spoon",
+        "listen_count": 474623
+      },
+      {
+        "artist_mbid": "df6c619f-4334-43e2-8b6a-4a32af1e4f85",
+        "artist_name": "YOASOBI",
+        "listen_count": 473097
+      },
+      {
+        "artist_mbid": "9f81247f-7f57-42f3-a8ba-75bef554e591",
+        "artist_name": "Big Thief",
+        "listen_count": 472949
+      },
+      {
+        "artist_mbid": "95f5b748-d370-47fe-85bd-0af2dc450bc0",
+        "artist_name": "Sublime",
+        "listen_count": 471931
+      },
+      {
+        "artist_mbid": "d8f43dc5-4613-48ac-8c23-a62b82f8c67a",
+        "artist_name": "Caroline Polachek",
+        "listen_count": 471213
+      },
+      {
+        "artist_mbid": "69681b02-05b8-4685-80cb-e98983b7a96f",
+        "artist_name": "Mother Mother",
+        "listen_count": 470799
+      },
+      {
+        "artist_mbid": "3285dc48-9505-469d-ad8a-bdf2d3dba632",
+        "artist_name": "Swans",
+        "listen_count": 468482
+      },
+      {
+        "artist_mbid": "21645c31-fe1c-45a4-955c-3e172b12c3f9",
+        "artist_name": "Freddie Gibbs",
+        "listen_count": 468251
+      },
+      {
+        "artist_mbid": "c3f28da8-662d-4f09-bdc7-3084bf685930",
+        "artist_name": "Iron & Wine",
+        "listen_count": 466115
+      },
+      {
+        "artist_mbid": "477b8c0c-c5fc-4ad2-b5b2-191f0bf2a9df",
+        "artist_name": "Armin van Buuren",
+        "listen_count": 461775
+      },
+      {
+        "artist_mbid": "2386cd66-e923-4e8e-bf14-2eebe2e9b973",
+        "artist_name": "3 Doors Down",
+        "listen_count": 461372
+      },
+      {
+        "artist_mbid": "05dffdbe-dc6e-4c8d-a075-50a09c4cb45c",
+        "artist_name": "Architects",
+        "listen_count": 459559
+      },
+      {
+        "artist_mbid": "4593d49a-7f67-46ba-9ec0-126bd676286f",
+        "artist_name": "Flo Rida",
+        "listen_count": 458680
+      },
+      {
+        "artist_mbid": "a8ebde98-7e91-46c7-992c-90039ba42017",
+        "artist_name": "De La Soul",
+        "listen_count": 458562
+      },
+      {
+        "artist_mbid": "9757ae7d-44b1-4d63-81ce-b463fe27b9ae",
+        "artist_name": "Joey Bada$$",
+        "listen_count": 458238
+      },
+      {
+        "artist_mbid": "05517043-ff78-4988-9c22-88c68588ebb9",
+        "artist_name": "Paul Simon",
+        "listen_count": 457879
+      },
+      {
+        "artist_mbid": "3cdb40fe-a63e-4bb9-b40d-17cda5f50979",
+        "artist_name": "Little Simz",
+        "listen_count": 457004
+      },
+      {
+        "artist_mbid": "525f1f1c-03f0-4bc8-8dfd-e7521f87631b",
+        "artist_name": "Charlie Puth",
+        "listen_count": 456819
+      },
+      {
+        "artist_mbid": "2a7ef045-ca10-4cb5-8fe9-1f5d38e84bc2",
+        "artist_name": "GloRilla",
+        "listen_count": 456783
+      },
+      {
+        "artist_mbid": "ab1a3f85-e0ea-470a-af5c-175447ae774c",
+        "artist_name": "underscores",
+        "listen_count": 456732
+      },
+      {
+        "artist_mbid": "14387b0f-765c-4852-852f-135335790466",
+        "artist_name": "EELS",
+        "listen_count": 456497
+      },
+      {
+        "artist_mbid": "20883363-1ea4-4d72-ad72-c0e767038f3e",
+        "artist_name": "The Mars Volta",
+        "listen_count": 454846
+      },
+      {
+        "artist_mbid": "4d5447d7-c61c-4120-ba1b-d7f471d385b9",
+        "artist_name": "John Lennon",
+        "listen_count": 454641
+      },
+      {
+        "artist_mbid": "1d93c839-22e7-4f76-ad84-d27039efc048",
+        "artist_name": "Sepultura",
+        "listen_count": 454319
+      },
+      {
+        "artist_mbid": "f82f3a3e-29c2-42ca-b589-bc5dc210fa9e",
+        "artist_name": "The Kooks",
+        "listen_count": 454243
+      },
+      {
+        "artist_mbid": "5660a8c7-d0d9-4181-89b4-8e125328e31e",
+        "artist_name": "NF",
+        "listen_count": 454197
+      },
+      {
+        "artist_mbid": "e6e879c0-3d56-4f12-b3c5-3ce459661a8e",
+        "artist_name": "Jeff Buckley",
+        "listen_count": 453780
+      },
+      {
+        "artist_mbid": "4967c0a1-b9f3-465e-8440-4598fd9fc33c",
+        "artist_name": "Enya",
+        "listen_count": 453234
+      },
+      {
+        "artist_mbid": "16a43d5e-c52d-4eaa-9c3b-00b2c1d8e816",
+        "artist_name": "Skillet",
+        "listen_count": 453144
+      },
+      {
+        "artist_mbid": "b202beb7-99bd-47e7-8b72-195c8d72ebdd",
+        "artist_name": "Christina Aguilera",
+        "listen_count": 453132
+      },
+      {
+        "artist_mbid": "4bdcee62-4902-4773-8cd1-e252e2e31225",
+        "artist_name": "Alanis Morissette",
+        "listen_count": 452665
+      },
+      {
+        "artist_mbid": "0b0c25f4-f31c-46a5-a4fb-ccbf53d663bd",
+        "artist_name": "Jon Hopkins",
+        "listen_count": 451779
+      },
+      {
+        "artist_mbid": "53b106e7-0cc6-42cc-ac95-ed8d30a3a98e",
+        "artist_name": "John Williams",
+        "listen_count": 451387
+      },
+      {
+        "artist_mbid": "f089f636-6b85-4e0e-a192-0d30ed2b44d1",
+        "artist_name": "Ramin Djawadi",
+        "listen_count": 450530
+      },
+      {
+        "artist_mbid": "ad279295-653f-42e1-9aaa-b731df2e78ba",
+        "artist_name": "Owl City",
+        "listen_count": 449921
+      },
+      {
+        "artist_mbid": "535afeda-2538-435d-9dd1-5e10be586774",
+        "artist_name": "Earth, Wind & Fire",
+        "listen_count": 449914
+      },
+      {
+        "artist_mbid": "fbd2a255-1d57-4d31-ac11-65b671c19958",
+        "artist_name": "No Doubt",
+        "listen_count": 448893
+      },
+      {
+        "artist_mbid": "4236acde-2ce2-441c-a3d4-38d55f1b5474",
+        "artist_name": "Explosions in the Sky",
+        "listen_count": 448492
+      },
+      {
+        "artist_mbid": "a505bb48-ad65-4af4-ae47-29149715bff9",
+        "artist_name": "Thievery Corporation",
+        "listen_count": 448027
+      },
+      {
+        "artist_mbid": "c995a379-60b9-404b-bd97-a7e2de0751d3",
+        "artist_name": "Rob Zombie",
+        "listen_count": 447431
+      },
+      {
+        "artist_mbid": "355cc194-b8db-4af2-8678-c7ad54213f4b",
+        "artist_name": "Latto",
+        "listen_count": 447079
+      },
+      {
+        "artist_mbid": "9d1ebcfe-4c15-4d18-95d3-d919898638a1",
+        "artist_name": "Lou Reed",
+        "listen_count": 445839
+      },
+      {
+        "artist_mbid": "cbcbb22c-3a8d-46af-b4ba-09c98f0d7931",
+        "artist_name": "J Dilla",
+        "listen_count": 445596
+      },
+      {
+        "artist_mbid": "f5c4c27e-5902-4fc0-adfb-7775da3d5363",
+        "artist_name": "Yasiin Bey",
+        "listen_count": 445548
+      },
+      {
+        "artist_mbid": "a81259a0-a2f5-464b-866e-71220f2739f1",
+        "artist_name": "ZZ Top",
+        "listen_count": 445363
+      },
+      {
+        "artist_mbid": "b625448e-bf4a-41c3-a421-72ad46cdb831",
+        "artist_name": "John Coltrane",
+        "listen_count": 444779
+      },
+      {
+        "artist_mbid": "21a89505-10a9-4ac0-8388-833bc07b9f86",
+        "artist_name": "Laufey",
+        "listen_count": 444730
+      },
+      {
+        "artist_mbid": "5b687684-ad34-4a9f-b425-0e7aa81fbd38",
+        "artist_name": "Amon Amarth",
+        "listen_count": 444088
+      },
+      {
+        "artist_mbid": "13655113-cd16-4b43-9dca-cadbbf26ee05",
+        "artist_name": "Nelly Furtado",
+        "listen_count": 443732
+      },
+      {
+        "artist_mbid": "9a3bf45c-347d-4630-894d-7cf3e8e0b632",
+        "artist_name": "Santana",
+        "listen_count": 443454
+      },
+      {
+        "artist_mbid": "3f542031-b054-454d-b57b-812fa2a81b11",
+        "artist_name": "Yo La Tengo",
+        "listen_count": 443323
+      },
+      {
+        "artist_mbid": "303abdee-ffca-4685-a582-6aaaefd81b01",
+        "artist_name": "Carpenter Brut",
+        "listen_count": 443037
+      },
+      {
+        "artist_mbid": "7364dea6-ca9a-48e3-be01-b44ad0d19897",
+        "artist_name": "a‐ha",
+        "listen_count": 442445
+      },
+      {
+        "artist_mbid": "8032cf05-d916-4b2a-9c53-6e75d4a24bd8",
+        "artist_name": "Trippie Redd",
+        "listen_count": 442418
+      },
+      {
+        "artist_mbid": "97b1142f-c71e-4971-8736-4a8ceaf6b4c3",
+        "artist_name": "The Decemberists",
+        "listen_count": 442215
+      },
+      {
+        "artist_mbid": "2f3c4d70-0462-40da-bba3-0aec5772c556",
+        "artist_name": "Cardi B",
+        "listen_count": 442138
+      },
+      {
+        "artist_mbid": "03f3deb7-0419-4bf9-a1e7-511946385717",
+        "artist_name": "The Alchemist",
+        "listen_count": 442110
+      },
+      {
+        "artist_mbid": "d1353a0c-26fb-4318-a116-defde9c7c9ad",
+        "artist_name": "Dido",
+        "listen_count": 441385
+      },
+      {
+        "artist_mbid": "aef06569-098f-4218-a577-b413944d9493",
+        "artist_name": "HAIM",
+        "listen_count": 440044
+      },
+      {
+        "artist_mbid": "fbcd7b29-455f-49e6-9c4f-8249d20a055e",
+        "artist_name": "Seether",
+        "listen_count": 439953
+      },
+      {
+        "artist_mbid": "bca46a0c-25c9-42ca-98c2-e64c8a5e337e",
+        "artist_name": "Fred again..",
+        "listen_count": 439750
+      },
+      {
+        "artist_mbid": "c7020c6d-cae9-4db3-92a7-e5c561cbad50",
+        "artist_name": "Keane",
+        "listen_count": 438679
+      },
+      {
+        "artist_mbid": "233fc3f3-6de2-465c-985e-e721dbabbace",
+        "artist_name": "Fugazi",
+        "listen_count": 438522
+      },
+      {
+        "artist_mbid": "81d12ca7-5b89-4d21-8736-860b7400b4eb",
+        "artist_name": "Baby Keem",
+        "listen_count": 438460
+      },
+      {
+        "artist_mbid": "f9133869-f87c-459c-9aa7-2f176cda7e06",
+        "artist_name": "Tate McRae",
+        "listen_count": 438340
+      },
+      {
+        "artist_mbid": "ac7e838c-3d95-47c2-92a9-81767ad7c217",
+        "artist_name": "Empire of the Sun",
+        "listen_count": 438142
+      },
+      {
+        "artist_mbid": "410c9baf-5469-44f6-9852-826524b80c61",
+        "artist_name": "Autechre",
+        "listen_count": 437737
+      },
+      {
+        "artist_mbid": "c7df5ec5-380a-40f9-856f-28fb4a33d946",
+        "artist_name": "Machine Girl",
+        "listen_count": 436832
+      },
+      {
+        "artist_mbid": "fa34b363-79df-434f-a5b8-be4e6898543f",
+        "artist_name": "Ludovico Einaudi",
+        "listen_count": 436238
+      },
+      {
+        "artist_mbid": "54799c0e-eb45-4eea-996d-c4d71a63c499",
+        "artist_name": "Ella Fitzgerald",
+        "listen_count": 435670
+      },
+      {
+        "artist_mbid": "4f0cb3b7-6c06-4317-ae35-ddf3106a17ee",
+        "artist_name": "Red Velvet",
+        "listen_count": 435270
+      },
+      {
+        "artist_mbid": "54fc0558-12b5-4854-9d57-9441bcd73a72",
+        "artist_name": "Kim Petras",
+        "listen_count": 435161
+      },
+      {
+        "artist_mbid": "735e3514-a8ae-401f-af3b-6300df1b8d2c",
+        "artist_name": "Caribou",
+        "listen_count": 435099
+      },
+      {
+        "artist_mbid": "bf0f7e29-dfe1-416c-b5c6-f9ebc19ea810",
+        "artist_name": "Bee Gees",
+        "listen_count": 434686
+      },
+      {
+        "artist_mbid": "5e284bdc-3774-41dc-b5e2-b125d0349acf",
+        "artist_name": "Kero Kero Bonito",
+        "listen_count": 434344
+      },
+      {
+        "artist_mbid": "aa62b28e-b6d4-4086-91d4-e5fac1ed56f3",
+        "artist_name": "Royal Blood",
+        "listen_count": 434337
+      },
+      {
+        "artist_mbid": "9b58672a-e68e-4972-956e-a8985a165a1f",
+        "artist_name": "Howard Shore",
+        "listen_count": 433918
+      },
+      {
+        "artist_mbid": "125ec42a-7229-4250-afc5-e057484327fe",
+        "artist_name": "[unknown]",
+        "listen_count": 433574
+      },
+      {
+        "artist_mbid": "62162215-b023-4f0e-84bd-1e9412d5b32c",
+        "artist_name": "All Time Low",
+        "listen_count": 433012
+      },
+      {
+        "artist_mbid": "f37b3f31-b1f8-4b88-8cb5-b34f709b17d7",
+        "artist_name": "Iggy Pop",
+        "listen_count": 432171
+      },
+      {
+        "artist_mbid": "8ed2e0b3-aa4c-4e13-bec3-dc7393ed4d6b",
+        "artist_name": "Thom Yorke",
+        "listen_count": 431198
+      },
+      {
+        "artist_mbid": "a670e05a-cea8-4b37-bce9-d82daf1a0fa4",
+        "artist_name": "Feist",
+        "listen_count": 430642
+      },
+      {
+        "artist_mbid": "321531fc-db73-4ffa-a959-61a61a2908c1",
+        "artist_name": "Erykah Badu",
+        "listen_count": 430202
+      },
+      {
+        "artist_mbid": "7df4c4de-3181-4a69-bd36-9d663970cebb",
+        "artist_name": "Alex G",
+        "listen_count": 429315
+      },
+      {
+        "artist_mbid": "67930b3e-e00b-469f-8c74-fd69f20522ec",
+        "artist_name": "Sade",
+        "listen_count": 429188
+      },
+      {
+        "artist_mbid": "2eb55bd9-cfbf-44fd-a5da-92dd825284c7",
+        "artist_name": "AJR",
+        "listen_count": 428973
+      },
+      {
+        "artist_mbid": "d42a5768-ada1-4fb6-85fd-f61aba6264e0",
+        "artist_name": "Lil Baby",
+        "listen_count": 428512
+      },
+      {
+        "artist_mbid": "59a7fbcb-ff74-494d-abd0-9c82359040c9",
+        "artist_name": "Grizzly Bear",
+        "listen_count": 427741
+      },
+      {
+        "artist_mbid": "e07d9474-00ea-4460-ac27-88b46b3d976e",
+        "artist_name": "blackbear",
+        "listen_count": 427570
+      },
+      {
+        "artist_mbid": "8ed919fb-eaee-45a1-ba99-b3ede9ca5f1d",
+        "artist_name": "Pierce the Veil",
+        "listen_count": 426678
+      },
+      {
+        "artist_mbid": "7a3970c9-ecd8-4eee-a267-4d8c77d97ff3",
+        "artist_name": "The Marías",
+        "listen_count": 426247
+      },
+      {
+        "artist_mbid": "49204a7a-ed85-407a-828f-6fd46f1d8126",
+        "artist_name": "NewJeans",
+        "listen_count": 425876
+      },
+      {
+        "artist_mbid": "7fa7fc04-1011-4876-8095-ecd232edea87",
+        "artist_name": "Blind Guardian",
+        "listen_count": 425066
+      },
+      {
+        "artist_mbid": "bfcb6630-9b31-4e63-b11f-7b0363be72b5",
+        "artist_name": "The Lumineers",
+        "listen_count": 424970
+      },
+      {
+        "artist_mbid": "ece57992-dc2e-4f67-a269-fa43626c1a3d",
+        "artist_name": "Jethro Tull",
+        "listen_count": 424748
+      },
+      {
+        "artist_mbid": "757ed661-fbad-4e45-b1cd-a6b09f06f54a",
+        "artist_name": "Yung Lean",
+        "listen_count": 423896
+      },
+      {
+        "artist_mbid": "183d6ef6-e161-47ff-9085-063c8b897e97",
+        "artist_name": "They Might Be Giants",
+        "listen_count": 421532
+      },
+      {
+        "artist_mbid": "adc0f033-95c2-4e0b-87bc-c23ed3f26ce6",
+        "artist_name": "Shinedown",
+        "listen_count": 421327
+      },
+      {
+        "artist_mbid": "9311e2bc-bb3f-44cf-90d8-b1fe6912b60b",
+        "artist_name": "Brand New",
+        "listen_count": 421032
+      },
+      {
+        "artist_mbid": "75a72702-a5ef-4513-bca5-c5b944903546",
+        "artist_name": "John Legend",
+        "listen_count": 420985
+      },
+      {
+        "artist_mbid": "3414d446-735a-443c-931f-10634f57e5b9",
+        "artist_name": "Usher",
+        "listen_count": 420776
+      },
+      {
+        "artist_mbid": "3a6d6481-142d-423f-91d4-55bbfff318ed",
+        "artist_name": "Toro y Moi",
+        "listen_count": 420407
+      },
+      {
+        "artist_mbid": "a41ac10f-0a56-4672-9161-b83f9b223559",
+        "artist_name": "Van Morrison",
+        "listen_count": 420256
+      },
+      {
+        "artist_mbid": "889db25c-d1df-457a-b0d1-c405f34a01f3",
+        "artist_name": "Bo Burnham",
+        "listen_count": 419773
+      },
+      {
+        "artist_mbid": "6de0f914-3e60-4418-be3b-42e0feb6eb4d",
+        "artist_name": "Jason Derulo",
+        "listen_count": 418808
+      },
+      {
+        "artist_mbid": "a17ce9c3-8f6f-4dcc-a1b7-2a04ab9e31f0",
+        "artist_name": "Swae Lee",
+        "listen_count": 418284
+      },
+      {
+        "artist_mbid": "2e222fce-02ae-4221-b1c6-3c3242b423b6",
+        "artist_name": "ODESZA",
+        "listen_count": 417745
+      },
+      {
+        "artist_mbid": "daeec599-bf5d-4428-994a-e76ba5f86e2f",
+        "artist_name": "Passion Pit",
+        "listen_count": 416802
+      },
+      {
+        "artist_mbid": "ea9078ef-20ca-4506-81ea-2ae5fe3a42e8",
+        "artist_name": "Madlib",
+        "listen_count": 416224
+      },
+      {
+        "artist_mbid": "3862342a-43c4-4cdb-8250-bfdbfb5e1419",
+        "artist_name": "Måneskin",
+        "listen_count": 416213
+      },
+      {
+        "artist_mbid": "61ed9c9c-79eb-4e8f-8015-bd599ac0ab49",
+        "artist_name": "Katatonia",
+        "listen_count": 415889
+      },
+      {
+        "artist_mbid": "eb872766-98f6-453d-883f-2ae908a18315",
+        "artist_name": "TV on the Radio",
+        "listen_count": 415861
+      },
+      {
+        "artist_mbid": null,
+        "artist_name": "Johann Sebastian Bach",
+        "listen_count": 414127
+      },
+      {
+        "artist_mbid": "eecada09-acfc-472d-ae55-e9e5a43f12d8",
+        "artist_name": "Bad Omens",
+        "listen_count": 413470
+      },
+      {
+        "artist_mbid": "0221734a-35a8-40f7-b5c5-2f61a200bc7c",
+        "artist_name": "Migos",
+        "listen_count": 413255
+      },
+      {
+        "artist_mbid": "f413369d-d72f-46b9-8744-2d09344a9c6a",
+        "artist_name": "Jeremy Soule",
+        "listen_count": 413249
+      },
+      {
+        "artist_mbid": "c0eee88b-47f2-4cd2-ac48-a045e902a432",
+        "artist_name": "Ween",
+        "listen_count": 413131
+      },
+      {
+        "artist_mbid": "0af78501-5647-4c18-9a0d-66ac8789e13b",
+        "artist_name": "Beirut",
+        "listen_count": 412911
+      },
+      {
+        "artist_mbid": "dacc2d64-7e59-42a8-87a9-10c53919aff2",
+        "artist_name": "Clean Bandit",
+        "listen_count": 412385
+      },
+      {
+        "artist_mbid": "8ef1df30-ae4f-4dbd-9351-1a32b208a01e",
+        "artist_name": "Alicia Keys",
+        "listen_count": 412076
+      },
+      {
+        "artist_mbid": "3e55d51d-687f-4a9d-af96-2fabccf802e5",
+        "artist_name": "The Cardigans",
+        "listen_count": 411934
+      },
+      {
+        "artist_mbid": "1c3919b2-43ca-4a4a-935d-9d50135ec0ef",
+        "artist_name": "AFI",
+        "listen_count": 411858
+      },
+      {
+        "artist_mbid": "36494952-f434-45d8-a958-8b4acdbcf8a8",
+        "artist_name": "Gucci Mane",
+        "listen_count": 411413
+      },
+      {
+        "artist_mbid": "298909e4-ebcb-47b8-95e9-cc53b087fc65",
+        "artist_name": "Lamb of God",
+        "listen_count": 411355
+      },
+      {
+        "artist_mbid": "788ad31c-bf0c-4a31-83f8-b8b130d79c76",
+        "artist_name": "Apocalyptica",
+        "listen_count": 410958
+      },
+      {
+        "artist_mbid": "6655955b-1c1e-4bcb-84e4-81bcd9efab30",
+        "artist_name": "Ólafur Arnalds",
+        "listen_count": 410552
+      },
+      {
+        "artist_mbid": "9639cd52-c351-4a17-9797-58880e95a7ef",
+        "artist_name": "The Mountain Goats",
+        "listen_count": 410414
+      },
+      {
+        "artist_mbid": "78f797e3-4913-4026-aad0-1cd858bd735b",
+        "artist_name": "Bright Eyes",
+        "listen_count": 410260
+      },
+      {
+        "artist_mbid": "dcaa4f81-bfb7-44eb-8594-4e74f004b6e4",
+        "artist_name": "NOFX",
+        "listen_count": 410172
+      },
+      {
+        "artist_mbid": "78ea5ea1-3c4d-4b7e-ac5d-68900319ebe2",
+        "artist_name": "Siouxsie and the Banshees",
+        "listen_count": 408140
+      },
+      {
+        "artist_mbid": "5bdeb32d-56a5-4b6d-a768-264101fa0a0a",
+        "artist_name": "J Balvin",
+        "listen_count": 408081
+      },
+      {
+        "artist_mbid": "12d432a3-feb0-49b1-a107-d20751880764",
+        "artist_name": "Yann Tiersen",
+        "listen_count": 406925
+      },
+      {
+        "artist_mbid": "1a425bbd-cca4-4b2c-aeb7-71cb176c828a",
+        "artist_name": "One Direction",
+        "listen_count": 406566
+      },
+      {
+        "artist_mbid": "aba64937-3334-4c65-90a1-4e6b9d4d7ada",
+        "artist_name": "Aesop Rock",
+        "listen_count": 406102
+      },
+      {
+        "artist_mbid": "6143403a-df6c-429e-8ee6-ef869896b0da",
+        "artist_name": "Quavo",
+        "listen_count": 406076
+      },
+      {
+        "artist_mbid": "f1df0431-9250-4ec8-95d8-f19ce7cf7fb6",
+        "artist_name": "Stereolab",
+        "listen_count": 405479
+      },
+      {
+        "artist_mbid": "dbb3b771-ae77-4381-b61c-758b5b7898ec",
+        "artist_name": "Death",
+        "listen_count": 405301
+      },
+      {
+        "artist_mbid": "d339efbb-77b9-4147-ba9e-59f2f24550b2",
+        "artist_name": "Kelly Clarkson",
+        "listen_count": 405267
+      },
+      {
+        "artist_mbid": "93eb7110-0bc9-4d3f-816b-4b52ef982ec8",
+        "artist_name": "Metronomy",
+        "listen_count": 405110
+      },
+      {
+        "artist_mbid": "067102ea-9519-4622-9077-57ca4164cfbb",
+        "artist_name": "Morcheeba",
+        "listen_count": 404774
+      },
+      {
+        "artist_mbid": "8295ee00-0096-461d-95c7-c2263d2a4c6d",
+        "artist_name": "Killswitch Engage",
+        "listen_count": 404292
+      },
+      {
+        "artist_mbid": "ab2528d9-719f-4261-8098-21849222a0f2",
+        "artist_name": "Stromae",
+        "listen_count": 404235
+      },
+      {
+        "artist_mbid": "1138a764-2212-4d0a-b02d-0dc14df91e08",
+        "artist_name": "Akon",
+        "listen_count": 403795
+      },
+      {
+        "artist_mbid": "1f5ff245-2837-4d4a-a609-e93e544478c3",
+        "artist_name": "Trivium",
+        "listen_count": 401791
+      },
+      {
+        "artist_mbid": "9cea062d-d476-447f-98b4-e67e14bfd1e4",
+        "artist_name": "Oneohtrix Point Never",
+        "listen_count": 401706
+      },
+      {
+        "artist_mbid": "611700cf-27f0-4dc9-ae80-c513a767853e",
+        "artist_name": "Michael Bublé",
+        "listen_count": 399795
+      },
+      {
+        "artist_mbid": "b46e298d-d3a5-4695-a03e-63e8c523b23e",
+        "artist_name": "Daniel Caesar",
+        "listen_count": 399070
+      },
+      {
+        "artist_mbid": "80609a00-b394-4a49-975b-2db6b543fa97",
+        "artist_name": "The Kid LAROI",
+        "listen_count": 398941
+      },
+      {
+        "artist_mbid": "936addc3-91aa-49de-8ec0-0dc186de151f",
+        "artist_name": "Misfits",
+        "listen_count": 398128
+      },
+      {
+        "artist_mbid": "d1515727-4a93-4c0d-88cb-d7a9fce01879",
+        "artist_name": "Jamie xx",
+        "listen_count": 397904
+      },
+      {
+        "artist_mbid": "d03a54bc-6e07-4c04-a8d4-7fbf2bd07a01",
+        "artist_name": "Nils Frahm",
+        "listen_count": 396497
+      },
+      {
+        "artist_mbid": "172053e5-a7fb-4548-a64d-c53858b5e775",
+        "artist_name": "Father John Misty",
+        "listen_count": 394916
+      },
+      {
+        "artist_mbid": "754294d5-d7d2-4ea2-8184-1dcaaf55a56f",
+        "artist_name": "BADBADNOTGOOD",
+        "listen_count": 394554
+      },
+      {
+        "artist_mbid": "05755bf1-380c-487f-983f-d1a02401fa28",
+        "artist_name": "Cat Power",
+        "listen_count": 393338
+      },
+      {
+        "artist_mbid": "2eada8f8-056a-4093-bbc2-004909ce743b",
+        "artist_name": "Broken Social Scene",
+        "listen_count": 393028
+      },
+      {
+        "artist_mbid": "3648db01-b29d-4ab9-835c-83f6a5068fe4",
+        "artist_name": "Godspeed You! Black Emperor",
+        "listen_count": 391385
+      },
+      {
+        "artist_mbid": "bf710b71-48e5-4e15-9bd6-96debb2e4e98",
+        "artist_name": "The Knife",
+        "listen_count": 391197
+      },
+      {
+        "artist_mbid": "e8374874-4178-4869-b92e-fef6bf30dc04",
+        "artist_name": "Dropkick Murphys",
+        "listen_count": 390691
+      },
+      {
+        "artist_mbid": "fa1de503-aba7-41fa-a1ed-371b3e87a717",
+        "artist_name": "Madeon",
+        "listen_count": 390345
+      },
+      {
+        "artist_mbid": "99450990-b24e-4132-bb68-235f8c3e2564",
+        "artist_name": "Alvvays",
+        "listen_count": 390078
+      },
+      {
+        "artist_mbid": "3ae2fb37-8a23-429d-9920-bac811c4fc22",
+        "artist_name": "Jack White",
+        "listen_count": 389214
+      },
+      {
+        "artist_mbid": "cc7d4686-ea02-45fd-956e-94c1a322558c",
+        "artist_name": "Lykke Li",
+        "listen_count": 388266
+      },
+      {
+        "artist_mbid": "5a8e07d5-d932-4484-a7f7-e700793a9c94",
+        "artist_name": "Robyn",
+        "listen_count": 387728
+      },
+      {
+        "artist_mbid": "d8915e13-d67a-4aa0-9c0b-1f126af951af",
+        "artist_name": "Hot Chip",
+        "listen_count": 387476
+      },
+      {
+        "artist_mbid": "1fa3bded-908f-47be-9784-3c9ef850682b",
+        "artist_name": "Oliver Tree",
+        "listen_count": 386814
+      },
+      {
+        "artist_mbid": "e631bb92-3e2b-43e3-a2cb-b605e2fb53bd",
+        "artist_name": "Arch Enemy",
+        "listen_count": 385313
+      },
+      {
+        "artist_mbid": "42a8f507-8412-4611-854f-926571049fa0",
+        "artist_name": "George Harrison",
+        "listen_count": 385086
+      },
+      {
+        "artist_mbid": "e2c00c56-8365-4160-9f40-a64682917633",
+        "artist_name": "Goo Goo Dolls",
+        "listen_count": 384748
+      },
+      {
+        "artist_mbid": "0df563ec-1a79-486e-a46d-5b9862a40311",
+        "artist_name": "Melanie Martinez",
+        "listen_count": 384499
+      },
+      {
+        "artist_mbid": "52494f9b-789d-4467-bcaf-9915e70cc8f6",
+        "artist_name": "Rina Sawayama",
+        "listen_count": 383895
+      },
+      {
+        "artist_mbid": "fd87acc7-e0a0-4a45-bc2a-d2ab5c10be68",
+        "artist_name": "Fontaines D.C.",
+        "listen_count": 383686
+      },
+      {
+        "artist_mbid": "b51c672b-85e0-48fe-8648-470a2422229f",
+        "artist_name": "aespa",
+        "listen_count": 382891
+      },
+      {
+        "artist_mbid": "328d146c-79f1-4eb6-9e40-8ee5710c14e5",
+        "artist_name": "Imogen Heap",
+        "listen_count": 382590
+      },
+      {
+        "artist_mbid": "eea8a864-fcda-4602-9569-38ab446decd6",
+        "artist_name": "Louis Armstrong",
+        "listen_count": 381961
+      },
+      {
+        "artist_mbid": "c48d4327-8122-4286-af66-05e1ee6ac4d8",
+        "artist_name": "Mazzy Star",
+        "listen_count": 381888
+      },
+      {
+        "artist_mbid": "cd8c5019-5d75-4d5c-bc28-e1e26a7dd5c8",
+        "artist_name": "José González",
+        "listen_count": 381365
+      },
+      {
+        "artist_mbid": "8be564c3-dfba-440b-af8c-4ffbceeef45e",
+        "artist_name": "RAYE",
+        "listen_count": 381003
+      },
+      {
+        "artist_mbid": "cf15719f-51f9-4db8-a15d-5eed9664ce69",
+        "artist_name": "Lupe Fiasco",
+        "listen_count": 380386
+      },
+      {
+        "artist_mbid": "e134b52f-2e9e-4734-9bc3-bea9648d1fa1",
+        "artist_name": "Ado",
+        "listen_count": 380369
+      },
+      {
+        "artist_mbid": "92631c53-91ed-48f5-a09d-a104ba69cdc7",
+        "artist_name": "Offset",
+        "listen_count": 379914
+      },
+      {
+        "artist_mbid": "c0b2500e-0cef-4130-869d-732b23ed9df5",
+        "artist_name": "Tori Amos",
+        "listen_count": 379273
+      },
+      {
+        "artist_mbid": "eb6de5f6-98f8-4b5a-bfdc-f87fa4936baa",
+        "artist_name": "Kavinsky",
+        "listen_count": 378967
+      },
+      {
+        "artist_mbid": "ba2f4f3b-0293-4bc8-bb94-2f73b5207343",
+        "artist_name": "Underworld",
+        "listen_count": 378812
+      },
+      {
+        "artist_mbid": "4dbf5678-7a31-406a-abbe-232f8ac2cd63",
+        "artist_name": "Bryan Adams",
+        "listen_count": 378420
+      },
+      {
+        "artist_mbid": "dfe78af2-779e-4137-826a-3073a16e3278",
+        "artist_name": "Phantogram",
+        "listen_count": 378348
+      },
+      {
+        "artist_mbid": "04cd0cfd-bfd1-4c36-bc38-95c35e2c045f",
+        "artist_name": "Cream",
+        "listen_count": 378280
+      },
+      {
+        "artist_mbid": "97b226c8-7140-4da3-91ac-15e62e131a81",
+        "artist_name": "Macklemore & Ryan Lewis",
+        "listen_count": 377842
+      },
+      {
+        "artist_mbid": "daa09819-5da5-4c7a-8bef-eb372bb27ff1",
+        "artist_name": "Timbaland",
+        "listen_count": 377759
+      },
+      {
+        "artist_mbid": "2944824d-4c26-476f-a981-be849081942f",
+        "artist_name": "Nina Simone",
+        "listen_count": 377588
+      },
+      {
+        "artist_mbid": "3e1f2ee4-16be-4406-bf18-6173840cf2b1",
+        "artist_name": "Martin Garrix",
+        "listen_count": 376657
+      },
+      {
+        "artist_mbid": "a16e47f5-aa54-47fe-87e4-bb8af91a9fdd",
+        "artist_name": "Ennio Morricone",
+        "listen_count": 376643
+      },
+      {
+        "artist_mbid": "d4d17620-fd97-4574-92a8-a2cb7e72ce42",
+        "artist_name": "The Verve",
+        "listen_count": 375894
+      },
+      {
+        "artist_mbid": "f57e14e4-b030-467c-b202-539453f504ec",
+        "artist_name": "Children of Bodom",
+        "listen_count": 375809
+      },
+      {
+        "artist_mbid": "e337c918-098f-418e-97a2-81dc224b1bf9",
+        "artist_name": "Dominic Fike",
+        "listen_count": 375424
+      },
+      {
+        "artist_mbid": "883cbf1f-dcaa-4d17-b9ed-394e1fdabc87",
+        "artist_name": "Rex Orange County",
+        "listen_count": 375230
+      },
+      {
+        "artist_mbid": "2f9ecbed-27be-40e6-abca-6de49d50299e",
+        "artist_name": "Aretha Franklin",
+        "listen_count": 372930
+      },
+      {
+        "artist_mbid": "f7ba7fbe-c6bd-4ac0-bee9-c25c558d7d62",
+        "artist_name": "T.I.",
+        "listen_count": 372446
+      },
+      {
+        "artist_mbid": "07b6020a-c539-4d68-aeef-f159f3befc76",
+        "artist_name": "Band of Horses",
+        "listen_count": 372198
+      },
+      {
+        "artist_mbid": "44f42386-a733-4b51-8298-fe5c807d03aa",
+        "artist_name": "Mindless Self Indulgence",
+        "listen_count": 372195
+      },
+      {
+        "artist_mbid": "c7423e0c-ab3e-4ab4-be10-cdff5a9d3062",
+        "artist_name": "Blue Öyster Cult",
+        "listen_count": 371989
+      },
+      {
+        "artist_mbid": "fe1a873d-2000-4789-a895-4187fe756203",
+        "artist_name": "Parov Stelar",
+        "listen_count": 371592
+      },
+      {
+        "artist_mbid": "3d254f1e-7d18-431b-baeb-68e57695dfdb",
+        "artist_name": "Blood Orange",
+        "listen_count": 371380
+      },
+      {
+        "artist_mbid": "ae1b47d5-5128-431c-9d30-e08fd90e0767",
+        "artist_name": "Coheed and Cambria",
+        "listen_count": 370866
+      },
+      {
+        "artist_mbid": "7b885d42-3c41-4f43-9944-a5855ec5155e",
+        "artist_name": "Goldfrapp",
+        "listen_count": 370807
+      },
+      {
+        "artist_mbid": "e9dfc148-d5f6-425e-b80b-f99ed2bd7c09",
+        "artist_name": "God Is an Astronaut",
+        "listen_count": 370793
+      },
+      {
+        "artist_mbid": "4ca783b7-5bf7-4348-b494-46680660050f",
+        "artist_name": "Stone Sour",
+        "listen_count": 370650
+      },
+      {
+        "artist_mbid": "630662ea-1c7d-4208-99fd-ba3afec20f0c",
+        "artist_name": "Amon Tobin",
+        "listen_count": 370625
+      },
+      {
+        "artist_mbid": "925c7673-0e85-410f-b7e4-d9705a7aa619",
+        "artist_name": "Lin‐Manuel Miranda",
+        "listen_count": 370579
+      },
+      {
+        "artist_mbid": "e56aee57-d90e-40cf-a70d-beb70f6f3c69",
+        "artist_name": "KAYTRANADA",
+        "listen_count": 369639
+      },
+      {
+        "artist_mbid": "4ae429fe-735c-4968-8253-a591421b1bd0",
+        "artist_name": "girl in red",
+        "listen_count": 369374
+      },
+      {
+        "artist_mbid": "e56ab1ae-1cfa-4d0e-b33b-af31bff677c7",
+        "artist_name": "Falling in Reverse",
+        "listen_count": 369261
+      },
+      {
+        "artist_mbid": "be465d4f-c28d-4ba1-94ab-ebaada7db8af",
+        "artist_name": "IDLES",
+        "listen_count": 369175
+      },
+      {
+        "artist_mbid": "8475297d-fb78-4630-8d74-9b87b6bb7cc8",
+        "artist_name": "of Montreal",
+        "listen_count": 368793
+      },
+      {
+        "artist_mbid": "a56bd8f9-8ef8-4d63-89a4-794ed1360dd2",
+        "artist_name": "Diplo",
+        "listen_count": 368193
+      },
+      {
+        "artist_mbid": "76b2e842-5e85-4c97-ab62-d5bc315595b5",
+        "artist_name": "Pulp",
+        "listen_count": 367972
+      },
+      {
+        "artist_mbid": "344bfb00-27f0-4ff2-b96b-048ed1c6a968",
+        "artist_name": "Polyphia",
+        "listen_count": 367528
+      },
+      {
+        "artist_mbid": "cf8b3b8c-118e-4136-8d1d-c37091173413",
+        "artist_name": "Meshuggah",
+        "listen_count": 366889
+      },
+      {
+        "artist_mbid": "fdb53441-e5e6-4657-9aad-8dab672e1cdc",
+        "artist_name": "Purity Ring",
+        "listen_count": 366488
+      },
+      {
+        "artist_mbid": "01a36baf-fa2d-4659-8bc2-dbfb5ffed791",
+        "artist_name": "Mick Gordon",
+        "listen_count": 366124
+      },
+      {
+        "artist_mbid": "e2305342-0bde-4a2c-aed0-4b88694834de",
+        "artist_name": "Unknown Mortal Orchestra",
+        "listen_count": 366074
+      },
+      {
+        "artist_mbid": "9f75277c-b283-4846-ac8c-f932255cd0ac",
+        "artist_name": "Doechii",
+        "listen_count": 365486
+      },
+      {
+        "artist_mbid": null,
+        "artist_name": "RM",
+        "listen_count": 365423
+      },
+      {
+        "artist_mbid": "f93dbc64-6f08-4033-bcc7-8a0bb4689849",
+        "artist_name": "Tom Petty and the Heartbreakers",
+        "listen_count": 365010
+      },
+      {
+        "artist_mbid": "db4624cf-0e44-481e-a9dc-2142b833ec2f",
+        "artist_name": "Robbie Williams",
+        "listen_count": 364744
+      },
+      {
+        "artist_mbid": "80b3cf5e-18fe-4c59-98c7-e5bb87210710",
+        "artist_name": "The Roots",
+        "listen_count": 364553
+      },
+      {
+        "artist_mbid": "47c8f88b-987a-4b64-9175-2b1b57809727",
+        "artist_name": "Billy Idol",
+        "listen_count": 364425
+      },
+      {
+        "artist_mbid": "84dc4f23-c0b8-4fe1-bbca-a3993ddc8fc2",
+        "artist_name": "Primus",
+        "listen_count": 364263
+      },
+      {
+        "artist_mbid": "e9403d9c-329b-4108-a26f-564159d441d9",
+        "artist_name": "Black Country, New Road",
+        "listen_count": 364131
+      },
+      {
+        "artist_mbid": "830e5c4e-6b7d-431d-86ab-00c751281dc5",
+        "artist_name": "5 Seconds of Summer",
+        "listen_count": 363765
+      },
+      {
+        "artist_mbid": "487bfd74-71bf-46dd-b89c-80b7a0f06f2f",
+        "artist_name": "The Hives",
+        "listen_count": 363477
+      },
+      {
+        "artist_mbid": "51508c1f-8d07-4a00-9cf1-26c570fe7b78",
+        "artist_name": "Cypress Hill",
+        "listen_count": 363040
+      },
+      {
+        "artist_mbid": "c23b637b-97c6-41eb-8ef6-6c724efc80a8",
+        "artist_name": "Zero 7",
+        "listen_count": 361856
+      },
+      {
+        "artist_mbid": "6faa7ca7-0d99-4a5e-bfa6-1fd5037520c6",
+        "artist_name": "Grateful Dead",
+        "listen_count": 361762
+      },
+      {
+        "artist_mbid": "6bbb3983-ce8a-4971-96e0-7cae73268fc4",
+        "artist_name": "Jungle",
+        "listen_count": 361075
+      },
+      {
+        "artist_mbid": "081b133e-ce74-42ba-92c1-c18234acb532",
+        "artist_name": "Andrew Bird",
+        "listen_count": 360746
+      },
+      {
+        "artist_mbid": "9c935736-7530-41e4-b776-1dbcf534c061",
+        "artist_name": "Spiritbox",
+        "listen_count": 360041
+      },
+      {
+        "artist_mbid": "396a9525-0994-4542-b480-c4587feeb476",
+        "artist_name": "Tinashe",
+        "listen_count": 359723
+      },
+      {
+        "artist_mbid": "38474d18-9204-4f60-a137-1fcc6750b869",
+        "artist_name": "Skepta",
+        "listen_count": 358876
+      },
+      {
+        "artist_mbid": "2437980f-513a-44fc-80f1-b90d9d7fcf8f",
+        "artist_name": "Bing Crosby",
+        "listen_count": 358492
+      },
+      {
+        "artist_mbid": "c55193fb-f5d2-4839-a263-4c044fca1456",
+        "artist_name": "Dio",
+        "listen_count": 357660
+      },
+      {
+        "artist_mbid": "774b02d7-5056-4b0f-9d69-a82b6ae27cde",
+        "artist_name": "SOPHIE",
+        "listen_count": 357149
+      },
+      {
+        "artist_mbid": "a63df8c3-28e4-41db-bac2-c6c6e8ff8f28",
+        "artist_name": "Type O Negative",
+        "listen_count": 357017
+      },
+      {
+        "artist_mbid": "0ef3f425-9bd2-4216-9dd2-219d2fe90f1f",
+        "artist_name": "Lenny Kravitz",
+        "listen_count": 356510
+      },
+      {
+        "artist_mbid": "c3da3346-2643-48a7-93cd-011f6834b3d7",
+        "artist_name": "Sean Paul",
+        "listen_count": 355973
+      },
+      {
+        "artist_mbid": "37c78aeb-d196-42b5-b991-6afb4fc9bc2e",
+        "artist_name": "Dead Kennedys",
+        "listen_count": 355818
+      },
+      {
+        "artist_mbid": "57fca0e2-f9ad-4ae6-af9d-6a6f50cbcd5f",
+        "artist_name": "Vangelis",
+        "listen_count": 355474
+      },
+      {
+        "artist_mbid": "2e41ae9c-afd2-4f20-8f1e-17281ce9b472",
+        "artist_name": "Gwen Stefani",
+        "listen_count": 354723
+      },
+      {
+        "artist_mbid": "6fea1339-260c-40fe-bb7a-ace5c8438955",
+        "artist_name": "Lacuna Coil",
+        "listen_count": 354664
+      },
+      {
+        "artist_mbid": "87b9b3b8-ab93-426c-a200-4012d667a626",
+        "artist_name": "The War on Drugs",
+        "listen_count": 354518
+      },
+      {
+        "artist_mbid": "6805e4d5-f550-40fe-b731-05dc8229e74b",
+        "artist_name": "HEALTH",
+        "listen_count": 354384
+      },
+      {
+        "artist_mbid": "5ec1ecc6-4535-4911-a27a-e26343f4a189",
+        "artist_name": "Kodak Black",
+        "listen_count": 354251
+      },
+      {
+        "artist_mbid": "321fdfbb-426b-43f7-8295-fa9aca6348d9",
+        "artist_name": "Hollywood Undead",
+        "listen_count": 354200
+      },
+      {
+        "artist_mbid": "33b3c323-77c2-417c-a5b4-af7e6a111cc9",
+        "artist_name": "The Jimi Hendrix Experience",
+        "listen_count": 354090
+      },
+      {
+        "artist_mbid": null,
+        "artist_name": "RM, Youjeen",
+        "listen_count": 353007
+      },
+      {
+        "artist_mbid": "90218af4-4d58-4821-8d41-2ee295ebbe21",
+        "artist_name": "Kaiser Chiefs",
+        "listen_count": 352279
+      },
+      {
+        "artist_mbid": "c8a9ae11-63bf-409b-8bf3-a96b3712a2ff",
+        "artist_name": "Little Dragon",
+        "listen_count": 352224
+      },
+      {
+        "artist_mbid": "09885b8e-f235-4b80-a02a-055539493173",
+        "artist_name": "The All‐American Rejects",
+        "listen_count": 351257
+      },
+      {
+        "artist_mbid": "8456e9f7-debf-4579-a86c-33a325a35d2d",
+        "artist_name": "Chevelle",
+        "listen_count": 351169
+      },
+      {
+        "artist_mbid": "4f416ed7-dda2-45de-a6f1-b986e861cf4b",
+        "artist_name": "Deerhunter",
+        "listen_count": 350722
+      },
+      {
+        "artist_mbid": "4753fcb7-9270-493a-974d-8daca4e49125",
+        "artist_name": "Volbeat",
+        "listen_count": 350417
+      },
+      {
+        "artist_mbid": "8c529495-91f5-4e2f-b71b-adcb66878d04",
+        "artist_name": "Japanese Breakfast",
+        "listen_count": 350179
+      },
+      {
+        "artist_mbid": "7249b899-8db8-43e7-9e6e-22f1e736024e",
+        "artist_name": "Def Leppard",
+        "listen_count": 349714
+      },
+      {
+        "artist_mbid": "a7e3c900-1c91-444c-9fce-77d230e5791b",
+        "artist_name": "Darren Korb",
+        "listen_count": 349353
+      },
+      {
+        "artist_mbid": "7e2e4e3a-4e85-4d5a-b78e-5e4afd467a3e",
+        "artist_name": "Nothing But Thieves",
+        "listen_count": 348599
+      },
+      {
+        "artist_mbid": "879d43c6-13a8-42f6-b8df-a9b7d50aa9e2",
+        "artist_name": "Duster",
+        "listen_count": 348133
+      },
+      {
+        "artist_mbid": "299278d3-25dd-4f30-bae4-5b571c28034d",
+        "artist_name": "The Postal Service",
+        "listen_count": 348120
+      },
+      {
+        "artist_mbid": "b267ca80-034e-4dc1-9ed4-ec45f1fed41d",
+        "artist_name": "Good Charlotte",
+        "listen_count": 348064
+      },
+      {
+        "artist_mbid": "a1ced3e5-476c-4046-bd74-d428f419989b",
+        "artist_name": "Daughter",
+        "listen_count": 347852
+      },
+      {
+        "artist_mbid": "ac2d1c91-3667-46aa-9fe7-170ca7fce9e2",
+        "artist_name": "Godsmack",
+        "listen_count": 347742
+      },
+      {
+        "artist_mbid": "45c25199-fa62-4d4c-b0a2-11eeed6923c3",
+        "artist_name": "Perturbator",
+        "listen_count": 347444
+      },
+      {
+        "artist_mbid": "ccb8f30e-4d71-40c4-8b1d-846dafe73e2c",
+        "artist_name": "George Michael",
+        "listen_count": 347441
+      },
+      {
+        "artist_mbid": "aa1d4315-5246-42b2-b62b-f997d046d8b2",
+        "artist_name": "Emancipator",
+        "listen_count": 346452
+      },
+      {
+        "artist_mbid": "b4b5b5a7-feff-47d0-9458-83d0d135a692",
+        "artist_name": "Hayley Williams",
+        "listen_count": 346082
+      },
+      {
+        "artist_mbid": "e941e097-0f9e-496d-a381-dd74a953682c",
+        "artist_name": "박효신",
+        "listen_count": 345974
+      },
+      {
+        "artist_mbid": "e3f7631b-e50b-4923-9049-2fa84dfcaf71",
+        "artist_name": "BONES",
+        "listen_count": 345347
+      },
+      {
+        "artist_mbid": "10a9ff92-9637-4498-afea-7044b2ab0dc0",
+        "artist_name": "Busta Rhymes",
+        "listen_count": 345316
+      },
+      {
+        "artist_mbid": "3630fff3-52fc-4e97-ab01-d68fd88e4135",
+        "artist_name": "Yellowcard",
+        "listen_count": 344648
+      },
+      {
+        "artist_mbid": "4d86ad4e-28d8-4e9f-8cf4-735c57060fdc",
+        "artist_name": "Squarepusher",
+        "listen_count": 344417
+      },
+      {
+        "artist_mbid": "ce55e49a-32f4-4757-9849-bf04d06d5fcc",
+        "artist_name": "T‐Pain",
+        "listen_count": 344131
+      },
+      {
+        "artist_mbid": "b5bd9f88-962e-4730-84a7-795592ba42e8",
+        "artist_name": "Silversun Pickups",
+        "listen_count": 343751
+      },
+      {
+        "artist_mbid": "c0ef2ba5-a7b7-40ea-bd27-30acccfcac11",
+        "artist_name": "Lauv",
+        "listen_count": 343646
+      },
+      {
+        "artist_mbid": "82b1f5fd-cd31-41a9-b5d4-7e33f0eb9751",
+        "artist_name": "Otis Redding",
+        "listen_count": 343594
+      },
+      {
+        "artist_mbid": "f1693075-b637-49f8-8d0e-8cee8bec77cb",
+        "artist_name": "Lena Raine",
+        "listen_count": 343422
+      },
+      {
+        "artist_mbid": "e105c272-b5d7-4135-82ef-d60bded54345",
+        "artist_name": "The Wombats",
+        "listen_count": 343415
+      },
+      {
+        "artist_mbid": "20aa23e3-3532-42ca-acf6-e8c2e9df2688",
+        "artist_name": "Anathema",
+        "listen_count": 342960
+      },
+      {
+        "artist_mbid": "3ab2ee23-1c2f-458c-9c8c-ca4844729120",
+        "artist_name": "MØ",
+        "listen_count": 342955
+      },
+      {
+        "artist_mbid": "d13f0f47-36f9-4661-87fe-2de56f45c649",
+        "artist_name": "Tegan and Sara",
+        "listen_count": 342504
+      },
+      {
+        "artist_mbid": "4dbe08c1-b40a-43b3-ab89-210000bd8ab2",
+        "artist_name": "London Grammar",
+        "listen_count": 341784
+      },
+      {
+        "artist_mbid": "7999a8a1-6cbd-4453-8dd4-ebd03a10e44f",
+        "artist_name": "Cavetown",
+        "listen_count": 341695
+      },
+      {
+        "artist_mbid": "26f07661-e115-471d-a930-206f5c89d17c",
+        "artist_name": "Mötley Crüe",
+        "listen_count": 341693
+      },
+      {
+        "artist_mbid": "c3c82bdc-d9e7-4836-9746-c24ead47ca19",
+        "artist_name": "Mark Ronson",
+        "listen_count": 340415
+      },
+      {
+        "artist_mbid": "fd1a2d9d-9bb6-44de-83a3-41560658aba9",
+        "artist_name": "Bill Withers",
+        "listen_count": 340180
+      },
+      {
+        "artist_mbid": "a7229e38-bab7-48c1-9f35-9b4c49738b0f",
+        "artist_name": "Galantis",
+        "listen_count": 340142
+      },
+      {
+        "artist_mbid": "a2a3f910-b188-43e7-81d0-f1ac2a2f3e12",
+        "artist_name": "Noah Kahan",
+        "listen_count": 339970
+      },
+      {
+        "artist_mbid": "f0c8f75f-8736-4b1d-b312-9349fcff321d",
+        "artist_name": "Wolfmother",
+        "listen_count": 339945
+      },
+      {
+        "artist_mbid": "3b39abeb-0064-4eed-9ddd-ee47a45c54cb",
+        "artist_name": "Ghostface Killah",
+        "listen_count": 339844
+      },
+      {
+        "artist_mbid": "a0327dc2-dc76-44d5-aec6-47cd2dff1469",
+        "artist_name": "Counting Crows",
+        "listen_count": 339431
+      },
+      {
+        "artist_mbid": "39c2a93d-9afa-4a22-9bba-c087ab056e1c",
+        "artist_name": "Jefferson Airplane",
+        "listen_count": 339230
+      },
+      {
+        "artist_mbid": "2e62daef-dc0d-40ad-b430-fd6872e992aa",
+        "artist_name": "The Glitch Mob",
+        "listen_count": 338562
+      },
+      {
+        "artist_mbid": "22a1f4d7-81ff-4216-ac06-3387da6bc118",
+        "artist_name": "Machine Head",
+        "listen_count": 338534
+      },
+      {
+        "artist_mbid": "a6de8ef9-b1a1-4756-97aa-481bbb8a4069",
+        "artist_name": "Joni Mitchell",
+        "listen_count": 338461
+      },
+      {
+        "artist_mbid": "db48610c-6d8f-4d10-90ca-c4d14bb1a8b1",
+        "artist_name": "G‐Eazy",
+        "listen_count": 337726
+      },
+      {
+        "artist_mbid": "5f43abf6-92a5-468a-a633-b73f94627972",
+        "artist_name": "ILLENIUM",
+        "listen_count": 337313
+      },
+      {
+        "artist_mbid": "3ef77bdc-b1ce-4e44-aa4b-acfa763c5284",
+        "artist_name": "Powerwolf",
+        "listen_count": 337037
+      },
+      {
+        "artist_mbid": "c45d161f-83ce-4464-ba41-44202e6916d9",
+        "artist_name": "Juicy J",
+        "listen_count": 336761
+      },
+      {
+        "artist_mbid": "42faad37-8aaa-42e4-a300-5a7dae79ed24",
+        "artist_name": "Low",
+        "listen_count": 336641
+      },
+      {
+        "artist_mbid": "9e6a6a2f-f696-4cc0-87f1-e4f712e46802",
+        "artist_name": "Yeat",
+        "listen_count": 336214
+      },
+      {
+        "artist_mbid": "ef58d4c9-0d40-42ba-bfab-9186c1483edd",
+        "artist_name": "DragonForce",
+        "listen_count": 336017
+      },
+      {
+        "artist_mbid": "be407b02-f3e6-4ed5-9489-f8e5f0ab36dc",
+        "artist_name": "The Raconteurs",
+        "listen_count": 335142
+      },
+      {
+        "artist_mbid": "5bf64d94-efd9-4334-96fd-e6197b0b02b8",
+        "artist_name": "Tricky",
+        "listen_count": 334889
+      },
+      {
+        "artist_mbid": "0cd12ab3-9628-45ef-a97b-ff18624f14a0",
+        "artist_name": "65daysofstatic",
+        "listen_count": 334338
+      },
+      {
+        "artist_mbid": "b2dbfc09-b332-408b-a235-1850e41971c5",
+        "artist_name": "Bloodhound Gang",
+        "listen_count": 333538
+      },
+      {
+        "artist_mbid": "e3d5b5ec-101a-4529-9f2d-01dca64cf44e",
+        "artist_name": "Anne‐Marie",
+        "listen_count": 333248
+      },
+      {
+        "artist_mbid": "f23ef341-33bd-47c1-b83c-846a78581f05",
+        "artist_name": "PARTYNEXTDOOR",
+        "listen_count": 333108
+      },
+      {
+        "artist_mbid": "9d30e408-1559-448b-b491-2f8de1583ccf",
+        "artist_name": "Dark Tranquillity",
+        "listen_count": 333039
+      },
+      {
+        "artist_mbid": "77c167d2-4965-4421-830a-9815e4956475",
+        "artist_name": "Dinosaur Jr.",
+        "listen_count": 332684
+      },
+      {
+        "artist_mbid": "77b29df2-056e-409e-a1b2-5e2bbfe421c4",
+        "artist_name": "AWOLNATION",
+        "listen_count": 332503
+      },
+      {
+        "artist_mbid": "0efe858c-89e5-4e47-906a-356fa953fd6e",
+        "artist_name": "Editors",
+        "listen_count": 332385
+      },
+      {
+        "artist_mbid": "013fa897-86db-41d3-8e9f-386c8a34f4e6",
+        "artist_name": "Morrissey",
+        "listen_count": 332381
+      },
+      {
+        "artist_mbid": "eb3c021d-e056-42d6-8fad-064205a90527",
+        "artist_name": "femtanyl",
+        "listen_count": 332338
+      },
+      {
+        "artist_mbid": "8000598a-5edb-401c-8e6d-36b167feaf38",
+        "artist_name": "Eluveitie",
+        "listen_count": 332253
+      },
+      {
+        "artist_mbid": "7746d775-9550-4360-b8d5-c37bd448ce01",
+        "artist_name": "“Weird Al” Yankovic",
+        "listen_count": 331831
+      },
+      {
+        "artist_mbid": "c7ee3bc9-780c-42c0-91e9-4cd70ad692d3",
+        "artist_name": "Tim Hecker",
+        "listen_count": 331591
+      },
+      {
+        "artist_mbid": "0307edfc-437c-4b48-8700-80680e66a228",
+        "artist_name": "Whitney Houston",
+        "listen_count": 331263
+      },
+      {
+        "artist_mbid": "53e40f93-f4af-4f8c-819c-7bbe4b6f0a1c",
+        "artist_name": "Lindsey Stirling",
+        "listen_count": 330316
+      },
+      {
+        "artist_mbid": "6897b46a-9236-4480-9ed7-300f6b85d62f",
+        "artist_name": "Ninajirachi",
+        "listen_count": 330054
+      },
+      {
+        "artist_mbid": "481bf5f9-2e7c-4c44-b08a-05b32bc7c00d",
+        "artist_name": "INXS",
+        "listen_count": 330006
+      },
+      {
+        "artist_mbid": "850a8b03-98a7-4fd3-afbd-5e5520b4ef5f",
+        "artist_name": "Conan Gray",
+        "listen_count": 329997
+      },
+      {
+        "artist_mbid": "a39acc4a-985e-4173-a9ed-f325f2d3bc1c",
+        "artist_name": "Steve Aoki",
+        "listen_count": 329153
+      },
+      {
+        "artist_mbid": "60e8e938-365e-4429-a141-4c79eb49588d",
+        "artist_name": "Chelsea Wolfe",
+        "listen_count": 329004
+      },
+      {
+        "artist_mbid": "7570a0dd-5a67-401b-b19a-261eee01a284",
+        "artist_name": "Manu Chao",
+        "listen_count": 328888
+      },
+      {
+        "artist_mbid": "df36f6db-5987-46ed-9d02-0cf36ed4e060",
+        "artist_name": "Vance Joy",
+        "listen_count": 328858
+      },
+      {
+        "artist_mbid": "3ff72a59-f39d-411d-9f93-2d4a86413013",
+        "artist_name": "The Magnetic Fields",
+        "listen_count": 328246
+      },
+      {
+        "artist_mbid": "b4d32cff-f19e-455f-86c4-f347d824ca61",
+        "artist_name": "Eurythmics",
+        "listen_count": 328200
+      },
+      {
+        "artist_mbid": "bfd5aec5-62a2-4560-a316-7c46c17babda",
+        "artist_name": "Train",
+        "listen_count": 327781
+      },
+      {
+        "artist_mbid": "70923a5d-d3ba-4ef7-9064-ea5f709aa076",
+        "artist_name": "Have a Nice Life",
+        "listen_count": 327647
+      },
+      {
+        "artist_mbid": "fa31e7d4-a03a-4110-98fc-f8826e95ec25",
+        "artist_name": "Converge",
+        "listen_count": 327605
+      },
+      {
+        "artist_mbid": "3547f34a-db02-4ab7-b4a0-380e1ef951a9",
+        "artist_name": "Wolf Alice",
+        "listen_count": 326967
+      },
+      {
+        "artist_mbid": "cf075492-d880-4afc-b87b-d6b03e33dacc",
+        "artist_name": "Electric Callboy",
+        "listen_count": 326686
+      },
+      {
+        "artist_mbid": "6ed40778-8d03-4a5c-ad35-93cf814627c9",
+        "artist_name": "Jessie Ware",
+        "listen_count": 326633
+      },
+      {
+        "artist_mbid": "1d11e2a1-4531-4d61-a8c7-7b5c6a608fd2",
+        "artist_name": "Ice Cube",
+        "listen_count": 326554
+      },
+      {
+        "artist_mbid": "7b748dac-f5ce-45a7-9b95-c1d8b5b013ed",
+        "artist_name": "Turnstile",
+        "listen_count": 326265
+      },
+      {
+        "artist_mbid": "0638ba22-040f-438d-83a5-9b670c4adaf5",
+        "artist_name": "Ludacris",
+        "listen_count": 326000
+      },
+      {
+        "artist_mbid": "7754905b-8bf7-48e2-935a-03d566fec464",
+        "artist_name": "Moderat",
+        "listen_count": 325855
+      },
+      {
+        "artist_mbid": "0068ae6c-7156-40f9-a81f-39294af6a549",
+        "artist_name": "i‐dle",
+        "listen_count": 324816
+      },
+      {
+        "artist_mbid": "21985b14-1b0d-44fe-b357-310b29bba510",
+        "artist_name": "Epica",
+        "listen_count": 324601
+      },
+      {
+        "artist_mbid": "99075985-0d80-4692-a15e-b16f78831792",
+        "artist_name": "Swedish House Mafia",
+        "listen_count": 324570
+      },
+      {
+        "artist_mbid": "8a9ac1cb-faae-434e-8d60-b139a3707dfc",
+        "artist_name": "MIKA",
+        "listen_count": 324279
+      },
+      {
+        "artist_mbid": "765774a0-2060-469b-8b7d-612eea48579b",
+        "artist_name": "Helloween",
+        "listen_count": 324226
+      },
+      {
+        "artist_mbid": "9118f524-be76-4eaf-875c-ccf15e2a2ad6",
+        "artist_name": "Chief Keef",
+        "listen_count": 323499
+      },
+      {
+        "artist_mbid": "66ab36ce-8f58-46fb-9284-396c2c90ecbd",
+        "artist_name": "Ecco2K",
+        "listen_count": 323139
+      },
+      {
+        "artist_mbid": "6648391e-7890-4f6c-b939-976f215195d3",
+        "artist_name": "UNKLE",
+        "listen_count": 322961
+      },
+      {
+        "artist_mbid": "97e69730-3791-423b-9770-287261588854",
+        "artist_name": "Alessia Cara",
+        "listen_count": 322864
+      },
+      {
+        "artist_mbid": "2f569e60-0a1b-4fb9-95a4-3dc1525d1aad",
+        "artist_name": "Backstreet Boys",
+        "listen_count": 322620
+      },
+      {
+        "artist_mbid": "f98711e5-06f7-43ed-8239-da0f61a9c460",
+        "artist_name": "The Alan Parsons Project",
+        "listen_count": 322308
+      },
+      {
+        "artist_mbid": "ea0f2a37-7007-4217-a812-396227f5013a",
+        "artist_name": "Kyuss",
+        "listen_count": 322294
+      },
+      {
+        "artist_mbid": "8fb5370b-9568-4b61-9da5-2aa12c9928db",
+        "artist_name": "Lizzo",
+        "listen_count": 321700
+      },
+      {
+        "artist_mbid": "efaefde1-e09b-4d49-9d8e-b1304d2ece8d",
+        "artist_name": "Amorphis",
+        "listen_count": 321204
+      },
+      {
+        "artist_mbid": "4ebb5ad3-9018-407d-8c24-c03011ab9ac6",
+        "artist_name": "American Football",
+        "listen_count": 321188
+      },
+      {
+        "artist_mbid": "6bbfc71b-5f18-4e61-82fb-bee0c2a6b5f9",
+        "artist_name": "WILLOW",
+        "listen_count": 320153
+      },
+      {
+        "artist_mbid": "f3e2a7d9-c6bb-4848-95e5-04c0a1e2f511",
+        "artist_name": "Orbital",
+        "listen_count": 320135
+      },
+      {
+        "artist_mbid": "6f6fd596-76e0-4b82-aa37-f558ac2d337b",
+        "artist_name": "Gotye",
+        "listen_count": 319945
+      },
+      {
+        "artist_mbid": "f7625f34-1799-42a4-a1c6-22b5377c767b",
+        "artist_name": "Arca",
+        "listen_count": 319066
+      },
+      {
+        "artist_mbid": "b616d6f0-ec1f-4c69-8a79-12a97ece7372",
+        "artist_name": "Anthrax",
+        "listen_count": 319020
+      },
+      {
+        "artist_mbid": "32efea44-6cb5-4b4f-bdaa-c8b8f6cef981",
+        "artist_name": "Manic Street Preachers",
+        "listen_count": 318919
+      },
+      {
+        "artist_mbid": "ca1dcba2-792c-4550-abf2-7b45396e81ca",
+        "artist_name": "bôa",
+        "listen_count": 317479
+      },
+      {
+        "artist_mbid": "9058d01e-8afc-47a4-8664-621fb5f159c0",
+        "artist_name": "Slayyyter",
+        "listen_count": 316931
+      },
+      {
+        "artist_mbid": "87ae83df-6173-40cc-a0f2-bad543faa6aa",
+        "artist_name": "DaBaby",
+        "listen_count": 316483
+      },
+      {
+        "artist_mbid": "4c98aa1b-34eb-4336-987f-5e50aa059c00",
+        "artist_name": "The Script",
+        "listen_count": 315995
+      },
+      {
+        "artist_mbid": "e938a15c-b17e-4e7a-9f68-ff0d536cab44",
+        "artist_name": "The Jesus and Mary Chain",
+        "listen_count": 315986
+      },
+      {
+        "artist_mbid": "93ccd76c-3790-4435-a8bf-02bc26294b93",
+        "artist_name": "Bush",
+        "listen_count": 315672
+      },
+      {
+        "artist_mbid": "1d543e07-d0d2-4834-a8db-d65c50c2a856",
+        "artist_name": "Dolly Parton",
+        "listen_count": 315043
+      },
+      {
+        "artist_mbid": "97b20fe3-0924-4a5f-9955-d0b5c5f9587f",
+        "artist_name": "Santigold",
+        "listen_count": 314939
+      },
+      {
+        "artist_mbid": "51c76d97-0635-433c-b26d-66beb81657f8",
+        "artist_name": "Lord Huron",
+        "listen_count": 314089
+      },
+      {
+        "artist_mbid": "fd3c3f9f-a471-498e-ab3a-940ac20b6bbd",
+        "artist_name": "Panda Bear",
+        "listen_count": 314039
+      },
+      {
+        "artist_mbid": "fad2875e-ba81-4637-b859-4684622dcb1c",
+        "artist_name": "Kimbra",
+        "listen_count": 313815
+      },
+      {
+        "artist_mbid": "23a32153-7314-4359-a5cd-9e584fe83504",
+        "artist_name": "Akira Yamaoka",
+        "listen_count": 313787
+      },
+      {
+        "artist_mbid": "b45335d1-5219-4262-a44d-936aa36eeaed",
+        "artist_name": "Ladytron",
+        "listen_count": 313783
+      },
+      {
+        "artist_mbid": "1ba1d493-7114-45e2-b163-a36d49a0c065",
+        "artist_name": "Chet Baker",
+        "listen_count": 311617
+      },
+      {
+        "artist_mbid": "9f4c3bca-4d80-428f-9ed2-0de052d92ecc",
+        "artist_name": "Jack Stauber",
+        "listen_count": 310529
+      },
+      {
+        "artist_mbid": "ccda046a-2674-4f7d-97e6-f23d6c156432",
+        "artist_name": "Dead Can Dance",
+        "listen_count": 309136
+      },
+      {
+        "artist_mbid": "c0daae21-ec2a-4dd0-a323-4f53f5945d04",
+        "artist_name": "King Krule",
+        "listen_count": 308937
+      },
+      {
+        "artist_mbid": "d7604213-38a4-4372-b682-16f9b831d3a8",
+        "artist_name": "HOME",
+        "listen_count": 308920
+      },
+      {
+        "artist_mbid": "10bf95b6-30e3-44f1-817f-45762cdc0de0",
+        "artist_name": "Paradise Lost",
+        "listen_count": 308861
+      },
+      {
+        "artist_mbid": "b5fa29f1-6c22-4321-a488-b5f363b06b06",
+        "artist_name": "The Stone Roses",
+        "listen_count": 308694
+      },
+      {
+        "artist_mbid": "8ab5d936-49d1-415e-92c8-151e0e7dd912",
+        "artist_name": "FERG",
+        "listen_count": 308618
+      },
+      {
+        "artist_mbid": "749ef494-8518-4b49-b685-63d8e728d25c",
+        "artist_name": "Madison Beer",
+        "listen_count": 308307
+      },
+      {
+        "artist_mbid": "1c5b9bd6-76e8-4fe7-a6df-3bc0b5a452cc",
+        "artist_name": "Motionless in White",
+        "listen_count": 308080
+      },
+      {
+        "artist_mbid": "3260ce89-5eb0-4c6a-89c7-379c0dfc2ab9",
+        "artist_name": "Kehlani",
+        "listen_count": 307672
+      },
+      {
+        "artist_mbid": "33b1695b-0b35-4e22-b1d4-be4971fb71ba",
+        "artist_name": "Sewerslvt",
+        "listen_count": 307495
+      },
+      {
+        "artist_mbid": "6d230d98-fb8d-4421-a6e8-daca4e55d53e",
+        "artist_name": "Milky Chance",
+        "listen_count": 307308
+      },
+      {
+        "artist_mbid": "0688add2-c282-4ee2-ba61-223ffdb3c201",
+        "artist_name": "Bauhaus",
+        "listen_count": 306437
+      },
+      {
+        "artist_mbid": "6b014cfd-4927-4187-a741-715998e6d785",
+        "artist_name": "Lemon Demon",
+        "listen_count": 306235
+      },
+      {
+        "artist_mbid": "9880800a-f6f8-4f8f-a00e-b4b664776c0c",
+        "artist_name": "Jay Rock",
+        "listen_count": 305018
+      },
+      {
+        "artist_mbid": "2ddd167f-5b8a-4372-b350-6ad50493bac0",
+        "artist_name": "The Fray",
+        "listen_count": 304886
+      },
+      {
+        "artist_mbid": "e4d7cfe5-0bed-46cf-acad-ab9a4dcb7aa6",
+        "artist_name": "Anamanaguchi",
+        "listen_count": 304540
+      },
+      {
+        "artist_mbid": "9d2fde91-4633-430d-87f0-2b9bbb7fa451",
+        "artist_name": "Asking Alexandria",
+        "listen_count": 304164
+      },
+      {
+        "artist_mbid": null,
+        "artist_name": "Wolfgang Amadeus Mozart",
+        "listen_count": 303707
+      },
+      {
+        "artist_mbid": "d59c4cda-11d9-48db-8bfe-b557ee602aed",
+        "artist_name": "Billie Holiday",
+        "listen_count": 303545
+      },
+      {
+        "artist_mbid": "20ff3303-4fe2-4a47-a1b6-291e26aa3438",
+        "artist_name": "James Brown",
+        "listen_count": 302252
+      },
+      {
+        "artist_mbid": "329f95db-f02e-40bf-a5f7-0dea11529ce3",
+        "artist_name": "Enter Shikari",
+        "listen_count": 301827
+      },
+      {
+        "artist_mbid": "24f8d8a5-269b-475c-a1cb-792990b0b2ee",
+        "artist_name": "Rancid",
+        "listen_count": 301225
+      },
+      {
+        "artist_mbid": "f4b6e451-5dce-4842-a555-f793892299b3",
+        "artist_name": "Jane Remover",
+        "listen_count": 300197
+      },
+      {
+        "artist_mbid": "c6d571dd-c0ae-4ac8-9500-780b1b9b25e5",
+        "artist_name": "Nile Rodgers",
+        "listen_count": 300049
+      },
+      {
+        "artist_mbid": null,
+        "artist_name": "MARINA",
+        "listen_count": 299835
+      },
+      {
+        "artist_mbid": "0d8b0d50-e4cf-4da4-965d-f24c58ec3268",
+        "artist_name": "Boston",
+        "listen_count": 299827
+      },
+      {
+        "artist_mbid": "ccd4879c-5e88-4385-b131-bf65296bf245",
+        "artist_name": "Echo & the Bunnymen",
+        "listen_count": 299778
+      },
+      {
+        "artist_mbid": "ce09ea31-3d4a-4487-a797-e315175457a0",
+        "artist_name": "Tyga",
+        "listen_count": 299557
+      },
+      {
+        "artist_mbid": "350bce49-c21b-4137-b50a-0766ded07e4d",
+        "artist_name": "Taking Back Sunday",
+        "listen_count": 299516
+      },
+      {
+        "artist_mbid": "a1684a49-feaa-4150-b758-d9412fc59f12",
+        "artist_name": "Mike Oldfield",
+        "listen_count": 299427
+      },
+      {
+        "artist_mbid": "2ce02909-598b-44ef-a456-151ba0a3bd70",
+        "artist_name": "Ray Charles",
+        "listen_count": 298632
+      },
+      {
+        "artist_mbid": "92a42e82-b36f-4308-82c1-68bad2e03c89",
+        "artist_name": "Third Eye Blind",
+        "listen_count": 298458
+      },
+      {
+        "artist_mbid": "eaed2193-e026-493b-ac57-113360407b06",
+        "artist_name": "Halestorm",
+        "listen_count": 298175
+      },
+      {
+        "artist_mbid": "201412c6-7ced-472b-87a9-9259ec3c07d3",
+        "artist_name": "Brent Faiyaz",
+        "listen_count": 298056
+      },
+      {
+        "artist_mbid": "c0a1179b-b14a-4d68-a3c1-1fdab16ed602",
+        "artist_name": "Common",
+        "listen_count": 297299
+      },
+      {
+        "artist_mbid": "469d6414-1f06-43de-80d5-17762d4a356a",
+        "artist_name": "Weyes Blood",
+        "listen_count": 296346
+      },
+      {
+        "artist_mbid": "cc699fe3-db51-4837-928f-8f712c61a01a",
+        "artist_name": "grandson",
+        "listen_count": 296290
+      },
+      {
+        "artist_mbid": "4b1a830b-0a1f-42e5-b8d5-1d6743912e99",
+        "artist_name": "Creed",
+        "listen_count": 296028
+      },
+      {
+        "artist_mbid": "5b8ec72b-9e39-4a06-a2bf-964166b92a71",
+        "artist_name": "Tory Lanez",
+        "listen_count": 295361
+      },
+      {
+        "artist_mbid": "b2029169-2574-4305-820f-252a5fde3697",
+        "artist_name": "Meghan Trainor",
+        "listen_count": 294997
+      },
+      {
+        "artist_mbid": "bc880664-6751-4998-984d-ebdbff15d229",
+        "artist_name": "Trent Reznor",
+        "listen_count": 294976
+      },
+      {
+        "artist_mbid": "62d364d2-550b-420e-b918-b3bd1e4a2efc",
+        "artist_name": "Broken Bells",
+        "listen_count": 294810
+      },
+      {
+        "artist_mbid": "16456fed-c9f2-4adf-b6ea-97b648c474d2",
+        "artist_name": "Dance Gavin Dance",
+        "listen_count": 294582
+      },
+      {
+        "artist_mbid": "1a120ec5-35b3-4f3e-aa49-7201550d9feb",
+        "artist_name": "RJD2",
+        "listen_count": 294101
+      },
+      {
+        "artist_mbid": "8262d8e4-9137-4bb3-a787-3caabbbc13e9",
+        "artist_name": "The Used",
+        "listen_count": 294095
+      },
+      {
+        "artist_mbid": "3ac482b8-1494-4071-a0e9-f192f9d2c2b0",
+        "artist_name": "Built to Spill",
+        "listen_count": 293691
+      },
+      {
+        "artist_mbid": "13df2a46-f72f-40e7-aa63-26fcf62c7048",
+        "artist_name": "Ministry",
+        "listen_count": 293622
+      },
+      {
+        "artist_mbid": "e471b63c-c3b5-4f62-a971-cd0b2273838f",
+        "artist_name": "Serj Tankian",
+        "listen_count": 293383
+      },
+      {
+        "artist_mbid": "82eb8936-7bf6-4577-8320-a2639465206d",
+        "artist_name": "Jason Mraz",
+        "listen_count": 293261
+      },
+      {
+        "artist_mbid": "dd77b8da-cdc7-46b8-8a7f-10894ca0490e",
+        "artist_name": "Alcest",
+        "listen_count": 293139
+      },
+      {
+        "artist_mbid": "c17f08f4-2542-46fb-97f3-3202d60c225a",
+        "artist_name": "Fear Factory",
+        "listen_count": 293122
+      },
+      {
+        "artist_mbid": "6821bf3f-5d5b-4b0f-8fa4-79d2ab2d9219",
+        "artist_name": "Blonde Redhead",
+        "listen_count": 293094
+      },
+      {
+        "artist_mbid": "1fefa8b3-806b-4ab9-a066-66574b22aa16",
+        "artist_name": "Atticus Ross",
+        "listen_count": 292888
+      },
+      {
+        "artist_mbid": "fbe054ec-a143-4101-9e9e-64abc5ff5ac9",
+        "artist_name": "Nat King Cole",
+        "listen_count": 292559
+      },
+      {
+        "artist_mbid": "9df7ddfb-75fe-4470-9269-5810d9263b09",
+        "artist_name": "HOYO-MiX",
+        "listen_count": 292351
+      },
+      {
+        "artist_mbid": "6f2f87e7-3ce9-4f1c-81dd-6f068a78cf26",
+        "artist_name": "the Microphones",
+        "listen_count": 292303
+      },
+      {
+        "artist_mbid": "7d0e8067-10b9-4069-95dc-1110a0fbb877",
+        "artist_name": "Vulfpeck",
+        "listen_count": 292001
+      },
+      {
+        "artist_mbid": "8ac9e35c-e92d-4030-99ef-ba4127b1555c",
+        "artist_name": "Static‐X",
+        "listen_count": 290825
+      },
+      {
+        "artist_mbid": "d1393ecb-431b-4fde-a6ea-d769f2f040cb",
+        "artist_name": "Kacey Musgraves",
+        "listen_count": 290599
+      },
+      {
+        "artist_mbid": "136c4166-85b3-4994-aa04-59857c434199",
+        "artist_name": "Fun",
+        "listen_count": 290487
+      },
+      {
+        "artist_mbid": "a74f43e4-50c4-4b19-a2ce-c05ce9bccb03",
+        "artist_name": "Talk Talk",
+        "listen_count": 289891
+      },
+      {
+        "artist_mbid": "d2db1078-c170-4e22-b261-14f3ad60a690",
+        "artist_name": "DEVO",
+        "listen_count": 289701
+      },
+      {
+        "artist_mbid": null,
+        "artist_name": "j-hope",
+        "listen_count": 289607
+      },
+      {
+        "artist_mbid": "8ce77888-cd3b-4014-b710-88f83ec93633",
+        "artist_name": "MAX",
+        "listen_count": 289494
+      },
+      {
+        "artist_mbid": "7e13cd1c-0300-4d03-bd8e-5f86dd99d74f",
+        "artist_name": "At the Drive‐In",
+        "listen_count": 288704
+      },
+      {
+        "artist_mbid": "130c2184-14f2-4180-a216-04b5a333be57",
+        "artist_name": "Sampha",
+        "listen_count": 288490
+      },
+      {
+        "artist_mbid": "7d209631-ccb8-4a87-8516-64abe4c22dba",
+        "artist_name": "Ulver",
+        "listen_count": 288269
+      },
+      {
+        "artist_mbid": "eb380962-99bb-46c0-af40-1c7790a7822a",
+        "artist_name": "Amaranthe",
+        "listen_count": 288209
+      },
+      {
+        "artist_mbid": "407d7ae0-c297-491c-bd19-4185e2b12ef2",
+        "artist_name": "Tally Hall",
+        "listen_count": 288202
+      },
+      {
+        "artist_mbid": "5ca3f318-d028-4151-ac73-78e2b2d6cdcc",
+        "artist_name": "Tom Petty",
+        "listen_count": 287904
+      },
+      {
+        "artist_mbid": "028e1863-cab4-4a3d-9dd9-91c682c91005",
+        "artist_name": "The Lonely Island",
+        "listen_count": 287395
+      },
+      {
+        "artist_mbid": "b345af35-205e-4eca-8006-029e5c20127e",
+        "artist_name": "Simple Plan",
+        "listen_count": 287082
+      },
+      {
+        "artist_mbid": "298f4089-1948-44b5-b5e8-d5381f42362f",
+        "artist_name": "X Ambassadors",
+        "listen_count": 286978
+      },
+      {
+        "artist_mbid": "b675f327-4738-4af4-bb83-1adb0003f2d3",
+        "artist_name": "Yves Tumor",
+        "listen_count": 286855
+      },
+      {
+        "artist_mbid": "34cf95c7-4be9-4efd-a48a-c2ea4a0bb114",
+        "artist_name": "America",
+        "listen_count": 286778
+      },
+      {
+        "artist_mbid": "c0252a1b-0133-46bb-8c4f-cade46349ec3",
+        "artist_name": "Alestorm",
+        "listen_count": 286611
+      },
+      {
+        "artist_mbid": "97529a9e-4b5a-4a9c-9c08-c42401d1c268",
+        "artist_name": "YUNGBLUD",
+        "listen_count": 286122
+      },
+      {
+        "artist_mbid": "27613b78-1b9d-4ec3-9db5-fa0743465fdd",
+        "artist_name": "Herbie Hancock",
+        "listen_count": 285774
+      },
+      {
+        "artist_mbid": "f41490ce-fe39-435d-86c0-ab5ce098b423",
+        "artist_name": "Simple Minds",
+        "listen_count": 285757
+      },
+      {
+        "artist_mbid": "a47c3aa2-7d87-475c-a2c7-1e2047dafb09",
+        "artist_name": "Gnarls Barkley",
+        "listen_count": 285752
+      },
+      {
+        "artist_mbid": "f4ccf6c5-ad41-4f8f-bb9e-6e2c6ad23302",
+        "artist_name": "Deafheaven",
+        "listen_count": 285308
+      },
+      {
+        "artist_mbid": "e5257dc5-1edd-4fca-b7e6-1158e00522c8",
+        "artist_name": "The Jacksons",
+        "listen_count": 285029
+      },
+      {
+        "artist_mbid": "7e07ffb5-c0f6-4891-a74d-a5e12a247785",
+        "artist_name": "Die Antwoord",
+        "listen_count": 284986
+      },
+      {
+        "artist_mbid": "a4a01f5d-18e7-4571-8c3a-76ec0e24e2d7",
+        "artist_name": "Ne‐Yo",
+        "listen_count": 284972
+      },
+      {
+        "artist_mbid": "f6af669a-56ea-448a-a044-de76181ada33",
+        "artist_name": "mgk",
+        "listen_count": 284436
+      },
+      {
+        "artist_mbid": "69632f9c-31eb-43d5-a864-e73ac72efc66",
+        "artist_name": "Behemoth",
+        "listen_count": 284308
+      },
+      {
+        "artist_mbid": "2f522f5c-111c-4ce8-8bd0-d82e97c227ad",
+        "artist_name": "Daddy Yankee",
+        "listen_count": 284150
+      },
+      {
+        "artist_mbid": "777a21a8-0d0f-4cf3-86b4-65bc0eba5649",
+        "artist_name": "Staind",
+        "listen_count": 283884
+      },
+      {
+        "artist_mbid": "6a726ac6-019e-455c-8bbb-571a77bed52e",
+        "artist_name": "Thin Lizzy",
+        "listen_count": 283359
+      },
+      {
+        "artist_mbid": "244afcb7-fa9a-49b1-9aa6-0149512d1c52",
+        "artist_name": "Thrice",
+        "listen_count": 283346
+      },
+      {
+        "artist_mbid": "12398bf3-1b99-47b7-930c-f3956773f35a",
+        "artist_name": "Aminé",
+        "listen_count": 283083
+      },
+      {
+        "artist_mbid": "9fae44ec-b95c-4b0f-a0a6-f0008613eabf",
+        "artist_name": "Wallows",
+        "listen_count": 283065
+      },
+      {
+        "artist_mbid": "92bb085a-2924-4479-b627-181a1835d2f5",
+        "artist_name": "植松伸夫",
+        "listen_count": 282848
+      },
+      {
+        "artist_mbid": "3a51b862-0144-40f6-aa17-6aaeefea29d9",
+        "artist_name": "Steven Wilson",
+        "listen_count": 282809
+      },
+      {
+        "artist_mbid": "7d3ec1fb-c3f1-4853-915e-871c0718eae4",
+        "artist_name": "TheFatRat",
+        "listen_count": 282759
+      },
+      {
+        "artist_mbid": "84ca8fa4-7cca-4948-a90a-cb44db29853d",
+        "artist_name": "clipping.",
+        "listen_count": 282705
+      },
+      {
+        "artist_mbid": "dfc6a151-3792-4695-8fda-f64723eaa788",
+        "artist_name": "ヨルシカ",
+        "listen_count": 282498
+      },
+      {
+        "artist_mbid": "142b343d-bf5a-428c-a64f-6d1a7566bbe9",
+        "artist_name": "Stray Kids",
+        "listen_count": 282450
+      },
+      {
+        "artist_mbid": "1921c28c-ec61-4725-8e35-38dd656f7923",
+        "artist_name": "I Prevail",
+        "listen_count": 282400
+      },
+      {
+        "artist_mbid": "3f6ee55e-d523-4dd8-a027-7a6af9909ae1",
+        "artist_name": "The Living Tombstone",
+        "listen_count": 282374
+      },
+      {
+        "artist_mbid": "bd057a0c-a7b6-47bf-8dc3-45e0efac1798",
+        "artist_name": "NERO",
+        "listen_count": 281904
+      },
+      {
+        "artist_mbid": "07832b42-8826-4ab1-acd3-c49a2f595ffe",
+        "artist_name": "6LACK",
+        "listen_count": 281436
+      },
+      {
+        "artist_mbid": "0741b30d-e15b-4a8c-b2e5-8834a03d6116",
+        "artist_name": "Cold War Kids",
+        "listen_count": 280945
+      },
+      {
+        "artist_mbid": "ebee61b4-bbdd-4087-9bcb-d5aa099088ec",
+        "artist_name": "James Blunt",
+        "listen_count": 280864
+      },
+      {
+        "artist_mbid": "88d1360a-bc2d-47df-90d1-d2de285560aa",
+        "artist_name": "La Roux",
+        "listen_count": 280857
+      },
+      {
+        "artist_mbid": "9ccfbc94-a4f4-42f7-b6f5-d903ab77cccb",
+        "artist_name": "Melvins",
+        "listen_count": 280737
+      },
+      {
+        "artist_mbid": "fad8967c-a327-4af5-a64a-d4de66ece652",
+        "artist_name": "Celldweller",
+        "listen_count": 280244
+      },
+      {
+        "artist_mbid": "6c85f4c3-026c-4c16-9a7c-f546f42ed0fb",
+        "artist_name": "Guided by Voices",
+        "listen_count": 280102
+      },
+      {
+        "artist_mbid": "dc99e6fd-c710-4f79-b74b-127b4d0b7849",
+        "artist_name": "Labrinth",
+        "listen_count": 280008
+      },
+      {
+        "artist_mbid": "944e1036-8a03-4611-8aa0-31515a05c848",
+        "artist_name": "Smash Mouth",
+        "listen_count": 279546
+      },
+      {
+        "artist_mbid": "160629ab-ec18-4931-8c95-02cb92d06186",
+        "artist_name": "Foreigner",
+        "listen_count": 279431
+      },
+      {
+        "artist_mbid": "54f8c12e-571c-4c5a-9f79-5336b39e84b0",
+        "artist_name": "The Pretty Reckless",
+        "listen_count": 279366
+      },
+      {
+        "artist_mbid": "a0b8cb9e-7532-45fe-a74c-30e7c4009a39",
+        "artist_name": "Missy Elliott",
+        "listen_count": 279164
+      },
+      {
+        "artist_mbid": "e3cb4543-210f-499a-b0d1-3882c312dfb9",
+        "artist_name": "Rainbow",
+        "listen_count": 279038
+      },
+      {
+        "artist_mbid": "985f7e6f-0a7e-4de7-b9ec-a5dac63cb2f7",
+        "artist_name": "ZAYN",
+        "listen_count": 278866
+      },
+      {
+        "artist_mbid": "a35237a0-4f47-40a6-b6f3-1e786db23402",
+        "artist_name": "Rod Stewart",
+        "listen_count": 278748
+      },
+      {
+        "artist_mbid": "d8e41375-bd8d-4e39-9da7-f0c171e97086",
+        "artist_name": "Grouplove",
+        "listen_count": 278639
+      },
+      {
+        "artist_mbid": "b0337af1-8d93-4671-b6c9-ba306bf942bf",
+        "artist_name": "Central Cee",
+        "listen_count": 278605
+      },
+      {
+        "artist_mbid": "37547347-ea75-45fa-9766-ff36b44d8147",
+        "artist_name": "Isaiah Rashad",
+        "listen_count": 278088
+      },
+      {
+        "artist_mbid": "a436dd02-0549-4c91-b608-df451217fdeb",
+        "artist_name": "Parkway Drive",
+        "listen_count": 277857
+      },
+      {
+        "artist_mbid": "f0602f55-1770-483d-89bd-4bae0d0ac086",
+        "artist_name": "Jennifer Lopez",
+        "listen_count": 277659
+      },
+      {
+        "artist_mbid": "23d9d74d-c95e-46a6-be26-a6075c49747a",
+        "artist_name": "Faithless",
+        "listen_count": 277609
+      },
+      {
+        "artist_mbid": "5a2e9cd3-010a-4aae-9f83-629253284202",
+        "artist_name": "Sharon Van Etten",
+        "listen_count": 277114
+      },
+      {
+        "artist_mbid": "5721c227-4caf-48b1-bbfc-1a4ed3276963",
+        "artist_name": "Roddy Ricch",
+        "listen_count": 277085
+      },
+      {
+        "artist_mbid": "4cc51547-88ae-49a2-bf7e-0ef65ee7a94c",
+        "artist_name": "HIM",
+        "listen_count": 277005
+      },
+      {
+        "artist_mbid": "185527bf-c293-4c24-8213-ed98fb8976be",
+        "artist_name": "Angel Olsen",
+        "listen_count": 276828
+      },
+      {
+        "artist_mbid": "56abaa47-0101-463b-b37e-e961136fec39",
+        "artist_name": "Venetian Snares",
+        "listen_count": 276704
+      },
+      {
+        "artist_mbid": "c9dd033c-0270-463c-b3ec-f4b7712486fe",
+        "artist_name": "Rita Ora",
+        "listen_count": 276320
+      },
+      {
+        "artist_mbid": "420e923e-e74c-42ef-b771-2e2bcee93394",
+        "artist_name": "Woodkid",
+        "listen_count": 276293
+      },
+      {
+        "artist_mbid": "bdbd48f5-abf3-4a4f-9a21-4551dbc3fde9",
+        "artist_name": "Heart",
+        "listen_count": 276238
+      },
+      {
+        "artist_mbid": "17167af8-c1da-45cc-bba2-9d23f068b7a3",
+        "artist_name": "Dimmu Borgir",
+        "listen_count": 276209
+      },
+      {
+        "artist_mbid": "6dee6b6f-aa72-424c-9c8c-0d31ba5ff673",
+        "artist_name": "Ashnikko",
+        "listen_count": 276027
+      },
+      {
+        "artist_mbid": "07e748f1-075e-428d-85dc-ce3be434e906",
+        "artist_name": "Dave Matthews Band",
+        "listen_count": 275824
+      },
+      {
+        "artist_mbid": "0ae49abe-d6af-44fa-8ab0-b9ace5690e6f",
+        "artist_name": "Bombay Bicycle Club",
+        "listen_count": 275622
+      },
+      {
+        "artist_mbid": "dc3dbfc1-f1f1-49c6-9d7c-425fabf3ae12",
+        "artist_name": "Apparat",
+        "listen_count": 275603
+      },
+      {
+        "artist_mbid": "7c158ea8-c0aa-410e-bdc1-20bba9759577",
+        "artist_name": "The Cinematic Orchestra",
+        "listen_count": 275360
+      },
+      {
+        "artist_mbid": "52fbc948-398c-45f6-833b-dd75164b896a",
+        "artist_name": "Sweet Trip",
+        "listen_count": 275311
+      },
+      {
+        "artist_mbid": "38f59974-2f4d-4bfa-b2e3-d2696de1b675",
+        "artist_name": "Little Mix",
+        "listen_count": 274672
+      },
+      {
+        "artist_mbid": "ec22a32b-acab-432e-a88c-ffe6ae68fa16",
+        "artist_name": "Noisia",
+        "listen_count": 274549
+      },
+      {
+        "artist_mbid": "7e571e09-887e-4544-b993-eb75e7837ec1",
+        "artist_name": "Grouper",
+        "listen_count": 274341
+      },
+      {
+        "artist_mbid": "f4ad883e-9a92-45ed-a540-a49c2d1c36dd",
+        "artist_name": "The Fratellis",
+        "listen_count": 274035
+      },
+      {
+        "artist_mbid": "e132d370-2a59-4437-8610-756df28a5a02",
+        "artist_name": "OK Go",
+        "listen_count": 273789
+      },
+      {
+        "artist_mbid": "5c2593bc-1621-4c4d-821b-b7bb6ff213b5",
+        "artist_name": "Saint Motel",
+        "listen_count": 273669
+      },
+      {
+        "artist_mbid": "69689acf-d9cd-4d20-a972-47db4ed51b1a",
+        "artist_name": "Kansas",
+        "listen_count": 273610
+      },
+      {
+        "artist_mbid": "0bfba3d3-6a04-4779-bb0a-df07df5b0558",
+        "artist_name": "Stereophonics",
+        "listen_count": 273415
+      },
+      {
+        "artist_mbid": "44c64a30-1d58-49c5-b314-6e02fba49526",
+        "artist_name": "久石譲",
+        "listen_count": 272814
+      },
+      {
+        "artist_mbid": "163218c2-9e0f-4d2d-aecb-ebbdef6aab70",
+        "artist_name": "Robin Schulz",
+        "listen_count": 272765
+      },
+      {
+        "artist_mbid": "370bd5a3-4abf-4356-8576-3a8fc0c11d65",
+        "artist_name": "Above & Beyond",
+        "listen_count": 272745
+      },
+      {
+        "artist_mbid": "892500b7-09a6-4049-ba92-2d192dd70563",
+        "artist_name": "Biffy Clyro",
+        "listen_count": 272132
+      },
+      {
+        "artist_mbid": "bce172fc-51bb-43f7-9a25-b406a0a581d5",
+        "artist_name": "ITZY",
+        "listen_count": 272055
+      },
+      {
+        "artist_mbid": "592a3b6d-c42b-4567-99c9-ecf63bd66499",
+        "artist_name": "Chuck Berry",
+        "listen_count": 271870
+      },
+      {
+        "artist_mbid": "319b1175-ced9-438f-986b-9239c3edd92d",
+        "artist_name": "Sonata Arctica",
+        "listen_count": 271638
+      },
+      {
+        "artist_mbid": "f1d1df24-91af-4d27-83a4-9b4ad29b37eb",
+        "artist_name": "Enigma",
+        "listen_count": 271496
+      },
+      {
+        "artist_mbid": "5f572b31-8fd9-45ae-9beb-358c98d839df",
+        "artist_name": "The Dandy Warhols",
+        "listen_count": 271116
+      },
+      {
+        "artist_mbid": "57652bf8-cfe8-42e7-b9a7-5572a7080d8d",
+        "artist_name": "Boris",
+        "listen_count": 270772
+      },
+      {
+        "artist_mbid": "668fd73c-bf54-4310-a139-305517f05311",
+        "artist_name": "Willie Nelson",
+        "listen_count": 270526
+      },
+      {
+        "artist_mbid": "092b603f-eb4c-4958-b10e-02420de5885b",
+        "artist_name": "The Cars",
+        "listen_count": 270348
+      },
+      {
+        "artist_mbid": "91ae77d8-3bb5-4e59-98a7-532ac0f2825d",
+        "artist_name": "I DONT KNOW HOW BUT THEY FOUND ME",
+        "listen_count": 270119
+      },
+      {
+        "artist_mbid": "74963434-dcb6-4b14-98cc-99873b06db66",
+        "artist_name": "Future Islands",
+        "listen_count": 269578
+      },
+      {
+        "artist_mbid": "21a14ee3-cede-420a-9d6d-a33517d2f952",
+        "artist_name": "Alec Benjamin",
+        "listen_count": 269429
+      },
+      {
+        "artist_mbid": "e3c4c4af-f83b-4168-84cb-898009dd0447",
+        "artist_name": "Agnes Obel",
+        "listen_count": 268598
+      },
+      {
+        "artist_mbid": "35723b60-732e-4bd8-957f-320b416e7b7f",
+        "artist_name": "Groove Armada",
+        "listen_count": 268157
+      },
+      {
+        "artist_mbid": "d4aad415-9cd0-4845-9b05-0416fdcc9fc4",
+        "artist_name": "WALK THE MOON",
+        "listen_count": 268051
+      },
+      {
+        "artist_mbid": "6be2828f-6c0d-4059-99d4-fa18acf1a296",
+        "artist_name": "Janet Jackson",
+        "listen_count": 267926
+      },
+      {
+        "artist_mbid": "7fe96b15-5608-430e-ad25-77a01353c5d9",
+        "artist_name": "Young the Giant",
+        "listen_count": 267857
+      },
+      {
+        "artist_mbid": "f2fb0ff0-5679-42ec-a55c-15109ce6e320",
+        "artist_name": "Die Ärzte",
+        "listen_count": 267558
+      },
+      {
+        "artist_mbid": "90744b3e-363a-458e-8da1-e3e392a489c4",
+        "artist_name": "Wet Leg",
+        "listen_count": 267550
+      },
+      {
+        "artist_mbid": "d2a92ee2-27ce-4e71-bfc5-12e34fe8ef56",
+        "artist_name": "Mili",
+        "listen_count": 267452
+      },
+      {
+        "artist_mbid": "7c20f558-d664-42bd-b6f1-81acf9dbb72d",
+        "artist_name": "t.A.T.u.",
+        "listen_count": 267069
+      },
+      {
+        "artist_mbid": "92dc699f-fcbc-4278-afbe-40b5ad060a55",
+        "artist_name": "Death From Above 1979",
+        "listen_count": 266913
+      },
+      {
+        "artist_mbid": "d922d727-240a-4432-9a88-05a7cf9bc403",
+        "artist_name": "Wings",
+        "listen_count": 266367
+      },
+      {
+        "artist_mbid": "331ce348-1b08-40b9-8ed7-0763b92bd003",
+        "artist_name": "Roxy Music",
+        "listen_count": 266289
+      },
+      {
+        "artist_mbid": "1bc41dff-5397-4c53-bb50-469d2c277197",
+        "artist_name": "The Dillinger Escape Plan",
+        "listen_count": 266187
+      },
+      {
+        "artist_mbid": "3cb3928a-526c-4a3d-93c5-53315fa9bde0",
+        "artist_name": "Elbow",
+        "listen_count": 266179
+      },
+      {
+        "artist_mbid": "36f83895-5a69-47c1-a4a2-e2449acbf64a",
+        "artist_name": "Leslie Odom, Jr.",
+        "listen_count": 266163
+      },
+      {
+        "artist_mbid": "69421e11-e4c3-4854-951b-ceab4972e38e",
+        "artist_name": "Alkaline Trio",
+        "listen_count": 265895
+      },
+      {
+        "artist_mbid": "2449300a-6ca7-45da-8102-22789d256475",
+        "artist_name": "Kamelot",
+        "listen_count": 265703
+      },
+      {
+        "artist_mbid": "b8c5cc4f-239f-4e02-b46f-b040b77c2030",
+        "artist_name": "Nightmares on Wax",
+        "listen_count": 265435
+      },
+      {
+        "artist_mbid": "45074d7c-5307-44a8-854f-ae072e1622ae",
+        "artist_name": "KMFDM",
+        "listen_count": 265427
+      },
+      {
+        "artist_mbid": "85d76093-9865-4605-97fa-8c910929d366",
+        "artist_name": "LiSA",
+        "listen_count": 265243
+      },
+      {
+        "artist_mbid": "49d67664-6962-4f69-adc4-f52208c78dd2",
+        "artist_name": "Rich Brian",
+        "listen_count": 265116
+      },
+      {
+        "artist_mbid": "753a1564-aaef-4d39-bc68-4a8d5e328cf7",
+        "artist_name": "Miike Snow",
+        "listen_count": 264548
+      }
+    ],
+    "count": 1000,
+    "from_ts": 1009843200,
+    "last_updated": 1792921533,
+    "offset": 0,
+    "range": "all_time",
+    "to_ts": 1792889532,
+    "total_artist_count": 12018095
+  }
+}

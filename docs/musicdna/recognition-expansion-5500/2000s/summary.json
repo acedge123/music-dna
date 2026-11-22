@@ -1,0 +1,8 @@
+{
+  "decade": 2000,
+  "artists_processed": 51,
+  "recordings": 104,
+  "artists_represented": 36,
+  "per_artist_decade_cap": 3,
+  "method": "Top 100 distinct original-looking ListenBrainz recording titles per artist; exact-ID MusicBrainz indexed date/disambiguation checks"
+}

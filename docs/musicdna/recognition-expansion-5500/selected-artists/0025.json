@@ -1,0 +1,85 @@
+{
+  "rank": 25,
+  "artist": "Billie Eilish",
+  "rows": [
+    {
+      "title": "bad guy",
+      "artist": "Billie Eilish",
+      "year": 2019,
+      "release": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative pop|avant-garde pop|trap|pop|electropop",
+      "listen_count": 170827,
+      "recording_mbid": "694da04d-1ffc-435c-8b4b-59cc23ac8003",
+      "artist_mbid": "f4abc0b5-3f7a-4eff-8f78-ac078dbce533",
+      "artist_rank": 25,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "BIRDS OF A FEATHER",
+      "artist": "Billie Eilish",
+      "year": 2024,
+      "release": "HIT ME HARD AND SOFT",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|synth-pop|alt-pop|billboard hot 100|electronic",
+      "listen_count": 124314,
+      "recording_mbid": "3a7e1970-069c-4761-a6b2-9046e54406bc",
+      "artist_mbid": "f4abc0b5-3f7a-4eff-8f78-ac078dbce533",
+      "artist_rank": 25,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "when the party’s over",
+      "artist": "Billie Eilish",
+      "year": 2018,
+      "release": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|art pop|alternative pop|pop music|singer-songwriter",
+      "listen_count": 104040,
+      "recording_mbid": "ba7a88da-f864-4ead-9a63-36f92d10de46",
+      "artist_mbid": "f4abc0b5-3f7a-4eff-8f78-ac078dbce533",
+      "artist_rank": 25,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "lovely",
+      "artist": "Billie Eilish & Khalid",
+      "year": 2017,
+      "release": "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|pop|alternative|alternative pop|indie",
+      "listen_count": 90892,
+      "recording_mbid": "1fc545d3-94b6-4a3d-bff3-bb8b861943d6",
+      "artist_mbid": "f4abc0b5-3f7a-4eff-8f78-ac078dbce533",
+      "artist_rank": 25,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Happier Than Ever",
+      "artist": "Billie Eilish",
+      "year": 2021,
+      "release": "Happier Than Ever",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|sad|melancholy|pop-punk|dark",
+      "listen_count": 76207,
+      "recording_mbid": "24134481-599d-4e30-bffd-3080739f3d58",
+      "artist_mbid": "f4abc0b5-3f7a-4eff-8f78-ac078dbce533",
+      "artist_rank": 25,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "CHIHIRO",
+      "artist": "Billie Eilish",
+      "year": 2024,
+      "release": "HIT ME HARD AND SOFT",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative|indietronica|house|electronic|indie pop",
+      "listen_count": 67308,
+      "recording_mbid": "4bcb550c-9160-45ed-9cbe-d6771ad96c9d",
+      "artist_mbid": "f4abc0b5-3f7a-4eff-8f78-ac078dbce533",
+      "artist_rank": 25,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": "1 candidate IDs absent from indexed results; not treated as verified"
+}

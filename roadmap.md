@@ -2,10 +2,13 @@
 
 ## Current — broader recognition catalog
 
+- [x] Rebuild missing temporary 2010s output with durable checkpoints; import/read back the first 108 verified 2010s identities without overwriting prior rows. Original full temporary sample was not recovered; replacement is partial.
+- [ ] Finish 2010s/2020s and broader decade collection to 5,500 distinct title/artist identities. Verified 271 additions (108 2010s, 61 2020s plus 102 older), 2,759 total; 2,741 remain. Blocker: MusicBrainz busy responses interrupted bounded collection; paused with 51/1,000 ranked artists saved in docs/musicdna/recognition-expansion-5500. No background job. Resume paced operator steps and retry explicit provider gaps; retain three-per-artist/decade cap and no scoring/activation.
+
 - [x] Import the approved ’90s review identities: 413 new, two existing recording IDs; all 415 source IDs and new values verified, 1,890 recognition rows total. No scoring/activation, existing duplicates unchanged, provisional dates hidden.
 - [x] Build and save the 2000s review sample: 598 recordings across 200 artists, maximum three per artist; docs/musicdna/recognition-sample-2000s. Provisional dates and provider gaps documented.
 - [x] Import the owner-approved 2000s sample: 598 new unscored recognition records; all source IDs/values read back and replay verified. Recognition total 2,488; no scoring/activation or demand counts.
-- [ ] Build the 2010s review sample from the same ListenBrainz-ranked artists, maximum three recordings per artist; collecting in /tmp/recognition-2010s with completion monitor acp/sub_cf7m1b24. Waiting on paced provider collection; no automatic import or scoring.
+- [x] Replace lost temporary 2010s collection with durable selected metadata, decade CSVs, gaps and readback receipt; partial rebuilt selection imported under the owner's new authorization. Full breadth target remains open above.
 - [x] Import all approved 1,477 ’80s sample records into a separate unscored recognition table; preserve provenance and leave scored songs/pairings untouched. Confirmed stored batch during ’90s readback.
 - [x] Build and save a ’90s review sample from ListenBrainz-ranked artists: 415 recordings, 140 artists, maximum three per artist; docs/musicdna/recognition-sample-1990s. Includes 25 provider gaps and provisional date/version cautions; no ’90s import or scoring.
 - [ ] Verify recognition storage/search and document Flutter behavior and sample limitations.

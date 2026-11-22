@@ -1,0 +1,111 @@
+{
+  "rank": 8,
+  "artist": "Gorillaz",
+  "rows": [
+    {
+      "title": "Hillbilly Man",
+      "artist": "Gorillaz",
+      "year": 2010,
+      "release": "The Fall",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock",
+      "listen_count": 149835,
+      "recording_mbid": "c6f91ebe-f9ff-4afc-88db-1144f0207ae1",
+      "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+      "artist_rank": 8,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Detroit",
+      "artist": "Gorillaz",
+      "year": 2010,
+      "release": "The Fall",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|uk garage",
+      "listen_count": 141161,
+      "recording_mbid": "dd02f293-eef1-4de2-8bfa-52bcba6b08de",
+      "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+      "artist_rank": 8,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Phoner to Arizona",
+      "artist": "Gorillaz",
+      "year": 2010,
+      "release": "The Fall",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock",
+      "listen_count": 140830,
+      "recording_mbid": "4d88ec25-a3a0-47c5-93e5-8824092ae834",
+      "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+      "artist_rank": 8,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Rockit",
+      "artist": "Gorillaz",
+      "year": 2007,
+      "release": "D-Sides",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronica dance|rock|pop|pop rap|alternative rock",
+      "listen_count": 138910,
+      "recording_mbid": "49130dfd-9e13-475d-b1ea-05bab722370a",
+      "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+      "artist_rank": 8,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Bill Murray",
+      "artist": "Gorillaz featuring The Bees",
+      "year": 2005,
+      "release": "Feel Good Inc",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronica dance|electronic|pop|downtempo|pop rap",
+      "listen_count": 138363,
+      "recording_mbid": "0c4ab18c-5c83-4db9-af5b-712a93b831b7",
+      "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+      "artist_rank": 8,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Stop the Dams",
+      "artist": "Gorillaz",
+      "year": 2005,
+      "release": "Kids With Guns / El Mañana",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronica dance|downtempo|pop|electronic|elektro",
+      "listen_count": 134130,
+      "recording_mbid": "4a041f02-fff2-4948-b1d1-f1800dfce6f1",
+      "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+      "artist_rank": 8,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "New Gold",
+      "artist": "Gorillaz feat. Tame Impala and Bootie Brown",
+      "year": 2022,
+      "release": "Cracker Island",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electropop|alternative dance|pop rap|synth-pop",
+      "listen_count": 53646,
+      "recording_mbid": "e406dffd-b2a3-4d6f-aa1b-e34fc9e2c69a",
+      "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+      "artist_rank": 8,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Cracker Island",
+      "artist": "Gorillaz feat. Thundercat",
+      "year": 2022,
+      "release": "Cracker Island",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electropop|new rave|synth funk|funktronica|electro house",
+      "listen_count": 38808,
+      "recording_mbid": "77971334-42bd-4151-8a91-7f78ee840dce",
+      "artist_mbid": "e21857d5-3256-4547-afb3-4b6ded592596",
+      "artist_rank": 8,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": "MusicBrainz unavailable after bounded retries"
+}

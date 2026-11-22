@@ -1,0 +1,85 @@
+{
+  "rank": 33,
+  "artist": "BTS",
+  "rows": [
+    {
+      "title": "SWIM",
+      "artist": "BTS",
+      "year": 2026,
+      "release": "ARIRANG",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "k-pop|uk street soul|5+ wochen|english",
+      "listen_count": 10371653,
+      "recording_mbid": "6f33dc05-cdc0-4a2f-8039-e8fed082eec6",
+      "artist_mbid": "0d79fe8e-ba27-4859-bb8c-2f255f346853",
+      "artist_rank": 33,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Life Goes On",
+      "artist": "BTS",
+      "year": 2020,
+      "release": "BE",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 4329484,
+      "recording_mbid": "7e36230c-fc8b-44f7-ad0b-6924bf34dde0",
+      "artist_mbid": "0d79fe8e-ba27-4859-bb8c-2f255f346853",
+      "artist_rank": 33,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "NORMAL",
+      "artist": "BTS",
+      "year": 2026,
+      "release": "ARIRANG",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "k-pop|alternative pop|contemporary r&b|offizielle charts|1–4 wochen",
+      "listen_count": 3690607,
+      "recording_mbid": "98faaa53-eb11-4a49-9b69-33262055efb7",
+      "artist_mbid": "0d79fe8e-ba27-4859-bb8c-2f255f346853",
+      "artist_rank": 33,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "FAKE LOVE",
+      "artist": "BTS",
+      "year": 2018,
+      "release": "LOVE YOURSELF 轉 ‘Tear’",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|k-pop|electropop|contemporary r&b",
+      "listen_count": 2520856,
+      "recording_mbid": "27e95178-49ac-47a1-8b4c-540c77982680",
+      "artist_mbid": "0d79fe8e-ba27-4859-bb8c-2f255f346853",
+      "artist_rank": 33,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "DNA",
+      "artist": "BTS",
+      "year": 2017,
+      "release": "LOVE YOURSELF 承 ‘Her’",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 1253592,
+      "recording_mbid": "4e7bfe28-623f-4123-b688-e55ef346b8fe",
+      "artist_mbid": "0d79fe8e-ba27-4859-bb8c-2f255f346853",
+      "artist_rank": 33,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "RUN",
+      "artist": "BTS",
+      "year": 2015,
+      "release": "화양연화 pt.2",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 934912,
+      "recording_mbid": "22d90ef6-04dc-4ab6-9fd5-5ee8fa52e102",
+      "artist_mbid": "0d79fe8e-ba27-4859-bb8c-2f255f346853",
+      "artist_rank": 33,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

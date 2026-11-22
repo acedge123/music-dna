@@ -1,0 +1,111 @@
+{
+  "rank": 21,
+  "artist": "Green Day",
+  "rows": [
+    {
+      "title": "Boulevard of Broken Dreams",
+      "artist": "Green Day",
+      "year": 2004,
+      "release": "American Idiot",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|punk rock|punk|pop punk|classic pop punk",
+      "listen_count": 1980067,
+      "recording_mbid": "0ba72f0d-70ae-4655-94d9-c1069b5abcfb",
+      "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+      "artist_rank": 21,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Basket Case",
+      "artist": "Green Day",
+      "year": 1994,
+      "release": "Dookie",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|punk rock|punk|pop punk|alternative rock",
+      "listen_count": 1709267,
+      "recording_mbid": "1c398e28-a63d-4c25-813b-ef9a96aadacb",
+      "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+      "artist_rank": 21,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "American Idiot",
+      "artist": "Green Day",
+      "year": 2004,
+      "release": "American Idiot",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "punk rock|alternative rock|punk|rock|pop punk",
+      "listen_count": 1669589,
+      "recording_mbid": "d3bd52f1-3d84-445b-84f5-7899de8f9340",
+      "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+      "artist_rank": 21,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Wake Me Up When September Ends",
+      "artist": "Green Day",
+      "year": 2004,
+      "release": "American Idiot",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|alternative|punk rock|adult alternative pop/rock|classic pop punk",
+      "listen_count": 1610725,
+      "recording_mbid": "a23f107f-36cd-4a4c-b8d5-6dd73b9148c7",
+      "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+      "artist_rank": 21,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Good Riddance (Time of Your Life)",
+      "artist": "Green Day",
+      "year": 1997,
+      "release": "nimrod.",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "punk|rock|alternative and punk|alternative punk|alternative/indie rock",
+      "listen_count": 1254182,
+      "recording_mbid": "91398240-3c6b-4222-b897-7f9f3a96983b",
+      "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+      "artist_rank": 21,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "When I Come Around",
+      "artist": "Green Day",
+      "year": 1994,
+      "release": "Dookie",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "punk rock|punk|pop punk|alternative rock|alternative and punk",
+      "listen_count": 1153544,
+      "recording_mbid": "a52d71cb-443c-4910-b37c-cd70e4b0b1ef",
+      "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+      "artist_rank": 21,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Oh Love",
+      "artist": "Green Day",
+      "year": 2012,
+      "release": "¡Uno!",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|alternative rock|punk|punk rock|pop punk",
+      "listen_count": 184994,
+      "recording_mbid": "ccfb0681-daf3-438b-b514-02a0d35f4781",
+      "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+      "artist_rank": 21,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Kill the DJ",
+      "artist": "Green Day",
+      "year": 2012,
+      "release": "¡Uno!",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|punk|punk rock|pop punk",
+      "listen_count": 162748,
+      "recording_mbid": "8d0f9ace-b20a-41ed-b4f7-61185590ee85",
+      "artist_mbid": "084308bd-1654-436f-ba03-df6697104e19",
+      "artist_rank": 21,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

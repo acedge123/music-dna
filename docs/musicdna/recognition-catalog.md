@@ -34,8 +34,10 @@ The ’90s CSV was imported after explicit owner approval on 2026-11-22: 413 new
 
 The completed sample in `recognition-sample-2000s/` contains 598 recordings across 200 canonical artists, maximum three per artist. Owner approved import on 2026-11-22. All 598 were new and every stored identity/source value was verified against the CSV; replay ignored existing IDs without changing values. Batch: `listenbrainz-2000s-2026-11-22`. Recognition total: **2,488 records**. No scoring, activation, demand counts, routing or saved-reading changes. Provisional recognition dates remain hidden; source genre tags remain in the CSV, not assigned lanes.
 
-## 2010s collection started — 2026-11-22
+## 2010s collection and 5,500 expansion — 2026-11-22
 
 Owner requested the next review sample. The same 400-artist ListenBrainz ranking snapshot is reused for comparability; no MusicDNA artist seed list. Maximum three recordings per canonical artist, with the same provisional MusicBrainz date/version checks. Command: `python3 tools/musicdna/build-recognition-sample.py --decade 2010 --artists 400 --per-artist 3 --output /tmp/recognition-2010s`.
 
-Collection is running with paced provider requests and completion monitor `acp/sub_cf7m1b24`. Output/cache remains under `/tmp/recognition-2010s`; progress log `/tmp/recognition-2010s-progress.log`. This is not a completed or delivered sample yet; further recognition import requires owner review/approval. No AI scoring, automatic activation or deployment change.
+That temporary collection disappeared before delivery and was never imported. Owner authorized rebuilding/importing the 2010s and continuing toward 5,500 on 2026-11-22. Durable replacement artifacts now live in `recognition-expansion-5500/`, with a broader 1,000-artist seed and exact-ID batched MusicBrainz date/disambiguation checks. The replacement also permits singles rather than requiring album-group matches; dates remain provisional and hidden.
+
+Verified partial additions: **108 2010s, 61 2020s, 24 1970s, 22 1980s, 18 1990s, 38 2000s**; 271 new identities, **2,759 total distinct title/artist identities**. The target still needs **2,741**. Provider busy errors interrupted the paced collection; it is paused, with 51 ranked artists checkpointed and explicit gaps. No background job remains running. Resume instructions, receipts and method limitations are in `recognition-expansion-5500/README.md`. No scoring, activation, demand counts, routing, saved readings or settings changed.

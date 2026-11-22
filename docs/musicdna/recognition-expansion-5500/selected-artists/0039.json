@@ -1,0 +1,85 @@
+{
+  "rank": 39,
+  "artist": "Ariana Grande",
+  "rows": [
+    {
+      "title": "7 rings",
+      "artist": "Ariana Grande",
+      "year": 2019,
+      "release": "W9 Hits 2019, vol. 2",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|trap|r&b",
+      "listen_count": 107469,
+      "recording_mbid": "7203c23a-5f31-4847-a50e-8a67bb26b43b",
+      "artist_mbid": "f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387",
+      "artist_rank": 39,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "positions",
+      "artist": "Ariana Grande",
+      "year": 2020,
+      "release": "Positions",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|contemporary r&b|r&b|vocal",
+      "listen_count": 85501,
+      "recording_mbid": "9ccbc110-3d50-498f-9edc-6bcdef21ab0c",
+      "artist_mbid": "f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387",
+      "artist_rank": 39,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "thank u, next",
+      "artist": "Ariana Grande",
+      "year": 2018,
+      "release": "W9 Hits 2019, vol. 2",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|r&b",
+      "listen_count": 83934,
+      "recording_mbid": "274b3a7b-64bd-4af3-9af9-dd41277ddc17",
+      "artist_mbid": "f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387",
+      "artist_rank": 39,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Into You",
+      "artist": "Ariana Grande",
+      "year": 2016,
+      "release": "Dangerous Woman",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|dance-pop|hip hop|party|edm",
+      "listen_count": 82175,
+      "recording_mbid": "d64c6f5a-f529-468c-9a23-6bcdb213d14f",
+      "artist_mbid": "f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387",
+      "artist_rank": 39,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Yes, And?",
+      "artist": "Ariana Grande",
+      "year": 2024,
+      "release": "eternal sunshine",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|dance-pop|billboard no 1 2024|billboard no 1|diva house",
+      "listen_count": 63017,
+      "recording_mbid": "f8fda7c8-f178-4da2-8d0f-53677e19ca00",
+      "artist_mbid": "f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387",
+      "artist_rank": 39,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "we can’t be friends (wait for your love)",
+      "artist": "Ariana Grande",
+      "year": 2024,
+      "release": "eternal sunshine",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|downtempo|funk|vocal|billboard no 1 2024",
+      "listen_count": 62048,
+      "recording_mbid": "b6587011-5a7c-4664-82ad-7a6368f4bd99",
+      "artist_mbid": "f4fdbb4c-e4b7-47a0-b83b-d91bbfcfa387",
+      "artist_rank": 39,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

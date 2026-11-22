@@ -1,0 +1,85 @@
+{
+  "rank": 35,
+  "artist": "Rihanna",
+  "rows": [
+    {
+      "title": "Only Girl (In the World)",
+      "artist": "Rihanna",
+      "year": 2010,
+      "release": "Loud",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "contemporary r&b|dance-pop|electropop|europop|electro house",
+      "listen_count": 2000222,
+      "recording_mbid": "ce4eb46b-1a27-4950-a02f-9499cab56c6b",
+      "artist_mbid": "73e5e69d-3554-40d8-8516-00cb38737a1c",
+      "artist_rank": 35,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "S&M",
+      "artist": "Rihanna",
+      "year": 2010,
+      "release": "Loud",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|contemporary r&b|dance-pop|eurodance|electro",
+      "listen_count": 1415838,
+      "recording_mbid": "5a5056f9-1bec-426e-bc39-2ba1d22bb13b",
+      "artist_mbid": "73e5e69d-3554-40d8-8516-00cb38737a1c",
+      "artist_rank": 35,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Rude Boy",
+      "artist": "Rihanna",
+      "year": 2009,
+      "release": "Rated R",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|r&b|contemporary r&b|soul|pop/r&b",
+      "listen_count": 1244322,
+      "recording_mbid": "3d3314dc-1ce2-4625-bbfe-bb020d195d8b",
+      "artist_mbid": "73e5e69d-3554-40d8-8516-00cb38737a1c",
+      "artist_rank": 35,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Where Have You Been?",
+      "artist": "Rihanna",
+      "year": 2011,
+      "release": "Talk That Talk",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "dance-pop|pop|electro|contemporary r&b|hip hop",
+      "listen_count": 1195841,
+      "recording_mbid": "3d409b8b-7161-4787-8c89-ccee7b232d5d",
+      "artist_mbid": "73e5e69d-3554-40d8-8516-00cb38737a1c",
+      "artist_rank": 35,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Disturbia",
+      "artist": "Rihanna",
+      "year": 2008,
+      "release": "Good Girl Gone Bad: Reloaded",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|soul and r b|dance|hip hop|dance-pop",
+      "listen_count": 1172175,
+      "recording_mbid": "327e3115-b909-410e-856a-977176392573",
+      "artist_mbid": "73e5e69d-3554-40d8-8516-00cb38737a1c",
+      "artist_rank": 35,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Don’t Stop the Music",
+      "artist": "Rihanna",
+      "year": 2007,
+      "release": "Good Girl Gone Bad",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|contemporary r&b|dance-pop|barbade|r b",
+      "listen_count": 935237,
+      "recording_mbid": "4c0566be-d3d9-42b2-964d-cf349972123b",
+      "artist_mbid": "73e5e69d-3554-40d8-8516-00cb38737a1c",
+      "artist_rank": 35,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

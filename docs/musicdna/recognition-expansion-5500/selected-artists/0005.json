@@ -1,0 +1,85 @@
+{
+  "rank": 5,
+  "artist": "Kendrick Lamar",
+  "rows": [
+    {
+      "title": "Backseat Freestyle",
+      "artist": "Kendrick Lamar",
+      "year": 2012,
+      "release": "good kid, m.A.A.d city",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|west coast hip hop|rap/hip-hop|contemporary rap;gangsta rap;hardcore rap;rap;west coast rap|rap",
+      "listen_count": 386822,
+      "recording_mbid": "a3c6af59-af56-4d61-beac-032df8fc4015",
+      "artist_mbid": "381086ea-f511-4aba-bdf9-71c753dc5077",
+      "artist_rank": 5,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Bitch, Don’t Kill My Vibe",
+      "artist": "Kendrick Lamar",
+      "year": 2012,
+      "release": "good kid, m.A.A.d city",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|rap/hip-hop|west coast hip hop|hip-hop/rap|contemporary rap;gangsta rap;hardcore rap;rap;west coast rap",
+      "listen_count": 340239,
+      "recording_mbid": "54494123-9670-4b2d-83ad-85c46c8f5200",
+      "artist_mbid": "381086ea-f511-4aba-bdf9-71c753dc5077",
+      "artist_rank": 5,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "A.D.H.D",
+      "artist": "Kendrick Lamar",
+      "year": 2011,
+      "release": "Section.80",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|underground hip hop|rap|west coast hip hop",
+      "listen_count": 288779,
+      "recording_mbid": "5fb18e9d-fb24-4d96-8410-032d3fc89568",
+      "artist_mbid": "381086ea-f511-4aba-bdf9-71c753dc5077",
+      "artist_rank": 5,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Not Like Us",
+      "artist": "Kendrick Lamar",
+      "year": 2024,
+      "release": "Not Like Us",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|offizielle charts|english|billboard hot 100|5+ wochen",
+      "listen_count": 103596,
+      "recording_mbid": "167b0a18-8923-4f64-82dd-30fb57e6216f",
+      "artist_mbid": "381086ea-f511-4aba-bdf9-71c753dc5077",
+      "artist_rank": 5,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "family ties",
+      "artist": "Baby Keem & Kendrick Lamar",
+      "year": 2021,
+      "release": "The Melodic Blue",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hardcore hip-hop;trap",
+      "listen_count": 78914,
+      "recording_mbid": "d1253e07-ecc6-4136-9fda-a9a089d5cb59",
+      "artist_mbid": "381086ea-f511-4aba-bdf9-71c753dc5077",
+      "artist_rank": 5,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "N95",
+      "artist": "Kendrick Lamar",
+      "year": 2022,
+      "release": "Mr. Morale & the Big Steppers",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "west coast hip hop|trap|conscious hip hop",
+      "listen_count": 72795,
+      "recording_mbid": "6476b30b-0c08-4305-9acb-9dfd8f3f36f8",
+      "artist_mbid": "381086ea-f511-4aba-bdf9-71c753dc5077",
+      "artist_rank": 5,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

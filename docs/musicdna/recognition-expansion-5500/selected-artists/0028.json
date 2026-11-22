@@ -1,0 +1,85 @@
+{
+  "rank": 28,
+  "artist": "Charli xcx",
+  "rows": [
+    {
+      "title": "I Love It",
+      "artist": "Icona Pop feat. Charli XCX",
+      "year": 2012,
+      "release": "Icona Pop",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "dance-pop|pop|electropop|synth-pop|house",
+      "listen_count": 245109,
+      "recording_mbid": "58433c40-15c9-4d1f-98e4-8cf08276cd16",
+      "artist_mbid": "260b6184-8828-48eb-945c-bc4cb6fc34ca",
+      "artist_rank": 28,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Nuclear Seasons",
+      "artist": "Charli XCX",
+      "year": 2013,
+      "release": "True Romance",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|electronic|synth-pop|electroclash|electropop",
+      "listen_count": 124935,
+      "recording_mbid": "b0e9b475-5912-4d8d-995f-d24cec894241",
+      "artist_mbid": "260b6184-8828-48eb-945c-bc4cb6fc34ca",
+      "artist_rank": 28,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Stay Away",
+      "artist": "Charli XCX",
+      "year": 2011,
+      "release": "True Romance",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 119133,
+      "recording_mbid": "37c7f2e6-9586-47ce-9af1-a68a3a308600",
+      "artist_mbid": "260b6184-8828-48eb-945c-bc4cb6fc34ca",
+      "artist_rank": 28,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "360",
+      "artist": "Charli xcx",
+      "year": 2024,
+      "release": "BRAT",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electropop|bubblegum bass|electro house|dance-pop|pop",
+      "listen_count": 115709,
+      "recording_mbid": "9e687f51-1fa6-4374-b9e0-2e3df630bcd5",
+      "artist_mbid": "260b6184-8828-48eb-945c-bc4cb6fc34ca",
+      "artist_rank": 28,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Von dutch",
+      "artist": "Charli xcx",
+      "year": 2024,
+      "release": "BRAT",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electropop|pop|electro house|dance-pop|electronic",
+      "listen_count": 90340,
+      "recording_mbid": "93e4875c-8a06-4b7d-96cb-8cb27f142c7d",
+      "artist_mbid": "260b6184-8828-48eb-945c-bc4cb6fc34ca",
+      "artist_rank": 28,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "365",
+      "artist": "Charli xcx",
+      "year": 2024,
+      "release": "BRAT",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electro house|electronic|pop|dance-pop|bubblegum bass",
+      "listen_count": 75194,
+      "recording_mbid": "bd9fd6a1-d41b-4b82-9ead-a4f958749a77",
+      "artist_mbid": "260b6184-8828-48eb-945c-bc4cb6fc34ca",
+      "artist_rank": 28,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

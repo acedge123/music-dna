@@ -1,0 +1,85 @@
+{
+  "rank": 18,
+  "artist": "Arctic Monkeys",
+  "rows": [
+    {
+      "title": "I Bet You Look Good on the Dancefloor",
+      "artist": "Arctic Monkeys",
+      "year": 2005,
+      "release": "Whatever People Say I Am, That’s What I’m Not",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie rock|rock|garage rock revival|dense|party",
+      "listen_count": 3037028,
+      "recording_mbid": "f5e93176-0829-4823-a5be-3333e226824b",
+      "artist_mbid": "ada7a83c-e3e1-40f1-93f9-3e73dbc9298a",
+      "artist_rank": 18,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Fluorescent Adolescent",
+      "artist": "Arctic Monkeys",
+      "year": 2007,
+      "release": "Favourite Worst Nightmare",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie rock|rock|post-punk revival|urban|adult alternative",
+      "listen_count": 2649357,
+      "recording_mbid": "4810b42e-2bb1-4795-874b-85df8fd62ca9",
+      "artist_mbid": "ada7a83c-e3e1-40f1-93f9-3e73dbc9298a",
+      "artist_rank": 18,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Mardy Bum",
+      "artist": "Arctic Monkeys",
+      "year": 2005,
+      "release": "Whatever People Say I Am, That’s What I’m Not",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie rock|rock|alternative|alternative rock|britannique",
+      "listen_count": 2340784,
+      "recording_mbid": "c2705dfc-83bf-4838-bdcb-07734e71c7d7",
+      "artist_mbid": "ada7a83c-e3e1-40f1-93f9-3e73dbc9298a",
+      "artist_rank": 18,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "R U Mine?",
+      "artist": "Arctic Monkeys",
+      "year": 2012,
+      "release": "AM",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie rock|hard rock|rock|blues rock|garage rock revival",
+      "listen_count": 851985,
+      "recording_mbid": "c99bc041-5d23-4a8e-a767-7c7847d24896",
+      "artist_mbid": "ada7a83c-e3e1-40f1-93f9-3e73dbc9298a",
+      "artist_rank": 18,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Don’t Sit Down ’Cause I’ve Moved Your Chair",
+      "artist": "Arctic Monkeys",
+      "year": 2011,
+      "release": "Suck It and See",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative pop/rock|alternative rock|alternative/indie rock|pop/rock|indie rock",
+      "listen_count": 803321,
+      "recording_mbid": "51b42966-23f6-4728-8efd-f2abd98f8937",
+      "artist_mbid": "ada7a83c-e3e1-40f1-93f9-3e73dbc9298a",
+      "artist_rank": 18,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "The Hellcat Spangled Shalalala",
+      "artist": "Arctic Monkeys",
+      "year": 2011,
+      "release": "Suck It and See",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative pop/rock|alternative rock|indie rock|pop/rock|alternative/indie rock",
+      "listen_count": 712971,
+      "recording_mbid": "f9366bfc-0ec9-4c4a-9694-96e6089e212f",
+      "artist_mbid": "ada7a83c-e3e1-40f1-93f9-3e73dbc9298a",
+      "artist_rank": 18,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

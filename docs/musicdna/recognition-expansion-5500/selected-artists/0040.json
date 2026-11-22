@@ -1,0 +1,111 @@
+{
+  "rank": 40,
+  "artist": "Aphex Twin",
+  "rows": [
+    {
+      "title": "Avril 14th",
+      "artist": "Aphex Twin",
+      "year": 2001,
+      "release": "Drukqs",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "idm|electronic|ambient|soundtrack|experimental",
+      "listen_count": 631119,
+      "recording_mbid": "856d081d-320b-4b6b-8dac-4427e308296d",
+      "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "artist_rank": 40,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Xtal",
+      "artist": "Aphex Twin",
+      "year": 1992,
+      "release": "Selected Ambient Works 85–92",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronic|ambient techno|idm|ambient|techno",
+      "listen_count": 604046,
+      "recording_mbid": "e5e5e3c9-8515-4abf-aebb-7529b4e9aa0b",
+      "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "artist_rank": 40,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Windowlicker",
+      "artist": "Aphex Twin",
+      "year": 1999,
+      "release": "Windowlicker",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "idm|electronic|electro",
+      "listen_count": 468829,
+      "recording_mbid": "6e2ca4ec-eda1-4ce4-8d65-1d9366ba8079",
+      "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "artist_rank": 40,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Flim",
+      "artist": "Aphex Twin",
+      "year": 1997,
+      "release": "Come to Daddy",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "idm|electronic|braindance|electronica dance|ambient",
+      "listen_count": 355456,
+      "recording_mbid": "a28c3364-008d-4563-8f17-425ce60719ac",
+      "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "artist_rank": 40,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Vordhosbn",
+      "artist": "Aphex Twin",
+      "year": 2001,
+      "release": "Drukqs",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "idm|electronic|experimental|drum and bass|drill and bass",
+      "listen_count": 280434,
+      "recording_mbid": "c639a9a0-ebf8-4d5c-a0c1-4b7a406c1d64",
+      "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "artist_rank": 40,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Jynweythek",
+      "artist": "Aphex Twin",
+      "year": 2001,
+      "release": "Drukqs",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "idm|electronic|experimental|ambient|drum n bass",
+      "listen_count": 265726,
+      "recording_mbid": "293ea1b0-9ce4-44af-a46e-ad699975ba74",
+      "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "artist_rank": 40,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "#3",
+      "artist": "Aphex Twin",
+      "year": 2024,
+      "release": "Windowlicker",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 45037,
+      "recording_mbid": "b1fb2ae7-6c1f-45c8-8ab1-b991cfa1f7c2",
+      "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "artist_rank": 40,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "aisatsana",
+      "artist": "Aphex Twin",
+      "year": 2014,
+      "release": "Syro",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "idm|ambient techno|modern classical",
+      "listen_count": 40465,
+      "recording_mbid": "734c58c8-42df-4390-9ef6-671be23e2ca9",
+      "artist_mbid": "f22942a1-6f70-4f48-866e-238cb2308fbd",
+      "artist_rank": 40,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

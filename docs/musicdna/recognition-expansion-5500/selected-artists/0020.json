@@ -1,0 +1,111 @@
+{
+  "rank": 20,
+  "artist": "System of a Down",
+  "rows": [
+    {
+      "title": "Chop Suey!",
+      "artist": "System of a Down",
+      "year": 2001,
+      "release": "Toxicity",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|alternative rock|heavy metal|rock|nu metal",
+      "listen_count": 3163019,
+      "recording_mbid": "46c7368a-013a-47b6-97cc-e55e7ab25213",
+      "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+      "artist_rank": 20,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Toxicity",
+      "artist": "System of a Down",
+      "year": 2001,
+      "release": "Toxicity",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|rock|metal|heavy metal|alternative rock",
+      "listen_count": 2300292,
+      "recording_mbid": "4e1083c3-b577-48e9-9a56-7bbbcbb1d6e7",
+      "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+      "artist_rank": 20,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Lonely Day",
+      "artist": "System of a Down",
+      "year": 2005,
+      "release": "Hypnotize",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|alternative rock|rock|alternative|heavy metal",
+      "listen_count": 2141372,
+      "recording_mbid": "0aff4799-849f-4f83-84f4-22cabbba2378",
+      "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+      "artist_rank": 20,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sugar",
+      "artist": "System of a Down",
+      "year": 1998,
+      "release": "System of a Down",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|metal|nu metal|alternative rock|avant-garde metal",
+      "listen_count": 1095203,
+      "recording_mbid": "cf58a52b-cbb3-46d3-85f8-706bc46b1598",
+      "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+      "artist_rank": 20,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Spiders",
+      "artist": "System of a Down",
+      "year": 1998,
+      "release": "System of a Down",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|metal|alternative rock|nu metal|anxious",
+      "listen_count": 857735,
+      "recording_mbid": "7332957d-8891-464a-b69d-b37ed864d978",
+      "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+      "artist_rank": 20,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Suite‐Pee",
+      "artist": "System of a Down",
+      "year": 1998,
+      "release": "System of a Down",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|metal|rock|heavy metal|nu metal",
+      "listen_count": 677684,
+      "recording_mbid": "811d049b-4cfa-46d9-afc5-a13217391a2d",
+      "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+      "artist_rank": 20,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Protect the Land",
+      "artist": "System of a Down",
+      "year": 2020,
+      "release": "Protect the Land / Genocidal Humanoidz",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 16203,
+      "recording_mbid": "c8691c0d-5cfa-4af7-aadb-f76709f59d8a",
+      "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+      "artist_rank": 20,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Genocidal Humanoidz",
+      "artist": "System of a Down",
+      "year": 2020,
+      "release": "Protect the Land / Genocidal Humanoidz",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 11731,
+      "recording_mbid": "af81b705-a287-4498-afd3-ff1d7744af33",
+      "artist_mbid": "cc0b7089-c08d-4c10-b6b0-873582c17fd6",
+      "artist_rank": 20,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}
