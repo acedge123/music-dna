@@ -1,0 +1,98 @@
+{
+  "rank": 156,
+  "artist": "Placebo",
+  "rows": [
+    {
+      "title": "The Bitter End",
+      "artist": "Placebo",
+      "year": 2003,
+      "release": "Sleeping With Ghosts",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|indie rock|alternative rock|indie|happy",
+      "listen_count": 1680463,
+      "recording_mbid": "3d76b996-e1fd-45e9-bfa4-82938799a9e8",
+      "artist_mbid": "847e8284-8582-4b0e-9c26-b042a4f49e57",
+      "artist_rank": 156,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Every You Every Me",
+      "artist": "Placebo",
+      "year": 1998,
+      "release": "Without You I’m Nothing",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock",
+      "listen_count": 1474848,
+      "recording_mbid": "e7e4f918-eb00-4c19-ae48-78d637d012ed",
+      "artist_mbid": "847e8284-8582-4b0e-9c26-b042a4f49e57",
+      "artist_rank": 156,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Running Up That Hill",
+      "artist": "Placebo",
+      "year": 2003,
+      "release": "Sleeping With Ghosts",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock",
+      "listen_count": 1402633,
+      "recording_mbid": "e3a25ca4-1164-4f48-a2d0-8792d4eaa26b",
+      "artist_mbid": "847e8284-8582-4b0e-9c26-b042a4f49e57",
+      "artist_rank": 156,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Song to Say Goodbye",
+      "artist": "Placebo",
+      "year": 2006,
+      "release": "Meds",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|pop|electronic|alt rock",
+      "listen_count": 1399779,
+      "recording_mbid": "b2269515-2ce7-4eda-a081-e5e6a3af669d",
+      "artist_mbid": "847e8284-8582-4b0e-9c26-b042a4f49e57",
+      "artist_rank": 156,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Pure Morning",
+      "artist": "Placebo",
+      "year": 1998,
+      "release": "Without You I’m Nothing",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock",
+      "listen_count": 1342030,
+      "recording_mbid": "7b7d1b1d-9c02-4917-8688-ff3e11cab7f4",
+      "artist_mbid": "847e8284-8582-4b0e-9c26-b042a4f49e57",
+      "artist_rank": 156,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Without You I’m Nothing",
+      "artist": "Placebo",
+      "year": 1998,
+      "release": "Without You I’m Nothing",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock",
+      "listen_count": 838324,
+      "recording_mbid": "c6a0acd6-78e9-4844-b8ae-3f52f911389b",
+      "artist_mbid": "847e8284-8582-4b0e-9c26-b042a4f49e57",
+      "artist_rank": 156,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "B3",
+      "artist": "Placebo",
+      "year": 2012,
+      "release": "B3EP",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 77221,
+      "recording_mbid": "30b21d80-f7a1-4f36-af04-7267c110f812",
+      "artist_mbid": "847e8284-8582-4b0e-9c26-b042a4f49e57",
+      "artist_rank": 156,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

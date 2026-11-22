@@ -1,0 +1,85 @@
+{
+  "rank": 152,
+  "artist": "King Gizzard & the Lizard Wizard",
+  "rows": [
+    {
+      "title": "Robot Stop",
+      "artist": "King Gizzard & the Lizard Wizard",
+      "year": 2016,
+      "release": "Nonagon Infinity",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "psychedelic|psychedelic rock|fun|intense|garage rock",
+      "listen_count": 31570,
+      "recording_mbid": "fa518c6d-3a74-42cb-bf63-842bf85b7344",
+      "artist_mbid": "f58384a4-2ad2-4f24-89c5-c7b74ae1cce7",
+      "artist_rank": 152,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Gamma Knife",
+      "artist": "King Gizzard & the Lizard Wizard",
+      "year": 2016,
+      "release": "Nonagon Infinity",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "intense|dreamy|psychedelic rock|psychedelic|garage rock",
+      "listen_count": 22488,
+      "recording_mbid": "86d60ccc-c28d-40b3-9e53-b8468a7b8447",
+      "artist_mbid": "f58384a4-2ad2-4f24-89c5-c7b74ae1cce7",
+      "artist_rank": 152,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Work This Time",
+      "artist": "King Gizzard & the Lizard Wizard",
+      "year": 2014,
+      "release": "Oddments",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "eclectic|sexy|intense|dreamy|humorous",
+      "listen_count": 20756,
+      "recording_mbid": "cc28fbdb-d915-499d-a641-de03cede96d8",
+      "artist_mbid": "f58384a4-2ad2-4f24-89c5-c7b74ae1cce7",
+      "artist_rank": 152,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Gila Monster",
+      "artist": "King Gizzard & the Lizard Wizard",
+      "year": 2023,
+      "release": "PetroDragonic Apocalypse; or, Dawn of Eternal Night: An Annihilation of Planet Earth and the Beginning of Merciless Damnation",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 15099,
+      "recording_mbid": "7ff2815b-2461-4c95-8497-a2476c631c5d",
+      "artist_mbid": "f58384a4-2ad2-4f24-89c5-c7b74ae1cce7",
+      "artist_rank": 152,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Kepler‐22b",
+      "artist": "King Gizzard & the Lizard Wizard",
+      "year": 2022,
+      "release": "Omnium Gatherum",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "energetic|intense|dreamy|eclectic|fun",
+      "listen_count": 14573,
+      "recording_mbid": "41c35c73-706b-4ff8-88ae-09172af0bc08",
+      "artist_mbid": "f58384a4-2ad2-4f24-89c5-c7b74ae1cce7",
+      "artist_rank": 152,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Magenta Mountain",
+      "artist": "King Gizzard & the Lizard Wizard",
+      "year": 2022,
+      "release": "Omnium Gatherum",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "fun|intense|dreamy|psychedelic rock|garage rock",
+      "listen_count": 13822,
+      "recording_mbid": "1e352131-b934-49ba-83b7-7a4c03fde17d",
+      "artist_mbid": "f58384a4-2ad2-4f24-89c5-c7b74ae1cce7",
+      "artist_rank": 152,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

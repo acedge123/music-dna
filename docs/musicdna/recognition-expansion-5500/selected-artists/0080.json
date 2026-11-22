@@ -1,0 +1,85 @@
+{
+  "rank": 80,
+  "artist": "Future",
+  "rows": [
+    {
+      "title": "Mask Off",
+      "artist": "Future",
+      "year": 2017,
+      "release": "FUTURE",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|alternative hip hop",
+      "listen_count": 67703,
+      "recording_mbid": "09a613f7-5f9d-414a-9c4a-5c318dfe6b9a",
+      "artist_mbid": "48262e82-db9f-4a92-b650-dfef979b73ec",
+      "artist_rank": 80,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Turn on the Lights",
+      "artist": "Future",
+      "year": 2012,
+      "release": "Pluto",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|electronic|rap|gangsta rap|southern hip hop",
+      "listen_count": 45813,
+      "recording_mbid": "b08138d5-b4f2-499d-a703-f5f69dfb3d50",
+      "artist_mbid": "48262e82-db9f-4a92-b650-dfef979b73ec",
+      "artist_rank": 80,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "King’s Dead",
+      "artist": "Jay Rock feat. Future",
+      "year": 2018,
+      "release": "Redemption",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 45067,
+      "recording_mbid": "8228be66-5868-43aa-a88f-2d727a941b88",
+      "artist_mbid": "48262e82-db9f-4a92-b650-dfef979b73ec",
+      "artist_rank": 80,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Life Is Good",
+      "artist": "Future feat. Drake",
+      "year": 2020,
+      "release": "High Off Life",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 35960,
+      "recording_mbid": "df9467b2-f33f-418b-8c0e-33e1da78f5b8",
+      "artist_mbid": "48262e82-db9f-4a92-b650-dfef979b73ec",
+      "artist_rank": 80,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Type Shit",
+      "artist": "Future, Metro Boomin, Travis Scott & Playboi Carti",
+      "year": 2024,
+      "release": "WE DON’T TRUST YOU",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 27757,
+      "recording_mbid": "8757d272-9292-42df-b67a-7246cc97bda3",
+      "artist_mbid": "48262e82-db9f-4a92-b650-dfef979b73ec",
+      "artist_rank": 80,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "WAIT FOR U",
+      "artist": "Future feat. Drake & Tems",
+      "year": 2022,
+      "release": "I NEVER LIKED YOU",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 20694,
+      "recording_mbid": "1185dba0-4802-48a4-9441-e6259a3d84b0",
+      "artist_mbid": "48262e82-db9f-4a92-b650-dfef979b73ec",
+      "artist_rank": 80,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

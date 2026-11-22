@@ -1,13 +1,13 @@
 {
   "target_unique_identities": 5500,
-  "rows_total": 2759,
-  "unique_title_artist": 2759,
-  "unique_before_run": 2488,
-  "inserted_this_run": 271,
-  "artists_processed": 51,
+  "rows_total": 3293,
+  "unique_title_artist": 3293,
+  "unique_before_run": 3049,
+  "inserted_this_run": 244,
+  "artists_processed": 181,
   "artist_seed_count": 1000,
   "execute": true,
   "complete": false,
-  "pending": 2741,
-  "as_of_utc": "2026-11-22T22:52:14Z"
+  "pending": 2207,
+  "as_of_utc": "2026-11-22T23:28:34Z"
 }

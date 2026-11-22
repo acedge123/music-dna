@@ -3,6 +3,19 @@
   "artist": "Led Zeppelin",
   "rows": [
     {
+      "title": "Rock & Roll",
+      "artist": "Led Zeppelin",
+      "year": 2010,
+      "release": "The Song Remains the Same",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 24814,
+      "recording_mbid": "61ad0df8-69db-4875-af72-633bca0a29ed",
+      "artist_mbid": "678d88b2-87b0-403b-b63d-5da7465aecc3",
+      "artist_rank": 26,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
       "title": "Stairway to Heaven",
       "artist": "Led Zeppelin",
       "year": 1971,
@@ -55,5 +68,5 @@
       "artist_source": "ListenBrainz sitewide all_time artists"
     }
   ],
-  "gap": "MusicBrainz unavailable after bounded retries"
+  "gap": null
 }

@@ -1,0 +1,111 @@
+{
+  "rank": 102,
+  "artist": "Oasis",
+  "rows": [
+    {
+      "title": "Wonderwall",
+      "artist": "Oasis",
+      "year": 1995,
+      "release": "(What’s the Story) Morning Glory?",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|rock|alternative rock|brit pop|acoustic rock",
+      "listen_count": 3833867,
+      "recording_mbid": "580f4553-e29a-4d19-989c-1b097b76de48",
+      "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+      "artist_rank": 102,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Don’t Look Back in Anger",
+      "artist": "Oasis",
+      "year": 1995,
+      "release": "(What’s the Story) Morning Glory?",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|alternative rock|rock|alternative|alternative pop/rock",
+      "listen_count": 2185108,
+      "recording_mbid": "15b32a80-3965-4061-80c4-894e13d99735",
+      "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+      "artist_rank": 102,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Stop Crying Your Heart Out",
+      "artist": "Oasis",
+      "year": 2002,
+      "release": "Heathen Chemistry",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|rock|bittersweet|alternative pop/rock|melancholic",
+      "listen_count": 1084911,
+      "recording_mbid": "30bccfc5-8e6b-4833-9235-c205012e6d4d",
+      "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+      "artist_rank": 102,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Supersonic",
+      "artist": "Oasis",
+      "year": 1994,
+      "release": "Definitely Maybe",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|alternative rock|rock|neo-psychedelia|brit pop",
+      "listen_count": 967663,
+      "recording_mbid": "901e8dd7-3859-4243-a999-c7bc359c9984",
+      "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+      "artist_rank": 102,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "The Importance of Being Idle",
+      "artist": "Oasis",
+      "year": 2005,
+      "release": "Don’t Believe the Truth",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|rock|alternative pop/rock|indie rock|bittersweet",
+      "listen_count": 615364,
+      "recording_mbid": "8c4a84f4-5506-49b2-bb6b-64a267273225",
+      "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+      "artist_rank": 102,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Songbird",
+      "artist": "Oasis",
+      "year": 2002,
+      "release": "Heathen Chemistry",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|rock|acoustic|lush|alternative pop/rock",
+      "listen_count": 596746,
+      "recording_mbid": "b0c5cbfc-aee4-496d-9184-d1bb5b7116a8",
+      "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+      "artist_rank": 102,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Listen Up",
+      "artist": "Oasis",
+      "year": 2014,
+      "release": "Definitely Maybe",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|britpop|indie|indie rock",
+      "listen_count": 179821,
+      "recording_mbid": "d14b8732-a27e-45a7-80f7-474848ab5eda",
+      "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+      "artist_rank": 102,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "D’Yer Wanna Be a Spaceman?",
+      "artist": "Oasis",
+      "year": 2014,
+      "release": "Definitely Maybe",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|britpop|pop",
+      "listen_count": 45982,
+      "recording_mbid": "29feb81b-28d2-4a3d-a787-433337a7a1ae",
+      "artist_mbid": "39ab1aed-75e0-4140-bd47-540276886b60",
+      "artist_rank": 102,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

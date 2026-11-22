@@ -1,0 +1,85 @@
+{
+  "rank": 107,
+  "artist": "Hans Zimmer",
+  "rows": [
+    {
+      "title": "Time",
+      "artist": "Hans Zimmer",
+      "year": 2010,
+      "release": "Inception: Music From the Motion Picture",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "classical|soundtrack|modern classical|stage & screen|emotional",
+      "listen_count": 647879,
+      "recording_mbid": "e1748d2a-8315-4577-9196-b6a6b96fec3b",
+      "artist_mbid": "e6de1f3b-6484-491c-88dd-6d619f142abc",
+      "artist_rank": 107,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Dream Is Collapsing",
+      "artist": "Hans Zimmer",
+      "year": 2010,
+      "release": "Inception: Music From the Motion Picture",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "classical|soundtrack|modern classical|stage & screen|dramatic",
+      "listen_count": 468060,
+      "recording_mbid": "41c0b32b-3991-4197-93de-e00d085e1bc7",
+      "artist_mbid": "e6de1f3b-6484-491c-88dd-6d619f142abc",
+      "artist_rank": 107,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "528491",
+      "artist": "Hans Zimmer",
+      "year": 2010,
+      "release": "Inception: Music From the Motion Picture",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "modern classical|classical|stage & screen|soundtrack|dramatic",
+      "listen_count": 277621,
+      "recording_mbid": "db7eafdd-2a71-4159-ab9b-01a4bdcd61d5",
+      "artist_mbid": "e6de1f3b-6484-491c-88dd-6d619f142abc",
+      "artist_rank": 107,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Hoist the Colours",
+      "artist": "Hans Zimmer & Gore Verbinski",
+      "year": 2007,
+      "release": "Pirates of the Caribbean: At World’s End",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "score|soundtrack|movie soundtrack|classical",
+      "listen_count": 164821,
+      "recording_mbid": "3f207e61-2f53-44ef-b38c-d97162be091f",
+      "artist_mbid": "e6de1f3b-6484-491c-88dd-6d619f142abc",
+      "artist_rank": 107,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Davy Jones",
+      "artist": "Hans Zimmer",
+      "year": 2006,
+      "release": "Pirates of the Caribbean: Dead Man’s Chest",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "soundtrack|score|classical|movie soundtrack|electronic",
+      "listen_count": 149829,
+      "recording_mbid": "ba369c5c-0cf9-4b78-b5a6-b30222329682",
+      "artist_mbid": "e6de1f3b-6484-491c-88dd-6d619f142abc",
+      "artist_rank": 107,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Drink Up Me Hearties",
+      "artist": "Hans Zimmer, Lorne Balfe, Geoff Zanelli & Henry Jackman",
+      "year": 2007,
+      "release": "Pirates of the Caribbean: At World’s End",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "score|soundtrack|movie soundtrack",
+      "listen_count": 145299,
+      "recording_mbid": "1df86351-6171-4293-b6b5-99225a057569",
+      "artist_mbid": "e6de1f3b-6484-491c-88dd-6d619f142abc",
+      "artist_rank": 107,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

@@ -1,6 +1,85 @@
 {
   "rank": 49,
   "artist": "Dua Lipa",
-  "rows": [],
-  "gap": "Provider unavailable after bounded retries"
+  "rows": [
+    {
+      "title": "Room for 2",
+      "artist": "Dua Lipa",
+      "year": 2016,
+      "release": "Dua Lipa",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|sexy|dance-pop|synth-pop",
+      "listen_count": 7502,
+      "recording_mbid": "28d50270-953a-4c34-975d-11875c8cc6ef",
+      "artist_mbid": "6f1a58bf-9b1b-49cf-a44a-6cefad7ae04f",
+      "artist_rank": 49,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Garden",
+      "artist": "Dua Lipa",
+      "year": 2017,
+      "release": "Dua Lipa",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|dance-pop|sexy|synth-pop",
+      "listen_count": 7250,
+      "recording_mbid": "12d8f54d-131c-493c-aa2a-fc26f6eb22c7",
+      "artist_mbid": "6f1a58bf-9b1b-49cf-a44a-6cefad7ae04f",
+      "artist_rank": 49,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Anything for Love",
+      "artist": "Dua Lipa",
+      "year": 2024,
+      "release": "Radical Optimism",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "dance-pop|house|europop|electronic|disco",
+      "listen_count": 7181,
+      "recording_mbid": "7dd6b25d-2617-42f2-b601-5f9ccd229ba6",
+      "artist_mbid": "6f1a58bf-9b1b-49cf-a44a-6cefad7ae04f",
+      "artist_rank": 49,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Bad Together",
+      "artist": "Dua Lipa",
+      "year": 2017,
+      "release": "Dua Lipa",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|dance-pop|synth-pop|sexy",
+      "listen_count": 6437,
+      "recording_mbid": "f06be590-7576-47be-a4e3-9113146bb4a3",
+      "artist_mbid": "6f1a58bf-9b1b-49cf-a44a-6cefad7ae04f",
+      "artist_rank": 49,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Demeanor",
+      "artist": "Pop Smoke feat. Dua Lipa",
+      "year": 2021,
+      "release": "Faith",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 4008,
+      "recording_mbid": "c1f318bd-c344-47c5-bc73-30d8b8dc56e4",
+      "artist_mbid": "6f1a58bf-9b1b-49cf-a44a-6cefad7ae04f",
+      "artist_rank": 49,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Houdini (extended edit)",
+      "artist": "Dua Lipa",
+      "year": 2023,
+      "release": "Radical Optimism (extended versions)",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 3013,
+      "recording_mbid": "062e9b44-4df9-4e1f-a5c7-6b3d1e72e587",
+      "artist_mbid": "6f1a58bf-9b1b-49cf-a44a-6cefad7ae04f",
+      "artist_rank": 49,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": "MusicBrainz unavailable after bounded retries"
 }

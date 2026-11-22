@@ -1,0 +1,85 @@
+{
+  "rank": 149,
+  "artist": "Rise Against",
+  "rows": [
+    {
+      "title": "Savior",
+      "artist": "Rise Against",
+      "year": 2008,
+      "release": "Appeal to Reason",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|punk|alternative rock",
+      "listen_count": 1395876,
+      "recording_mbid": "eda4b4af-21ef-4494-8657-f68ec116d4ad",
+      "artist_mbid": "606bf117-494f-4864-891f-09d63ff6aa4b",
+      "artist_rank": 149,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Swing Life Away",
+      "artist": "Rise Against",
+      "year": 2004,
+      "release": "Siren Song of the Counter Culture",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative and punk|punk|rock|alternative rock|melodic hardcore",
+      "listen_count": 1206011,
+      "recording_mbid": "c8551b6c-1333-4c35-b367-39b246971db1",
+      "artist_mbid": "606bf117-494f-4864-891f-09d63ff6aa4b",
+      "artist_rank": 149,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Give It All",
+      "artist": "Rise Against",
+      "year": 2004,
+      "release": "Siren Song of the Counter Culture",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "punk|rock|alternative and punk|alternative & punk|punk rock",
+      "listen_count": 1166706,
+      "recording_mbid": "9daec74e-bbdf-46a9-965d-91da0a472305",
+      "artist_mbid": "606bf117-494f-4864-891f-09d63ff6aa4b",
+      "artist_rank": 149,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Satellite",
+      "artist": "Rise Against",
+      "year": 2011,
+      "release": "Endgame",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "punk|rock/punk/alternative|rock",
+      "listen_count": 551623,
+      "recording_mbid": "a4948fb8-8016-4338-8f6e-8f66bbe4698e",
+      "artist_mbid": "606bf117-494f-4864-891f-09d63ff6aa4b",
+      "artist_rank": 149,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Help Is on the Way",
+      "artist": "Rise Against",
+      "year": 2011,
+      "release": "Endgame",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "punk|rock|rock/punk/alternative",
+      "listen_count": 486790,
+      "recording_mbid": "b464d4dc-8c79-431f-a6bb-7c8aa395d899",
+      "artist_mbid": "606bf117-494f-4864-891f-09d63ff6aa4b",
+      "artist_rank": 149,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Architects",
+      "artist": "Rise Against",
+      "year": 2011,
+      "release": "Endgame",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "punk|rock|rock/punk/alternative",
+      "listen_count": 374279,
+      "recording_mbid": "03df172d-8ccc-410c-aba6-a8155fd904dd",
+      "artist_mbid": "606bf117-494f-4864-891f-09d63ff6aa4b",
+      "artist_rank": 149,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

@@ -1,0 +1,111 @@
+{
+  "rank": 89,
+  "artist": "Korn",
+  "rows": [
+    {
+      "title": "Freak on a Leash",
+      "artist": "Korn",
+      "year": 1998,
+      "release": "Follow the Leader",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "nu metal|alternative metal|funk metal|metal|heavy metal",
+      "listen_count": 1172092,
+      "recording_mbid": "5addac83-e296-4548-bf4d-7b03a8a079bc",
+      "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+      "artist_rank": 89,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Falling Away From Me",
+      "artist": "Korn",
+      "year": 1999,
+      "release": "Issues",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "nu metal|metal|alternative metal|funk metal|trip hop",
+      "listen_count": 1003648,
+      "recording_mbid": "e9d58402-8f40-44ae-adee-7121e60f5447",
+      "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+      "artist_rank": 89,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Got the Life",
+      "artist": "Korn",
+      "year": 1998,
+      "release": "Follow the Leader",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "nu metal|alternative metal|metal|funk metal|rock",
+      "listen_count": 972510,
+      "recording_mbid": "753d99bb-37fb-4634-8949-03b38bb39ca1",
+      "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+      "artist_rank": 89,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Word Up!",
+      "artist": "Korn",
+      "year": 2004,
+      "release": "Word Up!",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "metal|nu metal|alternative rock|rock|heavy metal",
+      "listen_count": 846744,
+      "recording_mbid": "02f40416-fd9a-401b-ab34-a22706bbc2fc",
+      "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+      "artist_rank": 89,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Twisted Transistor",
+      "artist": "Korn",
+      "year": 2005,
+      "release": "See You on the Other Side",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|heavy metal|nu metal|metal|alternative metal",
+      "listen_count": 824866,
+      "recording_mbid": "2ef2965d-d9cc-4122-ac3f-49554850abfd",
+      "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+      "artist_rank": 89,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Coming Undone",
+      "artist": "Korn",
+      "year": 2005,
+      "release": "See You on the Other Side",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|nu metal|heavy metal|hard rock|alternative metal",
+      "listen_count": 731784,
+      "recording_mbid": "f5588bea-9b2e-4688-9fca-3592053c6f47",
+      "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+      "artist_rank": 89,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Narcissistic Cannibal",
+      "artist": "Korn",
+      "year": 2012,
+      "release": "The Path of Totality Tour: Live at the Hollywood Palladium",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 198654,
+      "recording_mbid": "b203e009-7877-4bda-9425-a7feb4472a54",
+      "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+      "artist_rank": 89,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Oildale (Leave Me Alone)",
+      "artist": "Korn",
+      "year": 2010,
+      "release": "Korn III: Remember Who You Are",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "nu metal|rock|nü metal|alternative rock|pop/rock",
+      "listen_count": 150331,
+      "recording_mbid": "382b0182-52bf-48bb-bcf1-ecd91c583c8b",
+      "artist_mbid": "ac865b2e-bba8-4f5a-8756-dd40d5e39f46",
+      "artist_rank": 89,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

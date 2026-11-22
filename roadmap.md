@@ -2,8 +2,9 @@
 
 ## Current — broader recognition catalog
 
+- [x] Retry interrupted 2010s/2020s lookups and continue bounded modern-decade imports: 534 new identities read back (335 2010s, 199 2020s); era totals 443/260, overall 3,293. Existing rows unchanged; six operator tests pass; maximum three expansion songs per artist/decade. Saved progress at 181/1,000 artists, no background job, scoring or activation.
 - [x] Rebuild missing temporary 2010s output with durable checkpoints; import/read back the first 108 verified 2010s identities without overwriting prior rows. Original full temporary sample was not recovered; replacement is partial.
-- [ ] Finish 2010s/2020s and broader decade collection to 5,500 distinct title/artist identities. Verified 271 additions (108 2010s, 61 2020s plus 102 older), 2,759 total; 2,741 remain. Blocker: MusicBrainz busy responses interrupted bounded collection; paused with 51/1,000 ranked artists saved in docs/musicdna/recognition-expansion-5500. No background job. Resume paced operator steps and retry explicit provider gaps; retain three-per-artist/decade cap and no scoring/activation.
+- [ ] Finish 2010s/2020s and broader decade collection to 5,500 distinct title/artist identities. Now 3,293 total; 2,207 remain. Paused after bounded modern-only imports at 181/1,000 ranked artists saved in docs/musicdna/recognition-expansion-5500. Remaining provider/indexed-identity gaps require further paced operator steps; no background job. Retain three-per-artist/decade cap and no scoring/activation.
 
 - [x] Import the approved ’90s review identities: 413 new, two existing recording IDs; all 415 source IDs and new values verified, 1,890 recognition rows total. No scoring/activation, existing duplicates unchanged, provisional dates hidden.
 - [x] Build and save the 2000s review sample: 598 recordings across 200 artists, maximum three per artist; docs/musicdna/recognition-sample-2000s. Provisional dates and provider gaps documented.

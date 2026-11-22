@@ -1,0 +1,85 @@
+{
+  "rank": 122,
+  "artist": "Doja Cat",
+  "rows": [
+    {
+      "title": "Say So",
+      "artist": "Doja Cat",
+      "year": 2019,
+      "release": "Hot Pink (Japan version)",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "deep house|pop|r&b",
+      "listen_count": 68507,
+      "recording_mbid": "5cd7baaf-e1f7-49fb-981a-cf502c165fe9",
+      "artist_mbid": "5df62a88-cac9-490a-b62c-c7c88f4020f4",
+      "artist_rank": 122,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Woman",
+      "artist": "Doja Cat",
+      "year": 2021,
+      "release": "Planet Her",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop rap|romantic|pop|contemporary r&b",
+      "listen_count": 58785,
+      "recording_mbid": "4d7642a0-c36c-433f-9709-f6ff9a83eb11",
+      "artist_mbid": "5df62a88-cac9-490a-b62c-c7c88f4020f4",
+      "artist_rank": 122,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Paint the Town Red",
+      "artist": "Doja Cat",
+      "year": 2023,
+      "release": "Scarlet",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|contemporary r&b",
+      "listen_count": 53612,
+      "recording_mbid": "b9e20829-1d09-456a-b649-3138e305d9ca",
+      "artist_mbid": "5df62a88-cac9-490a-b62c-c7c88f4020f4",
+      "artist_rank": 122,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Kiss Me More",
+      "artist": "Doja Cat ft. SZA",
+      "year": 2021,
+      "release": "Planet Her",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop",
+      "listen_count": 53004,
+      "recording_mbid": "16ba7915-2acf-42b2-8c87-ed67090dca91",
+      "artist_mbid": "5df62a88-cac9-490a-b62c-c7c88f4020f4",
+      "artist_rank": 122,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Streets",
+      "artist": "Doja Cat",
+      "year": 2019,
+      "release": "Hot Pink (Japan version)",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 34735,
+      "recording_mbid": "a833a67f-e3e9-4594-b6f2-7009ec2b99d8",
+      "artist_mbid": "5df62a88-cac9-490a-b62c-c7c88f4020f4",
+      "artist_rank": 122,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Rules",
+      "artist": "Doja Cat",
+      "year": 2019,
+      "release": "Hot Pink (Japan version)",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "r&b",
+      "listen_count": 22388,
+      "recording_mbid": "2fd8a52f-9694-4c59-8614-5953a1db0536",
+      "artist_mbid": "5df62a88-cac9-490a-b62c-c7c88f4020f4",
+      "artist_rank": 122,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

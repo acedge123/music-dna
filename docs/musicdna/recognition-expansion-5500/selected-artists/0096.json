@@ -1,0 +1,98 @@
+{
+  "rank": 96,
+  "artist": "Guns N’ Roses",
+  "rows": [
+    {
+      "title": "So Fine",
+      "artist": "Guns N’ Roses",
+      "year": 1991,
+      "release": "Use Your Illusion II",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hard rock|metal|rock|album rock|heavy metal",
+      "listen_count": 108387,
+      "recording_mbid": "02426a16-24d5-4e2c-863f-cd97eede907f",
+      "artist_mbid": "eeb1195b-f213-4ce1-b28c-8565211f8e43",
+      "artist_rank": 96,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Street of Dreams",
+      "artist": "Guns N’ Roses",
+      "year": 2008,
+      "release": "Chinese Democracy",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hard rock|rock|album rock|shm-cd|metal",
+      "listen_count": 106781,
+      "recording_mbid": "045d9cb9-80e0-4100-a6d4-3fcb26032ee2",
+      "artist_mbid": "eeb1195b-f213-4ce1-b28c-8565211f8e43",
+      "artist_rank": 96,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Perfect Crime",
+      "artist": "Guns N’ Roses",
+      "year": 1991,
+      "release": "Use Your Illusion I",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hard rock|rock|album rock|arena rock|pop/rock",
+      "listen_count": 94862,
+      "recording_mbid": "aa4ae4e7-94df-4c08-b0a0-514c050554ba",
+      "artist_mbid": "eeb1195b-f213-4ce1-b28c-8565211f8e43",
+      "artist_rank": 96,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Double Talkin’ Jive",
+      "artist": "Guns N’ Roses",
+      "year": 1991,
+      "release": "Use Your Illusion I",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hard rock|album rock|rock|pop/rock|heavy metal",
+      "listen_count": 93910,
+      "recording_mbid": "2013eaae-35cf-4430-9bd7-d5194e8b838a",
+      "artist_mbid": "eeb1195b-f213-4ce1-b28c-8565211f8e43",
+      "artist_rank": 96,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sorry",
+      "artist": "Guns N’ Roses",
+      "year": 2008,
+      "release": "Chinese Democracy",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hard rock|rock|shm-cd|pop/rock|album rock",
+      "listen_count": 76542,
+      "recording_mbid": "79b45788-bbb3-468f-bf7e-133768cd9677",
+      "artist_mbid": "eeb1195b-f213-4ce1-b28c-8565211f8e43",
+      "artist_rank": 96,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Scraped",
+      "artist": "Guns N’ Roses",
+      "year": 2008,
+      "release": "Chinese Democracy",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hard rock|album rock|rock|heavy metal|pop/rock",
+      "listen_count": 70284,
+      "recording_mbid": "9680fc2b-30da-4a48-a051-ce7e043999fa",
+      "artist_mbid": "eeb1195b-f213-4ce1-b28c-8565211f8e43",
+      "artist_rank": 96,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Shadow of Your Love",
+      "artist": "Guns N’ Roses",
+      "year": 2018,
+      "release": "Appetite for Destruction",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "acoustic rock|hard rock",
+      "listen_count": 23795,
+      "recording_mbid": "baf549be-a502-4263-8029-04c907a61e51",
+      "artist_mbid": "eeb1195b-f213-4ce1-b28c-8565211f8e43",
+      "artist_rank": 96,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": "MusicBrainz unavailable after bounded retries"
+}

@@ -1,0 +1,85 @@
+{
+  "rank": 134,
+  "artist": "Modest Mouse",
+  "rows": [
+    {
+      "title": "Float On",
+      "artist": "Modest Mouse",
+      "year": 2003,
+      "release": "Good News for People Who Love Bad News",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|indie rock|indie|alternative and punk|noise pop",
+      "listen_count": 2028935,
+      "recording_mbid": "2be922c8-1250-47f6-895e-c4da99a93fde",
+      "artist_mbid": "a96ac800-bfcb-412a-8a63-0a98df600700",
+      "artist_rank": 134,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Dashboard",
+      "artist": "Modest Mouse",
+      "year": 2007,
+      "release": "We Were Dead Before the Ship Even Sank",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie|rock|alternative punk|indie rock|hip hop",
+      "listen_count": 1261104,
+      "recording_mbid": "f80efa4f-a2d1-4fb6-86bd-f7f4b34e7f9c",
+      "artist_mbid": "a96ac800-bfcb-412a-8a63-0a98df600700",
+      "artist_rank": 134,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "The World at Large",
+      "artist": "Modest Mouse",
+      "year": 2004,
+      "release": "Good News for People Who Love Bad News",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|indie rock|punk|indie|alternative and punk",
+      "listen_count": 951014,
+      "recording_mbid": "bd27c9e5-42d7-4191-a6d5-65013a2d6fd3",
+      "artist_mbid": "a96ac800-bfcb-412a-8a63-0a98df600700",
+      "artist_rank": 134,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Dramamine",
+      "artist": "Modest Mouse",
+      "year": 1996,
+      "release": "This Is a Long Drive for Someone With Nothing to Think About",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie|indie rock|rock|emo|2xlp",
+      "listen_count": 405644,
+      "recording_mbid": "cea9b0b9-8ba1-4a59-93c6-3a4df2ddd1b2",
+      "artist_mbid": "a96ac800-bfcb-412a-8a63-0a98df600700",
+      "artist_rank": 134,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Wild Packs of Family Dogs",
+      "artist": "Modest Mouse",
+      "year": 1999,
+      "release": "The Moon & Antarctica",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|indie|alternative and punk|alternative rock|indie rock",
+      "listen_count": 321309,
+      "recording_mbid": "561423a0-0526-4f59-a952-33f9486e892f",
+      "artist_mbid": "a96ac800-bfcb-412a-8a63-0a98df600700",
+      "artist_rank": 134,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Trailer Trash",
+      "artist": "Modest Mouse",
+      "year": 1997,
+      "release": "The Lonesome Crowded West Demos",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 301844,
+      "recording_mbid": "c930ea65-b049-4071-9c7c-d179e897abf3",
+      "artist_mbid": "a96ac800-bfcb-412a-8a63-0a98df600700",
+      "artist_rank": 134,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

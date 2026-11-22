@@ -1,0 +1,85 @@
+{
+  "rank": 86,
+  "artist": "The Black Keys",
+  "rows": [
+    {
+      "title": "Tighten Up",
+      "artist": "The Black Keys",
+      "year": 2010,
+      "release": "Brothers",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "blues rock|garage rock|alternative rock|rock|blues",
+      "listen_count": 1745645,
+      "recording_mbid": "f5e8287e-e3e0-4f18-8d89-837e0dbc1bb4",
+      "artist_mbid": "d15721d8-56b4-453d-b506-fc915b14cba2",
+      "artist_rank": 86,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Lonely Boy",
+      "artist": "The Black Keys",
+      "year": 2011,
+      "release": "El Camino",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "blues rock|alternative rock|garage rock|rock|lonely",
+      "listen_count": 1442269,
+      "recording_mbid": "381f2a3c-a5c5-4273-a2d5-52a7b1f5fee5",
+      "artist_mbid": "d15721d8-56b4-453d-b506-fc915b14cba2",
+      "artist_rank": 86,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Everlasting Light",
+      "artist": "The Black Keys",
+      "year": 2010,
+      "release": "Brothers",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "blues rock|garage rock|alternative rock|glam rock|neo soul",
+      "listen_count": 1179767,
+      "recording_mbid": "0afdf0bb-cf31-456b-814e-afc42b26da4b",
+      "artist_mbid": "d15721d8-56b4-453d-b506-fc915b14cba2",
+      "artist_rank": 86,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Strange Times",
+      "artist": "The Black Keys",
+      "year": 2008,
+      "release": "Attack & Release",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|blues rock|garage rock|melancholic",
+      "listen_count": 562236,
+      "recording_mbid": "a36514f3-7a7f-4555-8eec-70eabdb6c6b6",
+      "artist_mbid": "d15721d8-56b4-453d-b506-fc915b14cba2",
+      "artist_rank": 86,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "I Got Mine",
+      "artist": "The Black Keys",
+      "year": 2008,
+      "release": "Attack & Release",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "blues rock|the black keys - i got mine|rock|indie|blues",
+      "listen_count": 536060,
+      "recording_mbid": "6856d24c-10ba-4119-97a0-408bc15e869c",
+      "artist_mbid": "d15721d8-56b4-453d-b506-fc915b14cba2",
+      "artist_rank": 86,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Psychotic Girl",
+      "artist": "The Black Keys",
+      "year": 2008,
+      "release": "Attack & Release",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "blues rock|rock|indie|blues",
+      "listen_count": 533493,
+      "recording_mbid": "5bf9c232-bf21-459e-bdc8-ec6708708320",
+      "artist_mbid": "d15721d8-56b4-453d-b506-fc915b14cba2",
+      "artist_rank": 86,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

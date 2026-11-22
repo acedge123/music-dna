@@ -1,0 +1,46 @@
+{
+  "rank": 154,
+  "artist": "Death Grips",
+  "rows": [
+    {
+      "title": "Get Got",
+      "artist": "Death Grips",
+      "year": 2012,
+      "release": "The Money Store",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "experimental|hip hop|electronic|rap|industrial hip hop",
+      "listen_count": 232050,
+      "recording_mbid": "966a0d00-f6fe-496f-aabc-9dd6c1814954",
+      "artist_mbid": "f9133036-ab3d-4e97-bd11-7a2c98ad148a",
+      "artist_rank": 154,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "The Fever (Aye Aye)",
+      "artist": "Death Grips",
+      "year": 2012,
+      "release": "The Money Store",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|alternative hip hop|experimental|hardcore hip hop|rap",
+      "listen_count": 175022,
+      "recording_mbid": "771544ab-7d3d-4402-bc41-b2e710ea9362",
+      "artist_mbid": "f9133036-ab3d-4e97-bd11-7a2c98ad148a",
+      "artist_rank": 154,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Hacker",
+      "artist": "Death Grips",
+      "year": 2012,
+      "release": "The Money Store",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|alternative hip hop|hardcore hip hop|rap|electro house",
+      "listen_count": 148662,
+      "recording_mbid": "42c1be71-2f5b-4900-b206-0edafa141b3a",
+      "artist_mbid": "f9133036-ab3d-4e97-bd11-7a2c98ad148a",
+      "artist_rank": 154,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

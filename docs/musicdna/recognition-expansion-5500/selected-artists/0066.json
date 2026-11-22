@@ -1,0 +1,85 @@
+{
+  "rank": 66,
+  "artist": "Post Malone",
+  "rows": [
+    {
+      "title": "Sunflower (Spider-Man: Into the Spider-Verse)",
+      "artist": "Post Malone & Swae Lee",
+      "year": 2018,
+      "release": "Hollywood’s Bleeding",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|hip hop|melodic rap",
+      "listen_count": 150441,
+      "recording_mbid": "b6df9d04-2303-4ec7-a416-367b06a026cb",
+      "artist_mbid": "b1e26560-60e5-4236-bbdb-9aa5a8d5ee19",
+      "artist_rank": 66,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Circles",
+      "artist": "Post Malone",
+      "year": 2019,
+      "release": "Hollywood’s Bleeding",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|pop",
+      "listen_count": 108233,
+      "recording_mbid": "9d0a9e5c-a765-40ab-837e-99b0bb197f6c",
+      "artist_mbid": "b1e26560-60e5-4236-bbdb-9aa5a8d5ee19",
+      "artist_rank": 66,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Better Now",
+      "artist": "Post Malone",
+      "year": 2018,
+      "release": "beerbongs & bentleys",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|hip hop",
+      "listen_count": 71205,
+      "recording_mbid": "6d75e581-54a5-4e7c-a22c-8a31c274406c",
+      "artist_mbid": "b1e26560-60e5-4236-bbdb-9aa5a8d5ee19",
+      "artist_rank": 66,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Fortnight",
+      "artist": "Taylor Swift featuring Post Malone",
+      "year": 2024,
+      "release": "THE TORTURED POETS DEPARTMENT",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop rock|synth-pop|alternative pop|indie folk|dance-pop",
+      "listen_count": 46510,
+      "recording_mbid": "a06d6b37-9cae-40a5-806d-1a3c4f8098c0",
+      "artist_mbid": "b1e26560-60e5-4236-bbdb-9aa5a8d5ee19",
+      "artist_rank": 66,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "I Had Some Help",
+      "artist": "Post Malone feat. Morgan Wallen",
+      "year": 2024,
+      "release": "F-1 Trillion",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|billboard no 1 2024|billboard hot 100 2025|billboard no 1|billboard hot 100",
+      "listen_count": 28944,
+      "recording_mbid": "8290f2d3-59ee-4806-8fda-5149de94f799",
+      "artist_mbid": "b1e26560-60e5-4236-bbdb-9aa5a8d5ee19",
+      "artist_rank": 66,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Chemical",
+      "artist": "Post Malone",
+      "year": 2023,
+      "release": "AUSTIN",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|acoustic",
+      "listen_count": 25669,
+      "recording_mbid": "4d5ea684-6127-4506-b7b3-c5ea5a1eb1d8",
+      "artist_mbid": "b1e26560-60e5-4236-bbdb-9aa5a8d5ee19",
+      "artist_rank": 66,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

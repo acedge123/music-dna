@@ -1,0 +1,85 @@
+{
+  "rank": 123,
+  "artist": "Grimes",
+  "rows": [
+    {
+      "title": "Oblivion",
+      "artist": "Grimes",
+      "year": 2012,
+      "release": "Visions",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "synth-pop|electronic|dream pop|chillwave|indie",
+      "listen_count": 1026374,
+      "recording_mbid": "5640e03c-af18-4d9c-8d68-60e2e99b16d4",
+      "artist_mbid": "7e5a2a59-6d9f-4a17-b7c2-e1eedb7bd222",
+      "artist_rank": 123,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Genesis",
+      "artist": "Grimes",
+      "year": 2012,
+      "release": "Visions",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "synth-pop|chillwave|electropop|indietronica|ethereal wave",
+      "listen_count": 688542,
+      "recording_mbid": "2aefd14e-d8b5-4c7f-88a6-b14698827ed4",
+      "artist_mbid": "7e5a2a59-6d9f-4a17-b7c2-e1eedb7bd222",
+      "artist_rank": 123,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Circumambient",
+      "artist": "Grimes",
+      "year": 2012,
+      "release": "Visions",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "synth-pop|electronic|experimental|electropop|dance-pop",
+      "listen_count": 430116,
+      "recording_mbid": "a057f37e-b84b-4a07-ab18-050015e56ad9",
+      "artist_mbid": "7e5a2a59-6d9f-4a17-b7c2-e1eedb7bd222",
+      "artist_rank": 123,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Delete Forever",
+      "artist": "Grimes",
+      "year": 2020,
+      "release": "Miss Anthropocene",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|art pop|folk pop|gothic country|alternative pop",
+      "listen_count": 20559,
+      "recording_mbid": "6cbd3e11-deb0-43a5-be00-d46e99fc8329",
+      "artist_mbid": "7e5a2a59-6d9f-4a17-b7c2-e1eedb7bd222",
+      "artist_rank": 123,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Cry",
+      "artist": "Ashnikko feat. Grimes",
+      "year": 2020,
+      "release": "Cry",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 17293,
+      "recording_mbid": "0d921432-3651-4744-ad2f-3f53041c1efc",
+      "artist_mbid": "7e5a2a59-6d9f-4a17-b7c2-e1eedb7bd222",
+      "artist_rank": 123,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Shinigami Eyes",
+      "artist": "Grimes",
+      "year": 2022,
+      "release": "Shinigami Eyes",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electropop|vocal trance|melodic house|progressive house|dance-pop",
+      "listen_count": 17150,
+      "recording_mbid": "69c1235a-80b4-40f3-bb5b-4b9ba234d854",
+      "artist_mbid": "7e5a2a59-6d9f-4a17-b7c2-e1eedb7bd222",
+      "artist_rank": 123,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

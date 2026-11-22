@@ -1,0 +1,85 @@
+{
+  "rank": 162,
+  "artist": "Lil Uzi Vert",
+  "rows": [
+    {
+      "title": "XO TOUR Llif3",
+      "artist": "Lil Uzi Vert",
+      "year": 2017,
+      "release": "Luv Is Rage 2",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip-hop/rap|europop|hip hop|euro house",
+      "listen_count": 97385,
+      "recording_mbid": "82a56563-aa5f-4b8a-9c5b-fa193d9246c7",
+      "artist_mbid": "8837b875-3689-4646-b3fd-d8b53815c7a8",
+      "artist_rank": 162,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Shoota",
+      "artist": "Playboi Carti feat. Lil Uzi Vert",
+      "year": 2018,
+      "release": "Die Lit",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 45333,
+      "recording_mbid": "e60ae295-4d13-4a01-9ae7-37ba5ec160fd",
+      "artist_mbid": "8837b875-3689-4646-b3fd-d8b53815c7a8",
+      "artist_rank": 162,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "20 Min",
+      "artist": "Lil Uzi Vert",
+      "year": 2017,
+      "release": "Luv Is Rage 2",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rap/hip-hop",
+      "listen_count": 44218,
+      "recording_mbid": "f59bc7f4-bfd1-4b14-acb0-b8b6c58786c5",
+      "artist_mbid": "8837b875-3689-4646-b3fd-d8b53815c7a8",
+      "artist_rank": 162,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "JUGGERNAUT",
+      "artist": "Tyler, The Creator feat. Lil Uzi Vert & Pharrell Williams",
+      "year": 2021,
+      "release": "CALL ME IF YOU GET LOST",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "contemporary r&b|jazzy hip-hop|trap",
+      "listen_count": 33642,
+      "recording_mbid": "8107fcd9-6a60-4e5c-b07a-d91d31e2caf1",
+      "artist_mbid": "8837b875-3689-4646-b3fd-d8b53815c7a8",
+      "artist_rank": 162,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Just Wanna Rock",
+      "artist": "Lil Uzi Vert",
+      "year": 2022,
+      "release": "Pink Tape",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 27985,
+      "recording_mbid": "e6d3e2b9-9eba-451a-bcbb-5cb20f760ff1",
+      "artist_mbid": "8837b875-3689-4646-b3fd-d8b53815c7a8",
+      "artist_rank": 162,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "AmEN!",
+      "artist": "Bring Me the Horizon feat. Lil Uzi Vert & Daryl Palumbo of Glassjaw",
+      "year": 2023,
+      "release": "POST HUMAN: NeX GEn",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|metalcore|industrial metal",
+      "listen_count": 24039,
+      "recording_mbid": "9f331d71-12ee-46c8-b155-b3828e4cfd7e",
+      "artist_mbid": "8837b875-3689-4646-b3fd-d8b53815c7a8",
+      "artist_rank": 162,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

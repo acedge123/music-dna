@@ -1,0 +1,85 @@
+{
+  "rank": 52,
+  "artist": "Travis Scott",
+  "rows": [
+    {
+      "title": "SICKO MODE",
+      "artist": "Travis Scott",
+      "year": 2018,
+      "release": "ASTROWORLD",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "trap|hip-hop/rap|rap/hip hop",
+      "listen_count": 89940,
+      "recording_mbid": "73784600-a665-4a6c-9687-187dbefc556d",
+      "artist_mbid": "e4a51f17-a57b-47b1-b37b-f552d0f8e9e6",
+      "artist_rank": 52,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "goosebumps",
+      "artist": "Travis Scott feat. Kendrick Lamar",
+      "year": 2016,
+      "release": "Birds in the Trap Sing McKnight",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "trap|pop|hip hop",
+      "listen_count": 85291,
+      "recording_mbid": "05b394e8-3b2c-4cc4-9a2c-cbe2814d362c",
+      "artist_mbid": "e4a51f17-a57b-47b1-b37b-f552d0f8e9e6",
+      "artist_rank": 52,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "HIGHEST IN THE ROOM",
+      "artist": "Travis Scott",
+      "year": 2019,
+      "release": "HIGHEST IN THE ROOM",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|trap",
+      "listen_count": 69394,
+      "recording_mbid": "818548d8-869f-49e4-97b5-aff0eac2aab0",
+      "artist_mbid": "e4a51f17-a57b-47b1-b37b-f552d0f8e9e6",
+      "artist_rank": 52,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "FE!N",
+      "artist": "Travis Scott feat. Playboi Carti",
+      "year": 2023,
+      "release": "UTOPIA",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop",
+      "listen_count": 52570,
+      "recording_mbid": "67b283a5-16ad-4ae9-83ea-d25e83f7f958",
+      "artist_mbid": "e4a51f17-a57b-47b1-b37b-f552d0f8e9e6",
+      "artist_rank": 52,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "MY EYES",
+      "artist": "Travis Scott",
+      "year": 2023,
+      "release": "UTOPIA",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|tempo change",
+      "listen_count": 39678,
+      "recording_mbid": "10615e42-e1ca-4d54-91ff-e81a50cd6e8d",
+      "artist_mbid": "e4a51f17-a57b-47b1-b37b-f552d0f8e9e6",
+      "artist_rank": 52,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "I KNOW ?",
+      "artist": "Travis Scott",
+      "year": 2023,
+      "release": "UTOPIA",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 31412,
+      "recording_mbid": "7b5f4f0d-fbde-481b-b211-c662a835e455",
+      "artist_mbid": "e4a51f17-a57b-47b1-b37b-f552d0f8e9e6",
+      "artist_rank": 52,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

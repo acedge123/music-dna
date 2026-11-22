@@ -1,0 +1,111 @@
+{
+  "rank": 117,
+  "artist": "Blur",
+  "rows": [
+    {
+      "title": "Song 2",
+      "artist": "Blur",
+      "year": 1997,
+      "release": "Blur",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|garage punk|grunge|pop",
+      "listen_count": 2440115,
+      "recording_mbid": "b39b7227-c271-4ab8-912b-cb1fe2fc0e5e",
+      "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+      "artist_rank": 117,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Coffee & TV",
+      "artist": "Blur",
+      "year": 1999,
+      "release": "13",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|rock|c86|neo-psychedelia|jangle pop",
+      "listen_count": 1116452,
+      "recording_mbid": "28caa6d6-4960-43de-b6ff-4ef042788084",
+      "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+      "artist_rank": 117,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Girls & Boys",
+      "artist": "Blur",
+      "year": 1994,
+      "release": "Parklife",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|alternative dance|new wave|rock|mutant disco",
+      "listen_count": 971359,
+      "recording_mbid": "9ecfdb63-70ff-409d-aff6-bbb4e9e4ae06",
+      "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+      "artist_rank": 117,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Out of Time",
+      "artist": "Blur",
+      "year": 2003,
+      "release": "Think Tank",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie rock|rock|britpop|acoustic rock|art rock",
+      "listen_count": 429012,
+      "recording_mbid": "26c28f47-5084-42a3-9ce8-1147312ab2ff",
+      "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+      "artist_rank": 117,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Good Song",
+      "artist": "Blur",
+      "year": 2003,
+      "release": "Think Tank",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|art rock|alternative rock|indie rock|deadpan",
+      "listen_count": 250888,
+      "recording_mbid": "15dd3516-db3f-43e2-a80e-4acc634276c2",
+      "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+      "artist_rank": 117,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sweet Song",
+      "artist": "Blur",
+      "year": 2003,
+      "release": "Think Tank",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|britpop|indie rock|alternative rock|electronic",
+      "listen_count": 197571,
+      "recording_mbid": "14a4de79-239f-486b-ad19-c188d9465ad1",
+      "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+      "artist_rank": 117,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Fool’s Day",
+      "artist": "Blur",
+      "year": 2010,
+      "release": "Fool’s Day",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "britpop|rock|indie|indie rock",
+      "listen_count": 128522,
+      "recording_mbid": "d23700f3-8723-498b-998d-81ae6df6d4c6",
+      "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+      "artist_rank": 117,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Under the Westway",
+      "artist": "Blur",
+      "year": 2012,
+      "release": "Under the Westway",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 86070,
+      "recording_mbid": "ce686587-39c3-4139-8796-8c93efc55a53",
+      "artist_mbid": "ba853904-ae25-4ebb-89d6-c44cfbd71bd2",
+      "artist_rank": 117,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

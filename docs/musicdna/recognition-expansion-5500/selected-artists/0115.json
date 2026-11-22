@@ -1,0 +1,85 @@
+{
+  "rank": 115,
+  "artist": "Joji",
+  "rows": [
+    {
+      "title": "SLOW DANCING IN THE DARK",
+      "artist": "Joji",
+      "year": 2018,
+      "release": "BALLADS 1",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 148491,
+      "recording_mbid": "642c3516-7866-447f-8e68-3535fd807fc8",
+      "artist_mbid": "8264722b-df00-467a-858e-5c97cda169c9",
+      "artist_rank": 115,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Glimpse of Us",
+      "artist": "Joji",
+      "year": 2022,
+      "release": "SMITHEREENS",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|alternative r&b|alternative|alternative pop",
+      "listen_count": 93723,
+      "recording_mbid": "57c319d6-31ed-4668-acf1-13350ab8b67b",
+      "artist_mbid": "8264722b-df00-467a-858e-5c97cda169c9",
+      "artist_rank": 115,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "YEAH RIGHT",
+      "artist": "Joji",
+      "year": 2018,
+      "release": "BALLADS 1",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 81899,
+      "recording_mbid": "f3756585-5941-46dc-b573-de54406924b2",
+      "artist_mbid": "8264722b-df00-467a-858e-5c97cda169c9",
+      "artist_rank": 115,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sanctuary",
+      "artist": "Joji",
+      "year": 2019,
+      "release": "Nectar",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 66299,
+      "recording_mbid": "a7aa28c6-9db9-43ff-baf8-f8d5b6874379",
+      "artist_mbid": "8264722b-df00-467a-858e-5c97cda169c9",
+      "artist_rank": 115,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Run",
+      "artist": "Joji",
+      "year": 2020,
+      "release": "Nectar",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative r&b|alt rock",
+      "listen_count": 56549,
+      "recording_mbid": "f6191987-586d-4356-8f78-b5937ac3da83",
+      "artist_mbid": "8264722b-df00-467a-858e-5c97cda169c9",
+      "artist_rank": 115,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Gimme Love",
+      "artist": "Joji",
+      "year": 2020,
+      "release": "Nectar",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative r&b|r&b|hard rock|alternative rock|alternative",
+      "listen_count": 55029,
+      "recording_mbid": "e12b8bee-a22c-4a63-8703-f5c4ec51829c",
+      "artist_mbid": "8264722b-df00-467a-858e-5c97cda169c9",
+      "artist_rank": 115,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

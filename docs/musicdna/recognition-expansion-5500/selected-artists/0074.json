@@ -1,0 +1,85 @@
+{
+  "rank": 74,
+  "artist": "Rage Against the Machine",
+  "rows": [
+    {
+      "title": "Killing in the Name",
+      "artist": "Rage Against the Machine",
+      "year": 1992,
+      "release": "Rage Against the Machine",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|alternative rock|funk metal|rap metal|political hip hop",
+      "listen_count": 1758077,
+      "recording_mbid": "5f64bf87-a18e-4ac0-8a49-dc1d500a8ba5",
+      "artist_mbid": "3798b104-01cb-484c-a3b0-56adc6399b80",
+      "artist_rank": 74,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Guerrilla Radio",
+      "artist": "Rage Against the Machine",
+      "year": 1999,
+      "release": "The Battle of Los Angeles",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|nu metal|alternative rock|alternative and punk|funk metal",
+      "listen_count": 1252180,
+      "recording_mbid": "3a98b840-1e18-4ef1-80cd-85041534bf1b",
+      "artist_mbid": "3798b104-01cb-484c-a3b0-56adc6399b80",
+      "artist_rank": 74,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Bulls on Parade",
+      "artist": "Rage Against the Machine",
+      "year": 1996,
+      "release": "Evil Empire",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|funk metal|rap metal|alternative pop/rock|happy",
+      "listen_count": 1148045,
+      "recording_mbid": "5fde776a-799a-462c-b8e1-55c985740a2c",
+      "artist_mbid": "3798b104-01cb-484c-a3b0-56adc6399b80",
+      "artist_rank": 74,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Renegades of Funk",
+      "artist": "Rage Against the Machine",
+      "year": 2000,
+      "release": "Renegades",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|aggressive|anarchism|repetitive",
+      "listen_count": 638830,
+      "recording_mbid": "8e0f32f8-4e87-40c5-acb9-36e903f91aa8",
+      "artist_mbid": "3798b104-01cb-484c-a3b0-56adc6399b80",
+      "artist_rank": 74,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "How I Could Just Kill a Man",
+      "artist": "Rage Against the Machine",
+      "year": 2000,
+      "release": "Renegades",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|angry|funk metal|rap metal|rock",
+      "listen_count": 395572,
+      "recording_mbid": "9f7d837a-af88-47ae-958e-c46222cabb93",
+      "artist_mbid": "3798b104-01cb-484c-a3b0-56adc6399b80",
+      "artist_rank": 74,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Pistol Grip Pump",
+      "artist": "Rage Against the Machine",
+      "year": 2000,
+      "release": "Renegades",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|heavy alternative|rapcore|rap metal",
+      "listen_count": 325395,
+      "recording_mbid": "8048ce1a-f904-463e-8ef5-bd1e9736f3e8",
+      "artist_mbid": "3798b104-01cb-484c-a3b0-56adc6399b80",
+      "artist_rank": 74,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

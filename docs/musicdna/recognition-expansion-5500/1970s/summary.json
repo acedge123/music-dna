@@ -1,8 +1,8 @@
 {
   "decade": 1970,
-  "artists_processed": 51,
-  "recordings": 24,
-  "artists_represented": 8,
+  "artists_processed": 181,
+  "recordings": 77,
+  "artists_represented": 26,
   "per_artist_decade_cap": 3,
   "method": "Top 100 distinct original-looking ListenBrainz recording titles per artist; exact-ID MusicBrainz indexed date/disambiguation checks"
 }

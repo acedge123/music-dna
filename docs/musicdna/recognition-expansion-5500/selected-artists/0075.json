@@ -1,0 +1,85 @@
+{
+  "rank": 75,
+  "artist": "A$AP Rocky",
+  "rows": [
+    {
+      "title": "Goldie",
+      "artist": "A$AP Rocky",
+      "year": 2012,
+      "release": "LONG.LIVE.A$AP",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "thug rap|hip hop|dubstep|hip-hop|rap",
+      "listen_count": 303434,
+      "recording_mbid": "11954493-5c69-44c8-8c8e-be8fe0da2afd",
+      "artist_mbid": "25b7b584-d952-4662-a8b9-dd8cdfbfeb64",
+      "artist_rank": 75,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Peso",
+      "artist": "A$AP Rocky",
+      "year": 2011,
+      "release": "Peso",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|underground hip hop|east coast hip hop|producer - ty beats|rap",
+      "listen_count": 228852,
+      "recording_mbid": "9ad3e267-5ae0-4cd5-8b98-02b143ef17e0",
+      "artist_mbid": "25b7b584-d952-4662-a8b9-dd8cdfbfeb64",
+      "artist_rank": 75,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "LVL",
+      "artist": "A$AP Rocky",
+      "year": 2013,
+      "release": "LONG.LIVE.A$AP",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "thug rap|hip hop|dubstep|rap|east coast hip hop",
+      "listen_count": 135300,
+      "recording_mbid": "65a23443-e846-4a24-9fad-09fe7ccf0c24",
+      "artist_mbid": "25b7b584-d952-4662-a8b9-dd8cdfbfeb64",
+      "artist_rank": 75,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Am I Dreaming",
+      "artist": "Metro Boomin & A$AP Rocky, Roisee",
+      "year": 2023,
+      "release": "METRO BOOMIN PRESENTS SPIDER‐MAN: ACROSS THE SPIDER‐VERSE: SOUNDTRACK FROM AND INSPIRED BY THE MOTION PICTURE",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 36937,
+      "recording_mbid": "12f377a0-a2f6-4085-82cd-c7d7cf561a03",
+      "artist_mbid": "25b7b584-d952-4662-a8b9-dd8cdfbfeb64",
+      "artist_rank": 75,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "WHARF TALK",
+      "artist": "Tyler, The Creator feat. A$AP Rocky",
+      "year": 2023,
+      "release": "Call Me If You Get Lost: The Estate Sale",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 11205,
+      "recording_mbid": "ff5417b9-330f-40cf-90f5-8d4470240eb1",
+      "artist_mbid": "25b7b584-d952-4662-a8b9-dd8cdfbfeb64",
+      "artist_rank": 75,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "BANKROLL",
+      "artist": "BROCKHAMPTON feat. A$AP Rocky & A$AP Ferg",
+      "year": 2021,
+      "release": "ROADRUNNER: NEW LIGHT, NEW MACHINE",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop rap|alternative hip hop",
+      "listen_count": 10876,
+      "recording_mbid": "79a401fa-bc51-4d97-82bc-ac7f337e9021",
+      "artist_mbid": "25b7b584-d952-4662-a8b9-dd8cdfbfeb64",
+      "artist_rank": 75,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

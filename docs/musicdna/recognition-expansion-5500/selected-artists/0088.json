@@ -1,0 +1,85 @@
+{
+  "rank": 88,
+  "artist": "Lorde",
+  "rows": [
+    {
+      "title": "Royals",
+      "artist": "Lorde",
+      "year": 2012,
+      "release": "Pure Heroine",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|indie pop|art pop|indietronica|alternative pop",
+      "listen_count": 189519,
+      "recording_mbid": "04cccd2b-bbac-4309-a367-94325fd0ef93",
+      "artist_mbid": "8e494408-8620-4c6a-82c2-c2ca4a1e4f12",
+      "artist_rank": 88,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Tennis Court",
+      "artist": "Lorde",
+      "year": 2012,
+      "release": "Pure Heroine",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|world|indie pop|synth-pop|alternative pop",
+      "listen_count": 102896,
+      "recording_mbid": "3b083303-7c3e-4bf3-8457-6eb417f581f5",
+      "artist_mbid": "8e494408-8620-4c6a-82c2-c2ca4a1e4f12",
+      "artist_rank": 88,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Green Light",
+      "artist": "Lorde",
+      "year": 2017,
+      "release": "Melodrama",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|pop|synthpop|alt-pop|party",
+      "listen_count": 93311,
+      "recording_mbid": "1ac290ac-7c74-46dc-a33a-ef560853965f",
+      "artist_mbid": "8e494408-8620-4c6a-82c2-c2ca4a1e4f12",
+      "artist_rank": 88,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Solar Power",
+      "artist": "Lorde",
+      "year": 2021,
+      "release": "Solar Power",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|electronic|pop|indie|melancholy",
+      "listen_count": 34174,
+      "recording_mbid": "24de5592-9e9d-406e-ba52-cc658b5ec13e",
+      "artist_mbid": "8e494408-8620-4c6a-82c2-c2ca4a1e4f12",
+      "artist_rank": 88,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "What Was That",
+      "artist": "Lorde",
+      "year": 2025,
+      "release": "Virgin",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|billboard hot 100|electropop|billboard hot 100 2025",
+      "listen_count": 24837,
+      "recording_mbid": "a5348ee2-c706-4288-928e-da0995475801",
+      "artist_mbid": "8e494408-8620-4c6a-82c2-c2ca4a1e4f12",
+      "artist_rank": 88,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Mood Ring",
+      "artist": "Lorde",
+      "year": 2021,
+      "release": "Solar Power",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|pop|electronic|folk|indie",
+      "listen_count": 19189,
+      "recording_mbid": "979b567b-6ea6-4085-a4d4-977acb9318cf",
+      "artist_mbid": "8e494408-8620-4c6a-82c2-c2ca4a1e4f12",
+      "artist_rank": 88,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

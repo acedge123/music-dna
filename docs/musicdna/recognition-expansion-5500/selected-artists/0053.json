@@ -1,0 +1,98 @@
+{
+  "rank": 53,
+  "artist": "Fall Out Boy",
+  "rows": [
+    {
+      "title": "Thnks fr th Mmrs",
+      "artist": "Fall Out Boy",
+      "year": 2007,
+      "release": "Infinity on High",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|pop punk|emo|pop rock|punk",
+      "listen_count": 1549688,
+      "recording_mbid": "ada26bf1-1a82-4815-9c32-cd7e0efee913",
+      "artist_mbid": "516cef4d-0718-4007-9939-f9b38af3f784",
+      "artist_rank": 53,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Dance, Dance",
+      "artist": "Fall Out Boy",
+      "year": 2005,
+      "release": "From Under the Cork Tree",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|pop|emo|pop punk|alternative and punk",
+      "listen_count": 1330252,
+      "recording_mbid": "786e1009-2663-49e0-873d-f0cf06f51a25",
+      "artist_mbid": "516cef4d-0718-4007-9939-f9b38af3f784",
+      "artist_rank": 53,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sugar, We’re Goin Down",
+      "artist": "Fall Out Boy",
+      "year": 2005,
+      "release": "From Under the Cork Tree",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop punk|punk|rock|emo|power pop",
+      "listen_count": 1102684,
+      "recording_mbid": "51e56798-1613-48ed-a156-0a4f38bfae8c",
+      "artist_mbid": "516cef4d-0718-4007-9939-f9b38af3f784",
+      "artist_rank": 53,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "The Phoenix",
+      "artist": "Fall Out Boy",
+      "year": 2013,
+      "release": "Save Rock and Roll",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop rock|alternative rock",
+      "listen_count": 217859,
+      "recording_mbid": "36b02c04-bf13-4d65-ba48-e00dab4a7453",
+      "artist_mbid": "516cef4d-0718-4007-9939-f9b38af3f784",
+      "artist_rank": 53,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Alone Together",
+      "artist": "Fall Out Boy",
+      "year": 2013,
+      "release": "Save Rock and Roll",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|pop rock|alternative rock|alternative|punk",
+      "listen_count": 134748,
+      "recording_mbid": "16052f74-d526-4c06-b696-a968c95e08e1",
+      "artist_mbid": "516cef4d-0718-4007-9939-f9b38af3f784",
+      "artist_rank": 53,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "My Songs Know What You Did in the Dark (Light ’Em Up)",
+      "artist": "Fall Out Boy",
+      "year": 2013,
+      "release": "Save Rock and Roll",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|pop rock|alternative|indie rock",
+      "listen_count": 128690,
+      "recording_mbid": "8606a66d-cdd8-4dac-ae25-9d574488e050",
+      "artist_mbid": "516cef4d-0718-4007-9939-f9b38af3f784",
+      "artist_rank": 53,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Love From the Other Side",
+      "artist": "Fall Out Boy",
+      "year": 2023,
+      "release": "So Much (for) Stardust",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "punk rock|alternative rock",
+      "listen_count": 17585,
+      "recording_mbid": "f08631f4-78c7-4fef-99e3-b915c6ecafa1",
+      "artist_mbid": "516cef4d-0718-4007-9939-f9b38af3f784",
+      "artist_rank": 53,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

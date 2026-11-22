@@ -1,0 +1,85 @@
+{
+  "rank": 133,
+  "artist": "Mitski",
+  "rows": [
+    {
+      "title": "Washing Machine Heart",
+      "artist": "Mitski",
+      "year": 2018,
+      "release": "Be the Cowboy",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative|indie rock|rock",
+      "listen_count": 95034,
+      "recording_mbid": "422ddf55-33c5-4111-b039-5ac48c0ad9a6",
+      "artist_mbid": "fa58cf24-0e44-421d-8519-8bf461dcfaa5",
+      "artist_rank": 133,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "My Love Mine All Mine",
+      "artist": "Mitski",
+      "year": 2023,
+      "release": "The Land Is Inhospitable and So Are We",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|indie rock",
+      "listen_count": 86194,
+      "recording_mbid": "8f667b90-a2a4-46ea-8806-e957ea78c7bd",
+      "artist_mbid": "fa58cf24-0e44-421d-8519-8bf461dcfaa5",
+      "artist_rank": 133,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Nobody",
+      "artist": "Mitski",
+      "year": 2018,
+      "release": "Be the Cowboy",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative|indie rock|rock",
+      "listen_count": 75764,
+      "recording_mbid": "e77b161d-664d-413e-bd04-f0a8ac205735",
+      "artist_mbid": "fa58cf24-0e44-421d-8519-8bf461dcfaa5",
+      "artist_rank": 133,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "First Love / Late Spring",
+      "artist": "Mitski",
+      "year": 2014,
+      "release": "bury me at makeout creek",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie rock|alternative rock|rock|ddw|double double whammy",
+      "listen_count": 61436,
+      "recording_mbid": "0fccbc82-2cdc-42b6-a403-1d134f06fb78",
+      "artist_mbid": "fa58cf24-0e44-421d-8519-8bf461dcfaa5",
+      "artist_rank": 133,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Working for the Knife",
+      "artist": "Mitski",
+      "year": 2021,
+      "release": "Laurel Hell",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative|indie rock|dark",
+      "listen_count": 20915,
+      "recording_mbid": "79fd00cf-b17b-4c81-82ad-03c2097dd519",
+      "artist_mbid": "fa58cf24-0e44-421d-8519-8bf461dcfaa5",
+      "artist_rank": 133,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Love Me More",
+      "artist": "Mitski",
+      "year": 2022,
+      "release": "Laurel Hell",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "energetic|alternative|indie rock",
+      "listen_count": 20134,
+      "recording_mbid": "cfa6e54a-305a-43fb-8fbe-14248f72a096",
+      "artist_mbid": "fa58cf24-0e44-421d-8519-8bf461dcfaa5",
+      "artist_rank": 133,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

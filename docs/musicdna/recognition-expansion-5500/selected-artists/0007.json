@@ -118,7 +118,20 @@
       "artist_mbid": "83d91898-7763-47d7-b03b-b92132375c47",
       "artist_rank": 7,
       "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "When the Tigers Broke Free",
+      "artist": "Pink Floyd",
+      "year": 2004,
+      "release": "The Final Cut",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|progressive rock|psychedelic rock|classic rock|ambient",
+      "listen_count": 267088,
+      "recording_mbid": "aec93f06-c6d4-4ce7-b84c-83b6f253a62d",
+      "artist_mbid": "83d91898-7763-47d7-b03b-b92132375c47",
+      "artist_rank": 7,
+      "artist_source": "ListenBrainz sitewide all_time artists"
     }
   ],
-  "gap": "MusicBrainz unavailable after bounded retries"
+  "gap": null
 }

@@ -1,0 +1,85 @@
+{
+  "rank": 151,
+  "artist": "Juice WRLD",
+  "rows": [
+    {
+      "title": "Girl of My Dreams",
+      "artist": "Juice WRLD & SUGA of BTS",
+      "year": 2021,
+      "release": "Fighting Demons",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alt hip hop|0 wochen",
+      "listen_count": 197513,
+      "recording_mbid": "1e563a61-af8f-43b3-b8c8-49d865f33fd1",
+      "artist_mbid": "4e4ebde4-0c56-4dec-844b-6c73adcdd92d",
+      "artist_rank": 151,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Lucid Dreams",
+      "artist": "Juice WRLD",
+      "year": 2017,
+      "release": "Legends Never Die",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "emo rap|hip hop|rap/hip hop",
+      "listen_count": 85167,
+      "recording_mbid": "19c232bc-1960-4df2-bbc9-7742b7180a7f",
+      "artist_mbid": "4e4ebde4-0c56-4dec-844b-6c73adcdd92d",
+      "artist_rank": 151,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Godzilla",
+      "artist": "Eminem ft. Juice WRLD",
+      "year": 2020,
+      "release": "Music to Be Murdered By",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|hardcore hip hop|trap|pop rap",
+      "listen_count": 82539,
+      "recording_mbid": "3b1808a9-a935-46ae-add1-7485af7e67e1",
+      "artist_mbid": "4e4ebde4-0c56-4dec-844b-6c73adcdd92d",
+      "artist_rank": 151,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "All Night",
+      "artist": "BTS & Juice WRLD",
+      "year": 2019,
+      "release": "BTS WORLD",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 76357,
+      "recording_mbid": "e6a5f9ea-9186-40b3-87e3-7e41820240c6",
+      "artist_mbid": "4e4ebde4-0c56-4dec-844b-6c73adcdd92d",
+      "artist_rank": 151,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "All Girls Are the Same",
+      "artist": "Juice WRLD",
+      "year": 2017,
+      "release": "Legends Never Die",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|emo rap|cloud rap",
+      "listen_count": 56333,
+      "recording_mbid": "f177e09a-16b5-4b1e-8614-4d36efeab726",
+      "artist_mbid": "4e4ebde4-0c56-4dec-844b-6c73adcdd92d",
+      "artist_rank": 151,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Come & Go",
+      "artist": "Juice WRLD & Marshmello",
+      "year": 2020,
+      "release": "Legends Never Die",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "emo rap|trap edm|hip hop|pop|electro house",
+      "listen_count": 35518,
+      "recording_mbid": "9af0c4a5-1d3d-4fb1-854b-4f5d64d9aeda",
+      "artist_mbid": "4e4ebde4-0c56-4dec-844b-6c73adcdd92d",
+      "artist_rank": 151,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

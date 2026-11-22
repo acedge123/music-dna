@@ -1,0 +1,85 @@
+{
+  "rank": 144,
+  "artist": "Mac DeMarco",
+  "rows": [
+    {
+      "title": "Freaking Out the Neighborhood",
+      "artist": "Mac DeMarco",
+      "year": 2012,
+      "release": "2",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 128120,
+      "recording_mbid": "64336aed-6199-4940-ac0e-b2a731086d44",
+      "artist_mbid": "f2492c31-54a8-4347-a1fc-f81f72873bbf",
+      "artist_rank": 144,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "My Kind of Woman",
+      "artist": "Mac DeMarco",
+      "year": 2012,
+      "release": "2",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 122258,
+      "recording_mbid": "d38ba98c-854a-4434-afab-ba216f482c5e",
+      "artist_mbid": "f2492c31-54a8-4347-a1fc-f81f72873bbf",
+      "artist_rank": 144,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Ode to Viceroy",
+      "artist": "Mac DeMarco",
+      "year": 2012,
+      "release": "2",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "indie pop|jangle pop",
+      "listen_count": 111259,
+      "recording_mbid": "8b395199-4145-4b37-b648-92160f4a973e",
+      "artist_mbid": "f2492c31-54a8-4347-a1fc-f81f72873bbf",
+      "artist_rank": 144,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "20191009 I Like Her",
+      "artist": "Mac DeMarco",
+      "year": 2023,
+      "release": "One Wayne G",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 10963,
+      "recording_mbid": "e325d5a5-a50c-4e54-9cbd-fb6ff01b5615",
+      "artist_mbid": "f2492c31-54a8-4347-a1fc-f81f72873bbf",
+      "artist_rank": 144,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "20190724",
+      "artist": "Mac DeMarco",
+      "year": 2023,
+      "release": "One Wayne G",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 5934,
+      "recording_mbid": "de77f6a6-ecfc-4460-82a4-5f2aa0e8016c",
+      "artist_mbid": "f2492c31-54a8-4347-a1fc-f81f72873bbf",
+      "artist_rank": 144,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "MENTHOL*",
+      "artist": "Jean Dawson feat. Mac DeMarco",
+      "year": 2021,
+      "release": "MENTHOL*",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 5785,
+      "recording_mbid": "9d1443fa-7338-4070-9018-3b37f24c1569",
+      "artist_mbid": "f2492c31-54a8-4347-a1fc-f81f72873bbf",
+      "artist_rank": 144,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

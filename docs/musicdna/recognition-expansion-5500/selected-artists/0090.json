@@ -1,0 +1,85 @@
+{
+  "rank": 90,
+  "artist": "SZA",
+  "rows": [
+    {
+      "title": "All the Stars",
+      "artist": "Kendrick Lamar & SZA",
+      "year": 2018,
+      "release": "Black Panther: The Album (Music From and Inspired By)",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "ph_temp_checken|billboard hot 100 2025|rap|hip hop|english",
+      "listen_count": 99410,
+      "recording_mbid": "a0a38516-c9c3-4a05-a2bf-523b6ca219ab",
+      "artist_mbid": "272989c8-5535-492d-a25c-9f58803e027f",
+      "artist_rank": 90,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Kill Bill",
+      "artist": "SZA",
+      "year": 2022,
+      "release": "SOS",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|soul",
+      "listen_count": 92460,
+      "recording_mbid": "52dc5433-ce6f-4946-8b71-333e66bd37b8",
+      "artist_mbid": "272989c8-5535-492d-a25c-9f58803e027f",
+      "artist_rank": 90,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "luther",
+      "artist": "Kendrick Lamar with SZA",
+      "year": 2024,
+      "release": "GNX",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|billboard hot 100 2025|rap|soul|billboard no 1",
+      "listen_count": 72098,
+      "recording_mbid": "ac19684f-febb-47ae-8d5f-72a4c4c1aa3d",
+      "artist_mbid": "272989c8-5535-492d-a25c-9f58803e027f",
+      "artist_rank": 90,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Kiss Me More",
+      "artist": "Doja Cat ft. SZA",
+      "year": 2021,
+      "release": "Planet Her",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop",
+      "listen_count": 52991,
+      "recording_mbid": "16ba7915-2acf-42b2-8c87-ed67090dca91",
+      "artist_mbid": "272989c8-5535-492d-a25c-9f58803e027f",
+      "artist_rank": 90,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "The Weekend",
+      "artist": "SZA",
+      "year": 2017,
+      "release": "Ctrl",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 36992,
+      "recording_mbid": "f864c9cb-178b-4ddf-b99e-29809b82e83a",
+      "artist_mbid": "272989c8-5535-492d-a25c-9f58803e027f",
+      "artist_rank": 90,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Broken Clocks",
+      "artist": "SZA",
+      "year": 2017,
+      "release": "Ctrl",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "romantic|contemporary r&b",
+      "listen_count": 33933,
+      "recording_mbid": "e217cb7e-782a-4474-b408-e994992f41a2",
+      "artist_mbid": "272989c8-5535-492d-a25c-9f58803e027f",
+      "artist_rank": 90,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

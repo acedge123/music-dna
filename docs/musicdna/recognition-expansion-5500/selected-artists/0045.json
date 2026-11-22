@@ -1,6 +1,124 @@
 {
   "rank": 45,
   "artist": "Weezer",
-  "rows": [],
-  "gap": "Provider unavailable after bounded retries"
+  "rows": [
+    {
+      "title": "Buddy Holly",
+      "artist": "Weezer",
+      "year": 1994,
+      "release": "Weezer",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|power pop|indie rock|punk",
+      "listen_count": 1446407,
+      "recording_mbid": "d615590b-1546-441d-9703-b3cf88487cbd",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Say It Ain’t So",
+      "artist": "Weezer",
+      "year": 1994,
+      "release": "Weezer",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|alternative and punk|indie rock|garage rock",
+      "listen_count": 1203210,
+      "recording_mbid": "e7ada1d0-0604-4ff2-9361-939ebf5b53af",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Island in the Sun",
+      "artist": "Weezer",
+      "year": 2001,
+      "release": "Weezer",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|pop rock|indie rock|alternative pop/rock",
+      "listen_count": 1151671,
+      "recording_mbid": "58044028-9a7e-4da6-9ca8-e5322a25d9a2",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "My Name Is Jonas",
+      "artist": "Weezer",
+      "year": 1994,
+      "release": "Weezer",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|alternative rock|indie rock|power pop|punk",
+      "listen_count": 872217,
+      "recording_mbid": "392cea06-94c2-416b-80aa-f5b1e7d0fb1c",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Hash Pipe",
+      "artist": "Weezer",
+      "year": 2001,
+      "release": "Weezer",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|alternative|alternative/indie rock|punk-pop",
+      "listen_count": 697644,
+      "recording_mbid": "b465ee62-8189-4aac-a294-43f4958dffae",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Beverly Hills",
+      "artist": "Weezer",
+      "year": 2005,
+      "release": "Make Believe",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|alternative pop/rock|pop rock|power pop",
+      "listen_count": 626073,
+      "recording_mbid": "b63053dd-5d18-439b-92e8-e1532485d273",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Memories",
+      "artist": "Weezer",
+      "year": 2010,
+      "release": "Hurley",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|power pop|contemporary pop/rock|alternative pop/rock",
+      "listen_count": 222828,
+      "recording_mbid": "0ae30c6f-39ae-458b-984e-b5964c401b1c",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Ruling Me",
+      "artist": "Weezer",
+      "year": 2010,
+      "release": "Hurley",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|power pop|rock|punk-pop|pop/rock",
+      "listen_count": 115252,
+      "recording_mbid": "ba354ade-5179-4618-b24a-627f12343785",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Unspoken",
+      "artist": "Weezer",
+      "year": 2010,
+      "release": "Hurley",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|power pop|alternative/indie rock|pop/rock",
+      "listen_count": 88515,
+      "recording_mbid": "450ddba8-c845-4ba8-85e0-0a377be1f72e",
+      "artist_mbid": "6fe07aa5-fec0-4eca-a456-f29bff451b04",
+      "artist_rank": 45,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
 }

@@ -1,0 +1,85 @@
+{
+  "rank": 174,
+  "artist": "Kali Uchis",
+  "rows": [
+    {
+      "title": "See You Again",
+      "artist": "Tyler, The Creator feat. Kali Uchis",
+      "year": 2017,
+      "release": "Scum Fuck Flower Boy",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop",
+      "listen_count": 137691,
+      "recording_mbid": "e232b26b-2100-4269-9f96-3f3f49c57c2d",
+      "artist_mbid": "d0c7656d-8169-4f77-9dbe-b8f24e40105d",
+      "artist_rank": 174,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Telepatía",
+      "artist": "Kali Uchis",
+      "year": 2020,
+      "release": "Sin miedo (del amor y otros demonios) ∞",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "latin|reggaeton|pop",
+      "listen_count": 60267,
+      "recording_mbid": "2fc3283f-dc40-4c7b-af4b-e60d27d66750",
+      "artist_mbid": "d0c7656d-8169-4f77-9dbe-b8f24e40105d",
+      "artist_rank": 174,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "After the Storm",
+      "artist": "Kali Uchis ft. Tyler, The Creator & Bootsy Collins",
+      "year": 2018,
+      "release": "Isolation",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 55452,
+      "recording_mbid": "80326c23-7965-47df-82bc-d2a250465e3c",
+      "artist_mbid": "d0c7656d-8169-4f77-9dbe-b8f24e40105d",
+      "artist_rank": 174,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Moonlight",
+      "artist": "Kali Uchis",
+      "year": 2023,
+      "release": "Red Moon in Venus",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|funk|happy|colombian pop",
+      "listen_count": 44619,
+      "recording_mbid": "52c1af81-18f4-4e57-8d75-0b15c0206094",
+      "artist_mbid": "d0c7656d-8169-4f77-9dbe-b8f24e40105d",
+      "artist_rank": 174,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "She’s My Collar",
+      "artist": "Gorillaz feat. Kali Uchis",
+      "year": 2017,
+      "release": "Humanz",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronic|alternative|trip hop|hip-hop/rap",
+      "listen_count": 42737,
+      "recording_mbid": "896bb35c-786e-4c41-a826-891950e2d7c7",
+      "artist_mbid": "d0c7656d-8169-4f77-9dbe-b8f24e40105d",
+      "artist_rank": 174,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "I Wish you Roses",
+      "artist": "Kali Uchis",
+      "year": 2023,
+      "release": "Red Moon in Venus",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 15003,
+      "recording_mbid": "5ed2c15f-52d1-45f6-a01c-847e7d3fdcc7",
+      "artist_mbid": "d0c7656d-8169-4f77-9dbe-b8f24e40105d",
+      "artist_rank": 174,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

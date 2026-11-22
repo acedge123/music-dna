@@ -1,0 +1,85 @@
+{
+  "rank": 157,
+  "artist": "Sabrina Carpenter",
+  "rows": [
+    {
+      "title": "Espresso",
+      "artist": "Sabrina Carpenter",
+      "year": 2024,
+      "release": "Short n’ Sweet",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|dance-pop|electropop|ph_temp_checken|billboard hot 100 2025",
+      "listen_count": 141223,
+      "recording_mbid": "d3efc8d3-90e7-4696-8eda-2cab5ebc050d",
+      "artist_mbid": "1882fe91-cdd9-49c9-9956-8e06a3810bd4",
+      "artist_rank": 157,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Please Please Please",
+      "artist": "Sabrina Carpenter",
+      "year": 2024,
+      "release": "Short n’ Sweet",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|soft rock|billboard hot 100|pop|billboard hot 100 2025",
+      "listen_count": 68053,
+      "recording_mbid": "28b3c503-a01c-40a9-acff-bfc12f07e194",
+      "artist_mbid": "1882fe91-cdd9-49c9-9956-8e06a3810bd4",
+      "artist_rank": 157,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Taste",
+      "artist": "Sabrina Carpenter",
+      "year": 2024,
+      "release": "Short n’ Sweet",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop / rock|billboard hot 100|pop rock|billboard hot 100 2025",
+      "listen_count": 57543,
+      "recording_mbid": "9526f213-6009-4b7f-a930-80d9d9cbf5b6",
+      "artist_mbid": "1882fe91-cdd9-49c9-9956-8e06a3810bd4",
+      "artist_rank": 157,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "On My Way",
+      "artist": "Alan Walker, Sabrina Carpenter & Farruko",
+      "year": 2019,
+      "release": "World of Walker",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "dance-pop|electro house|pop",
+      "listen_count": 26428,
+      "recording_mbid": "9c07cdb2-8e7e-4229-990a-3c1ff4062dd6",
+      "artist_mbid": "1882fe91-cdd9-49c9-9956-8e06a3810bd4",
+      "artist_rank": 157,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Looking at Me",
+      "artist": "Sabrina Carpenter",
+      "year": 2019,
+      "release": "Singular: Act II",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 19422,
+      "recording_mbid": "bf20e876-1b34-42df-9db7-81054f4aac1a",
+      "artist_mbid": "1882fe91-cdd9-49c9-9956-8e06a3810bd4",
+      "artist_rank": 157,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Thumbs",
+      "artist": "Sabrina Carpenter",
+      "year": 2016,
+      "release": "EVOLution",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop",
+      "listen_count": 19095,
+      "recording_mbid": "73071fa0-bec5-4ecf-8f02-39ef1638c35d",
+      "artist_mbid": "1882fe91-cdd9-49c9-9956-8e06a3810bd4",
+      "artist_rank": 157,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

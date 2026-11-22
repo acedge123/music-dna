@@ -1,0 +1,98 @@
+{
+  "rank": 181,
+  "artist": "deadmau5",
+  "rows": [
+    {
+      "title": "Strobe",
+      "artist": "deadmau5",
+      "year": 2009,
+      "release": "For Lack of a Better Name",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "progressive house|electronic|house|dance|ambient",
+      "listen_count": 529411,
+      "recording_mbid": "ce46f2c8-4f20-4679-bd7b-1d78b544f6fb",
+      "artist_mbid": "4a00ec9d-c635-463a-8cd4-eb61725f0c60",
+      "artist_rank": 181,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Some Chords",
+      "artist": "deadmau5",
+      "year": 2010,
+      "release": "4×4=12",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electro house|progressive house|house|electronic|dubstep",
+      "listen_count": 507434,
+      "recording_mbid": "3eb778a9-911a-488b-bfd3-4f318b88dc17",
+      "artist_mbid": "4a00ec9d-c635-463a-8cd4-eb61725f0c60",
+      "artist_rank": 181,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Moar Ghosts ’n’ Stuff",
+      "artist": "deadmau5",
+      "year": 2009,
+      "release": "For Lack of a Better Name",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronic|house|progressive house|elektro|techno",
+      "listen_count": 394120,
+      "recording_mbid": "096efdef-4dcb-4b26-9c22-819943eea715",
+      "artist_mbid": "4a00ec9d-c635-463a-8cd4-eb61725f0c60",
+      "artist_rank": 181,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "I Remember",
+      "artist": "deadmau5 & Kaskade",
+      "year": 2008,
+      "release": "Random Album Title",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "progressive house|electronic|house|elektro|ambient",
+      "listen_count": 344680,
+      "recording_mbid": "fc273f7a-1aad-4ba3-bd3f-e473c2595558",
+      "artist_mbid": "4a00ec9d-c635-463a-8cd4-eb61725f0c60",
+      "artist_rank": 181,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sofi Needs a Ladder",
+      "artist": "deadmau5 feat. SOFI",
+      "year": 2010,
+      "release": "4×4=12",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronic|progressive house|electro house + hip house|electro house|hip house",
+      "listen_count": 267990,
+      "recording_mbid": "fdb1b67b-8dff-4e1d-9f83-935d033d7272",
+      "artist_mbid": "4a00ec9d-c635-463a-8cd4-eb61725f0c60",
+      "artist_rank": 181,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Strobe (radio edit)",
+      "artist": "deadmau5",
+      "year": 2010,
+      "release": "Strobe",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "progressive house|electronic|dance|house|breaks",
+      "listen_count": 244712,
+      "recording_mbid": "c8c03626-4150-490a-8c52-21393c329547",
+      "artist_mbid": "4a00ec9d-c635-463a-8cd4-eb61725f0c60",
+      "artist_rank": 181,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Raise Your Weapon",
+      "artist": "deadmau5",
+      "year": 2022,
+      "release": "deadmau5 at Beyond Wonderland, Mar 29, 2019",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 121939,
+      "recording_mbid": "57f9f1af-35c3-4a07-aedf-6bf542f79fcc",
+      "artist_mbid": "4a00ec9d-c635-463a-8cd4-eb61725f0c60",
+      "artist_rank": 181,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

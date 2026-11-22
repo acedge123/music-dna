@@ -1,0 +1,85 @@
+{
+  "rank": 93,
+  "artist": "Sufjan Stevens",
+  "rows": [
+    {
+      "title": "Chicago",
+      "artist": "Sufjan Stevens",
+      "year": 2005,
+      "release": "Illinois",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "folk rock|rock|baroque pop|indie|folk",
+      "listen_count": 1436769,
+      "recording_mbid": "5efb8ca9-6f8a-4140-9713-13398178cb4d",
+      "artist_mbid": "01d3c51b-9b98-418a-8d8e-37f6fab59d8c",
+      "artist_rank": 93,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Casimir Pulaski Day",
+      "artist": "Sufjan Stevens",
+      "year": 2005,
+      "release": "Illinois",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|folk rock|singer-songwriter|indie|folk",
+      "listen_count": 1037693,
+      "recording_mbid": "9f9d0a32-5dc0-4c7c-965e-0a647fa8f45d",
+      "artist_mbid": "01d3c51b-9b98-418a-8d8e-37f6fab59d8c",
+      "artist_rank": 93,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "To Be Alone With You",
+      "artist": "Sufjan Stevens",
+      "year": 2004,
+      "release": "Seven Swans",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "acoustic|folk rock|indie|américain|rock",
+      "listen_count": 871231,
+      "recording_mbid": "27a009d5-5abb-448d-a929-cc6adf44a166",
+      "artist_mbid": "01d3c51b-9b98-418a-8d8e-37f6fab59d8c",
+      "artist_rank": 93,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Futile Devices",
+      "artist": "Sufjan Stevens",
+      "year": 2010,
+      "release": "The Age of Adz",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|indie|folk|art rock|electronic",
+      "listen_count": 464319,
+      "recording_mbid": "0f13f0da-7ade-42f1-9967-7db2ce543e11",
+      "artist_mbid": "01d3c51b-9b98-418a-8d8e-37f6fab59d8c",
+      "artist_rank": 93,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "I Walked",
+      "artist": "Sufjan Stevens",
+      "year": 2010,
+      "release": "The Age of Adz",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronic|rock|indie|leftfield|singer-songwriter",
+      "listen_count": 358839,
+      "recording_mbid": "ddb1c991-6ac5-4d90-aace-48f936caf040",
+      "artist_mbid": "01d3c51b-9b98-418a-8d8e-37f6fab59d8c",
+      "artist_rank": 93,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Too Much",
+      "artist": "Sufjan Stevens",
+      "year": 2010,
+      "release": "The Age of Adz",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "electronic|rock|indietronica|art rock|indie",
+      "listen_count": 321828,
+      "recording_mbid": "af421df4-b214-48fc-a0e8-35d4dae5ff28",
+      "artist_mbid": "01d3c51b-9b98-418a-8d8e-37f6fab59d8c",
+      "artist_rank": 93,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

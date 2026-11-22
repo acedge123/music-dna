@@ -1,0 +1,111 @@
+{
+  "rank": 153,
+  "artist": "Marilyn Manson",
+  "rows": [
+    {
+      "title": "Tainted Love",
+      "artist": "Marilyn Manson",
+      "year": 2001,
+      "release": "The Golden Age of Grotesque",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|industrial metal|alternative rock|electronic|metal",
+      "listen_count": 1032370,
+      "recording_mbid": "7cd3782d-86dc-4dd1-8d9b-e37f9cbe6b94",
+      "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+      "artist_rank": 153,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "This Is the New Shit",
+      "artist": "Marilyn Manson",
+      "year": 2003,
+      "release": "The Golden Age of Grotesque",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "industrial metal|industrial|soundtrack|electronic|alternative hard rock",
+      "listen_count": 1031898,
+      "recording_mbid": "13f6b40a-14d8-41e1-9a02-3938bdb73fb9",
+      "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+      "artist_rank": 153,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "The Beautiful People",
+      "artist": "Marilyn Manson",
+      "year": 1996,
+      "release": "Antichrist Superstar",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "industrial metal|alternative metal|heavy metal|metal|industrial",
+      "listen_count": 973645,
+      "recording_mbid": "d7bd3f0e-2aba-424c-9457-db5341893aef",
+      "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+      "artist_rank": 153,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sweet Dreams (Are Made of This)",
+      "artist": "Marilyn Manson",
+      "year": 1997,
+      "release": "Sweet Dreams",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 959805,
+      "recording_mbid": "b5442849-a999-433b-9c21-5f33fde83904",
+      "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+      "artist_rank": 153,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Rock Is Dead",
+      "artist": "Marilyn Manson",
+      "year": 1998,
+      "release": "Mechanical Animals",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative metal|alternative rock|soundtrack|industrial metal|techno_stage screen_soundtrack",
+      "listen_count": 805551,
+      "recording_mbid": "497f727d-e5c5-461c-a829-00ccc75b6993",
+      "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+      "artist_rank": 153,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "mOBSCENE",
+      "artist": "Marilyn Manson",
+      "year": 2003,
+      "release": "The Golden Age of Grotesque",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "industrial|electronic|heavy metal|industrial metal|alternative metal",
+      "listen_count": 731682,
+      "recording_mbid": "6608e919-872c-4065-9f77-bfdb4abbb454",
+      "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+      "artist_rank": 153,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "No Reflection",
+      "artist": "Marilyn Manson",
+      "year": 2012,
+      "release": "Born Villain",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "industrial|alternative rock|industrial metal|alternative metal|hard rock",
+      "listen_count": 155618,
+      "recording_mbid": "55d44e40-faab-4d02-9a95-f9d358694056",
+      "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+      "artist_rank": 153,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Slo‐Mo‐Tion",
+      "artist": "Marilyn Manson",
+      "year": 2012,
+      "release": "Born Villain",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "industrial rock|alternative rock|electronic|heavy metal|alternative metal",
+      "listen_count": 88412,
+      "recording_mbid": "4c678af5-d0a2-4901-bd8a-af3321b1b07a",
+      "artist_mbid": "5dfdca28-9ddc-4853-933c-8bc97d87beec",
+      "artist_rank": 153,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

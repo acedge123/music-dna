@@ -1,6 +1,124 @@
 {
   "rank": 47,
   "artist": "The Killers",
-  "rows": [],
-  "gap": "Provider unavailable after bounded retries"
+  "rows": [
+    {
+      "title": "Mr. Brightside",
+      "artist": "The Killers",
+      "year": 2003,
+      "release": "Hot Fuss",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|rock|post-punk revival|pop rock|indie rock",
+      "listen_count": 4034900,
+      "recording_mbid": "560062d0-e122-46be-9d89-0f3b44077fdf",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Somebody Told Me",
+      "artist": "The Killers",
+      "year": 2004,
+      "release": "Hot Fuss",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|pop rock|post-punk revival|rock|indie rock",
+      "listen_count": 3070022,
+      "recording_mbid": "45024040-a343-4141-9bc9-27ef0cc9163d",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "When You Were Young",
+      "artist": "The Killers",
+      "year": 2006,
+      "release": "Sam’s Town",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|alternative rock|pop|indie rock|alternative",
+      "listen_count": 2552136,
+      "recording_mbid": "b38f9ded-8ac3-409e-82c3-187495e4da47",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Runaways",
+      "artist": "The Killers",
+      "year": 2012,
+      "release": "Battle Born",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|rock|indie rock|alternative rock|indie",
+      "listen_count": 415341,
+      "recording_mbid": "f9d72e64-fa3f-462b-ba75-9ea1c8c366e8",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Flesh and Bone",
+      "artist": "The Killers",
+      "year": 2012,
+      "release": "Battle Born",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "rock|indie rock|alternative rock|pop rock|pop",
+      "listen_count": 238028,
+      "recording_mbid": "f6440c5b-5e76-4007-ac57-6366517b1d45",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "The Way It Was",
+      "artist": "The Killers",
+      "year": 2012,
+      "release": "Battle Born",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "alternative rock|indie rock|rock|alternative pop/rock|pop",
+      "listen_count": 236835,
+      "recording_mbid": "3a95511b-ea1f-4886-939f-989558bf94c7",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Caution",
+      "artist": "The Killers",
+      "year": 2020,
+      "release": "Imploding the Mirage",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 13205,
+      "recording_mbid": "49f46330-5567-4c60-95c6-00d395b7dbfd",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "My Own Soul’s Warning",
+      "artist": "The Killers",
+      "year": 2020,
+      "release": "Imploding the Mirage",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 10221,
+      "recording_mbid": "592f7c86-c78a-485e-a343-0da2c2e0255e",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Dying Breed",
+      "artist": "The Killers",
+      "year": 2020,
+      "release": "Imploding the Mirage",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 7654,
+      "recording_mbid": "f925c984-6589-41e1-93ca-f6ea5061a19d",
+      "artist_mbid": "95e1ead9-4d31-4808-a7ac-32c3614c116b",
+      "artist_rank": 47,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
 }

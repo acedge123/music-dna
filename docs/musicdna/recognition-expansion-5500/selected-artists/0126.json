@@ -1,0 +1,85 @@
+{
+  "rank": 126,
+  "artist": "Olivia Rodrigo",
+  "rows": [
+    {
+      "title": "good 4 u",
+      "artist": "Olivia Rodrigo",
+      "year": 2021,
+      "release": "SOUR",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|pop-punk|emo|teen pop|pop punk",
+      "listen_count": 126054,
+      "recording_mbid": "97aa087b-5fa2-42ff-bd48-d162862cdc95",
+      "artist_mbid": "6925db17-f35e-42f3-a4eb-84ee6bf5d4b0",
+      "artist_rank": 126,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "drivers license",
+      "artist": "Olivia Rodrigo",
+      "year": 2021,
+      "release": "SOUR",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|sad|ballad|power pop|bedroom pop",
+      "listen_count": 89055,
+      "recording_mbid": "143f1c88-f47f-4f37-b25d-614c74269dea",
+      "artist_mbid": "6925db17-f35e-42f3-a4eb-84ee6bf5d4b0",
+      "artist_rank": 126,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "vampire",
+      "artist": "Olivia Rodrigo",
+      "year": 2023,
+      "release": "GUTS",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop rock|pop|ballad",
+      "listen_count": 78005,
+      "recording_mbid": "0c846a8e-debd-4a63-bb93-6c57f5178b45",
+      "artist_mbid": "6925db17-f35e-42f3-a4eb-84ee6bf5d4b0",
+      "artist_rank": 126,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "All I Want",
+      "artist": "Olivia Rodrigo",
+      "year": 2019,
+      "release": "High School Musical: The Musical: The Series: The Soundtrack: Music From the Disney+ Original Series",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 13868,
+      "recording_mbid": "df19dcad-fbd6-407c-a6a6-dac601b8b13b",
+      "artist_mbid": "6925db17-f35e-42f3-a4eb-84ee6bf5d4b0",
+      "artist_rank": 126,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Start of Something New (Nini version)",
+      "artist": "Olivia Rodrigo",
+      "year": 2019,
+      "release": "High School Musical: The Musical: The Series: The Soundtrack: Music From the Disney+ Original Series",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 1530,
+      "recording_mbid": "e6643b8c-8afc-4f40-a5fb-562c1fd0cb1c",
+      "artist_mbid": "6925db17-f35e-42f3-a4eb-84ee6bf5d4b0",
+      "artist_rank": 126,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Out of the Old",
+      "artist": "Olivia Rodrigo",
+      "year": 2019,
+      "release": "High School Musical: The Musical: The Series: The Soundtrack: Music From the Disney+ Original Series",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 1528,
+      "recording_mbid": "01d233a3-0486-4567-bd59-bcbe490b54d6",
+      "artist_mbid": "6925db17-f35e-42f3-a4eb-84ee6bf5d4b0",
+      "artist_rank": 126,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": "1 candidate IDs absent from indexed results; not treated as verified"
+}

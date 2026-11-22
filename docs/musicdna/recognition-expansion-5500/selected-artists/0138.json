@@ -1,0 +1,85 @@
+{
+  "rank": 138,
+  "artist": "Toby Fox",
+  "rows": [
+    {
+      "title": "Shop",
+      "artist": "Toby Fox",
+      "year": 2015,
+      "release": "UNDERTALE",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "vgm|chiptune|sequencer & tracker|video game music",
+      "listen_count": 102868,
+      "recording_mbid": "a4cf3611-87a3-4bd1-9fb0-120b1f198037",
+      "artist_mbid": "1c26f82c-b35d-4c8e-a1f4-9c20747495c9",
+      "artist_rank": 138,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Hip Shop",
+      "artist": "Toby Fox",
+      "year": 2018,
+      "release": "DELTARUNE, Chapter 1: Soundtrack",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop|vgm|video game music",
+      "listen_count": 68242,
+      "recording_mbid": "3946373d-8d40-4a16-8af9-acec5e2001c7",
+      "artist_mbid": "1c26f82c-b35d-4c8e-a1f4-9c20747495c9",
+      "artist_rank": 138,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "MEGALOVANIA",
+      "artist": "Toby Fox",
+      "year": 2015,
+      "release": "UNDERTALE",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "meme|symphonic metal|soundtrack|chiptune|character: sans",
+      "listen_count": 46776,
+      "recording_mbid": "cdd3681b-cb54-4eeb-98b5-29c8baa1edd8",
+      "artist_mbid": "1c26f82c-b35d-4c8e-a1f4-9c20747495c9",
+      "artist_rank": 138,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Welcome to the Green Room",
+      "artist": "Toby Fox",
+      "year": 2025,
+      "release": "DELTARUNE Chapters 3+4 OST",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "lounge|downtempo|vgm|video game music",
+      "listen_count": 36830,
+      "recording_mbid": "d666620e-bf81-4ace-8440-ffb03c5d7a98",
+      "artist_mbid": "1c26f82c-b35d-4c8e-a1f4-9c20747495c9",
+      "artist_rank": 138,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "BIG SHOT",
+      "artist": "Toby Fox",
+      "year": 2021,
+      "release": "DELTARUNE: Chapter 2 Soundtrack",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "sequencer & tracker|power metal|vgm|video game music",
+      "listen_count": 20956,
+      "recording_mbid": "6b1ae96d-1ee1-433e-bafd-74e6cf1c4484",
+      "artist_mbid": "1c26f82c-b35d-4c8e-a1f4-9c20747495c9",
+      "artist_rank": 138,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "My Castle Town",
+      "artist": "Toby Fox",
+      "year": 2021,
+      "release": "DELTARUNE: Chapter 2 Soundtrack",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "sequencer & tracker|neoclassical new age|video game music|vgm",
+      "listen_count": 15664,
+      "recording_mbid": "36254549-2654-4bb3-b3a8-9a59e387f9f7",
+      "artist_mbid": "1c26f82c-b35d-4c8e-a1f4-9c20747495c9",
+      "artist_rank": 138,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

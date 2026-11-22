@@ -1,0 +1,85 @@
+{
+  "rank": 124,
+  "artist": "Playboi Carti",
+  "rows": [
+    {
+      "title": "Magnolia",
+      "artist": "Playboi Carti",
+      "year": 2017,
+      "release": "Magnolia",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 59064,
+      "recording_mbid": "75a38235-5db3-4545-bd4c-e4de9baee068",
+      "artist_mbid": "2baf3276-ed6a-4349-8d2e-f4601e7b2167",
+      "artist_rank": 124,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "FE!N",
+      "artist": "Travis Scott feat. Playboi Carti",
+      "year": 2023,
+      "release": "UTOPIA",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "hip hop",
+      "listen_count": 52547,
+      "recording_mbid": "67b283a5-16ad-4ae9-83ea-d25e83f7f958",
+      "artist_mbid": "2baf3276-ed6a-4349-8d2e-f4601e7b2167",
+      "artist_rank": 124,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sky",
+      "artist": "Playboi Carti",
+      "year": 2020,
+      "release": "Whole Lotta Red",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 46688,
+      "recording_mbid": "509d7ad8-eb0e-47c4-a42a-2b93d54257e6",
+      "artist_mbid": "2baf3276-ed6a-4349-8d2e-f4601e7b2167",
+      "artist_rank": 124,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Shoota",
+      "artist": "Playboi Carti feat. Lil Uzi Vert",
+      "year": 2018,
+      "release": "Die Lit",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 45356,
+      "recording_mbid": "e60ae295-4d13-4a01-9ae7-37ba5ec160fd",
+      "artist_mbid": "2baf3276-ed6a-4349-8d2e-f4601e7b2167",
+      "artist_rank": 124,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Timeless",
+      "artist": "The Weeknd feat. Playboi Carti",
+      "year": 2024,
+      "release": "Hurry Up Tomorrow",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "synth-pop|synthwave|jahrescharts 2025|billboard hot 100 2025|ph_temp_checken",
+      "listen_count": 43874,
+      "recording_mbid": "7cbac5db-bb4c-4f88-a0a3-54dbc6f4ba78",
+      "artist_mbid": "2baf3276-ed6a-4349-8d2e-f4601e7b2167",
+      "artist_rank": 124,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Location",
+      "artist": "Playboi Carti",
+      "year": 2017,
+      "release": "Playboi Carti",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 43482,
+      "recording_mbid": "96475c55-ae4b-4889-b9f6-d516c4a7c517",
+      "artist_mbid": "2baf3276-ed6a-4349-8d2e-f4601e7b2167",
+      "artist_rank": 124,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}

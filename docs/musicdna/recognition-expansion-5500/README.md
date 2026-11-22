@@ -2,11 +2,13 @@
 
 Owner authorized import of the 2010s sample and continued recognition collection/import toward 5,500 on 2026-11-22. The previous 2010s output was only temporary and disappeared before delivery; it is rebuilt here, not claimed as imported from missing files.
 
-## Verified status — 2026-11-22 22:52 UTC
+## Verified status — 2026-11-22 23:28 UTC
 
-**2,759 distinct title/artist identities stored; 2,741 still needed.** This run inserted and read back 271 new records: 108 from the 2010s, 61 from the 2020s, 24 from the 1970s, 22 from the 1980s, 18 from the 1990s and 38 from the 2000s. The earlier 2,488 rows were not replaced. The rebuilt 2010s selection is partial, not the lost original completed list.
+**3,293 distinct title/artist identities stored; 2,207 still needed.** The modern-decade retry added and read back **534 new records: 335 from the 2010s and 199 from the 2020s**. Stored recognition totals are now **443 for the 2010s and 260 for the 2020s**. No older-era records were imported during this retry, and all existing rows remained unchanged. The earlier bounded run had added 271 records across all decades; the rebuilt 2010s selection remains partial, not the lost original completed list.
 
-51 of 1,000 ranked artists were processed. MusicBrainz repeatedly returned busy responses, and the first bounded collection exceeded its ten-minute limit. A slower retry successfully imported the verified subset. Remaining provider gaps are recorded in artist checkpoints. Collection is **paused**, not running in the background; finished metadata is now durable. Resume with the command below, retrying gaps as appropriate. The 5,500 target has **not** been met.
+181 of 1,000 ranked artists have now been processed, up from 51. Interrupted lookups were retried, followed by two sixty-artist collection steps; some missing indexed identities and provider gaps remain recorded in artist checkpoints. Each insert was read back, with unchanged-existing-row checks and a verified maximum of three stored expansion songs per artist/decade. Six operator regression tests pass. Collection is **paused**, not running in the background; finished metadata is durable. The 5,500 target has **not** been met; further bounded collection and unresolved identity lookups remain open.
+
+For this retry, the existing operator module was invoked with an in-process import filter accepting only years 2010–2029. The first five-gap pass also restricted candidate selection to those decades; earlier older-era selected metadata for the two affected completed artists was retained when saving the final checkpoints. Later passes collected all supported decades for future review but imported only the two requested modern decades. No application or operator source code changed. `import-status.json` records the last bounded run (244 additions), not the whole request's cumulative 534 additions.
 
 ## Method and safeguards
 

@@ -1,0 +1,111 @@
+{
+  "rank": 148,
+  "artist": "Avicii",
+  "rows": [
+    {
+      "title": "Levels",
+      "artist": "Avicii",
+      "year": 2011,
+      "release": "True",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "progressive house|electro house|house|dance|electronic",
+      "listen_count": 767303,
+      "recording_mbid": "6528ab6c-74ca-41d8-8eb8-9bb61c82a78f",
+      "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+      "artist_rank": 148,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Wake Me Up",
+      "artist": "Avicii",
+      "year": 2013,
+      "release": "True",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "house|pop|electronic|dance|club",
+      "listen_count": 175489,
+      "recording_mbid": "b437fbda-9c32-4078-afa2-1afb98ff0d74",
+      "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+      "artist_rank": 148,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Collide",
+      "artist": "Leona Lewis / Avicii",
+      "year": 2011,
+      "release": "Collide",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop|electro|house|electronic",
+      "listen_count": 123058,
+      "recording_mbid": "3b5e703b-d7b6-4f4d-a1d4-0c8521b9503f",
+      "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+      "artist_rank": 148,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Forever Yours (Avicii Tribute)",
+      "artist": "Kygo, Avicii & Sandro Cavazza",
+      "year": 2020,
+      "release": "Forever Yours (Avicii Tribute)",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "pop",
+      "listen_count": 6526,
+      "recording_mbid": "bcb122f4-47b1-4d20-a405-dce4ea8073c7",
+      "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+      "artist_rank": 148,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Muja",
+      "artist": "Avicii",
+      "year": 2009,
+      "release": "Muja",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 4675,
+      "recording_mbid": "b09623a3-b6bb-4153-9288-59f40f7fd954",
+      "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+      "artist_rank": 148,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Sound of Now",
+      "artist": "Avicii",
+      "year": 2009,
+      "release": "Sound of Now",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "progressive house|tech house|party",
+      "listen_count": 3843,
+      "recording_mbid": "58f4a080-0191-4506-b1f2-4fc419ec45e7",
+      "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+      "artist_rank": 148,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Let’s Ride Away",
+      "artist": "Avicii & Elle King",
+      "year": 2025,
+      "release": "Let's Ride Away",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "",
+      "listen_count": 3335,
+      "recording_mbid": "109809f6-a023-43b9-a913-0486d1413cc9",
+      "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+      "artist_rank": 148,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    },
+    {
+      "title": "Ryu (Laidback Luke edit)",
+      "artist": "Avicii",
+      "year": 2009,
+      "release": "Ryu / Strutnut",
+      "year_basis": "MusicBrainz indexed recording first-release-date; community metadata, not independent verification",
+      "genre_tags": "progressive house|dance|house",
+      "listen_count": 3307,
+      "recording_mbid": "a393d4e4-de9e-452a-ae49-50a23a1bb92e",
+      "artist_mbid": "c85cfd6b-b1e9-4a50-bd55-eb725f04f7d5",
+      "artist_rank": 148,
+      "artist_source": "ListenBrainz sitewide all_time artists"
+    }
+  ],
+  "gap": null
+}
