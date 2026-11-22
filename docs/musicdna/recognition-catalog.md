@@ -28,4 +28,10 @@ Run `python3 tools/musicdna/build-recognition-sample.py --decade 1990 --artists 
 
 The artist ranking is retrieved from ListenBrainz `stats/sitewide/artists?range=all_time`. Recordings use authenticated ListenBrainz artist popularity. MusicBrainz browse/lookup verifies album and recording dates. This is current all-time audience popularity, **not a historical 1990s chart**, and browsing only the first 100 album groups can miss large discographies. Genre tags are source hints; no manually assigned lane labels or automatic lane mapping.
 
-The ’90s CSV is a review sample, not automatically imported or scored. Expansion to the other decades and further recognition imports remain separate approvals.
+The ’90s CSV was imported after explicit owner approval on 2026-11-22: 413 new records and two existing recording-ID duplicates, for 1,890 recognition records total. All 415 source IDs were read back and newly inserted values matched the source. Existing records were not overwritten. Batch: `listenbrainz-1990s-2026-11-22`; source recording years remain provisional and hidden in recognition-only search. Full release details and genre tags remain in the versioned CSV; identity, source year/basis, popularity and batch are stored in recognition. No scoring or activation occurred.
+
+## 2000s collection started — 2026-11-22
+
+Owner requested the next review sample. The same 400-artist ListenBrainz ranking snapshot is reused for comparability; no MusicDNA artist seed list. Maximum three recordings per canonical artist, with the same provisional MusicBrainz date/version checks. Command: `python tools/musicdna/build-recognition-sample.py --decade 2000 --artists 400 --per-artist 3 --output /tmp/recognition-2000s`.
+
+Collection is running with paced provider requests and a completion monitor. Output/cache remains under `/tmp/recognition-2000s`; progress log `/tmp/recognition-2000s-progress.log`. This is not a completed or delivered sample yet; further recognition import requires owner review/approval. No AI scoring, automatic activation or deployment change.

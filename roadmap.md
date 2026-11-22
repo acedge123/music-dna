@@ -2,9 +2,9 @@
 
 ## Current — broader recognition catalog
 
-- [ ] Import the approved ’90s review identities without scoring or activating; preserve provisional dates/provenance and ignore existing recording IDs.
-- [ ] Build the 2000s review sample from ListenBrainz-ranked artists, maximum three recordings per artist; no automatic import or scoring.
-- [ ] Import all approved 1,477 ’80s sample records into a separate unscored recognition table; preserve provenance and leave scored songs/pairings untouched.
+- [x] Import the approved ’90s review identities: 413 new, two existing recording IDs; all 415 source IDs and new values verified, 1,890 recognition rows total. No scoring/activation, existing duplicates unchanged, provisional dates hidden.
+- [ ] Build the 2000s review sample from ListenBrainz-ranked artists, maximum three recordings per artist; collection started in /tmp/recognition-2000s with background completion monitor acp/sub_hy86hx2n. Waiting on paced provider collection; no automatic import or scoring.
+- [x] Import all approved 1,477 ’80s sample records into a separate unscored recognition table; preserve provenance and leave scored songs/pairings untouched. Confirmed stored batch during ’90s readback.
 - [x] Build and save a ’90s review sample from ListenBrainz-ranked artists: 415 recordings, 140 artists, maximum three per artist; docs/musicdna/recognition-sample-1990s. Includes 25 provider gaps and provisional date/version cautions; no ’90s import or scoring.
 - [ ] Verify recognition storage/search and document Flutter behavior and sample limitations.
 
