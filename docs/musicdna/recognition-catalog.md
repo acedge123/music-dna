@@ -30,8 +30,12 @@ The artist ranking is retrieved from ListenBrainz `stats/sitewide/artists?range=
 
 The ’90s CSV was imported after explicit owner approval on 2026-11-22: 413 new records and two existing recording-ID duplicates, for 1,890 recognition records total. All 415 source IDs were read back and newly inserted values matched the source. Existing records were not overwritten. Batch: `listenbrainz-1990s-2026-11-22`; source recording years remain provisional and hidden in recognition-only search. Full release details and genre tags remain in the versioned CSV; identity, source year/basis, popularity and batch are stored in recognition. No scoring or activation occurred.
 
-## 2000s collection started — 2026-11-22
+## Approved 2000s import — 2026-11-22
 
-Owner requested the next review sample. The same 400-artist ListenBrainz ranking snapshot is reused for comparability; no MusicDNA artist seed list. Maximum three recordings per canonical artist, with the same provisional MusicBrainz date/version checks. Command: `python tools/musicdna/build-recognition-sample.py --decade 2000 --artists 400 --per-artist 3 --output /tmp/recognition-2000s`.
+The completed sample in `recognition-sample-2000s/` contains 598 recordings across 200 canonical artists, maximum three per artist. Owner approved import on 2026-11-22. All 598 were new and every stored identity/source value was verified against the CSV; replay ignored existing IDs without changing values. Batch: `listenbrainz-2000s-2026-11-22`. Recognition total: **2,488 records**. No scoring, activation, demand counts, routing or saved-reading changes. Provisional recognition dates remain hidden; source genre tags remain in the CSV, not assigned lanes.
 
-Collection is running with paced provider requests and a completion monitor. Output/cache remains under `/tmp/recognition-2000s`; progress log `/tmp/recognition-2000s-progress.log`. This is not a completed or delivered sample yet; further recognition import requires owner review/approval. No AI scoring, automatic activation or deployment change.
+## 2010s collection started — 2026-11-22
+
+Owner requested the next review sample. The same 400-artist ListenBrainz ranking snapshot is reused for comparability; no MusicDNA artist seed list. Maximum three recordings per canonical artist, with the same provisional MusicBrainz date/version checks. Command: `python3 tools/musicdna/build-recognition-sample.py --decade 2010 --artists 400 --per-artist 3 --output /tmp/recognition-2010s`.
+
+Collection is running with paced provider requests and completion monitor `acp/sub_cf7m1b24`. Output/cache remains under `/tmp/recognition-2010s`; progress log `/tmp/recognition-2010s-progress.log`. This is not a completed or delivered sample yet; further recognition import requires owner review/approval. No AI scoring, automatic activation or deployment change.
