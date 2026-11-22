@@ -39,6 +39,7 @@ import { Route as ApiV1OnboardingOpenerRouteImport } from './routes/api/v1/onboa
 import { Route as ApiV1OnboardingReactRouteImport } from './routes/api/v1/onboarding.react'
 import { Route as ApiV1SessionIdRouteImport } from './routes/api/v1/session.$id'
 import { Route as ApiV1ShareTokenRouteImport } from './routes/api/v1/share.$token'
+import { Route as ApiV1SongsSearchRouteImport } from './routes/api/v1/songs.search'
 import { Route as ApiV1SessionIdChatRouteImport } from './routes/api/v1/session.$id.chat'
 import { Route as ApiV1SessionIdChoiceRouteImport } from './routes/api/v1/session.$id.choice'
 import { Route as ApiV1SessionIdComparisonRouteImport } from './routes/api/v1/session.$id.comparison'
@@ -208,6 +209,11 @@ const ApiV1ShareTokenRoute = ApiV1ShareTokenRouteImport.update({
   path: '/api/v1/share/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiV1SongsSearchRoute = ApiV1SongsSearchRouteImport.update({
+  id: '/api/v1/songs/search',
+  path: '/api/v1/songs/search',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiV1SessionIdChatRoute = ApiV1SessionIdChatRouteImport.update({
   id: '/chat',
   path: '/chat',
@@ -330,6 +336,7 @@ export interface FileRoutesByFullPath {
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
   '/api/v1/share/$token': typeof ApiV1ShareTokenRouteWithChildren
+  '/api/v1/songs/search': typeof ApiV1SongsSearchRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
@@ -379,6 +386,7 @@ export interface FileRoutesByTo {
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
   '/api/v1/share/$token': typeof ApiV1ShareTokenRouteWithChildren
+  '/api/v1/songs/search': typeof ApiV1SongsSearchRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
@@ -430,6 +438,7 @@ export interface FileRoutesById {
   '/api/v1/onboarding/react': typeof ApiV1OnboardingReactRoute
   '/api/v1/session/$id': typeof ApiV1SessionIdRouteWithChildren
   '/api/v1/share/$token': typeof ApiV1ShareTokenRouteWithChildren
+  '/api/v1/songs/search': typeof ApiV1SongsSearchRoute
   '/api/v1/session/$id/chat': typeof ApiV1SessionIdChatRoute
   '/api/v1/session/$id/choice': typeof ApiV1SessionIdChoiceRoute
   '/api/v1/session/$id/comparison': typeof ApiV1SessionIdComparisonRoute
@@ -481,6 +490,7 @@ export interface FileRouteTypes {
     | '/api/v1/onboarding/react'
     | '/api/v1/session/$id'
     | '/api/v1/share/$token'
+    | '/api/v1/songs/search'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
     | '/api/v1/session/$id/comparison'
@@ -530,6 +540,7 @@ export interface FileRouteTypes {
     | '/api/v1/onboarding/react'
     | '/api/v1/session/$id'
     | '/api/v1/share/$token'
+    | '/api/v1/songs/search'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
     | '/api/v1/session/$id/comparison'
@@ -580,6 +591,7 @@ export interface FileRouteTypes {
     | '/api/v1/onboarding/react'
     | '/api/v1/session/$id'
     | '/api/v1/share/$token'
+    | '/api/v1/songs/search'
     | '/api/v1/session/$id/chat'
     | '/api/v1/session/$id/choice'
     | '/api/v1/session/$id/comparison'
@@ -627,6 +639,7 @@ export interface RootRouteChildren {
   ApiV1OnboardingOpenerRoute: typeof ApiV1OnboardingOpenerRoute
   ApiV1OnboardingReactRoute: typeof ApiV1OnboardingReactRoute
   ApiV1ShareTokenRoute: typeof ApiV1ShareTokenRouteWithChildren
+  ApiV1SongsSearchRoute: typeof ApiV1SongsSearchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -839,6 +852,13 @@ declare module '@tanstack/react-router' {
       path: '/api/v1/share/$token'
       fullPath: '/api/v1/share/$token'
       preLoaderRoute: typeof ApiV1ShareTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/v1/songs/search': {
+      id: '/api/v1/songs/search'
+      path: '/api/v1/songs/search'
+      fullPath: '/api/v1/songs/search'
+      preLoaderRoute: typeof ApiV1SongsSearchRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/v1/session/$id/chat': {
@@ -1081,6 +1101,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiV1OnboardingOpenerRoute: ApiV1OnboardingOpenerRoute,
   ApiV1OnboardingReactRoute: ApiV1OnboardingReactRoute,
   ApiV1ShareTokenRoute: ApiV1ShareTokenRouteWithChildren,
+  ApiV1SongsSearchRoute: ApiV1SongsSearchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

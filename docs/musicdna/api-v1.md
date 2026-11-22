@@ -368,3 +368,6 @@ How it works:
 
 Point `MUSICDNA_E2E_BASE_URL` at `http://localhost:8080` for a local dev
 server or at the preview URL to smoke-test a deployed build.
+
+## GET /api/v1/songs/search
+Public opener autocomplete over active catalog songs. See `flutter-opener-song-search.md`.
