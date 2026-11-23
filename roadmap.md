@@ -1,5 +1,11 @@
 # Roadmap
 
+## Current — guest autocomplete repair
+
+- [ ] Restore scored identity visibility through a narrow public search interface; normalize candidate retrieval and add bounded typo matching.
+- [ ] Bind dropdown, keyboard selection and empty/error feedback to the current query; document Flutter behavior and verify guest search.
+- [ ] Apply only the search-interface migration after explicit approval; verify Vercel deployment separately.
+
 ## Current — broader recognition catalog
 
 - [x] Retry interrupted 2010s/2020s lookups and continue bounded modern-decade imports: 534 new identities read back (335 2010s, 199 2020s); era totals 443/260, overall 3,293. Existing rows unchanged; six operator tests pass; maximum three expansion songs per artist/decade. Saved progress at 181/1,000 artists, no background job, scoring or activation.

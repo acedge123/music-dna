@@ -2,7 +2,9 @@
 // Suggestions are confirmation only — selecting one fills "Title — Artist";
 // it never changes lane/era classification, scoring or intake.
 
-export type SongSuggestion = { id: string; title: string; artist: string; year: number | null };
+import { fuzzy } from "fast-fuzzy";
+
+export type SongSuggestion = { id: string; title: string; artist: string; year: number | null; listen_count?: number };
 
 export const SONG_SEARCH_MIN_CHARS = 2;
 export const SONG_SEARCH_LIMIT = 5;
@@ -33,8 +35,29 @@ function fieldScore(field: string, q: string): number {
   if (field === q) return 100;
   if (field.startsWith(q)) return 70;
   if (field.split(" ").some((w) => w.startsWith(q))) return 45;
-  if (field.includes(q)) return 25;
+  if (field.includes(q) && (!q.includes(" ") || ` ${field} `.includes(` ${q} `))) return 25;
   return 0;
+}
+
+function combinedScore(t: string, a: string, q: string): number {
+  const titleScore = fieldScore(t, q);
+  const direct = Math.max(titleScore ? titleScore + 5 : 0, fieldScore(a, q));
+  const words = `${t} ${a}`.split(" ");
+  const tokens = q.split(" ");
+  if (tokens.length > 1 && tokens.every((token) => words.some((word) => word.startsWith(token))))
+    return Math.max(direct, 90);
+  return direct;
+}
+
+function typoScore(t: string, a: string, q: string): number {
+  if (q.length < 5) return 0;
+  const similarity = Math.max(...[t, a, `${t} ${a}`, `${a} ${t}`].map((candidate) =>
+    fuzzy(q, candidate, { useSellers: false, ignoreSymbols: false })));
+  return similarity >= 0.8 ? similarity * 20 : 0;
+}
+
+function recordingGroup(title: string): string {
+  return normalizeQuery(title.replace(/\s*[-–—(\[]\s*(?:demo|live|remaster(?:ed)?|\d{4} remaster)[^\])]*[\])]?$/i, ""));
 }
 
 export function rankSongs(
@@ -46,7 +69,14 @@ export function rankSongs(
   const whole = normalizeQuery(raw);
   if (whole.length < SONG_SEARCH_MIN_CHARS) return [];
   const scored: { row: SongSuggestion; score: number }[] = [];
-  for (const row of rows) {
+  const identities = new Set<string>();
+  const uniqueRows = rows.filter((row) => {
+    const identity = `${normalizeQuery(row.title)}|${normalizeQuery(row.artist)}`;
+    if (identities.has(identity)) return false;
+    identities.add(identity);
+    return true;
+  });
+  for (const row of uniqueRows) {
     const t = normalizeQuery(row.title);
     const a = normalizeQuery(row.artist);
     let score: number;
@@ -55,21 +85,29 @@ export function rankSongs(
       const as = fieldScore(a, artist);
       score = ts && as ? ts + as : 0;
     } else {
-      const titleScore = fieldScore(t, whole);
-      score = Math.max(titleScore ? titleScore + 5 : 0, fieldScore(a, whole));
+      score = combinedScore(t, a, whole);
     }
     if (score > 0) scored.push({ row, score });
+  }
+  // Bounded spelling fallback, never overriding direct matches.
+  if (scored.length === 0 && !artist) {
+    for (const row of uniqueRows) {
+      const score = typoScore(normalizeQuery(row.title), normalizeQuery(row.artist), whole);
+      if (score > 0) scored.push({ row, score });
+    }
   }
   scored.sort(
     (x, y) =>
       y.score - x.score ||
+      Number(recordingGroup(x.row.title) !== normalizeQuery(x.row.title)) - Number(recordingGroup(y.row.title) !== normalizeQuery(y.row.title)) ||
+      (y.row.listen_count ?? 0) - (x.row.listen_count ?? 0) ||
       x.row.title.localeCompare(y.row.title) ||
       x.row.artist.localeCompare(y.row.artist),
   );
   const seen = new Set<string>();
   const out: SongSuggestion[] = [];
   for (const { row } of scored) {
-    const key = `${normalizeQuery(row.title)}|${normalizeQuery(row.artist)}`;
+    const key = `${recordingGroup(row.title)}|${normalizeQuery(row.artist)}`;
     if (seen.has(key)) continue;
     seen.add(key);
     out.push(row);

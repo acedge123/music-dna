@@ -6,6 +6,7 @@ import {
   suggestionLabel,
   type SongSuggestion,
 } from "@/musicdna/engine/song-search";
+import { currentSongSearch, type SongSearchState } from "@/musicdna/engine/song-search-state";
 
 // Opener input with catalog autocomplete. Suggestions only confirm identity;
 // the submitted value stays the plain "Title — Artist" string.
@@ -28,7 +29,7 @@ export function OpeningSongInput({
 }) {
   const ref = useRef<HTMLInputElement | null>(null);
   const listId = useId();
-  const [results, setResults] = useState<SongSuggestion[]>([]);
+  const [search, setSearch] = useState<SongSearchState>({ query: "", status: "success", results: [] });
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const [picked, setPicked] = useState<SongSuggestion | null>(null);
@@ -38,22 +39,32 @@ export function OpeningSongInput({
   }, [autoFocus]);
 
   const confirmed = picked && suggestionLabel(picked) === value ? picked : null;
+  const current = currentSongSearch(search, value.trim());
+  const results = current.results;
 
   useEffect(() => {
     const q = value.trim();
     if (confirmed || normalizeQuery(q).length < SONG_SEARCH_MIN_CHARS) {
-      setResults([]);
+      setSearch({ query: q, status: "success", results: [] });
       return;
     }
     const ctrl = new AbortController();
+    setSearch({ query: q, status: "pending", results: [] });
+    setActive(-1);
     const t = setTimeout(() => {
       fetch(`/api/v1/songs/search?q=${encodeURIComponent(q)}`, { signal: ctrl.signal })
-        .then((r) => (r.ok ? r.json() : { results: [] }))
+        .then((r) => {
+          if (!r.ok) throw new Error("Search unavailable");
+          return r.json();
+        })
         .then((d: { results?: SongSuggestion[] }) => {
-          setResults(d.results ?? []);
+          if (ctrl.signal.aborted) return;
+          setSearch({ query: q, status: "success", results: d.results ?? [] });
           setActive(-1);
         })
-        .catch(() => {});
+        .catch(() => {
+          if (!ctrl.signal.aborted) setSearch({ query: q, status: "error", results: [] });
+        });
     }, 180);
     return () => {
       clearTimeout(t);
@@ -65,11 +76,11 @@ export function OpeningSongInput({
     setPicked(s);
     onChange(suggestionLabel(s));
     setOpen(false);
-    setResults([]);
+    setSearch({ query: suggestionLabel(s), status: "success", results: [] });
   };
   const showList = open && results.length > 0 && !confirmed;
   const showMiss =
-    open && !confirmed && results.length === 0 && normalizeQuery(value).length >= 4;
+    open && !confirmed && current.status === "success" && results.length === 0 && normalizeQuery(value).length >= 4;
 
   return (
     <div className="grid grid-cols-[3rem_1fr] gap-4 items-baseline">
@@ -94,11 +105,14 @@ export function OpeningSongInput({
             aria-expanded={showList}
             aria-controls={listId}
             aria-autocomplete="list"
+            aria-busy={current.status === "pending"}
             autoComplete="off"
             onFocus={() => setOpen(true)}
             onBlur={() => setTimeout(() => setOpen(false), 150)}
             onChange={(e) => {
               onChange(e.target.value);
+              setPicked(null);
+              setActive(-1);
               setOpen(true);
             }}
             onKeyDown={(e) => {
@@ -162,6 +176,11 @@ export function OpeningSongInput({
         {showMiss && (
           <p className="mt-2 font-mono text-xs text-muted-foreground">
             Not in my crates yet — I'll take it as typed. Add the artist so I get it right.
+          </p>
+        )}
+        {open && !confirmed && current.status === "error" && (
+          <p role="status" className="mt-2 font-mono text-xs text-muted-foreground">
+            Song search is unavailable — I'll take it as typed. Add the artist so I get it right.
           </p>
         )}
       </div>

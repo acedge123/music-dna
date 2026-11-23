@@ -55,3 +55,5 @@
 
 - Final reading: one Sol/Terra pass (result v1); finish is deterministic.
 - `interviewStage` separates screens; `quip-sequences` preserves joke order and compatibility.
+
+- Guest opener search uses the bounded identity-only `musicdna_public_song_search` RPC, never broader songs-table access; normalize before candidate retrieval, then rank, and bind displayed suggestions to the current query so permissions and stale responses cannot misidentify songs.
