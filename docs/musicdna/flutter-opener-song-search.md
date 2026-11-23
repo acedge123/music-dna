@@ -29,7 +29,7 @@ Acceptance: search `When Doves Cry`, select Prince, submit the three opener stri
 
 ## Guest-search repair acceptance — November 23, 2026
 
-The server uses the narrow identity-only `musicdna_public_song_search` interface; base scored-table access rules are unchanged. Apply the reviewed SQL in `public-song-search.sql` only with owner authorization, then deploy Vercel before testing Flutter. No client response fields have changed.
+The server uses the narrow identity-only `musicdna_public_song_search` interface; base scored-table access rules are unchanged. Owner-approved migration `20261123155104` applied on November 23; `public-song-search.sql` is its test/reference copy, not a second migration to run. Deploy Vercel before testing Flutter. No client response fields have changed.
 
 - Without signing in, `Dreams` and `Fleetwood Mac` offer **Dreams — Fleetwood Mac**.
 - `Bohemain Rhapsody`, `Bohemian Rhapsody Queen`, and `Queen Bohemian Rhapsody` offer Queen.
@@ -38,3 +38,9 @@ The server uses the narrow identity-only `musicdna_public_song_search` interface
 - Slow the current request: no premature “Not in my crates” message; errors remain distinct from empty results.
 - Artist searches leave room for other songs instead of both an original and its obvious demo variant.
 - Unknown free text remains accepted. This repair adds no missing songs, scores, demand records or active pairings, and does not change lane/era selection.
+
+### Verification and access review
+
+21 focused tests pass, including isolated database guest denial of direct score reads, active-only identity results, normalization-before-retrieval and no recognition dates. Real guest preview searches passed for all reported P1 examples; desktop and 390px dropdown selection, keyboard confirmation, delayed-query clearing and distinct request-failure feedback passed with no page errors. Catalog-expansion fixtures were not imported.
+
+The database linter flags both guest and signed-in execution of this deliberately public privileged identity projection. Reviewed against Supabase's documented intentional-public-function exception: fixed SQL only, no dynamic statements, no listener-table reads or writes, active scored identities plus public recognition metadata only, 120-character input/400-candidate/3-second bounds and fixed search path. Revoking public execution would break legitimate guest search; using caller access would restore the missing scored-song bug. These intentional warnings remain documented rather than falsely marked fixed. The follow-up security scan reported no new search finding; existing unrelated security findings are not resolved by this work.

@@ -57,19 +57,52 @@ describe("opener song search", () => {
     ]);
   });
   it("keeps the scored duplicate even when recognition has higher popularity", () => {
-    expect(rankSongs([
-      { id: "scored", title: "Dreams", artist: "Fleetwood Mac", year: 1977 },
-      { id: "recognition", title: "Dreams", artist: "Fleetwood Mac", year: null, listen_count: 9999 },
-    ], "Dreams")[0]?.id).toBe("scored");
+    expect(
+      rankSongs(
+        [
+          { id: "scored", title: "Dreams", artist: "Fleetwood Mac", year: 1977 },
+          {
+            id: "recognition",
+            title: "Dreams",
+            artist: "Fleetwood Mac",
+            year: null,
+            listen_count: 9999,
+          },
+        ],
+        "Dreams",
+      )[0]?.id,
+    ).toBe("scored");
   });
   it("does not offer Jack the Ripper for the specific title The Rip", () => {
-    expect(rankSongs([{ id: "ripper", title: "Jack the Ripper", artist: "L.L. Cool J", year: 1987 }], "The Rip")).toEqual([]);
+    expect(
+      rankSongs(
+        [{ id: "ripper", title: "Jack the Ripper", artist: "L.L. Cool J", year: 1987 }],
+        "The Rip",
+      ),
+    ).toEqual([]);
   });
   it("groups recording variants and uses popularity for artist-only ties", () => {
-    expect(rankSongs([
-      { id: "demo", title: "Boys Don't Cry (Demo)", artist: "The Cure", year: null, listen_count: 999 },
-      { id: "original", title: "Boys Don't Cry", artist: "The Cure", year: 1979, listen_count: 5 },
-      { id: "other", title: "A Forest", artist: "The Cure", year: 1980, listen_count: 10 },
-    ], "The Cure").map((s) => s.id)).toEqual(["other", "original"]);
+    expect(
+      rankSongs(
+        [
+          {
+            id: "demo",
+            title: "Boys Don't Cry (Demo)",
+            artist: "The Cure",
+            year: null,
+            listen_count: 999,
+          },
+          {
+            id: "original",
+            title: "Boys Don't Cry",
+            artist: "The Cure",
+            year: 1979,
+            listen_count: 5,
+          },
+          { id: "other", title: "A Forest", artist: "The Cure", year: 1980, listen_count: 10 },
+        ],
+        "The Cure",
+      ).map((s) => s.id),
+    ).toEqual(["other", "original"]);
   });
 });

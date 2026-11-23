@@ -29,7 +29,11 @@ export function OpeningSongInput({
 }) {
   const ref = useRef<HTMLInputElement | null>(null);
   const listId = useId();
-  const [search, setSearch] = useState<SongSearchState>({ query: "", status: "success", results: [] });
+  const [search, setSearch] = useState<SongSearchState>({
+    query: "",
+    status: "success",
+    results: [],
+  });
   const [open, setOpen] = useState(false);
   const [active, setActive] = useState(-1);
   const [picked, setPicked] = useState<SongSuggestion | null>(null);
@@ -80,7 +84,11 @@ export function OpeningSongInput({
   };
   const showList = open && results.length > 0 && !confirmed;
   const showMiss =
-    open && !confirmed && current.status === "success" && results.length === 0 && normalizeQuery(value).length >= 4;
+    open &&
+    !confirmed &&
+    current.status === "success" &&
+    results.length === 0 &&
+    normalizeQuery(value).length >= 4;
 
   return (
     <div className="grid grid-cols-[3rem_1fr] gap-4 items-baseline">
@@ -136,7 +144,10 @@ export function OpeningSongInput({
           />
         </div>
         {confirmed && (
-          <p role="status" className="mt-2 flex items-center gap-1.5 font-mono text-xs text-primary">
+          <p
+            role="status"
+            className="mt-2 flex items-center gap-1.5 font-mono text-xs text-primary"
+          >
             <Check aria-hidden="true" className="size-3.5" />
             Got it: {confirmed.title} — {confirmed.artist}
             {confirmed.year ? `, ${confirmed.year}` : ""}

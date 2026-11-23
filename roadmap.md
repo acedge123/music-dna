@@ -2,9 +2,9 @@
 
 ## Current — guest autocomplete repair
 
-- [ ] Restore scored identity visibility through a narrow public search interface; normalize candidate retrieval and add bounded typo matching.
-- [ ] Bind dropdown, keyboard selection and empty/error feedback to the current query; document Flutter behavior and verify guest search.
-- [ ] Apply only the search-interface migration after explicit approval; verify Vercel deployment separately.
+- [x] Restore scored identity visibility through a narrow public search interface; normalize candidate retrieval and add bounded typo matching. Owner-approved migration 20261123155104 applied; no base access, catalog rows, scores or routing changes.
+- [x] Bind dropdown, keyboard selection and empty/error feedback to the current query; document Flutter behavior and verify guest search. 21 focused tests and touched-file lint pass; real guest API and desktop/390px selection, slow-query and error checks pass without page errors.
+- [ ] Verify Vercel deployment and Flutter adoption separately; requires deployed search revision and Flutter team's current-query presentation changes. Public-search warnings are intentional, identity-only and bounded; existing unrelated findings remain untouched.
 
 ## Current — broader recognition catalog
 

@@ -4,7 +4,13 @@
 
 import { fuzzy } from "fast-fuzzy";
 
-export type SongSuggestion = { id: string; title: string; artist: string; year: number | null; listen_count?: number };
+export type SongSuggestion = {
+  id: string;
+  title: string;
+  artist: string;
+  year: number | null;
+  listen_count?: number;
+};
 
 export const SONG_SEARCH_MIN_CHARS = 2;
 export const SONG_SEARCH_LIMIT = 5;
@@ -44,20 +50,30 @@ function combinedScore(t: string, a: string, q: string): number {
   const direct = Math.max(titleScore ? titleScore + 5 : 0, fieldScore(a, q));
   const words = `${t} ${a}`.split(" ");
   const tokens = q.split(" ");
-  if (tokens.length > 1 && tokens.every((token) => words.some((word) => word.startsWith(token))))
+  if (
+    tokens.length > 1 &&
+    tokens.every((token) => words.some((word) => word.startsWith(token))) &&
+    tokens.some((token) => t.split(" ").some((word) => word.startsWith(token))) &&
+    tokens.some((token) => a.split(" ").some((word) => word.startsWith(token)))
+  )
     return Math.max(direct, 90);
   return direct;
 }
 
 function typoScore(t: string, a: string, q: string): number {
   if (q.length < 5) return 0;
-  const similarity = Math.max(...[t, a, `${t} ${a}`, `${a} ${t}`].map((candidate) =>
-    fuzzy(q, candidate, { useSellers: false, ignoreSymbols: false })));
+  const similarity = Math.max(
+    ...[t, a, `${t} ${a}`, `${a} ${t}`].map((candidate) =>
+      fuzzy(q, candidate, { useSellers: false, ignoreSymbols: false }),
+    ),
+  );
   return similarity >= 0.8 ? similarity * 20 : 0;
 }
 
 function recordingGroup(title: string): string {
-  return normalizeQuery(title.replace(/\s*[-–—(\[]\s*(?:demo|live|remaster(?:ed)?|\d{4} remaster)[^\])]*[\])]?$/i, ""));
+  return normalizeQuery(
+    title.replace(/\s*[-–—([]\s*(?:demo|live|remaster(?:ed)?|\d{4} remaster)[^\])]*[\])]?$/i, ""),
+  );
 }
 
 export function rankSongs(
@@ -99,7 +115,8 @@ export function rankSongs(
   scored.sort(
     (x, y) =>
       y.score - x.score ||
-      Number(recordingGroup(x.row.title) !== normalizeQuery(x.row.title)) - Number(recordingGroup(y.row.title) !== normalizeQuery(y.row.title)) ||
+      Number(recordingGroup(x.row.title) !== normalizeQuery(x.row.title)) -
+        Number(recordingGroup(y.row.title) !== normalizeQuery(y.row.title)) ||
       (y.row.listen_count ?? 0) - (x.row.listen_count ?? 0) ||
       x.row.title.localeCompare(y.row.title) ||
       x.row.artist.localeCompare(y.row.artist),

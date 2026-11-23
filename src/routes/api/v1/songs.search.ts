@@ -9,7 +9,6 @@ import { errorResponse, jsonResponse, preflightResponse } from "./_cors";
 import {
   rankSongs,
   SONG_SEARCH_MIN_CHARS,
-  splitQuery,
   type SongSuggestion,
 } from "@/musicdna/engine/song-search";
 
@@ -27,7 +26,7 @@ export const Route = createFileRoute("/api/v1/songs/search")({
             process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ||
             process.env["VITE_SUPABASE_ANON_KEY"];
           if (!url || !key) return errorResponse("INTERNAL", "Search unavailable", 500);
-          // Public identities use the caller-independent public read policies, not admin access.
+          // Identity-only RPC, not broader anonymous access to the scored table.
           const db = createClient<Database>(url, key, {
             auth: { persistSession: false, autoRefreshToken: false },
             global: {
@@ -40,44 +39,16 @@ export const Route = createFileRoute("/api/v1/songs/search")({
               },
             },
           });
-          const { title, artist } = splitQuery(q);
-          const term = (artist ? title : q.trim()).replace(/[%_,()*\\]/g, " ").trim();
-          const like = `%${term}%`;
-          const base = () =>
-            db
-              .from("songs")
-              .select("id,title,artist,year")
-              .eq("active", true)
-              .order("title")
-              .order("id")
-              .limit(200);
-          const recognition = () =>
-            db
-              .from("song_recognition")
-              .select("id,title,artist,year")
-              .order("listen_count", { ascending: false })
-              .order("id")
-              .limit(200);
-          const [byTitle, byArtist, recognizedTitle, recognizedArtist] = await Promise.all([
-            base().ilike("title", like),
-            artist ? Promise.resolve({ data: [], error: null }) : base().ilike("artist", like),
-            recognition().ilike("title", like),
-            artist
-              ? Promise.resolve({ data: [], error: null })
-              : recognition().ilike("artist", like),
-          ]);
-          if (byTitle.error || byArtist.error || recognizedTitle.error || recognizedArtist.error)
-            return errorResponse("INTERNAL", "Search unavailable", 500);
-          // Imported album dates are not confirmed original recording years. Do not display them as such.
-          const rows = [
-            ...(byTitle.data ?? []),
-            ...(byArtist.data ?? []),
-            ...[...(recognizedTitle.data ?? []), ...(recognizedArtist.data ?? [])].map((row) => ({
-              ...row,
-              year: null,
-            })),
-          ] as SongSuggestion[];
-          return jsonResponse({ ok: true, results: rankSongs(rows, q) });
+          const { data, error } = await db.rpc("musicdna_public_song_search", { p_query: q });
+          if (error) return errorResponse("INTERNAL", "Search unavailable", 500);
+          const rows: SongSuggestion[] = data ?? [];
+          const results = rankSongs(rows, q).map(({ id, title, artist, year }) => ({
+            id,
+            title,
+            artist,
+            year,
+          }));
+          return jsonResponse({ ok: true, results });
         } catch {
           return errorResponse("INTERNAL", "Search unavailable", 500);
         }

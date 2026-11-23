@@ -4539,6 +4539,17 @@ export type Database = {
         Returns: Json
       }
       musicdna_mcp_why_review_context: { Args: { p_id: string }; Returns: Json }
+      musicdna_public_song_search: {
+        Args: { p_query: string }
+        Returns: {
+          artist: string
+          id: string
+          listen_count: number
+          title: string
+          year: number
+        }[]
+      }
+      musicdna_search_normalize: { Args: { p_text: string }; Returns: string }
       musicdna_server_claim_why_ai_review: {
         Args: { p_actor: string; p_request: string; p_routing: Json }
         Returns: Json
