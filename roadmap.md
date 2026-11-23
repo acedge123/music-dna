@@ -4,6 +4,7 @@
 
 - [x] Restore scored identity visibility through a narrow public search interface; normalize candidate retrieval and add bounded typo matching. Owner-approved migration 20261123155104 applied; no base access, catalog rows, scores or routing changes.
 - [x] Bind dropdown, keyboard selection and empty/error feedback to the current query; document Flutter behavior and verify guest search. 21 focused tests and touched-file lint pass; real guest API and desktop/390px selection, slow-query and error checks pass without page errors.
+- [x] Sweep all opener slots, shared API/RPC, web reference, bundled Flutter foundation, MCP/admin catalog tools, hidden enrichment and operator intake/import paths; record source-read versus runtime verification in docs/musicdna/song-confirmation-flow-sweep-2026-11-23.md. No additional web confirmation path needs a separate repair; external Flutter/production acceptance remains open.
 - [ ] Verify Vercel deployment and Flutter adoption separately; requires deployed search revision and Flutter team's current-query presentation changes. Public-search warnings are intentional, identity-only and bounded; existing unrelated findings remain untouched.
 
 ## Current — broader recognition catalog
